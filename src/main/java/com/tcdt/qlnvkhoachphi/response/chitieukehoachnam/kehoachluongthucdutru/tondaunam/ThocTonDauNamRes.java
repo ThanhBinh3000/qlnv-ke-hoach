@@ -5,15 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ThocTonDauNamRes {
-	private BigDecimal tong;
-	private BigDecimal nhap1NamTruoc;
-	private BigDecimal nhap2NamTruoc;
-	private BigDecimal nhap3NamTruoc;
+	private Double tong;
+	private Double nhap1NamTruoc;
+	private Double nhap2NamTruoc;
+	private Double nhap3NamTruoc;
+	private Long vatTuId;
 }

@@ -5,15 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,38 +62,38 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 		cell.setCellStyle(style);
 	}
 
-	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook) {
-		int rowCount = 1;
-
-		CellStyle style = workbook.createCellStyle();
-		XSSFFont font = workbook.createFont();
-		font.setFontHeight(14);
-		style.setFont(font);
-
-		List<KeHoachLuongThucDuTruRes> data = this.buildDataExport();
-
-		for (KeHoachLuongThucDuTruRes line : data) {
-			Row row = sheet.createRow(rowCount++);
-			int columnCount = 0;
-
-			createCell(row, columnCount++, user.getId(), style);
-			createCell(row, columnCount++, user.getEmail(), style);
-			createCell(row, columnCount++, user.getFullName(), style);
-			createCell(row, columnCount++, user.getRoles().toString(), style);
-			createCell(row, columnCount++, user.isEnabled(), style);
-
-		}
-	}
-
-	public void export(HttpServletResponse response) throws IOException {
-		writeHeaderLine();
-		writeDataLines();
-
-		ServletOutputStream outputStream = response.getOutputStream();
-		workbook.write(outputStream);
-		workbook.close();
-
-		outputStream.close();
-
-	}
+//	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook) {
+//		int rowCount = 1;
+//
+//		CellStyle style = workbook.createCellStyle();
+//		XSSFFont font = workbook.createFont();
+//		font.setFontHeight(14);
+//		style.setFont(font);
+//
+//		List<KeHoachLuongThucDuTruRes> data = this.buildDataExport();
+//
+//		for (KeHoachLuongThucDuTruRes line : data) {
+//			Row row = sheet.createRow(rowCount++);
+//			int columnCount = 0;
+//
+//			createCell(row, columnCount++, user.getId(), style);
+//			createCell(row, columnCount++, user.getEmail(), style);
+//			createCell(row, columnCount++, user.getFullName(), style);
+//			createCell(row, columnCount++, user.getRoles().toString(), style);
+//			createCell(row, columnCount++, user.isEnabled(), style);
+//
+//		}
+//	}
+//
+//	public void export(HttpServletResponse response) throws IOException {
+//		writeHeaderLine();
+//		writeDataLines();
+//
+//		ServletOutputStream outputStream = response.getOutputStream();
+//		workbook.write(outputStream);
+//		workbook.close();
+//
+//		outputStream.close();
+//
+//	}
 }

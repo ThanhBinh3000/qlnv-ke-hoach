@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrongDoTonKhoCuoiNamRes {
-	private ThocTonKhoCuoiNamRes thoc;
-	private GaoTonKhoCuoiNamRes gao;
+public class ThocTonKhoCuoiNamRes {
+	private Long vatTuId;
+	private Double thoc;
 }
