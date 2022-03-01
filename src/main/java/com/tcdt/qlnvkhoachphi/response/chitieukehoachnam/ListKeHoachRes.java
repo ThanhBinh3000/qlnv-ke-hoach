@@ -1,0 +1,17 @@
+package com.tcdt.qlnvkhoachphi.response.chitieukehoachnam;
+
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ListKeHoachRes {
+    private List<KeHoachLuongThucDuTruRes> khluongthuc;
+    private List<KeHoachMuoiDuTruRes> khMuoi;
+}
