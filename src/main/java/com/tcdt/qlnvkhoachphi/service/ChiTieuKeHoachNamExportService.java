@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoachphi.service;
 
+import javax.servlet.http.HttpServletResponse;
+
 public interface ChiTieuKeHoachNamExportService {
-	Boolean exportToExcel ();
+	Boolean exportToExcel (HttpServletResponse response);
 }
