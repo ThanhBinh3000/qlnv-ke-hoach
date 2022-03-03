@@ -11,8 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 public class VatTuThietBiRes {
 	private String donViTinh;
+
+	private String maVatTu;
 	private Long vatTuId;
 	private String tenVatTu;
+
+	private String maVatTuCha;
 	private Long vatTuChaId;
 	private String tenVatTuCha;
 

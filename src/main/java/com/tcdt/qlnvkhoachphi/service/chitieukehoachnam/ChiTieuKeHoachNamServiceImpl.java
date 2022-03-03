@@ -60,10 +60,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Autowired
 	private QlnvDmVattuRepository qlnvDmVattuRepository;
 
-	private final Long THOC_ID = 3L;
-	private final Long GAO_ID = 4L;
-	private final Long MUOI_ID = 481L;
-
+	public static final Long THOC_ID = 3L;
+	public static final Long GAO_ID = 4L;
+	public static final Long MUOI_ID = 481L;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
