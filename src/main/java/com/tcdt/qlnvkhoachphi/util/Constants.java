@@ -114,7 +114,9 @@ public class Constants {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class ChiTieuKeHoachNamExport {
-		public static final String SHEET_KE_HOACH_LUONG_THUC_DU_TRU_NHA_NUOC = "Kế hoạch lương thực dự trữ nhà nước";
+		public static final String SHEET_KE_HOACH_LUONG_THUC_DTNN = "Kế hoạch lương thực DTNN";
+		public static final String SHEET_KE_HOACH_MUOI_DTNN = "Kế hoạch muối DTNN";
+		public static final String SHEET_KE_HOACH_NHAP_VT_TB = "Kế hoạch nhập VT_TB";
 	}
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -131,6 +133,7 @@ public class Constants {
 		public static final String NHAP_TRONG_NAM = "Nhập trong năm";
 		public static final String XUAT_TRONG_NAM = "Xuất trong năm";
 		public static final String TON_KHO_CUOI_NAM = "Tồn kho cuối năm";
+		public static final String TONG_SO = "Tổng số";
 
 
 

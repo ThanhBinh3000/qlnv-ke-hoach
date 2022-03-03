@@ -1,9 +1,8 @@
 package com.tcdt.qlnvkhoachphi.controller;
 
-import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamExportService;
 import com.tcdt.qlnvkhoachphi.response.Resp;
+import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamExportService;
 import com.tcdt.qlnvkhoachphi.service.ImportService;
-import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmKHoachVon;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,20 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -72,7 +60,7 @@ public class ChiTieuKeHoachNamExportController extends BaseController {
 		String currentDateTime = dateFormatter.format(new Date());
 
 		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
+		String headerValue = "attachment; filename=chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
 		response.setHeader(headerKey, headerValue);
 
 		chiTieuKeHoachNamExportSv.exportToExcel(response);
