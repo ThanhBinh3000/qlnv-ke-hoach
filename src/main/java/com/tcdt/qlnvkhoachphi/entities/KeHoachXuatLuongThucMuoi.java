@@ -1,8 +1,17 @@
 package com.tcdt.qlnvkhoachphi.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -17,6 +26,6 @@ public class KeHoachXuatLuongThucMuoi extends BaseEntity {
 	@SequenceGenerator(sequenceName = "KE_HOACH_XUAT_LUONG_THUC_MUOI_SEQ", allocationSize = 1, name = "KE_HOACH_XUAT_LUONG_THUC_MUOI_SEQ")
 	private Long id;
 	private Long keHoachId;
-	private Long soLuongXuat;
-	private Long namKeHoach;
+	private Double soLuongXuat;
+	private Integer namKeHoach;
 }

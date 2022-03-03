@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VatTuNhapRes {
-    Long nam;
-    Double soLuong;
-    Long vatTuId;
+    private Long id;
+    private Integer nam;
+    private Double soLuong;
+    private Long vatTuId;
 }

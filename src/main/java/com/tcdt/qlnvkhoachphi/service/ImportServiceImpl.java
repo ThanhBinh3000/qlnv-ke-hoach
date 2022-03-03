@@ -1,16 +1,21 @@
 package com.tcdt.qlnvkhoachphi.service;
 
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ListKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ListKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,13 +73,13 @@ public class ImportServiceImpl implements ImportService {
 
     private static final Integer TKCN_TONG_SO_MUOI_INDEX = 13;
 
-    private static Long getNamNhap(Row row, Integer index) throws Exception {
+    private static Integer getNamNhap(Row row, Integer index) throws Exception {
         Cell cell = row.getCell(index, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
         if (cell == null)
             throw new Exception(String.format("Column %d error", index));
 
         String value = cell.getStringCellValue().replaceAll(" ", "");
-        return Long.valueOf(value.replace("Nhập\n", "").trim());
+        return Integer.valueOf(value.replace("Nhập\n", "").trim());
     }
 
     private static Double getSoLuong(Row row, Integer index) throws Exception {
@@ -126,13 +131,13 @@ public class ImportServiceImpl implements ImportService {
         List<KeHoachMuoiDuTruRes> responses = new ArrayList<>();
         try {
             Row headerNam = sheet.getRow(MUOI_DATA_ROW_NHAP_INDEX);
-            Long tkdnNamMuoiNhap1 = getNamNhap(headerNam, TKDN_MUOI_NHAP_1_INDEX);
-            Long tkdnNamMuoiNhap2 = getNamNhap(headerNam, TKDN_MUOI_NHAP_2_INDEX);
-            Long tkdnNamMuoiNhap3 = getNamNhap(headerNam, TKDN_MUOI_NHAP_3_INDEX);
+            Integer tkdnNamMuoiNhap1 = getNamNhap(headerNam, TKDN_MUOI_NHAP_1_INDEX);
+            Integer tkdnNamMuoiNhap2 = getNamNhap(headerNam, TKDN_MUOI_NHAP_2_INDEX);
+            Integer tkdnNamMuoiNhap3 = getNamNhap(headerNam, TKDN_MUOI_NHAP_3_INDEX);
 
-            Long xtnNamMuoiNhap1 = getNamNhap(headerNam, XTN_MUOI_NHAP_1_INDEX);
-            Long xtnNamMuoiNhap2 = getNamNhap(headerNam, XTN_MUOI_NHAP_2_INDEX);
-            Long xtnNamMuoiNhap3 = getNamNhap(headerNam, XTN_MUOI_NHAP_3_INDEX);
+            Integer xtnNamMuoiNhap1 = getNamNhap(headerNam, XTN_MUOI_NHAP_1_INDEX);
+            Integer xtnNamMuoiNhap2 = getNamNhap(headerNam, XTN_MUOI_NHAP_2_INDEX);
+            Integer xtnNamMuoiNhap3 = getNamNhap(headerNam, XTN_MUOI_NHAP_3_INDEX);
 
             int count = 0;
             for (Row currentRow : sheet) {
@@ -169,15 +174,15 @@ public class ImportServiceImpl implements ImportService {
                 response.setTkcnTongSoMuoi(tkcnTongSoMuoi);
 
                 List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
-                tkdnMuoi.add(new VatTuNhapRes(tkdnNamMuoiNhap1, tkdnMuoiNhap1, null));
-                tkdnMuoi.add(new VatTuNhapRes(tkdnNamMuoiNhap2, tkdnMuoiNhap2, null));
-                tkdnMuoi.add(new VatTuNhapRes(tkdnNamMuoiNhap3, tkdnMuoiNhap3, null));
+                tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap1, tkdnMuoiNhap1, null));
+                tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap2, tkdnMuoiNhap2, null));
+                tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap3, tkdnMuoiNhap3, null));
                 response.setTkdnMuoi(tkdnMuoi);
 
                 List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
-                xtnMuoi.add(new VatTuNhapRes(xtnNamMuoiNhap1, xtnMuoiNhap1, null));
-                xtnMuoi.add(new VatTuNhapRes(xtnNamMuoiNhap2, xtnMuoiNhap2, null));
-                xtnMuoi.add(new VatTuNhapRes(xtnNamMuoiNhap3, xtnMuoiNhap3, null));
+                xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap1, xtnMuoiNhap1, null));
+                xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap2, xtnMuoiNhap2, null));
+                xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap3, xtnMuoiNhap3, null));
                 response.setXtnMuoi(xtnMuoi);
 
                 responses.add(response);
@@ -192,19 +197,19 @@ public class ImportServiceImpl implements ImportService {
         List<KeHoachLuongThucDuTruRes> responses = new ArrayList<>();
         try {
             Row headerNam = sheet.getRow(LUONG_THUC_DATA_ROW_NHAP_INDEX);
-            Long tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
-            Long tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
-            Long tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
+            Integer tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
+            Integer tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
+            Integer tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
 
-            Long tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
-            Long tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
+            Integer tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
+            Integer tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
 
-            Long xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
-            Long xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
-            Long xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
+            Integer xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
+            Integer xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
+            Integer xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
 
-            Long xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
-            Long xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
+            Integer xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
+            Integer xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
 
             int count = 0;
             for (Row currentRow : sheet) {
@@ -255,14 +260,14 @@ public class ImportServiceImpl implements ImportService {
                 response.setTkcnTongGao(tkdnTongGao);
 
                 List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
-                tkdnThoc.add(new VatTuNhapRes(tkdnNamThocNhap1, tkdnThocNhap1, null));
-                tkdnThoc.add(new VatTuNhapRes(tkdnNamThocNhap2, tkdnThocNhap2, null));
-                tkdnThoc.add(new VatTuNhapRes(tkdnNamThocNhap3, tkdnThocNhap3, null));
+                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, null));
+                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, null));
+                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, null));
                 response.setTkdnThoc(tkdnThoc);
 
                 List<VatTuNhapRes> tkdnGao = new ArrayList<>();
-                tkdnGao.add(new VatTuNhapRes(tkdnNamGaoNhap1, tkdnGaoNhap1, null));
-                tkdnGao.add(new VatTuNhapRes(tkdnNamGaoNhap2, tkdnGaoNhap2, null));
+                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, null));
+                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, null));
                 response.setTkdnGao(tkdnGao);
 
                 response.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
@@ -274,13 +279,13 @@ public class ImportServiceImpl implements ImportService {
                 response.setXtnTongGao(xtnTongGao);
 
                 List<VatTuNhapRes> xtnThoc = new ArrayList<>();
-                xtnThoc.add(new VatTuNhapRes(xtnNamThocNhap1, xtnThocNhap1, null));
-                xtnThoc.add(new VatTuNhapRes(xtnNamThocNhap2, xtnThocNhap2, null));
-                xtnThoc.add(new VatTuNhapRes(xtnNamThocNhap3, xtnThocNhap3, null));
+                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, null));
+                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, null));
+                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, null));
                 response.setXtnThoc(xtnThoc);
                 List<VatTuNhapRes> xtnGao = new ArrayList<>();
-                xtnGao.add(new VatTuNhapRes(xtnNamGaoNhap1, xtnGaoNhap1, null));
-                xtnGao.add(new VatTuNhapRes(xtnNamGaoNhap2, xtnGaoNhap2, null));
+                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, null));
+                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, null));
                 response.setXtnGao(xtnGao);
 
                 response.setTkcnTongSoQuyThoc(tkcnTongSoQuyThoc);
@@ -304,19 +309,19 @@ public class ImportServiceImpl implements ImportService {
             int dataNhapIndexRow = 4;
 
             Row headerNam = workSheet.getRow(dataNhapIndexRow);
-            Long tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
-            Long tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
-            Long tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
+            Integer tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
+            Integer tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
+            Integer tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
 
-            Long tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
-            Long tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
+            Integer tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
+            Integer tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
 
-            Long xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
-            Long xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
-            Long xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
+            Integer xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
+            Integer xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
+            Integer xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
 
-            Long xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
-            Long xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
+            Integer xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
+            Integer xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
 
             List<KeHoachLuongThucDuTruRes> responses = new ArrayList<>();
             int count = 0;
@@ -368,14 +373,14 @@ public class ImportServiceImpl implements ImportService {
                 response.setTkcnTongGao(tkdnTongGao);
 
                 List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
-                tkdnThoc.add(new VatTuNhapRes(tkdnNamThocNhap1, tkdnThocNhap1, null));
-                tkdnThoc.add(new VatTuNhapRes(tkdnNamThocNhap2, tkdnThocNhap2, null));
-                tkdnThoc.add(new VatTuNhapRes(tkdnNamThocNhap3, tkdnThocNhap3, null));
+                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, null));
+                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, null));
+                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, null));
                 response.setTkdnThoc(tkdnThoc);
 
                 List<VatTuNhapRes> tkdnGao = new ArrayList<>();
-                tkdnGao.add(new VatTuNhapRes(tkdnNamGaoNhap1, tkdnGaoNhap1, null));
-                tkdnGao.add(new VatTuNhapRes(tkdnNamGaoNhap2, tkdnGaoNhap2, null));
+                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, null));
+                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, null));
                 response.setTkdnGao(tkdnGao);
 
                 response.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
@@ -387,13 +392,13 @@ public class ImportServiceImpl implements ImportService {
                 response.setXtnTongGao(xtnTongGao);
 
                 List<VatTuNhapRes> xtnThoc = new ArrayList<>();
-                xtnThoc.add(new VatTuNhapRes(xtnNamThocNhap1, xtnThocNhap1, null));
-                xtnThoc.add(new VatTuNhapRes(xtnNamThocNhap2, xtnThocNhap2, null));
-                xtnThoc.add(new VatTuNhapRes(xtnNamThocNhap3, xtnThocNhap3, null));
+                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, null));
+                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, null));
+                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, null));
                 response.setXtnThoc(xtnThoc);
                 List<VatTuNhapRes> xtnGao = new ArrayList<>();
-                xtnGao.add(new VatTuNhapRes(xtnNamGaoNhap1, xtnGaoNhap1, null));
-                xtnGao.add(new VatTuNhapRes(xtnNamGaoNhap2, xtnGaoNhap2, null));
+                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, null));
+                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, null));
                 response.setXtnGao(xtnGao);
 
                 response.setTkcnTongSoQuyThoc(tkcnTongSoQuyThoc);

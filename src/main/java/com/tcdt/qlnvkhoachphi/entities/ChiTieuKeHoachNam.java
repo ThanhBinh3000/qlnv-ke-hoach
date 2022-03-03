@@ -1,8 +1,17 @@
 package com.tcdt.qlnvkhoachphi.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,7 +29,7 @@ public class ChiTieuKeHoachNam extends BaseEntity {
 	private String soQuyetDinh;
 	private LocalDate ngayKy;
 	private LocalDate ngayHieuLuc;
-	private Long namKeHoach;
+	private Integer namKeHoach;
 	private String trichYeu;
 	private String trangThai;
 	private Long donViId;

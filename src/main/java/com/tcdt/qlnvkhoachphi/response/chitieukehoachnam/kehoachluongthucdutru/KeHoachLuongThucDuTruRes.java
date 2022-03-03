@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class KeHoachLuongThucDuTruRes {
+	private Long id;
 	private Integer stt;
 	private Long cucId;
 	private String cucDTNNKhuVuc;
