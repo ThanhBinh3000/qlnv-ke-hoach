@@ -12,4 +12,10 @@ public class VatTuNhapRes {
     private Integer nam;
     private Double soLuong;
     private Long vatTuId;
+
+    public VatTuNhapRes(Integer nam, Double soLuong, Long vatTuId) {
+        this.nam = nam;
+        this.soLuong = soLuong;
+        this.vatTuId = vatTuId;
+    }
 }
