@@ -7,6 +7,7 @@ import com.tcdt.qlnvkhoachphi.entities.KeHoachVatTu;
 import com.tcdt.qlnvkhoachphi.entities.KeHoachXuatLuongThucMuoi;
 import com.tcdt.qlnvkhoachphi.entities.KtTrangthaiHienthoi;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
+import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoachphi.repository.KeHoachLuongThucMuoiRepository;
@@ -104,6 +105,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.MOI_TAO.getId());
 		chiTieuKeHoachNam.setDonViId(userInfo.getDvql());
+		chiTieuKeHoachNam.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
+		chiTieuKeHoachNam.setLastest(true);
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		Long ctkhnId = chiTieuKeHoachNam.getId();
 

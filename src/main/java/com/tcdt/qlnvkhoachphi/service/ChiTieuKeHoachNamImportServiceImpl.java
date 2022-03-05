@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoachphi.service;
 
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ListKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
@@ -8,6 +10,7 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoac
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamServiceImpl;
+import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
@@ -96,6 +99,9 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
     @Autowired
     private QlnvDmVattuRepository qlnvDmVattuRepository;
 
+    @Autowired
+    private QlnvDmDonviRepository qlnvDmDonviRepository;
+
     private static Integer getNamNhap(Row row, Integer index) throws Exception {
         Cell cell = row.getCell(index, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
         if (cell == null)
@@ -122,12 +128,15 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
 //        if (CellType.NUMERIC.equals(cell.getCellType())) {
 //            return String.valueOf((int) cell.getNumericCellValue()).trim();
 //        }
-        return dataFormatter.formatCellValue(cell);
+        return dataFormatter.formatCellValue(cell).trim();
     }
 
     @Override
     public ListKeHoachRes importKeHoach(MultipartFile file) {
         ListKeHoachRes response = new ListKeHoachRes();
+        Map<String, QlnvDmDonvi> mapDonVi = Lists.newArrayList(qlnvDmDonviRepository.findAll())
+                .stream().collect(Collectors.toMap(QlnvDmDonvi::getTenDvi, Function.identity()));
+
         try {
             InputStream excelFile = file.getInputStream();
             Workbook workbook = new XSSFWorkbook(excelFile);
@@ -135,7 +144,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             if (numberOfSheet >= 1) {
                 Sheet khLuongThuc = workbook.getSheetAt(0);
                 if (khLuongThuc != null) {
-                    List<KeHoachLuongThucDuTruRes> keHoachLuongThucDuTruResList = this.importKeHoachLuongThuc(khLuongThuc);
+                    List<KeHoachLuongThucDuTruRes> keHoachLuongThucDuTruResList = this.importKeHoachLuongThuc(khLuongThuc, mapDonVi);
                     response.setKhluongthuc(keHoachLuongThucDuTruResList);
                 }
             }
@@ -143,7 +152,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             if (numberOfSheet >= 2) {
                 Sheet khMuoi = workbook.getSheetAt(1);
                 if (khMuoi != null) {
-                    List<KeHoachMuoiDuTruRes> keHoachMuoiDuTruRes = this.importKeHoachMuoi(khMuoi);
+                    List<KeHoachMuoiDuTruRes> keHoachMuoiDuTruRes = this.importKeHoachMuoi(khMuoi, mapDonVi);
                     response.setKhMuoi(keHoachMuoiDuTruRes);
                 }
             }
@@ -151,7 +160,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             if (numberOfSheet >= 3) {
                 Sheet khVatTu = workbook.getSheetAt(2);
                 if (khVatTu != null) {
-                    List<KeHoachVatTuRes> keHoachVatTuRes = this.importKeHoachVatTu(khVatTu);
+                    List<KeHoachVatTuRes> keHoachVatTuRes = this.importKeHoachVatTu(khVatTu, mapDonVi);
                     response.setKhVatTu(keHoachVatTuRes);
                 }
             }
@@ -162,7 +171,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         return response;
     }
 
-    private List<KeHoachVatTuRes> importKeHoachVatTu(Sheet sheet) throws Exception {
+    private List<KeHoachVatTuRes> importKeHoachVatTu(Sheet sheet, Map<String, QlnvDmDonvi> mapDonVi) throws Exception {
 
 
         List<KeHoachVatTuRes> responses = new ArrayList<>();
@@ -179,6 +188,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         String currentKhuVuc = null;
 
         Map<Double, KeHoachVatTuRes> map = new HashMap<>();
+        int sttVattu = 1;
         for (Row currentRow : sheet) {
             if (count < DATA_ROW_INDEX) {
                 count++;
@@ -189,7 +199,6 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
             String khuVuc = getString(currentRow, KHU_VUC_INDEX);
-
             if (stt != null)
                 currentStt = stt;
 
@@ -208,22 +217,26 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             Double tkcnNhap4 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_4_INDEX);
 
             if (StringUtils.isEmpty(maHang)) {
-                KeHoachVatTuRes response = new KeHoachVatTuRes();
-                response.setTenDonVi(khuVuc);
-                List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
-                VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
-                vatTuThietBiRes.setTongNhap(tkcnTongSo);
-                vatTuThietBiRes.setTongCacNamTruoc(tkcnTong);
+                continue;
+            }
 
-                List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
-                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
-                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
-                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap3, tkcnNhap3, null));
-                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap4, tkcnNhap4, null));
-                vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
-
-                vatTuThietBi.add(vatTuThietBiRes);
-                responses.add(response);
+            if ("Cộng".equalsIgnoreCase(khuVuc)) {
+//                KeHoachVatTuRes response = new KeHoachVatTuRes();
+//                response.setTenDonVi(khuVuc);
+//                List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
+//                VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
+//                vatTuThietBiRes.setTongNhap(tkcnTongSo);
+//                vatTuThietBiRes.setTongCacNamTruoc(tkcnTong);
+//
+//                List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
+//                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
+//                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
+//                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap3, tkcnNhap3, null));
+//                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap4, tkcnNhap4, null));
+//                vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
+//
+//                vatTuThietBi.add(vatTuThietBiRes);
+//                responses.add(response);
                 break;
             }
 
@@ -236,6 +249,12 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setStt(currentStt != null ? currentStt.intValue() : null);
             response.setTenDonVi(currentKhuVuc);
 
+            QlnvDmDonvi donvi = mapDonVi.get(currentKhuVuc);
+            if (donvi == null)
+                throw new Exception("Đơn vị không tồn tại");
+            response.setDonViId(donvi.getId());
+            response.setMaDonVi(donvi.getMaDvi());
+
             List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
             VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
             vatTuThietBiRes.setMaVatTu(maHang);
@@ -243,6 +262,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             vatTuThietBiRes.setDonViTinh(donViTinh);
             vatTuThietBiRes.setTongNhap(tkcnTongSo);
             vatTuThietBiRes.setTongCacNamTruoc(tkcnTong);
+            vatTuThietBiRes.setStt(sttVattu);
             List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
@@ -251,6 +271,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
 
             vatTuThietBi.add(vatTuThietBiRes);
+            sttVattu++;
         }
 
         if (CollectionUtils.isEmpty(responses))
@@ -262,25 +283,44 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             throw new Exception("Vật tư không tồn tại");
 
         Set<QlnvDmVattu> qlnvDmVattus = qlnvDmVattuRepository.findByMaIn(maVatTus);
+        Set<String> maChas = qlnvDmVattus.stream().map(QlnvDmVattu::getMaCha).collect(Collectors.toSet());
+        qlnvDmVattus.addAll(qlnvDmVattuRepository.findByMaIn(maChas));
         Map<String, QlnvDmVattu> mapMaVatTu = qlnvDmVattus.stream().collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
+
         for (KeHoachVatTuRes res : responses) {
             List<VatTuThietBiRes> vatTuThietBiRes = res.getVatTuThietBi();
             for (VatTuThietBiRes vtRes : vatTuThietBiRes) {
                 if (StringUtils.isEmpty(vtRes.getMaVatTu()))
                     continue;
 
-                QlnvDmVattu qlnvDmVattu = mapMaVatTu.get(vtRes.getMaVatTu());
-                if (qlnvDmVattu == null)
+                QlnvDmVattu vattu = mapMaVatTu.get(vtRes.getMaVatTu());
+                if (vattu == null)
                     throw new Exception("Vật tư không tồn tại");
 
-                vtRes.setVatTuId(qlnvDmVattu.getId());
+                if (!StringUtils.isEmpty(vattu.getMaCha())) {
+                    QlnvDmVattu vattuCha = mapMaVatTu.get(vattu.getMaCha());
+                    if (vattuCha == null)
+                        throw new Exception("Vật tư không tồn tại");
+
+                    vtRes.setMaVatTuCha(vattuCha.getMa());
+                    vtRes.setVatTuChaId(vattuCha.getId());
+                    vtRes.setTenVatTuCha(vattuCha.getTen());
+                }
+
+                vtRes.setVatTuId(vattu.getId());
+                vtRes.setTenVatTu(vattu.getTen());
+                vtRes.setMaVatTu(vattu.getMa());
+
+                for (VatTuNhapRes vtNamTruocRes : vtRes.getCacNamTruoc()) {
+                    vtNamTruocRes.setVatTuId(vattu.getId());
+                }
             }
         }
 
         return responses;
     }
 
-    private List<KeHoachMuoiDuTruRes> importKeHoachMuoi(Sheet sheet) throws Exception {
+    private List<KeHoachMuoiDuTruRes> importKeHoachMuoi(Sheet sheet, Map<String, QlnvDmDonvi> mapDonVi) throws Exception {
         List<KeHoachMuoiDuTruRes> responses = new ArrayList<>();
         Row headerNam = sheet.getRow(MUOI_DATA_ROW_NHAP_INDEX);
         Integer tkdnNamMuoiNhap1 = getNamNhap(headerNam, TKDN_MUOI_NHAP_1_INDEX);
@@ -302,7 +342,10 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
 
-            String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
+            String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue().trim();
+            if ("Cộng".equalsIgnoreCase(khuvuc)) {
+                break;
+            }
             Double tkdnTongSoMuoi = getSoLuong(currentRow, TKDN_TONG_SO_MUOI_INDEX);
             Double tkdnMuoiNhap1 = getSoLuong(currentRow, TKDN_MUOI_NHAP_1_INDEX);
             Double tkdnMuoiNhap2 = getSoLuong(currentRow, TKDN_MUOI_NHAP_2_INDEX);
@@ -325,6 +368,12 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setXtnTongSoMuoi(xtnTongSoMuoi);
             response.setTkcnTongSoMuoi(tkcnTongSoMuoi);
 
+            QlnvDmDonvi donvi = mapDonVi.get(khuvuc);
+            if (donvi == null)
+                throw new Exception("Đơn vị không tồn tại");
+            response.setDonViId(donvi.getId());
+            response.setMaDonVi(donvi.getMaDvi());
+
             List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
             tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap1, tkdnMuoiNhap1, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
             tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap2, tkdnMuoiNhap2, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
@@ -343,7 +392,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         return responses;
     }
 
-    private List<KeHoachLuongThucDuTruRes> importKeHoachLuongThuc(Sheet sheet) throws Exception {
+    private List<KeHoachLuongThucDuTruRes> importKeHoachLuongThuc(Sheet sheet, Map<String, QlnvDmDonvi> mapDonVi) throws Exception {
         List<KeHoachLuongThucDuTruRes> responses = new ArrayList<>();
         Row headerNam = sheet.getRow(LUONG_THUC_DATA_ROW_NHAP_INDEX);
         Integer tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
@@ -371,10 +420,13 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
 
-            String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
+            String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue().trim();
+            if ("Cộng".equalsIgnoreCase(khuvuc)) {
+                break;
+            }
             Double tkdnTongSoQuyThoc = getSoLuong(currentRow, TKDN_TONG_SO_QUY_THOC_INDEX);
-            Double tkdnTongThoc = getSoLuong(currentRow, TKDN_TONG_THOC_INDEX);
 
+            Double tkdnTongThoc = getSoLuong(currentRow, TKDN_TONG_THOC_INDEX);
             Double tkdnThocNhap1 = getSoLuong(currentRow, TKDN_THOC_NHAP_1_INDEX);
             Double tkdnThocNhap2 = getSoLuong(currentRow, TKDN_THOC_NHAP_2_INDEX);
             Double tkdnThocNhap3 = getSoLuong(currentRow, TKDN_THOC_NHAP_3_INDEX);
@@ -406,7 +458,13 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setTenDonvi(khuvuc);
             response.setTkdnTongSoQuyThoc(tkdnTongSoQuyThoc);
             response.setTkdnTongThoc(tkdnTongThoc);
-            response.setTkcnTongGao(tkdnTongGao);
+            response.setTkdnTongGao(tkdnTongGao);
+
+            QlnvDmDonvi donvi = mapDonVi.get(khuvuc);
+            if (donvi == null)
+                throw new Exception("Đơn vị không tồn tại");
+            response.setDonViId(donvi.getId());
+            response.setMaDonVi(donvi.getMaDvi());
 
             List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
             tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, ChiTieuKeHoachNamServiceImpl.THOC_ID));

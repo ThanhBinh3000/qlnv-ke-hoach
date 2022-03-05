@@ -90,7 +90,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	@ApiOperation(value = "Import file kế hoạch lương thực", response = List.class)
 	@PostMapping(value = "/import", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Resp> detail(@RequestPart("file") MultipartFile file) {
+	public ResponseEntity<Resp> importKh(@RequestPart("file") MultipartFile file) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(importSv.importKeHoach(file));
