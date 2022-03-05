@@ -9,4 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long> {
+    ChiTieuKeHoachNam findByNamKeHoach(Integer namKh);
 }

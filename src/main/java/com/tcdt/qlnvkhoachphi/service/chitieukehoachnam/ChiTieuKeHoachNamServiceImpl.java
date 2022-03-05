@@ -36,6 +36,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -90,7 +91,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request.");
 
-		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
+		Integer namKeHoach = req.getNamKeHoach();
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoach(namKeHoach);
+		if (chiTieuKeHoachNam != null)
+			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
+
+		chiTieuKeHoachNam = new ChiTieuKeHoachNam();
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam);
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
@@ -133,9 +139,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private List<VatTuNhapQueryDTO> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList, Integer nameKeHoach) {
-		List<VatTuNhapQueryDTO> a=keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach -3, nameKeHoach - 1);
-		System.out.println();
-		return a;
+		return keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach -3, nameKeHoach - 1);
 	}
 
 	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList, Integer namKeHoach) {
@@ -601,6 +605,16 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			vatTuThietBiRes.setMaVatTu(vattu.getMa());
 			vatTuThietBiRes.setDonViTinh(keHoachVatTu.getDonViTinh());
 			vatTuThietBiRes.setNhapTrongNam(keHoachVatTu.getSoLuongNhap());
+
+			if (!StringUtils.isEmpty(vattu.getMaCha())) {
+				QlnvDmVattu vattuCha = vattuList.stream().filter(v -> v.getMa().equalsIgnoreCase(vattu.getMaCha())).findFirst().orElse(null);
+				if (vattuCha == null)
+					throw new Exception("Vật tư không tồn tại");
+
+				vatTuThietBiRes.setMaVatTuCha(vattuCha.getMa());
+				vatTuThietBiRes.setVatTuChaId(vattuCha.getId());
+				vatTuThietBiRes.setTenVatTuCha(vattuCha.getTen());
+			}
 			keHoachVatTuRes.getVatTuThietBi().add(vatTuThietBiRes);
 		}
 

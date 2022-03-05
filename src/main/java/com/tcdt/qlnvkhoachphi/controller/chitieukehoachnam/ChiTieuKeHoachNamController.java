@@ -65,6 +65,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 			resp.setStatusCode(Constants.RESP_FAIL);
 			resp.setMsg(e.getMessage());
 			log.error(e.getMessage());
+			log.error("error", e);
 		}
 		return ResponseEntity.ok(resp);
 	}
