@@ -35,7 +35,7 @@ public class ChiTieuKeHoachNamRes {
 	private Long nguoiPheDuyetId;
 	private String lyDoTuChoi;
 
-	private List<KeHoachLuongThucDuTruRes> keHoachLuongThuc = new ArrayList<>();
-	private List<KeHoachMuoiDuTruRes> keHoachMuoiDuTru = new ArrayList<>();
-	private List<KeHoachVatTuRes> keHoachVatTu = new ArrayList<>();
+	private List<KeHoachLuongThucDuTruRes> khLuongThuc = new ArrayList<>();
+	private List<KeHoachMuoiDuTruRes> khMuoiDuTru = new ArrayList<>();
+	private List<KeHoachVatTuRes> khVatTu = new ArrayList<>();
 }

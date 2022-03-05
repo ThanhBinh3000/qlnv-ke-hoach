@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -11,9 +12,14 @@ import java.util.List;
 public class KeHoachVatTuRes {
 	private Long id;
 	private Integer stt;
-	private Long cucId;
+	private Long donViId;
 	private String maDonVi;
-	private String cucDTNNKhuVuc;
+	private String tenDonVi;
 
 	private List<VatTuThietBiRes> vatTuThietBi = new ArrayList<>();
+
+	public List<VatTuThietBiRes> getVatTuThietBi() {
+		this.vatTuThietBi.sort(Comparator.comparing(VatTuThietBiRes::getStt));
+		return this.vatTuThietBi;
+	}
 }

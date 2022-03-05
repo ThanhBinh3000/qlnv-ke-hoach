@@ -19,8 +19,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
@@ -28,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Log4j2
-public class ImportServiceImpl implements ImportService {
+public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImportService {
 
     private static final int DATA_ROW_INDEX = 6;
     private static final int LUONG_THUC_DATA_ROW_NHAP_INDEX = 4;
@@ -211,7 +209,7 @@ public class ImportServiceImpl implements ImportService {
 
             if (StringUtils.isEmpty(maHang)) {
                 KeHoachVatTuRes response = new KeHoachVatTuRes();
-                response.setCucDTNNKhuVuc(khuVuc);
+                response.setTenDonVi(khuVuc);
                 List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
                 VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
                 vatTuThietBiRes.setTongNhap(tkcnTongSo);
@@ -236,7 +234,7 @@ public class ImportServiceImpl implements ImportService {
                 responses.add(response);
             }
             response.setStt(currentStt != null ? currentStt.intValue() : null);
-            response.setCucDTNNKhuVuc(currentKhuVuc);
+            response.setTenDonVi(currentKhuVuc);
 
             List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
             VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
@@ -321,7 +319,7 @@ public class ImportServiceImpl implements ImportService {
 
             KeHoachMuoiDuTruRes response = new KeHoachMuoiDuTruRes();
             response.setStt(stt != null ? stt.intValue() : null);
-            response.setCucDTNNKhuVuc(khuvuc);
+            response.setTenDonVi(khuvuc);
             response.setTkdnTongSoMuoi(tkdnTongSoMuoi);
             response.setNtnTongSoMuoi(ntnTongSoMuoi);
             response.setXtnTongSoMuoi(xtnTongSoMuoi);
@@ -405,7 +403,7 @@ public class ImportServiceImpl implements ImportService {
 
             KeHoachLuongThucDuTruRes response = new KeHoachLuongThucDuTruRes();
             response.setStt(stt != null ? stt.intValue() : null);
-            response.setCucDTNNKhuVuc(khuvuc);
+            response.setTenDonvi(khuvuc);
             response.setTkdnTongSoQuyThoc(tkdnTongSoQuyThoc);
             response.setTkdnTongThoc(tkdnTongThoc);
             response.setTkcnTongGao(tkdnTongGao);

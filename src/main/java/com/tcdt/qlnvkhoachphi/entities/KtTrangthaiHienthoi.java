@@ -27,7 +27,7 @@ public class KtTrangthaiHienthoi {
 	private String tenDonVi;
 	private String maVthh;
 	private String tenVthh;
-	private Double slHienthoi;
+	private Double slHienThoi;
 	private String nam;
 	private String donViTinhId;
 	private String tenDonViTinh;
