@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Log4j2
-public class ImportServiceImpl implements ImportService {
+public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImportService {
 
     private static final int DATA_ROW_INDEX = 6;
     private static final int LUONG_THUC_DATA_ROW_NHAP_INDEX = 4;
