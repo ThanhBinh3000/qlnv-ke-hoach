@@ -1,8 +1,6 @@
 package com.tcdt.qlnvkhoachphi.util.exporter;
 
 import com.tcdt.qlnvkhoachphi.entities.MergeCellObj;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.util.Constants;
@@ -119,28 +117,32 @@ public class CtkhnKeHoachVatTuExporter {
 			//cuc DTTNN khu vuc
 			ExcelUtils.createCell(row, colIndex++, line.getCucDTNNKhuVuc(), style, sheet);
 
-			//Mã hàng
-			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongSoMuoi(), style, sheet);
+			for (VatTuThietBiRes vatTuThietBiRes : line.getVatTuThietBi()) {
+				//Mã hàng
+				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
+			}
+
+
 			//mặt hàng
-			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
-			}
-
-			//Đơn vị tính
-			ExcelUtils.createCell(row, colIndex++, line.getNtnTongSoMuoi(), style, sheet);
-
-			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi(), style, sheet);
-
-			//Tổng
-			for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
-			}
-
-			//Chỉ tiêu nhập các năm khác chuyển sang
-			for (VatTuThietBiRes vatTuNhapRes : line.getVatTuThietBi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
-			}
+//			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
+//				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
+//			}
+//
+//			//Đơn vị tính
+//			ExcelUtils.createCell(row, colIndex++, line.getNtnTongSoMuoi(), style, sheet);
+//
+//			//Tổng số
+//			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi(), style, sheet);
+//
+//			//Tổng
+//			for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
+//				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
+//			}
+//
+//			//Chỉ tiêu nhập các năm khác chuyển sang
+//			for (VatTuThietBiRes vatTuNhapRes : line.getVatTuThietBi()) {
+//				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
+//			}
 
 		}
 	}
