@@ -39,7 +39,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Tạo mới Chỉ tiêu kế hoạch năm", response = List.class)
 	@PostMapping
-	public final ResponseEntity<Resp> create(@RequestBody ChiTieuKeHoachNamReq req) throws Exception {
+	public final ResponseEntity<Resp> create(@RequestBody ChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.create(req));

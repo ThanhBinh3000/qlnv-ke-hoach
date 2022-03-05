@@ -95,6 +95,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(Constants.MOI_TAO);
+		chiTieuKeHoachNam.setDonViId(userInfo.getDvql());
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		Long ctkhnId = chiTieuKeHoachNam.getId();
 
@@ -132,8 +133,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private List<VatTuNhapQueryDTO> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList, Integer nameKeHoach) {
-		List<VatTuNhapQueryDTO> vatTuNhapDTOs = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach -3, nameKeHoach - 1);
-		return vatTuNhapDTOs;
+		List<VatTuNhapQueryDTO> a=keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach -3, nameKeHoach - 1);
+		System.out.println();
+		return a;
 	}
 
 	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList, Integer namKeHoach) {
@@ -638,6 +640,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		});
 
 		List<VatTuNhapQueryDTO> vatTuNhapQueryDTOList = this.getKeHoachVatTuThietBiCacNamTruoc(vatTuIdList, chiTieuKeHoachNam.getNamKeHoach());
+		System.out.println();
 		khVatTuResList.forEach(k -> {
 			for (VatTuThietBiRes vatTu : k.getVatTuThietBi()) {
 				List<VatTuNhapQueryDTO> khntList = vatTuNhapQueryDTOList.stream()
