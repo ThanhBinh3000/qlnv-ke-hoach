@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoachphi.controller.chitieukehoachnam;
 import com.tcdt.qlnvkhoachphi.controller.BaseController;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.Resp;
 import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
@@ -43,7 +44,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	public final ResponseEntity<Resp> create(@RequestBody ChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
-			resp.setData(chiTieuKeHoachNamService.create(req));
+			resp.setData(chiTieuKeHoachNamService.createQd(req));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {
@@ -73,10 +74,10 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Sửa chỉ tiêu kế hoạch năm", response = List.class)
 	@PutMapping()
-	public final ResponseEntity<Resp> update(@RequestBody ChiTieuKeHoachNamReq req) {
+	public final ResponseEntity<Resp> updateQd(@RequestBody ChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
-			resp.setData(chiTieuKeHoachNamService.update(req));
+			resp.setData(chiTieuKeHoachNamService.updateQd(req));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {
@@ -87,7 +88,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 		return ResponseEntity.ok(resp);
 	}
 
-	@ApiOperation(value = "Import file kế hoạch lương thực", response = List.class)
+	@ApiOperation(value = "Import file kế hoạch lương thực, muối, vật tư", response = List.class)
 	@PostMapping(value = "/import", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Resp> importKh(@RequestPart("file") MultipartFile file) {
@@ -110,6 +111,55 @@ public class ChiTieuKeHoachNamController extends BaseController {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.updateStatus(req));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Tạo mới quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
+	@PostMapping("/quyet-dinh-dieu-chinh")
+	public final ResponseEntity<Resp> createQdDc(@RequestBody QdDcChiTieuKeHoachNamReq req) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.createQdDc(req));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Sửa quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
+	@PutMapping("/quyet-dinh-dieu-chinh")
+	public final ResponseEntity<Resp> updateQdDc(@RequestBody QdDcChiTieuKeHoachNamReq req) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.updateQdDc(req));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Import file điều chỉnh kế hoạch lương thực, muối, vật tư", response = List.class)
+	@PostMapping(value = "/quyet-dinh-dieu-chinh/import", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resp> importQdDc(@RequestPart("file") MultipartFile file) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(importSv.importKeHoach(file));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {

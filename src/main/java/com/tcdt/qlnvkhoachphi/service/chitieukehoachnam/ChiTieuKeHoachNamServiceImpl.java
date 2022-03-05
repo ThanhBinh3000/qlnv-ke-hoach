@@ -17,13 +17,9 @@ import com.tcdt.qlnvkhoachphi.repository.KtTrangthaiHienthoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
-import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
-import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachLuongThucDuTruReq;
-import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachMuoiDuTruReq;
-import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachNhapVatTuThietBiReq;
-import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.VatTuNhapReq;
-import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.VatTuThietBiReq;
+import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.*;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.QdDcChiTieuKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
@@ -86,7 +82,35 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public ChiTieuKeHoachNamRes create(ChiTieuKeHoachNamReq req) throws Exception {
+	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoach(req.getNamKeHoach());
+		if (chiTieuKeHoachNam != null)
+			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
+
+		return this.create(req, ChiTieuKeHoachEnum.QD.getValue(), null);
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public QdDcChiTieuKeHoachRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
+		Long qdGocId = req.getQdGocId();
+		Optional<ChiTieuKeHoachNam> optionalQdGoc = chiTieuKeHoachNamRepository.findById(qdGocId);
+		if (!optionalQdGoc.isPresent())
+			throw new Exception("Không tìm thấy quyết định gốc.");
+
+		ChiTieuKeHoachNam qdGoc = optionalQdGoc.get();
+		qdGoc.setLastest(false);
+		chiTieuKeHoachNamRepository.save(qdGoc);
+
+		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId());
+		ChiTieuKeHoachNamRes qd = this.create(req.getQd(), ChiTieuKeHoachEnum.QD.getValue(), qdGoc.getId());
+		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
+		response.setQdDc(qdDc);
+		response.setQd(qd);
+		return response;
+	}
+
+	private ChiTieuKeHoachNamRes create(ChiTieuKeHoachNamReq req, String loaiQd, Long qdGocId) throws Exception {
 		if (req == null)
 			return  null;
 
@@ -95,18 +119,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Bad request.");
 
 		Integer namKeHoach = req.getNamKeHoach();
-		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoach(namKeHoach);
-		if (chiTieuKeHoachNam != null)
-			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
-
-		chiTieuKeHoachNam = new ChiTieuKeHoachNam();
+		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam);
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.MOI_TAO.getId());
 		chiTieuKeHoachNam.setDonViId(userInfo.getDvql());
-		chiTieuKeHoachNam.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
+		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLastest(true);
+		chiTieuKeHoachNam.setQdGocId(qdGocId);
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		Long ctkhnId = chiTieuKeHoachNam.getId();
 
@@ -175,6 +196,23 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public ChiTieuKeHoachNamRes updateQd(ChiTieuKeHoachNamReq req) throws Exception {
+		return this.update(req);
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public QdDcChiTieuKeHoachRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
+
+		ChiTieuKeHoachNamRes qdDc = this.update(req.getQdDc());
+		ChiTieuKeHoachNamRes qd = this.update(req.getQd());
+		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
+		response.setQdDc(qdDc);
+		response.setQd(qd);
+		return response;
+	}
+
 	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req) throws Exception {
 		if (req == null)
 			return  null;

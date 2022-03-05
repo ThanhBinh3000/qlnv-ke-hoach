@@ -39,6 +39,7 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private String lyDoTuChoi;
 	private String loaiQuyetDinh;
 	private boolean lastest;
+	private Long qdGocId;
 
 	@Transient
 	private List<KeHoachLuongThucMuoi> khLuongThucList = new ArrayList<>();

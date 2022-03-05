@@ -27,4 +27,6 @@ public class ChiTieuKeHoachNamReq {
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruReq> khMuoi = new ArrayList<>();
 	private List<KeHoachNhapVatTuThietBiReq> khVatTu = new ArrayList<>();
+
+
 }
