@@ -40,12 +40,15 @@ import org.springframework.util.CollectionUtils;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
@@ -314,7 +317,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			if (id != null) {
 				keHoachVatTu = mapKhvt.get(id);
 				if (keHoachVatTu == null)
-					throw new Exception("Kế hoạch lương thực không tồn tại.");
+					throw new Exception("Kế hoạch nhập vật tư thiết bị không tồn tại.");
 
 				mapKhvt.remove(id);
 			}
