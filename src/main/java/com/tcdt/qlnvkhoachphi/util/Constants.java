@@ -134,6 +134,12 @@ public class Constants {
 		public static final String XUAT_TRONG_NAM = "Xuất trong năm";
 		public static final String TON_KHO_CUOI_NAM = "Tồn kho cuối năm";
 		public static final String TONG_SO = "Tổng số";
+		public static final String MA_HANG = "Mã hàng";
+		public static final String MAT_HANG = "Mặt hàng";
+		public static final String DON_VI_TINH = "Đơn vị tính";
+		public static final String CHI_TIEU_NHAP_CAC_NAM_KHAC_CHUYEN_SANG = "Chỉ tiêu nhập các năm khác chuyển sang";
+		public static final String KE_HOACH_NAM = "Kế hoạch\n%s";
+
 
 
 
