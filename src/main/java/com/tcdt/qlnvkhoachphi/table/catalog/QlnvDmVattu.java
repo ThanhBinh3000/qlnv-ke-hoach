@@ -31,6 +31,6 @@ public class QlnvDmVattu {
 	private String ten;
 	private String ma;
 	private String maCha;
-	private String donViTinh;
+	private String maDviTinh;
 	private String trangThai;
 }

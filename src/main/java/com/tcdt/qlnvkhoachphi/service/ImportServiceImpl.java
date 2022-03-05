@@ -1,23 +1,30 @@
 package com.tcdt.qlnvkhoachphi.service;
 
+import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ListKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
+import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamServiceImpl;
+import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
+import com.tcdt.qlnvkhoachphi.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -26,6 +33,9 @@ public class ImportServiceImpl implements ImportService {
     private static final int DATA_ROW_INDEX = 6;
     private static final int LUONG_THUC_DATA_ROW_NHAP_INDEX = 4;
     private static final int MUOI_DATA_ROW_NHAP_INDEX = 3;
+
+    private static final int VAT_TU_DATA_ROW_NHAP_INDEX = 3;
+    private static final int VAT_TU_DATA_ROW_NHAP_4_INDEX = 2;
 
     // Ke hoach luong thuc
     private static final Integer STT_INDEX = 0;
@@ -73,13 +83,28 @@ public class ImportServiceImpl implements ImportService {
 
     private static final Integer TKCN_TONG_SO_MUOI_INDEX = 13;
 
+    // Ke hoach vat tu
+    private static final Integer MA_HANG_INDEX = 2;
+    private static final Integer MAT_HANG_INDEX = 3;
+    private static final Integer DON_VI_TINH_INDEX = 4;
+    private static final Integer TKCN_TONG_SO_INDEX = 5;
+    private static final Integer TKCN_TONG_INDEX = 6;
+    private static final Integer TKCN_KE_HOACH_NHAP_1_INDEX = 7;
+    private static final Integer TKCN_KE_HOACH_NHAP_2_INDEX = 8;
+    private static final Integer TKCN_KE_HOACH_NHAP_3_INDEX = 9;
+    private static final Integer TKCN_KE_HOACH_NHAP_4_INDEX = 10;
+
+
+    @Autowired
+    private QlnvDmVattuRepository qlnvDmVattuRepository;
+
     private static Integer getNamNhap(Row row, Integer index) throws Exception {
         Cell cell = row.getCell(index, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
         if (cell == null)
             throw new Exception(String.format("Column %d error", index));
 
-        String value = cell.getStringCellValue().replaceAll(" ", "");
-        return Integer.valueOf(value.replace("Nhập\n", "").trim());
+        String value = cell.getStringCellValue();
+        return Integer.valueOf(StringHelper.extract(value, "(\\d{4})").trim());
     }
 
     private static Double getSoLuong(Row row, Integer index) throws Exception {
@@ -89,6 +114,17 @@ public class ImportServiceImpl implements ImportService {
             return 0d;
 
         return cell.getNumericCellValue();
+    }
+
+    private static String getString(Row row, Integer index) throws Exception {
+        Cell cell = row.getCell(index, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        if (cell == null)
+            return null;
+        DataFormatter dataFormatter = new DataFormatter();
+//        if (CellType.NUMERIC.equals(cell.getCellType())) {
+//            return String.valueOf((int) cell.getNumericCellValue()).trim();
+//        }
+        return dataFormatter.formatCellValue(cell);
     }
 
     @Override
@@ -117,7 +153,8 @@ public class ImportServiceImpl implements ImportService {
             if (numberOfSheet >= 3) {
                 Sheet khVatTu = workbook.getSheetAt(2);
                 if (khVatTu != null) {
-
+                    List<KeHoachVatTuRes> keHoachVatTuRes = this.importKeHoachVatTu(khVatTu);
+                    response.setKhVatTu(keHoachVatTuRes);
                 }
             }
         } catch (Exception e) {
@@ -127,288 +164,287 @@ public class ImportServiceImpl implements ImportService {
         return response;
     }
 
-    private List<KeHoachMuoiDuTruRes> importKeHoachMuoi(Sheet sheet) {
+    private List<KeHoachVatTuRes> importKeHoachVatTu(Sheet sheet) throws Exception {
+
+
+        List<KeHoachVatTuRes> responses = new ArrayList<>();
+        Row headerNam = sheet.getRow(VAT_TU_DATA_ROW_NHAP_INDEX);
+        Integer tkcnNamNhap1 = getNamNhap(headerNam, TKCN_KE_HOACH_NHAP_1_INDEX);
+        Integer tkcnNamNhap2 = getNamNhap(headerNam, TKCN_KE_HOACH_NHAP_2_INDEX);
+        Integer tkcnNamNhap3 = getNamNhap(headerNam, TKCN_KE_HOACH_NHAP_3_INDEX);
+
+        Row headerNam4 = sheet.getRow(VAT_TU_DATA_ROW_NHAP_4_INDEX);
+        Integer tkcnNamNhap4 = getNamNhap(headerNam4, TKCN_KE_HOACH_NHAP_4_INDEX);
+
+        int count = 0;
+        Double currentStt = null;
+        String currentKhuVuc = null;
+
+        Map<Double, KeHoachVatTuRes> map = new HashMap<>();
+        for (Row currentRow : sheet) {
+            if (count < DATA_ROW_INDEX) {
+                count++;
+                continue;
+            }
+            count++;
+
+            Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
+            String khuVuc = getString(currentRow, KHU_VUC_INDEX);
+
+            if (stt != null)
+                currentStt = stt;
+
+            if (!StringUtils.isEmpty(khuVuc))
+                currentKhuVuc = khuVuc;
+
+            String maHang = getString(currentRow, MA_HANG_INDEX);
+            String matHang = getString(currentRow, MAT_HANG_INDEX);
+            String donViTinh = getString(currentRow, DON_VI_TINH_INDEX);
+            Double tkcnTongSo = getSoLuong(currentRow, TKCN_TONG_SO_INDEX);
+            Double tkcnTong = getSoLuong(currentRow, TKCN_TONG_INDEX);
+
+            Double tkcnNhap1 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_1_INDEX);
+            Double tkcnNhap2 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_2_INDEX);
+            Double tkcnNhap3 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_3_INDEX);
+            Double tkcnNhap4 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_4_INDEX);
+
+            if (StringUtils.isEmpty(maHang)) {
+                KeHoachVatTuRes response = new KeHoachVatTuRes();
+                response.setCucDTNNKhuVuc(khuVuc);
+                List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
+                VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
+                vatTuThietBiRes.setTongNhap(tkcnTongSo);
+                vatTuThietBiRes.setTongCacNamTruoc(tkcnTong);
+
+                List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
+                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
+                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
+                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap3, tkcnNhap3, null));
+                cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap4, tkcnNhap4, null));
+                vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
+
+                vatTuThietBi.add(vatTuThietBiRes);
+                responses.add(response);
+                break;
+            }
+
+            KeHoachVatTuRes response = map.get(currentStt);
+            if (response == null) {
+                response = new KeHoachVatTuRes();
+                map.put(currentStt, response);
+                responses.add(response);
+            }
+            response.setStt(currentStt != null ? currentStt.intValue() : null);
+            response.setCucDTNNKhuVuc(currentKhuVuc);
+
+            List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
+            VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
+            vatTuThietBiRes.setMaVatTu(maHang);
+            vatTuThietBiRes.setTenVatTu(matHang);
+            vatTuThietBiRes.setDonViTinh(donViTinh);
+            vatTuThietBiRes.setTongNhap(tkcnTongSo);
+            vatTuThietBiRes.setTongCacNamTruoc(tkcnTong);
+            List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
+            cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
+            cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
+            cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap3, tkcnNhap3, null));
+            cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap4, tkcnNhap4, null));
+            vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
+
+            vatTuThietBi.add(vatTuThietBiRes);
+        }
+
+        if (CollectionUtils.isEmpty(responses))
+            return Collections.emptyList();
+
+        Set<String> maVatTus = responses.stream().flatMap(r -> r.getVatTuThietBi().stream())
+                .map(VatTuThietBiRes::getMaVatTu).collect(Collectors.toSet());
+        if (StringUtils.isEmpty(maVatTus))
+            throw new Exception("Vật tư không tồn tại");
+
+        Set<QlnvDmVattu> qlnvDmVattus = qlnvDmVattuRepository.findByMaIn(maVatTus);
+        Map<String, QlnvDmVattu> mapMaVatTu = qlnvDmVattus.stream().collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
+        for (KeHoachVatTuRes res : responses) {
+            List<VatTuThietBiRes> vatTuThietBiRes = res.getVatTuThietBi();
+            for (VatTuThietBiRes vtRes : vatTuThietBiRes) {
+                if (StringUtils.isEmpty(vtRes.getMaVatTu()))
+                    continue;
+
+                QlnvDmVattu qlnvDmVattu = mapMaVatTu.get(vtRes.getMaVatTu());
+                if (qlnvDmVattu == null)
+                    throw new Exception("Vật tư không tồn tại");
+
+                vtRes.setVatTuId(qlnvDmVattu.getId());
+            }
+        }
+
+        return responses;
+    }
+
+    private List<KeHoachMuoiDuTruRes> importKeHoachMuoi(Sheet sheet) throws Exception {
         List<KeHoachMuoiDuTruRes> responses = new ArrayList<>();
-        try {
-            Row headerNam = sheet.getRow(MUOI_DATA_ROW_NHAP_INDEX);
-            Integer tkdnNamMuoiNhap1 = getNamNhap(headerNam, TKDN_MUOI_NHAP_1_INDEX);
-            Integer tkdnNamMuoiNhap2 = getNamNhap(headerNam, TKDN_MUOI_NHAP_2_INDEX);
-            Integer tkdnNamMuoiNhap3 = getNamNhap(headerNam, TKDN_MUOI_NHAP_3_INDEX);
+        Row headerNam = sheet.getRow(MUOI_DATA_ROW_NHAP_INDEX);
+        Integer tkdnNamMuoiNhap1 = getNamNhap(headerNam, TKDN_MUOI_NHAP_1_INDEX);
+        Integer tkdnNamMuoiNhap2 = getNamNhap(headerNam, TKDN_MUOI_NHAP_2_INDEX);
+        Integer tkdnNamMuoiNhap3 = getNamNhap(headerNam, TKDN_MUOI_NHAP_3_INDEX);
 
-            Integer xtnNamMuoiNhap1 = getNamNhap(headerNam, XTN_MUOI_NHAP_1_INDEX);
-            Integer xtnNamMuoiNhap2 = getNamNhap(headerNam, XTN_MUOI_NHAP_2_INDEX);
-            Integer xtnNamMuoiNhap3 = getNamNhap(headerNam, XTN_MUOI_NHAP_3_INDEX);
+        Integer xtnNamMuoiNhap1 = getNamNhap(headerNam, XTN_MUOI_NHAP_1_INDEX);
+        Integer xtnNamMuoiNhap2 = getNamNhap(headerNam, XTN_MUOI_NHAP_2_INDEX);
+        Integer xtnNamMuoiNhap3 = getNamNhap(headerNam, XTN_MUOI_NHAP_3_INDEX);
 
-            int count = 0;
-            for (Row currentRow : sheet) {
-                if (count < DATA_ROW_INDEX) {
-                    count++;
-                    continue;
-                }
+        int count = 0;
+        for (Row currentRow : sheet) {
+            if (count < DATA_ROW_INDEX) {
                 count++;
-
-                Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-                Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
-
-                String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
-                Double tkdnTongSoMuoi = getSoLuong(currentRow, TKDN_TONG_SO_MUOI_INDEX);
-                Double tkdnMuoiNhap1 = getSoLuong(currentRow, TKDN_MUOI_NHAP_1_INDEX);
-                Double tkdnMuoiNhap2 = getSoLuong(currentRow, TKDN_MUOI_NHAP_2_INDEX);
-                Double tkdnMuoiNhap3 = getSoLuong(currentRow, TKDN_MUOI_NHAP_3_INDEX);
-
-                Double ntnTongSoMuoi = getSoLuong(currentRow, NTN_TONG_SO_MUOI_INDEX);
-
-                Double xtnTongSoMuoi = getSoLuong(currentRow, XTN_TONG_SO_MUOI_INDEX);
-                Double xtnMuoiNhap1 = getSoLuong(currentRow, XTN_MUOI_NHAP_1_INDEX);
-                Double xtnMuoiNhap2 = getSoLuong(currentRow, XTN_MUOI_NHAP_2_INDEX);
-                Double xtnMuoiNhap3 = getSoLuong(currentRow, XTN_MUOI_NHAP_3_INDEX);
-
-                Double tkcnTongSoMuoi = getSoLuong(currentRow, TKCN_TONG_SO_MUOI_INDEX);
-
-                KeHoachMuoiDuTruRes response = new KeHoachMuoiDuTruRes();
-                response.setStt(stt != null ? stt.intValue() : null);
-                response.setCucDTNNKhuVuc(khuvuc);
-                response.setTkdnTongSoMuoi(tkdnTongSoMuoi);
-                response.setNtnTongSoMuoi(ntnTongSoMuoi);
-                response.setXtnTongSoMuoi(xtnTongSoMuoi);
-                response.setTkcnTongSoMuoi(tkcnTongSoMuoi);
-
-                List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
-                tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap1, tkdnMuoiNhap1, null));
-                tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap2, tkdnMuoiNhap2, null));
-                tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap3, tkdnMuoiNhap3, null));
-                response.setTkdnMuoi(tkdnMuoi);
-
-                List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
-                xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap1, xtnMuoiNhap1, null));
-                xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap2, xtnMuoiNhap2, null));
-                xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap3, xtnMuoiNhap3, null));
-                response.setXtnMuoi(xtnMuoi);
-
-                responses.add(response);
+                continue;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            count++;
+
+            Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
+
+            String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
+            Double tkdnTongSoMuoi = getSoLuong(currentRow, TKDN_TONG_SO_MUOI_INDEX);
+            Double tkdnMuoiNhap1 = getSoLuong(currentRow, TKDN_MUOI_NHAP_1_INDEX);
+            Double tkdnMuoiNhap2 = getSoLuong(currentRow, TKDN_MUOI_NHAP_2_INDEX);
+            Double tkdnMuoiNhap3 = getSoLuong(currentRow, TKDN_MUOI_NHAP_3_INDEX);
+
+            Double ntnTongSoMuoi = getSoLuong(currentRow, NTN_TONG_SO_MUOI_INDEX);
+
+            Double xtnTongSoMuoi = getSoLuong(currentRow, XTN_TONG_SO_MUOI_INDEX);
+            Double xtnMuoiNhap1 = getSoLuong(currentRow, XTN_MUOI_NHAP_1_INDEX);
+            Double xtnMuoiNhap2 = getSoLuong(currentRow, XTN_MUOI_NHAP_2_INDEX);
+            Double xtnMuoiNhap3 = getSoLuong(currentRow, XTN_MUOI_NHAP_3_INDEX);
+
+            Double tkcnTongSoMuoi = getSoLuong(currentRow, TKCN_TONG_SO_MUOI_INDEX);
+
+            KeHoachMuoiDuTruRes response = new KeHoachMuoiDuTruRes();
+            response.setStt(stt != null ? stt.intValue() : null);
+            response.setCucDTNNKhuVuc(khuvuc);
+            response.setTkdnTongSoMuoi(tkdnTongSoMuoi);
+            response.setNtnTongSoMuoi(ntnTongSoMuoi);
+            response.setXtnTongSoMuoi(xtnTongSoMuoi);
+            response.setTkcnTongSoMuoi(tkcnTongSoMuoi);
+
+            List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
+            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap1, tkdnMuoiNhap1, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap2, tkdnMuoiNhap2, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap3, tkdnMuoiNhap3, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            response.setTkdnMuoi(tkdnMuoi);
+
+            List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
+            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap1, xtnMuoiNhap1, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap2, xtnMuoiNhap2, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap3, xtnMuoiNhap3, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            response.setXtnMuoi(xtnMuoi);
+
+            responses.add(response);
         }
+
         return responses;
     }
 
-    private List<KeHoachLuongThucDuTruRes> importKeHoachLuongThuc(Sheet sheet) {
+    private List<KeHoachLuongThucDuTruRes> importKeHoachLuongThuc(Sheet sheet) throws Exception {
         List<KeHoachLuongThucDuTruRes> responses = new ArrayList<>();
-        try {
-            Row headerNam = sheet.getRow(LUONG_THUC_DATA_ROW_NHAP_INDEX);
-            Integer tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
-            Integer tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
-            Integer tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
+        Row headerNam = sheet.getRow(LUONG_THUC_DATA_ROW_NHAP_INDEX);
+        Integer tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
+        Integer tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
+        Integer tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
 
-            Integer tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
-            Integer tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
+        Integer tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
+        Integer tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
 
-            Integer xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
-            Integer xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
-            Integer xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
+        Integer xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
+        Integer xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
+        Integer xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
 
-            Integer xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
-            Integer xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
+        Integer xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
+        Integer xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
 
-            int count = 0;
-            for (Row currentRow : sheet) {
-                if (count < DATA_ROW_INDEX) {
-                    count++;
-                    continue;
-                }
+        int count = 0;
+        for (Row currentRow : sheet) {
+            if (count < DATA_ROW_INDEX) {
                 count++;
-
-                Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-                Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
-
-                String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
-                Double tkdnTongSoQuyThoc = getSoLuong(currentRow, TKDN_TONG_SO_QUY_THOC_INDEX);
-                Double tkdnTongThoc = getSoLuong(currentRow, TKDN_TONG_THOC_INDEX);
-
-                Double tkdnThocNhap1 = getSoLuong(currentRow, TKDN_THOC_NHAP_1_INDEX);
-                Double tkdnThocNhap2 = getSoLuong(currentRow, TKDN_THOC_NHAP_2_INDEX);
-                Double tkdnThocNhap3 = getSoLuong(currentRow, TKDN_THOC_NHAP_3_INDEX);
-
-                Double tkdnTongGao = getSoLuong(currentRow, TKDN_TONG_GAO_INDEX);
-                Double tkdnGaoNhap1 = getSoLuong(currentRow, TKDN_GAO_NHAP_1_INDEX);
-                Double tkdnGaoNhap2 = getSoLuong(currentRow, TKDN_GAO_NHAP_2_INDEX);
-
-
-                Double ntnTongSoQuyThoc = getSoLuong(currentRow, NTN_TONG_SO_QUY_THOC_INDEX);
-                Double ntnThoc = getSoLuong(currentRow, NTN_THOC_INDEX);
-                Double ntnGao = getSoLuong(currentRow, NTN_GAO_INDEX);
-
-                Double xtnTongSoQuyThoc = getSoLuong(currentRow, XTN_TONG_SO_QUY_THOC_INDEX);
-                Double xtnTongThoc = getSoLuong(currentRow, XTN_TONG_THOC_INDEX);
-                Double xtnThocNhap1 = getSoLuong(currentRow, XTN_THOC_NHAP_1_INDEX);
-                Double xtnThocNhap2 = getSoLuong(currentRow, XTN_THOC_NHAP_2_INDEX);
-                Double xtnThocNhap3 = getSoLuong(currentRow, XTN_THOC_NHAP_3_INDEX);
-                Double xtnTongGao = getSoLuong(currentRow, XTN_TONG_GAO_INDEX);
-                Double xtnGaoNhap1 = getSoLuong(currentRow, XTN_GAO_NHAP_1_INDEX);
-                Double xtnGaoNhap2 = getSoLuong(currentRow, XTN_GAO_NHAP_2_INDEX);
-
-                Double tkcnTongSoQuyThoc = getSoLuong(currentRow, TKCN_TONG_SO_QUY_THOC_INDEX);
-                Double tkcnThoc = getSoLuong(currentRow, TKCN_THOC_INDEX);
-                Double tkcnGao = getSoLuong(currentRow, TKCN_GAO_INDEX);
-
-                KeHoachLuongThucDuTruRes response = new KeHoachLuongThucDuTruRes();
-                response.setStt(stt != null ? stt.intValue() : null);
-                response.setCucDTNNKhuVuc(khuvuc);
-                response.setTkdnTongSoQuyThoc(tkdnTongSoQuyThoc);
-                response.setTkdnTongThoc(tkdnTongThoc);
-                response.setTkcnTongGao(tkdnTongGao);
-
-                List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
-                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, null));
-                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, null));
-                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, null));
-                response.setTkdnThoc(tkdnThoc);
-
-                List<VatTuNhapRes> tkdnGao = new ArrayList<>();
-                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, null));
-                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, null));
-                response.setTkdnGao(tkdnGao);
-
-                response.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
-                response.setNtnThoc(ntnThoc);
-                response.setNtnGao(ntnGao);
-
-                response.setXtnTongSoQuyThoc(xtnTongSoQuyThoc);
-                response.setXtnTongThoc(xtnTongThoc);
-                response.setXtnTongGao(xtnTongGao);
-
-                List<VatTuNhapRes> xtnThoc = new ArrayList<>();
-                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, null));
-                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, null));
-                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, null));
-                response.setXtnThoc(xtnThoc);
-                List<VatTuNhapRes> xtnGao = new ArrayList<>();
-                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, null));
-                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, null));
-                response.setXtnGao(xtnGao);
-
-                response.setTkcnTongSoQuyThoc(tkcnTongSoQuyThoc);
-                response.setTkcnTongThoc(tkcnThoc);
-                response.setTkcnTongGao(tkcnGao);
-                responses.add(response);
+                continue;
             }
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
+            count++;
+
+            Cell sttCell = currentRow.getCell(STT_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
+
+            String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
+            Double tkdnTongSoQuyThoc = getSoLuong(currentRow, TKDN_TONG_SO_QUY_THOC_INDEX);
+            Double tkdnTongThoc = getSoLuong(currentRow, TKDN_TONG_THOC_INDEX);
+
+            Double tkdnThocNhap1 = getSoLuong(currentRow, TKDN_THOC_NHAP_1_INDEX);
+            Double tkdnThocNhap2 = getSoLuong(currentRow, TKDN_THOC_NHAP_2_INDEX);
+            Double tkdnThocNhap3 = getSoLuong(currentRow, TKDN_THOC_NHAP_3_INDEX);
+
+            Double tkdnTongGao = getSoLuong(currentRow, TKDN_TONG_GAO_INDEX);
+            Double tkdnGaoNhap1 = getSoLuong(currentRow, TKDN_GAO_NHAP_1_INDEX);
+            Double tkdnGaoNhap2 = getSoLuong(currentRow, TKDN_GAO_NHAP_2_INDEX);
+
+
+            Double ntnTongSoQuyThoc = getSoLuong(currentRow, NTN_TONG_SO_QUY_THOC_INDEX);
+            Double ntnThoc = getSoLuong(currentRow, NTN_THOC_INDEX);
+            Double ntnGao = getSoLuong(currentRow, NTN_GAO_INDEX);
+
+            Double xtnTongSoQuyThoc = getSoLuong(currentRow, XTN_TONG_SO_QUY_THOC_INDEX);
+            Double xtnTongThoc = getSoLuong(currentRow, XTN_TONG_THOC_INDEX);
+            Double xtnThocNhap1 = getSoLuong(currentRow, XTN_THOC_NHAP_1_INDEX);
+            Double xtnThocNhap2 = getSoLuong(currentRow, XTN_THOC_NHAP_2_INDEX);
+            Double xtnThocNhap3 = getSoLuong(currentRow, XTN_THOC_NHAP_3_INDEX);
+            Double xtnTongGao = getSoLuong(currentRow, XTN_TONG_GAO_INDEX);
+            Double xtnGaoNhap1 = getSoLuong(currentRow, XTN_GAO_NHAP_1_INDEX);
+            Double xtnGaoNhap2 = getSoLuong(currentRow, XTN_GAO_NHAP_2_INDEX);
+
+            Double tkcnTongSoQuyThoc = getSoLuong(currentRow, TKCN_TONG_SO_QUY_THOC_INDEX);
+            Double tkcnThoc = getSoLuong(currentRow, TKCN_THOC_INDEX);
+            Double tkcnGao = getSoLuong(currentRow, TKCN_GAO_INDEX);
+
+            KeHoachLuongThucDuTruRes response = new KeHoachLuongThucDuTruRes();
+            response.setStt(stt != null ? stt.intValue() : null);
+            response.setCucDTNNKhuVuc(khuvuc);
+            response.setTkdnTongSoQuyThoc(tkdnTongSoQuyThoc);
+            response.setTkdnTongThoc(tkdnTongThoc);
+            response.setTkcnTongGao(tkdnTongGao);
+
+            List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
+            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            response.setTkdnThoc(tkdnThoc);
+
+            List<VatTuNhapRes> tkdnGao = new ArrayList<>();
+            tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, ChiTieuKeHoachNamServiceImpl.GAO_ID));
+            tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, ChiTieuKeHoachNamServiceImpl.GAO_ID));
+            response.setTkdnGao(tkdnGao);
+
+            response.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
+            response.setNtnThoc(ntnThoc);
+            response.setNtnGao(ntnGao);
+
+            response.setXtnTongSoQuyThoc(xtnTongSoQuyThoc);
+            response.setXtnTongThoc(xtnTongThoc);
+            response.setXtnTongGao(xtnTongGao);
+
+            List<VatTuNhapRes> xtnThoc = new ArrayList<>();
+            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            response.setXtnThoc(xtnThoc);
+            List<VatTuNhapRes> xtnGao = new ArrayList<>();
+            xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, ChiTieuKeHoachNamServiceImpl.GAO_ID));
+            xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, ChiTieuKeHoachNamServiceImpl.GAO_ID));
+            response.setXtnGao(xtnGao);
+
+            response.setTkcnTongSoQuyThoc(tkcnTongSoQuyThoc);
+            response.setTkcnTongThoc(tkcnThoc);
+            response.setTkcnTongGao(tkcnGao);
+            responses.add(response);
         }
+
         return responses;
-    }
-
-    public static void main(String[] args) {
-        try {
-            FileInputStream excelFile = new FileInputStream(new File("D:\\Book1.xlsx"));
-            Workbook workbook = new XSSFWorkbook(excelFile);
-            Sheet workSheet = workbook.getSheetAt(0);
-            int dataIndexRow = 6;
-            int dataNhapIndexRow = 4;
-
-            Row headerNam = workSheet.getRow(dataNhapIndexRow);
-            Integer tkdnNamThocNhap1 = getNamNhap(headerNam, TKDN_THOC_NHAP_1_INDEX);
-            Integer tkdnNamThocNhap2 = getNamNhap(headerNam, TKDN_THOC_NHAP_2_INDEX);
-            Integer tkdnNamThocNhap3 = getNamNhap(headerNam, TKDN_THOC_NHAP_3_INDEX);
-
-            Integer tkdnNamGaoNhap1 = getNamNhap(headerNam, TKDN_GAO_NHAP_1_INDEX);
-            Integer tkdnNamGaoNhap2 = getNamNhap(headerNam, TKDN_GAO_NHAP_2_INDEX);
-
-            Integer xtnNamThocNhap1 = getNamNhap(headerNam, XTN_THOC_NHAP_1_INDEX);
-            Integer xtnNamThocNhap2 = getNamNhap(headerNam, XTN_THOC_NHAP_2_INDEX);
-            Integer xtnNamThocNhap3 = getNamNhap(headerNam, XTN_THOC_NHAP_3_INDEX);
-
-            Integer xtnNamGaoNhap1 = getNamNhap(headerNam, XTN_GAO_NHAP_1_INDEX);
-            Integer xtnNamGaoNhap2 = getNamNhap(headerNam, XTN_GAO_NHAP_2_INDEX);
-
-            List<KeHoachLuongThucDuTruRes> responses = new ArrayList<>();
-            int count = 0;
-            for (Row currentRow : workSheet) {
-                if (count < dataIndexRow) {
-                    count++;
-                    continue;
-                }
-                count++;
-
-                Cell sttCell = currentRow.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-                Double stt = sttCell != null ? sttCell.getNumericCellValue() : null;
-
-                String khuvuc = currentRow.getCell(KHU_VUC_INDEX, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue();
-                Double tkdnTongSoQuyThoc = getSoLuong(currentRow, TKDN_TONG_SO_QUY_THOC_INDEX);
-                Double tkdnTongThoc = getSoLuong(currentRow, TKDN_TONG_THOC_INDEX);
-
-                Double tkdnThocNhap1 = getSoLuong(currentRow, TKDN_THOC_NHAP_1_INDEX);
-                Double tkdnThocNhap2 = getSoLuong(currentRow, TKDN_THOC_NHAP_2_INDEX);
-                Double tkdnThocNhap3 = getSoLuong(currentRow, TKDN_THOC_NHAP_3_INDEX);
-
-                Double tkdnTongGao = getSoLuong(currentRow, TKDN_TONG_GAO_INDEX);
-                Double tkdnGaoNhap1 = getSoLuong(currentRow, TKDN_GAO_NHAP_1_INDEX);
-                Double tkdnGaoNhap2 = getSoLuong(currentRow, TKDN_GAO_NHAP_2_INDEX);
-
-
-                Double ntnTongSoQuyThoc = getSoLuong(currentRow, NTN_TONG_SO_QUY_THOC_INDEX);
-                Double ntnThoc = getSoLuong(currentRow, NTN_THOC_INDEX);
-                Double ntnGao = getSoLuong(currentRow, NTN_GAO_INDEX);
-
-                Double xtnTongSoQuyThoc = getSoLuong(currentRow, XTN_TONG_SO_QUY_THOC_INDEX);
-                Double xtnTongThoc = getSoLuong(currentRow, XTN_TONG_THOC_INDEX);
-                Double xtnThocNhap1 = getSoLuong(currentRow, XTN_THOC_NHAP_1_INDEX);
-                Double xtnThocNhap2 = getSoLuong(currentRow, XTN_THOC_NHAP_2_INDEX);
-                Double xtnThocNhap3 = getSoLuong(currentRow, XTN_THOC_NHAP_3_INDEX);
-                Double xtnTongGao = getSoLuong(currentRow, XTN_TONG_GAO_INDEX);
-                Double xtnGaoNhap1 = getSoLuong(currentRow, XTN_GAO_NHAP_1_INDEX);
-                Double xtnGaoNhap2 = getSoLuong(currentRow, XTN_GAO_NHAP_2_INDEX);
-
-                Double tkcnTongSoQuyThoc = getSoLuong(currentRow, TKCN_TONG_SO_QUY_THOC_INDEX);
-                Double tkcnThoc = getSoLuong(currentRow, TKCN_THOC_INDEX);
-                Double tkcnGao = getSoLuong(currentRow, TKCN_GAO_INDEX);
-
-                KeHoachLuongThucDuTruRes response = new KeHoachLuongThucDuTruRes();
-                response.setStt(stt != null ? stt.intValue() : null);
-                response.setCucDTNNKhuVuc(khuvuc);
-                response.setTkdnTongSoQuyThoc(tkdnTongSoQuyThoc);
-                response.setTkdnTongThoc(tkdnTongThoc);
-                response.setTkcnTongGao(tkdnTongGao);
-
-                List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
-                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, null));
-                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, null));
-                tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, null));
-                response.setTkdnThoc(tkdnThoc);
-
-                List<VatTuNhapRes> tkdnGao = new ArrayList<>();
-                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, null));
-                tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, null));
-                response.setTkdnGao(tkdnGao);
-
-                response.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
-                response.setNtnThoc(ntnThoc);
-                response.setNtnGao(ntnGao);
-
-                response.setXtnTongSoQuyThoc(xtnTongSoQuyThoc);
-                response.setXtnTongThoc(xtnTongThoc);
-                response.setXtnTongGao(xtnTongGao);
-
-                List<VatTuNhapRes> xtnThoc = new ArrayList<>();
-                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, null));
-                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, null));
-                xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, null));
-                response.setXtnThoc(xtnThoc);
-                List<VatTuNhapRes> xtnGao = new ArrayList<>();
-                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, null));
-                xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, null));
-                response.setXtnGao(xtnGao);
-
-                response.setTkcnTongSoQuyThoc(tkcnTongSoQuyThoc);
-                response.setTkcnTongThoc(tkcnThoc);
-                response.setTkcnTongGao(tkcnGao);
-                responses.add(response);
-            }
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

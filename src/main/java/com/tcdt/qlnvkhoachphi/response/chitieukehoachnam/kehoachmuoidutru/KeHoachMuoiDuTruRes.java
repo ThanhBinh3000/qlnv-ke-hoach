@@ -14,6 +14,7 @@ public class KeHoachMuoiDuTruRes {
     private Long id;
     private Integer stt;
     private Long cucId;
+    private String maDonVi;
     private String cucDTNNKhuVuc;
 
     // Ton kho dau nam

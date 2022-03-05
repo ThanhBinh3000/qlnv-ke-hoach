@@ -12,6 +12,7 @@ public class KeHoachVatTuRes {
 	private Long id;
 	private Integer stt;
 	private Long cucId;
+	private String maDonVi;
 	private String cucDTNNKhuVuc;
 
 	private List<VatTuThietBiRes> vatTuThietBi = new ArrayList<>();
