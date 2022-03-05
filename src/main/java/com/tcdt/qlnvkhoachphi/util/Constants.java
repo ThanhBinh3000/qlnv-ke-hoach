@@ -139,10 +139,13 @@ public class Constants {
 		public static final String DON_VI_TINH = "Đơn vị tính";
 		public static final String CHI_TIEU_NHAP_CAC_NAM_KHAC_CHUYEN_SANG = "Chỉ tiêu nhập các năm khác chuyển sang";
 		public static final String KE_HOACH_NAM = "Kế hoạch\n%s";
+	}
 
-
-
-
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public final class ExportDataType {
+		public static final String CHI_TIEU_LUONG_THUC = "luongThuc";
+		public static final String CHI_TIEU_MUOI = "muoi";
+		public static final String CHI_TIEU_VAT_TU = "vatTu";
 	}
 
 }

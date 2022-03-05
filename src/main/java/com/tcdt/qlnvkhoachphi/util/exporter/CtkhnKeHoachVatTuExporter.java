@@ -19,12 +19,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component
-public class CtkhnKeHoachVatTuExporter {
+public class CtkhnKeHoachVatTuExporter implements ExportService {
 	private int startRowIndex = 6;
 
+	@Override
 	public void export(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook
-				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_MUOI_DTNN);
+				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_NHAP_VT_TB);
 
 		writeHeaderLine(workbook, sheet);
 		writeDataLines(sheet, workbook);
@@ -51,7 +52,7 @@ public class CtkhnKeHoachVatTuExporter {
 		List<MergeCellObj> mergeCellHeaderRow = new LinkedList<>();
 
 		//STT
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.STT, 0,5, 0,0));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.STT, 0, 5, 0, 0));
 
 		//Cục DTTNN khu vực
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.CUC_DTNN_KHU_VUC, 0, 5, 1, 1));

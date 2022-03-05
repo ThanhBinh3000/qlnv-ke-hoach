@@ -53,18 +53,23 @@ public class ChiTieuKeHoachNamExportController extends BaseController {
 	}
 
 	@ApiOperation(value = "Export Chỉ tiêu kế hoạch năm ra excel", response = List.class)
-	@GetMapping(value = "/export", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/export", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public void exportToExcel(HttpServletResponse response) throws IOException {
-		response.setContentType("application/octet-stream");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+	public void exportToExcel(HttpServletResponse response,
+							  @RequestParam(required = false) List<String> type) throws IOException {
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
-		response.setHeader(headerKey, headerValue);
+		try {
+			response.setContentType("application/octet-stream");
+			DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+			String currentDateTime = dateFormatter.format(new Date());
 
-		chiTieuKeHoachNamExportSv.exportToExcel(response);
+			String headerKey = "Content-Disposition";
+			String headerValue = "attachment; filename=chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
+			response.setHeader(headerKey, headerValue);
+			chiTieuKeHoachNamExportSv.exportToExcel(response, type);
+		} catch (Exception e) {
+			log.error("Error can not export", e);
+		}
 
 	}
 
@@ -80,7 +85,7 @@ public class ChiTieuKeHoachNamExportController extends BaseController {
 		} catch (Exception e) {
 			resp.setStatusCode(Constants.RESP_FAIL);
 			resp.setMsg(e.getMessage());
-			log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ",e);
+			log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
 		}
 		return ResponseEntity.ok(resp);
 	}

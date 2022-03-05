@@ -6,9 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface ChiTieuKeHoachNamExportService {
-	Boolean exportToExcel (HttpServletResponse response);
+	Boolean exportToExcel (HttpServletResponse response, List<String> type);
 
 	Page<ChiTieuKeHoachNamRes> search (SearchChiTieuKeHoachNamReq req, Pageable pageable);
 }

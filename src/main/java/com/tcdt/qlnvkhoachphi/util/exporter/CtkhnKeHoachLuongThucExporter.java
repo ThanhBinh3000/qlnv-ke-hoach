@@ -13,15 +13,16 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@Component
-public class CtkhnKeHoachLuongThucExporter {
+@Service
+public class CtkhnKeHoachLuongThucExporter implements ExportService {
 	private int startRowIndex = 6;
 
+	@Override
 	public void export(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_LUONG_THUC_DTNN);

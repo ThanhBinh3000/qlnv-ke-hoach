@@ -19,9 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component
-public class CtkhnKeHoachMuoiExporter {
+public class CtkhnKeHoachMuoiExporter implements ExportService {
 	private int startRowIndex = 6;
 
+	@Override
 	public void export(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_MUOI_DTNN);
@@ -51,59 +52,59 @@ public class CtkhnKeHoachMuoiExporter {
 		List<MergeCellObj> mergeCellHeaderRow = new LinkedList<>();
 
 		//STT
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.STT, 0,5, 0,0));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.STT, 0, 5, 0, 0));
 
 		//Cục DTTNN khu vực
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.CUC_DTNN_KHU_VUC, 0, 5, 1, 1));
 
 		//--------------TỒN KHO ĐẦU NĂM
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.TON_KHO_DAU_NAM, 0,1, 2,5));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.TON_KHO_DAU_NAM, 0, 1, 2, 5));
 
 		//TỒN KHO ĐẦU NĂM: Tổng số
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2,5, 2,2));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2, 5, 2, 2));
 
 		//TỒN KHO ĐẦU NĂM: Trong đó
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TRONG_DO, 2,2, 3,5));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TRONG_DO, 2, 2, 3, 5));
 
 		//TỒN KHO ĐẦU NĂM: Nhập 2019
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 3,5, 3,3));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 3, 5, 3, 3));
 
 		//TỒN KHO ĐẦU NĂM: Nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 3,5, 4,4));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 3, 5, 4, 4));
 
 		//TỒN KHO ĐẦU NĂM: Nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 3,5, 5,5));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 3, 5, 5, 5));
 
 
 		//-------------------------NHẬP TRONG NĂM
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.NHAP_TRONG_NAM, 0,1, 6,8));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.NHAP_TRONG_NAM, 0, 1, 6, 8));
 
 		//NHẬP TRONG NĂM: Tổng số
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2,5, 6,8));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2, 5, 6, 8));
 
 
 		//--------------XUẤT TRONG NĂM
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.XUAT_TRONG_NAM, 0,1, 9,12));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.XUAT_TRONG_NAM, 0, 1, 9, 12));
 
 		//XUẤT TRONG NĂM: Tổng số
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2,5, 9,9));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2, 5, 9, 9));
 
 		//XUẤT TRONG NĂM: Trong đó
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TRONG_DO, 2,2, 10,12));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TRONG_DO, 2, 2, 10, 12));
 
 		//XUẤT TRONG NĂM: nhập 2019
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 3,5, 10,10));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 3, 5, 10, 10));
 
 		//XUẤT TRONG NĂM: nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 3,5, 11,11));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 3, 5, 11, 11));
 
 		//XUẤT TRONG NĂM: nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 3,5, 12,12));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 3, 5, 12, 12));
 
 		//TỒN KHO CUỐI NĂM------------------
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.TON_KHO_CUOI_NAM, 0,1, 13,15));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.TON_KHO_CUOI_NAM, 0, 1, 13, 15));
 
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2,5, 13,15));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TONG_SO, 2, 5, 13, 15));
 
 
 		for (MergeCellObj mergeCellObj : mergeCellHeaderRow) {
