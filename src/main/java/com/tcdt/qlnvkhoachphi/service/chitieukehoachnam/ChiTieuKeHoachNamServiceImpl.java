@@ -318,6 +318,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 												 Map<Long, KeHoachVatTu> mapKhvt) throws Exception {
 
 		List<KeHoachVatTu> keHoachVatTuList = new ArrayList<>();
+		Set<Long> removeIds = new HashSet<>();
 		for (VatTuThietBiReq vatTuReq : khVatTuReq.getVatTuThietBi()) {
 			KeHoachVatTu keHoachVatTu = new KeHoachVatTu();
 			keHoachVatTu.setTrangThai(Constants.MOI_TAO);
@@ -327,7 +328,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				if (keHoachVatTu == null)
 					throw new Exception("Kế hoạch nhập vật tư thiết bị không tồn tại.");
 
-				mapKhvt.remove(id);
+				removeIds.add(id);
 			}
 
 			keHoachVatTu.setSttDonVi(khVatTuReq.getStt());
@@ -342,6 +343,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			keHoachVatTuRepository.save(keHoachVatTu);
 			keHoachVatTuList.add(keHoachVatTu);
 		}
+
+		removeIds.forEach(mapKhvt::remove);
 		return keHoachVatTuList;
 	}
 
