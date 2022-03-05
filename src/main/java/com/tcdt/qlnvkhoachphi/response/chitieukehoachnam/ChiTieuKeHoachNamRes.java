@@ -20,6 +20,7 @@ public class ChiTieuKeHoachNamRes {
 	private Integer namKeHoach;
 	private String trichYeu;
 	private String trangThai;
+	private String tenTrangThai;
 	private Long donViId;
 	private LocalDate ngayGuiDuyet;
 	private Long nguoiGuiDuyetId;

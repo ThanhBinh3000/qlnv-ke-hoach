@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoachphi.controller.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoachphi.controller.BaseController;
+import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.Resp;
 import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamImportService;
@@ -93,6 +94,22 @@ public class ChiTieuKeHoachNamController extends BaseController {
 		Resp resp = new Resp();
 		try {
 			resp.setData(importSv.importKeHoach(file));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Gửi duyệt/Phê duyệt/Từ chối chỉ tiêu kế hoạch năm", response = List.class)
+	@PutMapping("/status")
+	public final ResponseEntity<Resp> updateStatus(@RequestBody StatusReq req) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.updateStatus(req));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {

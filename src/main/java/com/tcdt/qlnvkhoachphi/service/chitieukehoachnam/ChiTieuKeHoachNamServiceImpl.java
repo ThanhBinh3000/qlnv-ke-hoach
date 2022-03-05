@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoachphi.entities.KeHoachLuongThucMuoi;
 import com.tcdt.qlnvkhoachphi.entities.KeHoachVatTu;
 import com.tcdt.qlnvkhoachphi.entities.KeHoachXuatLuongThucMuoi;
 import com.tcdt.qlnvkhoachphi.entities.KtTrangthaiHienthoi;
+import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
 import com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoachphi.repository.KeHoachLuongThucMuoiRepository;
@@ -14,6 +15,7 @@ import com.tcdt.qlnvkhoachphi.repository.KeHoachXuatLuongThucMuoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.KtTrangthaiHienthoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
+import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachLuongThucDuTruReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachMuoiDuTruReq;
@@ -100,7 +102,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam);
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
-		chiTieuKeHoachNam.setTrangThai(Constants.MOI_TAO);
+		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.MOI_TAO.getId());
 		chiTieuKeHoachNam.setDonViId(userInfo.getDvql());
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		Long ctkhnId = chiTieuKeHoachNam.getId();
@@ -344,13 +346,26 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
-	public void approve(Long id) {
+	public boolean delete(Long id) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
 
-	}
+		Optional<ChiTieuKeHoachNam> optionalChiTieuKeHoachNam = chiTieuKeHoachNamRepository.findById(id);
+		if (!optionalChiTieuKeHoachNam.isPresent())
+			throw new Exception("Không tìm thấy dữ liệu.");
 
-	@Override
-	public void delete(Long id) {
+		ChiTieuKeHoachNam chiTieuKeHoachNam = optionalChiTieuKeHoachNam.get();
 
+		List<KeHoachLuongThucMuoi> keHoachLuongThucMuoiList = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
+		List<KeHoachXuatLuongThucMuoi> keHoachXuatLuongThucMuoiList = keHoachXuatLuongThucMuoiRepository.findByKeHoachIdIn(keHoachLuongThucMuoiList.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toList()));
+		keHoachXuatLuongThucMuoiRepository.deleteAll(keHoachXuatLuongThucMuoiList);
+		keHoachLuongThucMuoiRepository.deleteAll(keHoachLuongThucMuoiList);
+		List<KeHoachVatTu> keHoachVatTuList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
+		keHoachVatTuRepository.deleteAll(keHoachVatTuList);
+		chiTieuKeHoachNamRepository.delete(chiTieuKeHoachNam);
+
+		return true;
 	}
 
 	@Override
@@ -382,6 +397,48 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return buildDetailResponse(ctkhn);
 	}
 
+	@Override
+	public boolean updateStatus(StatusReq req) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
+
+		Optional<ChiTieuKeHoachNam> optionalChiTieuKeHoachNam = chiTieuKeHoachNamRepository.findById(req.getId());
+		if (!optionalChiTieuKeHoachNam.isPresent())
+			throw new Exception("Không tìm thấy dữ liệu.");
+
+		ChiTieuKeHoachNam chiTieuKeHoachNam = optionalChiTieuKeHoachNam.get();
+		String trangThai = chiTieuKeHoachNam.getTrangThai();
+		if (ChiTieuKeHoachNamStatus.CHO_DUYET.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatus.MOI_TAO.getId().equals(trangThai))
+				return false;
+
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.CHO_DUYET.getId());
+			chiTieuKeHoachNam.setNguoiGuiDuyetId(userInfo.getId());
+			chiTieuKeHoachNam.setNgayGuiDuyet(LocalDate.now());
+
+		} else if (ChiTieuKeHoachNamStatus.DA_DUYET.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatus.CHO_DUYET.getId().equals(trangThai))
+				return false;
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.DA_DUYET.getId());
+			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
+			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
+		} else if (ChiTieuKeHoachNamStatus.TU_CHOI.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatus.CHO_DUYET.getId().equals(trangThai))
+				return false;
+
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.TU_CHOI.getId());
+			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
+			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
+			chiTieuKeHoachNam.setLyDoTuChoi(req.getLyDoTuChoi());
+		} else {
+			throw new Exception("Bad request.");
+		}
+
+		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
+		return true;
+	}
+
 	public ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam) throws Exception {
 
 		ChiTieuKeHoachNamRes response = new ChiTieuKeHoachNamRes();
@@ -391,6 +448,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setNgayHieuLuc(chiTieuKeHoachNam.getNgayHieuLuc());
 		response.setNgayKy(chiTieuKeHoachNam.getNgayKy());
 		response.setTrangThai(chiTieuKeHoachNam.getTrangThai());
+		response.setTenTrangThai(ChiTieuKeHoachNamStatus.getTenById(chiTieuKeHoachNam.getTrangThai()));
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
