@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class VatTuThietBiReq {
+	private Integer stt;
 	private String donViTinh;
 	private Long vatTuId;
 	private Long vatTuChaId;

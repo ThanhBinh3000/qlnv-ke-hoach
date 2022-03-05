@@ -9,9 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class KeHoachNhapVatTuThietBiReq {
+	private Integer stt;
 	private Long id;
-	private Long cucId;
-	private String cucDTNNKhuVuc;
+	private Long donViId;
+	private String tenDonVi;
 
-	List<VatTuThietBiReq> vatTuThietBi = new ArrayList<>();
+	private List<VatTuThietBiReq> vatTuThietBi = new ArrayList<>();
 }

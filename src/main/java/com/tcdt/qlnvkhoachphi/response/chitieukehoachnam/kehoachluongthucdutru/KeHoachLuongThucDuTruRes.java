@@ -14,11 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class KeHoachLuongThucDuTruRes {
-	private Long id;
+	private Long khGaoId;
+	private Long khThocId;
 	private Integer stt;
-	private Long cucId;
+	private Long donViId;
 	private String maDonVi;
-	private String cucDTNNKhuVuc;
+	private String tenDonvi;
 
 	// Ton kho dau nam
 	private Double tkdnTongSoQuyThoc;

@@ -9,9 +9,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class  KeHoachLuongThucDuTruReq {
-	private Long id;
-	private Long cucId;
-	private String cucDTNNKhuVuc;
+	private Integer stt;
+	private Long khGaoId;
+	private Long khThocId;
+	private Long donViId;
+	private String tenDonVi;
 	private String donViTinh;
 
 	// Nhap trong nam

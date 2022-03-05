@@ -6,13 +6,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -21,7 +19,8 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChiTieuKeHoachNam extends BaseEntity {
+public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
+	private static final long serialVersionUID = 6093365068005372524L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHI_TIEU_KE_HOACH_NAM_SEQ")
 	@SequenceGenerator(sequenceName = "CHI_TIEU_KE_HOACH_NAM_SEQ", allocationSize = 1, name = "CHI_TIEU_KE_HOACH_NAM_SEQ")
@@ -38,4 +37,14 @@ public class ChiTieuKeHoachNam extends BaseEntity {
 	private LocalDate ngayPheDuyet;
 	private Long nguoiPheDuyetId;
 	private String lyDoTuChoi;
+
+
+	@Transient
+	private List<KeHoachLuongThucMuoi> khLuongThucList = new ArrayList<>();
+
+	@Transient
+	private List<KeHoachLuongThucMuoi> khMuoiList = new ArrayList<>();
+
+	@Transient
+	private List<KeHoachVatTu> khVatTuList = new ArrayList<>();
 }

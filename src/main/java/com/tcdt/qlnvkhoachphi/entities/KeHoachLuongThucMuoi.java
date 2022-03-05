@@ -3,24 +3,21 @@ package com.tcdt.qlnvkhoachphi.entities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "KE_HOACH_LUONG_THUC_MUOI")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeHoachLuongThucMuoi extends BaseEntity {
+public class KeHoachLuongThucMuoi implements Serializable {
+	private static final long serialVersionUID = 2406112053711573456L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KE_HOACH_LUONG_THUC_MUOI_SEQ")
 	@SequenceGenerator(sequenceName = "KE_HOACH_LUONG_THUC_MUOI_SEQ", allocationSize = 1, name = "KE_HOACH_LUONG_THUC_MUOI_SEQ")
@@ -32,4 +29,8 @@ public class KeHoachLuongThucMuoi extends BaseEntity {
 	private Double soLuongNhap;
 	private String donViTinh;
 	private String trangThai;
+	private Integer stt;
+
+	@Transient
+	private List<KeHoachXuatLuongThucMuoi> khxltms = new ArrayList<>();
 }

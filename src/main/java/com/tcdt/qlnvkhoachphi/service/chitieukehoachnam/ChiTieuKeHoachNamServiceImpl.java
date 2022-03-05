@@ -6,7 +6,7 @@ import com.tcdt.qlnvkhoachphi.entities.KeHoachLuongThucMuoi;
 import com.tcdt.qlnvkhoachphi.entities.KeHoachVatTu;
 import com.tcdt.qlnvkhoachphi.entities.KeHoachXuatLuongThucMuoi;
 import com.tcdt.qlnvkhoachphi.entities.KtTrangthaiHienthoi;
-import com.tcdt.qlnvkhoachphi.query.dto.KeHoachNamTruoc;
+import com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoachphi.repository.KeHoachLuongThucMuoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.KeHoachVatTuRepository;
@@ -36,16 +36,16 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
@@ -93,84 +93,288 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(Constants.MOI_TAO);
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
+		Long ctkhnId = chiTieuKeHoachNam.getId();
 
-		Long chiTieuId = chiTieuKeHoachNam.getId();
-		for (KeHoachLuongThucDuTruReq keHoachLuongThucDuTruReq : req.getKeHoachLuongThucDuTru()) {
-			KeHoachLuongThucMuoi keHoachGao = new KeHoachLuongThucMuoi();
-			keHoachGao.setTrangThai(Constants.MOI_TAO);
-			keHoachGao.setNguoiTaoId(userInfo.getId());
-			keHoachGao.setNgayTao(LocalDate.now());
-			keHoachGao.setCtkhnId(chiTieuId);
-			keHoachGao.setDonViId(keHoachLuongThucDuTruReq.getCucId());
-			keHoachGao.setVatTuId(GAO_ID);
-			Double soLuongNhapGao = keHoachLuongThucDuTruReq.getNtnGao() == null ? 0 : keHoachLuongThucDuTruReq.getNtnGao();
-			keHoachGao.setSoLuongNhap(soLuongNhapGao);
-			keHoachGao.setDonViTinh(keHoachLuongThucDuTruReq.getDonViTinh());
-			keHoachLuongThucMuoiRepository.save(keHoachGao);
-
-			List<KeHoachXuatLuongThucMuoi> keHoachXuatGaoList = this.buildKeHoachXuat(keHoachGao.getId(), keHoachLuongThucDuTruReq.getXtnGao());
-			if (!CollectionUtils.isEmpty(keHoachXuatGaoList))
-				keHoachXuatLuongThucMuoiRepository.saveAll(keHoachXuatGaoList);
-
-			KeHoachLuongThucMuoi keHoachThoc = new KeHoachLuongThucMuoi();
-			keHoachThoc.setTrangThai(Constants.MOI_TAO);
-			keHoachThoc.setNguoiTaoId(userInfo.getId());
-			keHoachThoc.setNgayTao(LocalDate.now());
-			keHoachThoc.setCtkhnId(chiTieuId);
-			keHoachThoc.setDonViId(keHoachLuongThucDuTruReq.getCucId());
-			keHoachThoc.setVatTuId(THOC_ID);
-			Double soLuongNhapThoc = keHoachLuongThucDuTruReq.getNtnThoc() == null ? 0 : keHoachLuongThucDuTruReq.getNtnThoc();
-			keHoachThoc.setSoLuongNhap(soLuongNhapThoc);
-			keHoachThoc.setDonViTinh(keHoachLuongThucDuTruReq.getDonViTinh());
-			keHoachLuongThucMuoiRepository.save(keHoachThoc);
-
-			List<KeHoachXuatLuongThucMuoi> keHoachXuatThocList = this.buildKeHoachXuat(keHoachThoc.getId(), keHoachLuongThucDuTruReq.getXtnThoc());
-			if (!CollectionUtils.isEmpty(keHoachXuatThocList))
-				keHoachXuatLuongThucMuoiRepository.saveAll(keHoachXuatThocList);
-		}
-
-		for (KeHoachMuoiDuTruReq keHoachMuoiDuTruReq : req.getKeHoachMuoiDuTru()) {
-			KeHoachLuongThucMuoi keHoachMuoi = new KeHoachLuongThucMuoi();
-			keHoachMuoi.setTrangThai(Constants.MOI_TAO);
-			keHoachMuoi.setNguoiTaoId(userInfo.getId());
-			keHoachMuoi.setNgayTao(LocalDate.now());
-			keHoachMuoi.setCtkhnId(chiTieuId);
-			keHoachMuoi.setDonViId(keHoachMuoiDuTruReq.getCucId());
-			keHoachMuoi.setVatTuId(MUOI_ID);
-			Double soLuongNhap = keHoachMuoiDuTruReq.getNhapTrongNam() == null ? 0 : keHoachMuoiDuTruReq.getNhapTrongNam();
-			keHoachMuoi.setSoLuongNhap(soLuongNhap);
-			keHoachMuoi.setDonViTinh(keHoachMuoiDuTruReq.getDonViTinh());
-			keHoachLuongThucMuoiRepository.save(keHoachMuoi);
-
-			List<KeHoachXuatLuongThucMuoi> keHoachXuatMuoiList = this.buildKeHoachXuat(keHoachMuoi.getId(), keHoachMuoiDuTruReq.getXuatTrongNam());
-			if (!CollectionUtils.isEmpty(keHoachXuatMuoiList))
-				keHoachXuatLuongThucMuoiRepository.saveAll(keHoachXuatMuoiList);
-		}
-
+		List<KeHoachLuongThucMuoi> keHoachThocGaoList = new ArrayList<>();
+		List<KeHoachLuongThucMuoi> keHoachMuoiList = new ArrayList<>();
 		List<KeHoachVatTu> keHoachVatTuList = new ArrayList<>();
-		for (KeHoachNhapVatTuThietBiReq keHoachNhapVatTuThietBiReq : req.getKeHoachNhapVatTuThietBi()) {
-			for (VatTuThietBiReq nhapVatTuThietBiReq : keHoachNhapVatTuThietBiReq.getVatTuThietBi()) {
-				KeHoachVatTu keHoachVatTu = new KeHoachVatTu();
-				keHoachVatTu.setTrangThai(Constants.MOI_TAO);
-				keHoachVatTu.setNguoiTaoId(userInfo.getId());
-				keHoachVatTu.setNgayTao(LocalDate.now());
-				keHoachVatTu.setCtkhnId(chiTieuId);
-				keHoachVatTu.setDonViId(keHoachNhapVatTuThietBiReq.getCucId());
-				keHoachVatTu.setDonViTinh(nhapVatTuThietBiReq.getDonViTinh());
-				keHoachVatTu.setSoLuongNhap(nhapVatTuThietBiReq.getNhapTrongNam());
-				keHoachVatTu.setVatTuId(nhapVatTuThietBiReq.getVatTuId());
-				keHoachVatTu.setVatTuChaId(nhapVatTuThietBiReq.getVatTuChaId());
-				keHoachVatTuList.add(keHoachVatTu);
-			}
+		for (KeHoachLuongThucDuTruReq khltReq : req.getKhLuongThuc()) {
+			KeHoachLuongThucMuoi khGao = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, GAO_ID, khltReq.getNtnGao(), null, new HashMap<>());
+			List<KeHoachXuatLuongThucMuoi> khXuatGaoList = this.saveListKeHoachXuat(khGao.getId(), khltReq.getXtnGao(), new HashMap<>());
+			khGao.setKhxltms(khXuatGaoList);
+
+			KeHoachLuongThucMuoi khThoc = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, THOC_ID, khltReq.getNtnThoc(), null, new HashMap<>());
+			List<KeHoachXuatLuongThucMuoi> khXuatThocList = this.saveListKeHoachXuat(khThoc.getId(), khltReq.getXtnThoc(), new HashMap<>());
+			khThoc.setKhxltms(khXuatThocList);
+
+			keHoachThocGaoList.add(khGao);
+			keHoachThocGaoList.add(khThoc);
 		}
 
-		if (!CollectionUtils.isEmpty(keHoachVatTuList))
-			keHoachVatTuRepository.saveAll(keHoachVatTuList);
+		for (KeHoachMuoiDuTruReq khMuoiReq : req.getKhMuoi()) {
+			KeHoachLuongThucMuoi khMuoi = this.saveKeHoachMuoi(khMuoiReq, userInfo, ctkhnId, new HashMap<>());
+			List<KeHoachXuatLuongThucMuoi> khXuatMuoiList = this.saveListKeHoachXuat(khMuoi.getId(), khMuoiReq.getXuatTrongNam(), new HashMap<>());
+			khMuoi.setKhxltms(khXuatMuoiList);
+			keHoachMuoiList.add(khMuoi);
+		}
 
+		for (KeHoachNhapVatTuThietBiReq khvtReq : req.getKhVatTu()) {
+			keHoachVatTuList.addAll(this.saveListKeHoachVatTu(khvtReq, userInfo, ctkhnId, new HashMap<>()));
+		}
+
+		chiTieuKeHoachNam.setKhLuongThucList(keHoachThocGaoList);
+		chiTieuKeHoachNam.setKhMuoiList(keHoachMuoiList);
+		chiTieuKeHoachNam.setKhVatTuList(keHoachVatTuList);
 		return this.buildDetailResponse(chiTieuKeHoachNam);
 	}
 
-	private ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam) {
+	private List<VatTuNhapQueryDTO> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList, Integer nameKeHoach) {
+		List<VatTuNhapQueryDTO> vatTuNhapDTOs = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach -3, nameKeHoach - 1);
+		return vatTuNhapDTOs;
+	}
+
+	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList, Integer namKeHoach) {
+		List<String> namList = new ArrayList<>();
+		for (int i = 1; i <= 3; i++ ) {
+			namList.add(String.valueOf(namKeHoach - i));
+		}
+		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, vatTuIdList, namList);
+
+		List<TonKhoDauNamRes> tonKhoDauNamResList = new ArrayList<>();
+		for (KtTrangthaiHienthoi trangthaiHienthoi : trangthaiHienthoiList) {
+			TonKhoDauNamRes res = tonKhoDauNamResList.stream().filter(t -> trangthaiHienthoi.getMaDonVi().equals(t.getMaDonVi()) && trangthaiHienthoi.getMaVthh().equals(t.getMaVatTu())).findFirst().orElse(null);
+			if (res == null) {
+				res = new TonKhoDauNamRes();
+				res.setMaDonVi(trangthaiHienthoi.getMaDonVi());
+				res.setTenDonVi(trangthaiHienthoi.getTenDonVi());
+				res.setMaVatTu(trangthaiHienthoi.getMaVthh());
+				tonKhoDauNamResList.add(res);
+			}
+
+			VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
+			vatTuNhapRes.setNam(Integer.valueOf(trangthaiHienthoi.getNam()));
+			vatTuNhapRes.setSoLuong(trangthaiHienthoi.getSlHienThoi());
+			res.getTonKho().add(vatTuNhapRes);
+		}
+
+		return tonKhoDauNamResList;
+	}
+
+	@Override
+	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req) throws Exception {
+		if (req == null)
+			return  null;
+
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
+
+		Optional<ChiTieuKeHoachNam> optional = chiTieuKeHoachNamRepository.findById(req.getId());
+		if (!optional.isPresent())
+			throw new Exception("Chỉ tiêu kế hoạch năm không tồn tại");
+
+		ChiTieuKeHoachNam ctkhn = optional.get();
+		Long ctkhnId = ctkhn.getId();
+
+		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(ctkhn.getId());
+
+		// Key: khId, value : KeHoachLuongThucMuoi
+		Map<Long, KeHoachLuongThucMuoi> mapKhltm = keHoachLuongThucMuois
+				.stream().collect(Collectors.toMap(KeHoachLuongThucMuoi::getId, Function.identity()));
+
+		// Key: khxId, value : KeHoachXuatLuongThucMuoi
+		Map<Long, KeHoachXuatLuongThucMuoi> mapKhxltm = new HashMap<>();
+		Set<Long> khLthmIds = keHoachLuongThucMuois.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toSet());
+		if (!CollectionUtils.isEmpty(khLthmIds)) {
+			List<KeHoachXuatLuongThucMuoi> keHoachXuatLuongThucMuois = keHoachXuatLuongThucMuoiRepository.findByKeHoachIdIn(khLthmIds);
+			mapKhxltm = keHoachXuatLuongThucMuois.stream().collect(Collectors.toMap(KeHoachXuatLuongThucMuoi::getId, Function.identity()));
+		}
+
+		for (KeHoachLuongThucDuTruReq khltReq : req.getKhLuongThuc()) {
+			Long gaoId = khltReq.getKhGaoId();
+			KeHoachLuongThucMuoi khGao = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, GAO_ID, khltReq.getNtnGao(), gaoId, mapKhltm);
+			this.saveListKeHoachXuat(khGao.getId(), khltReq.getXtnGao(), mapKhxltm);
+
+			Long thocId = khltReq.getKhThocId();
+			KeHoachLuongThucMuoi khThoc = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, THOC_ID, khltReq.getNtnThoc(), thocId, mapKhltm);
+			this.saveListKeHoachXuat(khThoc.getId(), khltReq.getXtnThoc(), mapKhxltm);
+		}
+
+		for (KeHoachMuoiDuTruReq khMuoiReq : req.getKhMuoi()) {
+			KeHoachLuongThucMuoi khMuoi = this.saveKeHoachMuoi(khMuoiReq, userInfo, ctkhnId, mapKhltm);
+			this.saveListKeHoachXuat(khMuoi.getId(), khMuoiReq.getXuatTrongNam(), mapKhxltm);
+		}
+
+		List<KeHoachVatTu> keHoachVatTus = keHoachVatTuRepository.findByCtkhnId(ctkhn.getId());
+		// Key: khId, value : KeHoachVatTu
+		Map<Long, KeHoachVatTu> mapKhvt = keHoachVatTus
+				.stream().collect(Collectors.toMap(KeHoachVatTu::getId, Function.identity()));
+
+		for (KeHoachNhapVatTuThietBiReq khvtReq : req.getKhVatTu()) {
+			this.saveListKeHoachVatTu(khvtReq, userInfo, ctkhnId, mapKhvt);
+		}
+
+		if (!CollectionUtils.isEmpty(mapKhxltm.values()))
+			keHoachXuatLuongThucMuoiRepository.deleteAll(mapKhxltm.values());
+
+		if (!CollectionUtils.isEmpty(mapKhltm.values()))
+			keHoachLuongThucMuoiRepository.deleteAll(mapKhltm.values());
+
+		if (!CollectionUtils.isEmpty(mapKhvt.values()))
+			keHoachVatTuRepository.deleteAll(mapKhvt.values());
+
+		return null;
+	}
+
+	private KeHoachLuongThucMuoi saveKeHoachLuongThuc(KeHoachLuongThucDuTruReq khltReq, UserInfo userInfo, Long ctkhnId,
+													  Long vatuId, Double ntnSoLuong, Long id, Map<Long, KeHoachLuongThucMuoi> mapKhltm) throws Exception {
+
+		KeHoachLuongThucMuoi keHoachLuongThucMuoi = new KeHoachLuongThucMuoi();
+		keHoachLuongThucMuoi.setTrangThai(Constants.MOI_TAO);
+		if (id != null) {
+			keHoachLuongThucMuoi = mapKhltm.get(id);
+			if (keHoachLuongThucMuoi == null)
+				throw new Exception("Kế hoạch lương thực không tồn tại.");
+		}
+
+		keHoachLuongThucMuoi.setStt(khltReq.getStt());
+		keHoachLuongThucMuoi.setCtkhnId(ctkhnId);
+		keHoachLuongThucMuoi.setDonViId(khltReq.getDonViId());
+		keHoachLuongThucMuoi.setVatTuId(vatuId);
+		Double soLuongNhap = ntnSoLuong == null ? 0 : ntnSoLuong;
+		keHoachLuongThucMuoi.setSoLuongNhap(soLuongNhap);
+		keHoachLuongThucMuoi.setDonViTinh(khltReq.getDonViTinh());
+		mapKhltm.remove(id);
+		return keHoachLuongThucMuoiRepository.save(keHoachLuongThucMuoi);
+	}
+
+	private List<KeHoachXuatLuongThucMuoi> saveListKeHoachXuat(Long keHoachId,
+															   List<VatTuNhapReq> vatTuNhapReqList,
+															   Map<Long, KeHoachXuatLuongThucMuoi> mapKhxltm) throws Exception {
+		List<KeHoachXuatLuongThucMuoi> keHoachXuatList = new ArrayList<>();
+
+		for (VatTuNhapReq vatTuNhapReq : vatTuNhapReqList) {
+			Long id = vatTuNhapReq.getId();
+			KeHoachXuatLuongThucMuoi khxltm = new KeHoachXuatLuongThucMuoi();
+
+			if (id != null) {
+				khxltm = mapKhxltm.get(id);
+				if (khxltm == null)
+					throw new Exception("Kế hoạch xuất lương thực muối không tồn tại.");
+				mapKhxltm.remove(id);
+			}
+
+			khxltm.setKeHoachId(keHoachId);
+			Double soLuongXuat = vatTuNhapReq.getSoLuong() == null ? 0 : vatTuNhapReq.getSoLuong();
+			khxltm.setSoLuongXuat(soLuongXuat);
+			khxltm.setNamKeHoach(vatTuNhapReq.getNam());
+			keHoachXuatList.add(khxltm);
+		}
+
+		if (!CollectionUtils.isEmpty(keHoachXuatList))
+			keHoachXuatLuongThucMuoiRepository.saveAll(keHoachXuatList);
+
+		return keHoachXuatList;
+	}
+
+	private KeHoachLuongThucMuoi saveKeHoachMuoi(KeHoachMuoiDuTruReq khMuoiReq, UserInfo userInfo, Long ctkhnId,
+													  Map<Long, KeHoachLuongThucMuoi> mapKhltm) throws Exception {
+
+		KeHoachLuongThucMuoi keHoachLuongThucMuoi = new KeHoachLuongThucMuoi();
+		keHoachLuongThucMuoi.setTrangThai(Constants.MOI_TAO);
+		Long id = khMuoiReq.getId();
+		if (id != null) {
+			keHoachLuongThucMuoi = mapKhltm.get(id);
+			if (keHoachLuongThucMuoi == null)
+				throw new Exception("Kế hoạch lương thực không tồn tại.");
+
+			mapKhltm.remove(id);
+		}
+
+		keHoachLuongThucMuoi.setStt(khMuoiReq.getStt());
+		keHoachLuongThucMuoi.setCtkhnId(ctkhnId);
+		keHoachLuongThucMuoi.setDonViId(khMuoiReq.getDonViId());
+		keHoachLuongThucMuoi.setVatTuId(MUOI_ID);
+		Double soLuongNhap = khMuoiReq.getNhapTrongNam() == null ? 0 : khMuoiReq.getNhapTrongNam();
+		keHoachLuongThucMuoi.setSoLuongNhap(soLuongNhap);
+		keHoachLuongThucMuoi.setDonViTinh(khMuoiReq.getDonViTinh());
+
+		keHoachLuongThucMuoiRepository.save(keHoachLuongThucMuoi);
+		return keHoachLuongThucMuoi;
+	}
+
+	private List<KeHoachVatTu> saveListKeHoachVatTu(KeHoachNhapVatTuThietBiReq khVatTuReq, UserInfo userInfo, Long ctkhnId,
+												 Map<Long, KeHoachVatTu> mapKhvt) throws Exception {
+
+		List<KeHoachVatTu> keHoachVatTuList = new ArrayList<>();
+		for (VatTuThietBiReq vatTuReq : khVatTuReq.getVatTuThietBi()) {
+			KeHoachVatTu keHoachVatTu = new KeHoachVatTu();
+			keHoachVatTu.setTrangThai(Constants.MOI_TAO);
+			Long id = khVatTuReq.getId();
+			if (id != null) {
+				keHoachVatTu = mapKhvt.get(id);
+				if (keHoachVatTu == null)
+					throw new Exception("Kế hoạch lương thực không tồn tại.");
+
+				mapKhvt.remove(id);
+			}
+
+			keHoachVatTu.setSttDonVi(khVatTuReq.getStt());
+			keHoachVatTu.setCtkhnId(ctkhnId);
+			keHoachVatTu.setDonViId(khVatTuReq.getDonViId());
+
+			keHoachVatTu.setSttVatTu(vatTuReq.getStt());
+			keHoachVatTu.setDonViTinh(vatTuReq.getDonViTinh());
+			keHoachVatTu.setSoLuongNhap(vatTuReq.getNhapTrongNam());
+			keHoachVatTu.setVatTuId(vatTuReq.getVatTuId());
+			keHoachVatTu.setVatTuChaId(vatTuReq.getVatTuChaId());
+			keHoachVatTuRepository.save(keHoachVatTu);
+			keHoachVatTuList.add(keHoachVatTu);
+		}
+		return keHoachVatTuList;
+	}
+
+	@Override
+	public void approve(Long id) {
+
+	}
+
+	@Override
+	public void delete(Long id) {
+
+	}
+
+	@Override
+	public ChiTieuKeHoachNamRes detail(Long id) throws Exception {
+		Optional<ChiTieuKeHoachNam> optional = chiTieuKeHoachNamRepository.findById(id);
+		if (!optional.isPresent())
+			throw new Exception("Chỉ tiêu kế hoạch năm không tồn tại");
+
+		ChiTieuKeHoachNam ctkhn = optional.get();
+
+		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(ctkhn.getId());
+		List<KeHoachVatTu> keHoachVatTus = keHoachVatTuRepository.findByCtkhnId(ctkhn.getId());
+
+		// Key: khId, value : List<KeHoachXuatLuongThucMuoi>
+		Map<Long, List<KeHoachXuatLuongThucMuoi>> mapKhxltm = new HashMap<>();
+		Set<Long> khLthmIds = keHoachLuongThucMuois.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toSet());
+		if (!CollectionUtils.isEmpty(khLthmIds)) {
+			List<KeHoachXuatLuongThucMuoi> keHoachXuatLuongThucMuois = keHoachXuatLuongThucMuoiRepository.findByKeHoachIdIn(khLthmIds);
+			mapKhxltm = keHoachXuatLuongThucMuois.stream().collect(Collectors.groupingBy(KeHoachXuatLuongThucMuoi::getKeHoachId));
+		}
+
+		for (KeHoachLuongThucMuoi keHoachLuongThucMuoi : keHoachLuongThucMuois) {
+			keHoachLuongThucMuoi.setKhxltms(mapKhxltm.get(keHoachLuongThucMuoi.getId()));
+		}
+
+		ctkhn.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> GAO_ID.equals(kh.getVatTuId()) || THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
+		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
+		ctkhn.setKhVatTuList(keHoachVatTus);
+		return buildDetailResponse(ctkhn);
+	}
+
+	public ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam) throws Exception {
+
 		ChiTieuKeHoachNamRes response = new ChiTieuKeHoachNamRes();
 		response.setId(chiTieuKeHoachNam.getId());
 		response.setNamKeHoach(chiTieuKeHoachNam.getNamKeHoach());
@@ -178,18 +382,28 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setNgayHieuLuc(chiTieuKeHoachNam.getNgayHieuLuc());
 		response.setNgayKy(chiTieuKeHoachNam.getNgayKy());
 		response.setTrangThai(chiTieuKeHoachNam.getTrangThai());
+		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 
-		List<KeHoachLuongThucMuoi> keHoachLuongThucMuoiList = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
-		List<KeHoachVatTu> keHoachVatTuList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
-		List<KeHoachLuongThucDuTruRes> keHoachLuongThucDuTruResList = new ArrayList<>();
-		List<KeHoachMuoiDuTruRes> keHoachMuoiDuTruResList = new ArrayList<>();
+		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
+		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();
+		List<KeHoachVatTu> keHoachVatTuList = chiTieuKeHoachNam.getKhVatTuList();
 
 		Set<Long> donViIdSet = new HashSet<>();
 		Set<Long> vatTuIdSet = new HashSet<>();
+
 		List<String> maDviLtm = new ArrayList<>();
 		List<String> maVatTuLtm = new ArrayList<>();
 
-		keHoachLuongThucMuoiList.forEach(k -> {
+		maVatTuLtm.add(MUOI_MA_VT);
+		maVatTuLtm.add(GAO_MA_VT);
+		maVatTuLtm.add(THOC_MA_VT);
+
+		keHoachLuongThucList.forEach(k -> {
+			if (k.getDonViId() != null)
+				donViIdSet.add(k.getDonViId());
+		});
+
+		keHoachMuoiList.forEach(k -> {
 			if (k.getDonViId() != null)
 				donViIdSet.add(k.getDonViId());
 		});
@@ -208,116 +422,187 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			if (k.getVatTuChaId() != null)
 				vatTuIdSet.add(k.getVatTuChaId());
 		});
-		List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAllById(donViIdSet));
-		List<QlnvDmDonvi> dmDonviList = Lists.newArrayList(qlnvDmDonviRepository.findAllById(vatTuIdSet));
 
-		int sttLt = 1;
-		int sttMuoi = 1;
-		int sttVattu = 1;
-		for (KeHoachLuongThucMuoi keHoachLuongThucMuoi : keHoachLuongThucMuoiList) {
-			KeHoachLuongThucDuTruRes res = keHoachLuongThucDuTruResList.stream().filter(r -> r.getCucId().equals(keHoachLuongThucMuoi.getDonViId())).findFirst().orElse(null);
+		List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAllById(vatTuIdSet));
+		List<QlnvDmDonvi> dmDonviList = Lists.newArrayList(qlnvDmDonviRepository.findAllById(donViIdSet));
+
+		Map<Long, QlnvDmVattu> mapVatTu = vattuList.stream().collect(Collectors.toMap(QlnvDmVattu::getId, Function.identity()));
+		Map<Long, QlnvDmDonvi> mapDonVi = dmDonviList.stream().collect(Collectors.toMap(QlnvDmDonvi::getId, Function.identity()));
+
+		// THOC GAO
+		List<KeHoachLuongThucDuTruRes> khLtResList = new ArrayList<>();
+		for (KeHoachLuongThucMuoi keHoachLuongThucMuoi : keHoachLuongThucList) {
+			Long vatTuId = keHoachLuongThucMuoi.getVatTuId();
+			if (MUOI_ID.equals(vatTuId))
+				continue;
+
+			KeHoachLuongThucDuTruRes res = khLtResList.stream()
+					.filter(kh -> kh.getDonViId().equals(keHoachLuongThucMuoi.getDonViId()))
+					.findFirst().orElse(null);
 
 			if (res == null) {
 				res = new KeHoachLuongThucDuTruRes();
-				QlnvDmDonvi donVi = dmDonviList.stream().filter(d -> d.getId().equals(keHoachLuongThucMuoi.getDonViId())).findFirst().orElse(null);
-				String tenDonVi = null;
-				String maDonVi = null;
-				if (donVi != null) {
-					tenDonVi = donVi.getTenDvi();
-					maDonVi = donVi.getMaDvi();
-					res.setMaDonVi(donVi.getMaDvi());
-				}
-				if (!StringUtils.isEmpty(maDonVi)) {
-					maDviLtm.add(maDonVi);
-				}
-
-				res.setId(keHoachLuongThucMuoi.getId());
-				res.setCucId(keHoachLuongThucMuoi.getDonViId());
-				res.setCucDTNNKhuVuc(tenDonVi);
+				khLtResList.add(res);
 			}
 
-			List<KeHoachXuatLuongThucMuoi> keHoachXuatLuongThucMuoiList = keHoachXuatLuongThucMuoiRepository.findByKeHoachId(keHoachLuongThucMuoi.getId());
-			List<VatTuNhapRes> vatTuList = new ArrayList<>();
-			Double tongXuat = 0D;
-			for (KeHoachXuatLuongThucMuoi keHoachXuatLuongThucMuoi : keHoachXuatLuongThucMuoiList) {
-				VatTuNhapRes vatTu = new VatTuNhapRes();
-				vatTu.setNam(keHoachXuatLuongThucMuoi.getNamKeHoach());
-				vatTu.setSoLuong(keHoachXuatLuongThucMuoi.getSoLuongXuat());
-				vatTu.setId(keHoachXuatLuongThucMuoi.getId());
-				vatTuList.add(vatTu);
-				tongXuat += vatTu.getSoLuong();
-			}
-			res.setXtnTongSoQuyThoc(tongXuat);
+			res.setStt(keHoachLuongThucMuoi.getStt());
+			QlnvDmDonvi donVi = mapDonVi.get(keHoachLuongThucMuoi.getDonViId());
+			if (donVi == null)
+				throw new Exception("Đơn vị không tồn tại");
 
-			if (GAO_ID.equals(keHoachLuongThucMuoi.getVatTuId())) {
+
+			// set donvi
+			res.setDonViId(donVi.getId());
+			res.setTenDonvi(donVi.getTenDvi());
+			res.setMaDonVi(donVi.getMaDvi());
+			maDviLtm.add(donVi.getMaDvi());
+
+			// Nhap trong nam
+			double ntnTongSoQuyThoc = Optional.ofNullable(res.getNtnTongSoQuyThoc()).orElse(0d);
+			if (GAO_ID.equals(vatTuId)) {
 				res.setNtnGao(keHoachLuongThucMuoi.getSoLuongNhap());
-				res.setXtnGao(vatTuList);
-				res.setStt(sttLt++);
-				// To do: set gaoId
-			} else if (THOC_ID.equals(keHoachLuongThucMuoi.getVatTuId())) {
+				ntnTongSoQuyThoc = ntnTongSoQuyThoc + (keHoachLuongThucMuoi.getSoLuongNhap() * 2);
+				res.setKhGaoId(keHoachLuongThucMuoi.getId());
+			} else if (THOC_ID.equals(vatTuId)) {
 				res.setNtnThoc(keHoachLuongThucMuoi.getSoLuongNhap());
-				res.setXtnThoc(vatTuList);
-				res.setStt(sttLt++);
-				// To do: set thocId
-			} else if (MUOI_ID.equals(keHoachLuongThucMuoi.getVatTuId())) {
-				KeHoachMuoiDuTruRes muoiDuTruRes = keHoachMuoiDuTruResList.stream().filter(r -> r.getCucId().equals(keHoachLuongThucMuoi.getDonViId())).findFirst().orElse(null);
-				if (muoiDuTruRes == null)
-					muoiDuTruRes = new KeHoachMuoiDuTruRes();
-				muoiDuTruRes.setId(keHoachLuongThucMuoi.getId());
-				muoiDuTruRes.setCucId(keHoachLuongThucMuoi.getDonViId());
-				muoiDuTruRes.setNtnTongSoMuoi(keHoachLuongThucMuoi.getSoLuongNhap());
-				muoiDuTruRes.setStt(sttMuoi++);
-				keHoachMuoiDuTruResList.add(muoiDuTruRes);
-				continue;
+				ntnTongSoQuyThoc = ntnTongSoQuyThoc + keHoachLuongThucMuoi.getSoLuongNhap();
+				res.setKhThocId(keHoachLuongThucMuoi.getId());
+			}
+			res.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
+
+			// Xuat Trong nam
+			List<KeHoachXuatLuongThucMuoi> khxltms = keHoachLuongThucMuoi.getKhxltms();
+			double xtnTongSoQuyThoc = Optional.ofNullable(res.getXtnTongSoQuyThoc()).orElse(0d);
+			double xtnTongThoc = Optional.ofNullable(res.getXtnTongThoc()).orElse(0d);
+			double xtnTongGao = Optional.ofNullable(res.getXtnTongGao()).orElse(0d);
+
+			List<VatTuNhapRes> xtnGao = new ArrayList<>();
+			List<VatTuNhapRes> xtnThoc = new ArrayList<>();
+
+			for (KeHoachXuatLuongThucMuoi khxltm : khxltms) {
+				VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
+				vatTuNhapRes.setId(khxltm.getId());
+				vatTuNhapRes.setNam(khxltm.getNamKeHoach());
+				vatTuNhapRes.setSoLuong(khxltm.getSoLuongXuat());
+				vatTuNhapRes.setVatTuId(vatTuId);
+				if (GAO_ID.equals(vatTuId)) {
+					xtnGao.add(vatTuNhapRes);
+					xtnTongGao = xtnTongGao + khxltm.getSoLuongXuat();
+					xtnTongSoQuyThoc = xtnTongSoQuyThoc + (khxltm.getSoLuongXuat() * 2);
+				} else if (THOC_ID.equals(vatTuId)) {
+					xtnThoc.add(vatTuNhapRes);
+					xtnTongThoc = xtnTongThoc + khxltm.getSoLuongXuat();
+					xtnTongSoQuyThoc = xtnTongSoQuyThoc + khxltm.getSoLuongXuat();
+				}
 			}
 
-			keHoachLuongThucDuTruResList.add(res);
+			if (!CollectionUtils.isEmpty(xtnGao)) {
+				res.setXtnGao(xtnGao);
+			}
+
+			if (!CollectionUtils.isEmpty(xtnThoc)) {
+				res.setXtnThoc(xtnThoc);
+			}
+
+			res.setXtnTongSoQuyThoc(xtnTongSoQuyThoc);
+			res.setXtnTongThoc(xtnTongThoc);
+			res.setXtnTongGao(xtnTongGao);
 		}
 
-		List<KeHoachVatTuRes> keHoachVatTuResList = new ArrayList<>();
-		for (KeHoachVatTu keHoachVatTu : keHoachVatTuList) {
-			KeHoachVatTuRes keHoachVatTuRes = keHoachVatTuResList.stream().filter(k -> k.getCucId().equals(keHoachVatTu.getDonViId())).findFirst().orElse(null);
-			if (keHoachVatTuRes == null) {
-				QlnvDmDonvi donVi = dmDonviList.stream().filter(d -> d.getId().equals(keHoachVatTu.getDonViId())).findFirst().orElse(null);
-				String tenDvi = donVi == null ? null : donVi.getTenDvi();
-				String maDvi = donVi == null ? null : donVi.getMaDvi();
-				keHoachVatTuRes = new KeHoachVatTuRes();
-				keHoachVatTuRes.setId(keHoachVatTu.getId());
-				keHoachVatTuRes.setMaDonVi(maDvi);
-				keHoachVatTuRes.setCucId(keHoachVatTuRes.getCucId());
-				keHoachVatTuRes.setCucDTNNKhuVuc(tenDvi);
-				keHoachVatTuRes.setStt(sttVattu++);
+		// Muoi
+		List<KeHoachMuoiDuTruRes> khMuoiResList = new ArrayList<>();
+		for (KeHoachLuongThucMuoi keHoachLuongThucMuoi : keHoachMuoiList) {
+			Long vatTuId = keHoachLuongThucMuoi.getVatTuId();
+			if (!MUOI_ID.equals(vatTuId))
+				continue;
+
+			KeHoachMuoiDuTruRes res = khMuoiResList.stream()
+					.filter(kh -> kh.getDonViId().equals(keHoachLuongThucMuoi.getDonViId()))
+					.findFirst().orElse(null);
+
+			if (res == null) {
+				res = new KeHoachMuoiDuTruRes();
+				khMuoiResList.add(res);
 			}
 
-			QlnvDmVattu vattu = vattuList.stream().filter(v -> v.getId().equals(keHoachVatTu.getVatTuId())).findFirst().orElse(null);
-			String tenVattu = vattu == null ? null : vattu.getTen();
-			QlnvDmVattu vattuCha = vattuList.stream().filter(v -> v.getId().equals(keHoachVatTu.getVatTuChaId())).findFirst().orElse(null);
-			String tenVattuCha = vattuCha == null ? null : vattuCha.getTen();
+			res.setId(keHoachLuongThucMuoi.getId());
+			res.setStt(keHoachLuongThucMuoi.getStt());
+			QlnvDmDonvi donVi = mapDonVi.get(keHoachLuongThucMuoi.getDonViId());
+			if (donVi == null)
+				throw new Exception("Đơn vị không tồn tại");
 
+			// set donvi
+			res.setDonViId(donVi.getId());
+			res.setTenDonVi(donVi.getTenDvi());
+			res.setMaDonVi(donVi.getMaDvi());
+			maDviLtm.add(donVi.getMaDvi());
+
+			// Nhap trong nam
+			res.setNtnTongSoMuoi(keHoachLuongThucMuoi.getSoLuongNhap());
+
+			// Xuat Trong nam
+			List<KeHoachXuatLuongThucMuoi> khxltms = keHoachLuongThucMuoi.getKhxltms();
+			double xtnTongSoMuoi = Optional.ofNullable(res.getXtnTongSoMuoi()).orElse(0d);
+
+			List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
+
+			for (KeHoachXuatLuongThucMuoi khxltm : khxltms) {
+				VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
+				vatTuNhapRes.setId(khxltm.getId());
+				vatTuNhapRes.setNam(khxltm.getNamKeHoach());
+				vatTuNhapRes.setSoLuong(khxltm.getSoLuongXuat());
+				vatTuNhapRes.setVatTuId(vatTuId);
+				xtnMuoi.add(vatTuNhapRes);
+				xtnTongSoMuoi = xtnTongSoMuoi + khxltm.getSoLuongXuat();
+			}
+
+			if (!CollectionUtils.isEmpty(xtnMuoi)) {
+				res.setXtnMuoi(xtnMuoi);
+			}
+		}
+
+		List<Long> vatTuIdList = new ArrayList<>();
+		List<KeHoachVatTuRes> khVatTuResList = new ArrayList<>();
+		for (KeHoachVatTu keHoachVatTu : keHoachVatTuList) {
+			KeHoachVatTuRes keHoachVatTuRes = khVatTuResList.stream().filter(k -> k.getDonViId().equals(keHoachVatTu.getDonViId())).findFirst().orElse(null);
+			if (keHoachVatTuRes == null) {
+				keHoachVatTuRes = new KeHoachVatTuRes();
+				khVatTuResList.add(keHoachVatTuRes);
+			}
+
+			keHoachVatTuRes.setStt(keHoachVatTu.getSttDonVi());
+			keHoachVatTuRes.setId(keHoachVatTu.getId());
+			QlnvDmDonvi donVi = dmDonviList.stream().filter(d -> d.getId().equals(keHoachVatTu.getDonViId())).findFirst().orElse(null);
+
+			if (donVi == null)
+				throw new Exception("Đơn vị không tồn tại");
+
+			String tenDvi = donVi.getTenDvi();
+			String maDvi = donVi.getMaDvi();
+			keHoachVatTuRes.setId(keHoachVatTu.getId());
+			keHoachVatTuRes.setMaDonVi(maDvi);
+			keHoachVatTuRes.setDonViId(keHoachVatTu.getDonViId());
+			keHoachVatTuRes.setTenDonVi(tenDvi);
+			QlnvDmVattu vattu = vattuList.stream().filter(v -> v.getId().equals(keHoachVatTu.getVatTuId())).findFirst().orElse(null);
+			if (vattu == null)
+				throw new Exception("Vật tư không tồn tại");
+
+			vatTuIdList.add(vattu.getId());
+			String tenVattu = vattu.getTen();
 			VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
+			vatTuThietBiRes.setStt(keHoachVatTu.getSttVatTu());
 			vatTuThietBiRes.setVatTuId(keHoachVatTu.getVatTuId());
 			vatTuThietBiRes.setTenVatTu(tenVattu);
-			vatTuThietBiRes.setVatTuChaId(keHoachVatTu.getVatTuChaId());
-			vatTuThietBiRes.setTenVatTuCha(tenVattuCha);
+			vatTuThietBiRes.setMaVatTu(vattu.getMa());
 			vatTuThietBiRes.setDonViTinh(keHoachVatTu.getDonViTinh());
 			vatTuThietBiRes.setNhapTrongNam(keHoachVatTu.getSoLuongNhap());
 			keHoachVatTuRes.getVatTuThietBi().add(vatTuThietBiRes);
-
-			keHoachVatTuResList.add(keHoachVatTuRes);
 		}
 
-		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDviLtm, maVatTuLtm);
-
-		keHoachLuongThucDuTruResList.forEach(k -> {
-			k.setNtnThoc(k.getNtnThoc() + k.getNtnGao());
-			Double xtnTongGao = k.getXtnGao().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum();
-			k.setXtnTongGao(xtnTongGao);
-			Double xtnTongThoc = k.getXtnThoc().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum();
-			k.setXtnTongThoc(xtnTongThoc);
-			k.setXtnTongSoQuyThoc(xtnTongGao + xtnTongThoc);
-
-			TonKhoDauNamRes tonKhoDauNamGao = tonKhoDauNamResList.stream().filter(t -> k.getCucId().equals(t.getDonViId()) && GAO_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
-			TonKhoDauNamRes tonKhoDauNamThoc = tonKhoDauNamResList.stream().filter(t -> k.getCucId().equals(t.getDonViId()) && THOC_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
+		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDviLtm, maVatTuLtm, chiTieuKeHoachNam.getNamKeHoach());
+		khLtResList.forEach(k -> {
+			TonKhoDauNamRes tonKhoDauNamGao = tonKhoDauNamResList.stream().filter(t -> k.getDonViId().equals(t.getDonViId()) && GAO_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
+			TonKhoDauNamRes tonKhoDauNamThoc = tonKhoDauNamResList.stream().filter(t -> k.getDonViId().equals(t.getDonViId()) && THOC_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
 
 			if (tonKhoDauNamThoc != null && !CollectionUtils.isEmpty(tonKhoDauNamThoc.getTonKho())) {
 				k.setTkdnThoc(tonKhoDauNamThoc.getTonKho().stream().sorted(Comparator.comparing(VatTuNhapRes::getNam)).collect(Collectors.toList()));
@@ -333,101 +618,46 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 			k.setTkcnTongGao(k.getTkdnTongGao() - k.getXtnTongGao());
 			k.setTkcnTongThoc(k.getTkdnTongThoc() - k.getXtnTongThoc());
-			k.setTkdnTongSoQuyThoc(k.getTkcnTongThoc() + k.getTkcnTongGao());
+			k.setTkcnTongSoQuyThoc(k.getTkcnTongThoc() + k.getTkcnTongGao());
 		});
 
-		keHoachMuoiDuTruResList.forEach(k -> {
+		khMuoiResList.forEach(k -> {
 			k.setXtnTongSoMuoi(k.getXtnMuoi().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum());
-			TonKhoDauNamRes tonKhoDauNamMuoi = tonKhoDauNamResList.stream().filter(t -> k.getCucId().equals(t.getDonViId()) && MUOI_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
+			TonKhoDauNamRes tonKhoDauNamMuoi = tonKhoDauNamResList.stream().filter(t -> k.getDonViId().equals(t.getDonViId()) && MUOI_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
 			if (tonKhoDauNamMuoi != null && !CollectionUtils.isEmpty(tonKhoDauNamMuoi.getTonKho())) {
 				k.setTkdnMuoi(tonKhoDauNamMuoi.getTonKho().stream().sorted(Comparator.comparing(VatTuNhapRes::getNam)).collect(Collectors.toList()));
+				k.setTkdnTongSoMuoi(k.getTkdnMuoi().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum());
+			} else {
+				k.setTkdnTongSoMuoi(0d);
 			}
-			k.setTkdnTongSoMuoi(k.getTkdnMuoi().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum());
+
 			k.setTkcnTongSoMuoi(k.getTkdnTongSoMuoi() - k.getXtnTongSoMuoi());
 		});
 
-		keHoachVatTuResList.forEach(k -> {
+		List<VatTuNhapQueryDTO> vatTuNhapQueryDTOList = this.getKeHoachVatTuThietBiCacNamTruoc(vatTuIdList, chiTieuKeHoachNam.getNamKeHoach());
+		khVatTuResList.forEach(k -> {
 			for (VatTuThietBiRes vatTu : k.getVatTuThietBi()) {
+				List<VatTuNhapQueryDTO> khntList = vatTuNhapQueryDTOList.stream()
+						.filter(kh -> kh.getVatTuId().equals(vatTu.getVatTuId()))
+						.collect(Collectors.toList());
+				for (VatTuNhapQueryDTO vtn : khntList) {
+					vatTu.getCacNamTruoc().add(new VatTuNhapRes(vtn.getNam(), vtn.getSoLuong(), vtn.getVatTuId()));
+				}
 				Double tongCacNamTruoc = vatTu.getCacNamTruoc().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum();
-				// To do: set list tong nhap cac nam truoc
 				vatTu.setTongCacNamTruoc(tongCacNamTruoc);
 				vatTu.setTongNhap(vatTu.getNhapTrongNam() + tongCacNamTruoc);
 			}
 		});
 
-		response.setKeHoachLuongThuc(keHoachLuongThucDuTruResList);
-		response.setKeHoachMuoiDuTru(keHoachMuoiDuTruResList);
-		response.setKeHoachVatTu(keHoachVatTuResList);
+		khLtResList.sort(Comparator.comparing(KeHoachLuongThucDuTruRes::getStt));
+		khMuoiResList.sort(Comparator.comparing(KeHoachMuoiDuTruRes::getStt));
+		khVatTuResList.sort(Comparator.comparing(KeHoachVatTuRes::getStt));
+
+		response.setKhLuongThuc(khLtResList);
+		response.setKhMuoiDuTru(khMuoiResList);
+		response.setKhVatTu(khVatTuResList);
 
 		return response;
 	}
 
-	private List<KeHoachNamTruoc> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList) {
-		List<KeHoachNamTruoc> keHoachNamTruocList = new ArrayList<>();
-		Integer nam = LocalDate.now().getYear();
-		List<VatTuNhapRes> keHoachVatTuList = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nam -3, nam - 1);
-
-	}
-
-	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList) {
-		List<String> namList = new ArrayList<>();
-		Integer nam = LocalDate.now().getYear();
-		for (int i = 1; i <= 3; i++ ) {
-			namList.add(String.valueOf(nam - i));
-		}
-		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, vatTuIdList, namList);
-
-		List<TonKhoDauNamRes> tonKhoDauNamResList = new ArrayList<>();
-		for (KtTrangthaiHienthoi trangthaiHienthoi : trangthaiHienthoiList) {
-			TonKhoDauNamRes res = tonKhoDauNamResList.stream().filter(t -> trangthaiHienthoi.getMaDonVi().equals(t.getMaDonVi()) && trangthaiHienthoi.getMaVthh().equals(t.getMaVatTu())).findFirst().orElse(null);
-			if (res == null) {
-				res = new TonKhoDauNamRes();
-				res.setMaDonVi(trangthaiHienthoi.getMaDonVi());
-				res.setTenDonVi(trangthaiHienthoi.getTenDonVi());
-				res.setMaVatTu(trangthaiHienthoi.getMaVthh());
-				tonKhoDauNamResList.add(res);
-			}
-
-			VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
-			vatTuNhapRes.setNam(Integer.valueOf(trangthaiHienthoi.getNam()));
-			vatTuNhapRes.setSoLuong(trangthaiHienthoi.getSlHienthoi());
-			res.getTonKho().add(vatTuNhapRes);
-		}
-
-		return tonKhoDauNamResList;
-	}
-
-	private List<KeHoachXuatLuongThucMuoi> buildKeHoachXuat(Long keHoachId, List<VatTuNhapReq> vatTuNhapReqList) {
-		List<KeHoachXuatLuongThucMuoi> keHoachXuatList = new ArrayList<>();
-
-		for (VatTuNhapReq vatTuNhapReq : vatTuNhapReqList) {
-			KeHoachXuatLuongThucMuoi keHoachXuat = new KeHoachXuatLuongThucMuoi();
-			keHoachXuat.setKeHoachId(keHoachId);
-			Double soLuongXuat = vatTuNhapReq.getSoLuong() == null ? 0 : vatTuNhapReq.getSoLuong();
-			keHoachXuat.setSoLuongXuat(soLuongXuat);
-			keHoachXuat.setNamKeHoach(vatTuNhapReq.getNam());
-			keHoachXuatList.add(keHoachXuat);
-		}
-		return keHoachXuatList;
-	}
-
-	@Override
-	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req) {
-		return null;
-	}
-
-	@Override
-	public void approve(Long id) {
-
-	}
-
-	@Override
-	public void delete(Long id) {
-
-	}
-
-	@Override
-	public ChiTieuKeHoachNamRes detail(Long id) {
-		return null;
-	}
 }

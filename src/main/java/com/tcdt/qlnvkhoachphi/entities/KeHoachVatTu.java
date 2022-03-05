@@ -12,15 +12,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.io.Serializable;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "KE_HOACH_VAT_TU")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeHoachVatTu extends BaseEntity {
+public class KeHoachVatTu implements Serializable {
+
+	private static final long serialVersionUID = -4943732132397265447L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KE_HOACH_VAT_TU_SEQ")
 	@SequenceGenerator(sequenceName = "KE_HOACH_VAT_TU_SEQ", allocationSize = 1, name = "KE_HOACH_VAT_TU_SEQ")
@@ -32,4 +34,6 @@ public class KeHoachVatTu extends BaseEntity {
 	private Double soLuongNhap;
 	private String donViTinh;
 	private String trangThai;
+	private Integer sttDonVi;
+	private Integer sttVatTu;
 }

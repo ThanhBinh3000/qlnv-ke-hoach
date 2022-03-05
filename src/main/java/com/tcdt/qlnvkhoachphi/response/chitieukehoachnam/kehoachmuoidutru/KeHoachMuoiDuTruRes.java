@@ -13,9 +13,9 @@ import java.util.List;
 public class KeHoachMuoiDuTruRes {
     private Long id;
     private Integer stt;
-    private Long cucId;
+    private Long donViId;
     private String maDonVi;
-    private String cucDTNNKhuVuc;
+    private String tenDonVi;
 
     // Ton kho dau nam
     private Double tkdnTongSoMuoi;

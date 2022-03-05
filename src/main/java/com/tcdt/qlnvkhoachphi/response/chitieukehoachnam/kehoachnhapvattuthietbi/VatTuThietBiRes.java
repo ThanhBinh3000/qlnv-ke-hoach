@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class VatTuThietBiRes {
+
+	private Integer stt;
 	private String donViTinh;
 
 	private String maVatTu;

@@ -27,17 +27,17 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	private ChiTieuKeHoachNamService chiTieuKeHoachNamService;
 
 	@PostMapping
-	public final ResponseEntity<Resp> create(@RequestBody ChiTieuKeHoachNamReq req, HttpServletRequest servletRequest) {
+	public final ResponseEntity<Resp> create(@RequestBody ChiTieuKeHoachNamReq req) throws Exception {
 		Resp resp = new Resp();
-		try {
+//		try {
 			resp.setData(chiTieuKeHoachNamService.create(req));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
-		} catch (Exception e) {
-			resp.setStatusCode(Constants.RESP_FAIL);
-			resp.setMsg(e.getMessage());
-			log.error(e.getMessage());
-		}
+//		} catch (Exception e) {
+//			resp.setStatusCode(Constants.RESP_FAIL);
+//			resp.setMsg(e.getMessage());
+//			log.error(e.getMessage());
+//		}
 		return ResponseEntity.ok(resp);
 	}
 

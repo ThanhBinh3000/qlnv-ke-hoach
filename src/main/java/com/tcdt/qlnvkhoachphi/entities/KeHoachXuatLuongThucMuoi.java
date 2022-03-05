@@ -12,18 +12,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.io.Serializable;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "KE_HOACH_XUAT_LUONG_THUC_MUOI")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeHoachXuatLuongThucMuoi extends BaseEntity {
+public class KeHoachXuatLuongThucMuoi implements Serializable {
+	private static final long serialVersionUID = -6212686510947229243L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KE_HOACH_XUAT_LUONG_THUC_MUOI_SEQ")
-	@SequenceGenerator(sequenceName = "KE_HOACH_XUAT_LUONG_THUC_MUOI_SEQ", allocationSize = 1, name = "KE_HOACH_XUAT_LUONG_THUC_MUOI_SEQ")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KHX_LUONGTHUCMUOI_SEQ")
+	@SequenceGenerator(sequenceName = "KHX_LUONGTHUCMUOI_SEQ", allocationSize = 1, name = "KHX_LUONGTHUCMUOI_SEQ")
 	private Long id;
 	private Long keHoachId;
 	private Double soLuongXuat;
