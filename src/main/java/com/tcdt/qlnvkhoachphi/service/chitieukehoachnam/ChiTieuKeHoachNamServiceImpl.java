@@ -366,7 +366,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<KeHoachNamTruoc> keHoachNamTruocList = new ArrayList<>();
 		Integer nam = LocalDate.now().getYear();
 		List<VatTuNhapRes> keHoachVatTuList = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nam -3, nam - 1);
-
+		return keHoachNamTruocList;
 	}
 
 	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList) {

@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChiTieuKeHoachNamRepository extends CrudRepository<ChiTieuKeHoachNam, Long> {
+public interface ChiTieuKeHoachNamRepository extends ChiTieuKeHoachNamRepositoryCustom, CrudRepository<ChiTieuKeHoachNam, Long> {
 }

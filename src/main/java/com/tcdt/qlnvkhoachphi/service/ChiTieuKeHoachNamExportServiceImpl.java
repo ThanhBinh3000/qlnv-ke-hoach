@@ -1,11 +1,16 @@
 package com.tcdt.qlnvkhoachphi.service;
 
+import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
+import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.util.exporter.CtkhnKeHoachLuongThucExporter;
 import com.tcdt.qlnvkhoachphi.util.exporter.CtkhnKeHoachMuoiExporter;
 import com.tcdt.qlnvkhoachphi.util.exporter.CtkhnKeHoachVatTuExporter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
@@ -23,6 +28,9 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 
 	@Autowired
 	private CtkhnKeHoachVatTuExporter ctkhnKeHoachVatTuExporter;
+
+	@Autowired
+	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepo;
 
 	@Override
 	public Boolean exportToExcel(HttpServletResponse response) {
@@ -43,4 +51,11 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 		}
 		return true;
 	}
+
+	@Override
+	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+
+		return chiTieuKeHoachNamRepo.search(req, pageable);
+	}
+
 }
