@@ -95,8 +95,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		if (!StringUtils.isEmpty(req.getTrichYeu())) {
 			builder.append("AND ").append("ct.TRICH_YEU = :trichYeu ");
 		}
-		if (!StringUtils.isEmpty(req.getMaDonVi())) {
-			builder.append("AND ").append("dv.MA_DVI = :maDonVi ");
+		if (req.getDonViId() != null) {
+			builder.append("AND ").append("dv.ID = :donViId ");
 		}
 		if (!StringUtils.isEmpty(req.getTenDonVi())) {
 			builder.append("AND ").append("dv.TEN_DVI = :tenDonVi ");
@@ -137,8 +137,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		if (!StringUtils.isEmpty(req.getTrichYeu())) {
 			query.setParameter("trichYeu", req.getTrichYeu());
 		}
-		if (!StringUtils.isEmpty(req.getMaDonVi())) {
-			query.setParameter("maDonVi", req.getMaDonVi());
+		if (req.getDonViId() != null) {
+			query.setParameter("donViId", req.getDonViId());
 		}
 		if (!StringUtils.isEmpty(req.getTenDonVi())) {
 			query.setParameter("tenDonVi", req.getTenDonVi());

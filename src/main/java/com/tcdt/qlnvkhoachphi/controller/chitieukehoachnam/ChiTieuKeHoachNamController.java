@@ -1,10 +1,12 @@
 package com.tcdt.qlnvkhoachphi.controller.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoachphi.controller.BaseController;
+import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.Resp;
+import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamExportService;
 import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
@@ -12,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +41,9 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@Autowired
 	private ChiTieuKeHoachNamImportService importSv;
+
+	@Autowired
+	private ChiTieuKeHoachNamExportService chiTieuKeHoachNamExportSv;
 
 	@ApiOperation(value = "Tạo mới Chỉ tiêu kế hoạch năm", response = List.class)
 	@PostMapping
@@ -183,6 +189,40 @@ public class ChiTieuKeHoachNamController extends BaseController {
 			resp.setMsg(e.getMessage());
 			log.error(e.getMessage());
 			log.error("error", e);
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Tra cứu chỉ tiêu kế hoạch năm", response = List.class)
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping()
+	public final ResponseEntity<Resp> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamExportSv.search(req, pageable));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Tra cứu quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/quyet-dinh-dieu-chinh/")
+	public final ResponseEntity<Resp> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamExportSv.search(req, pageable));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
 		}
 		return ResponseEntity.ok(resp);
 	}

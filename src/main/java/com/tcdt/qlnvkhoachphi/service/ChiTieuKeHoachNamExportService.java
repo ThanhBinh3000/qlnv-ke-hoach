@@ -11,5 +11,5 @@ import java.util.List;
 public interface ChiTieuKeHoachNamExportService {
 	Boolean exportToExcel (HttpServletResponse response, List<String> type, Long id) throws Exception;
 
-	Page<ChiTieuKeHoachNamRes> search (SearchChiTieuKeHoachNamReq req, Pageable pageable);
+	Page<ChiTieuKeHoachNamRes> search (SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception;
 }

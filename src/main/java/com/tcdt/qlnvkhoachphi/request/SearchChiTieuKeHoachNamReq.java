@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class SearchChiTieuKeHoachNamReq {
 	private String soQD;
 	private String trichYeu;
-	private String maDonVi;
+	private Long donViId;
 	private LocalDate ngayKyTuNgay;
 	private LocalDate ngayKyDenNgay;
 	private String tenDonVi;

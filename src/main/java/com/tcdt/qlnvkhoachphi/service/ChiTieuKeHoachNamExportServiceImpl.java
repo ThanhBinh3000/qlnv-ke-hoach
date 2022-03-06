@@ -4,6 +4,7 @@ import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
+import com.tcdt.qlnvkhoachphi.table.UserInfo;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.exporter.ExportFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +65,13 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 	}
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
 
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request");
+
+		req.setDonViId(userInfo.getDvql());
 		return chiTieuKeHoachNamRepo.search(req, pageable);
 	}
 
