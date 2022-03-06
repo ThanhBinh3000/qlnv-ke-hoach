@@ -83,7 +83,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
-		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoach(req.getNamKeHoach());
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(req.getNamKeHoach(), true);
 		if (chiTieuKeHoachNam != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -413,6 +413,22 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
+	public ChiTieuKeHoachNamRes detailQd(Long id) throws Exception {
+		return this.detail(id);
+	}
+
+	@Override
+	public QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception {
+		ChiTieuKeHoachNamRes qdDc = this.detail(id);
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(qdDc.getNamKeHoach(), true);
+		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
+
+		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
+		response.setQdDc(qdDc);
+		response.setQd(qd);
+		return response;
+	}
+
 	public ChiTieuKeHoachNamRes detail(Long id) throws Exception {
 		Optional<ChiTieuKeHoachNam> optional = chiTieuKeHoachNamRepository.findById(id);
 		if (!optional.isPresent())

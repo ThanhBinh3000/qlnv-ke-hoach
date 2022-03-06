@@ -23,6 +23,10 @@ public interface ChiTieuKeHoachNamService {
 	QdDcChiTieuKeHoachRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception;
 
 	boolean delete(Long id) throws Exception;
-	ChiTieuKeHoachNamRes detail(Long id) throws Exception;
+
+	ChiTieuKeHoachNamRes detailQd(Long id) throws Exception;
+
+	QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception;
+
 	boolean updateStatus(StatusReq req) throws Exception;
 }

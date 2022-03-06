@@ -57,10 +57,10 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Chi tiết chỉ tiêu kế hoạch năm", response = List.class)
 	@GetMapping("/{id}")
-	public final ResponseEntity<Resp> getDetail(@PathVariable("id") Long id) {
+	public final ResponseEntity<Resp> getDetailQd(@PathVariable("id") Long id) {
 		Resp resp = new Resp();
 		try {
-			resp.setData(chiTieuKeHoachNamService.detail(id));
+			resp.setData(chiTieuKeHoachNamService.detailQd(id));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {
@@ -166,6 +166,23 @@ public class ChiTieuKeHoachNamController extends BaseController {
 			resp.setStatusCode(Constants.RESP_FAIL);
 			resp.setMsg(e.getMessage());
 			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Chi tiết quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
+	@GetMapping("/quyet-dinh-dieu-chinh/{id}")
+	public final ResponseEntity<Resp> getDetailQdDc(@PathVariable("id") Long id) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.detailQdDc(id));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+			log.error("error", e);
 		}
 		return ResponseEntity.ok(resp);
 	}
