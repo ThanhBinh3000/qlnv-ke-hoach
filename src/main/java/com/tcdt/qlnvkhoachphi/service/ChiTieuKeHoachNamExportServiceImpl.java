@@ -1,99 +1,72 @@
 package com.tcdt.qlnvkhoachphi.service;
 
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
+import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
+import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
+import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
+import com.tcdt.qlnvkhoachphi.util.Constants;
+import com.tcdt.qlnvkhoachphi.util.exporter.ExportFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
 @Service
 public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExportService {
+	@Autowired
+	private ExportFactory exportFactory;
 
+	@Autowired
+	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepo;
+
+	@Autowired
+	private ChiTieuKeHoachNamService chiTieuKeHoachNamSv;
 
 	@Override
-	public Boolean exportToExcel() {
+	public Boolean exportToExcel(HttpServletResponse response, List<String> types, Long id) throws Exception {
+		try {
+			XSSFWorkbook workbook = new XSSFWorkbook();
 
+			ChiTieuKeHoachNamRes data = chiTieuKeHoachNamSv.detailQd(id);
+
+			if (data == null) return false;
+
+			if (CollectionUtils.isEmpty(types)) {
+				types = new LinkedList<>();
+				types.add(Constants.ExportDataType.CHI_TIEU_LUONG_THUC);
+				types.add(Constants.ExportDataType.CHI_TIEU_MUOI);
+				types.add(Constants.ExportDataType.CHI_TIEU_VAT_TU);
+			}
+
+			for (String type : types) {
+				exportFactory.getExportService(type).export(workbook, data);
+			}
+
+			ServletOutputStream outputStream = response.getOutputStream();
+			workbook.write(outputStream);
+			workbook.close();
+			outputStream.close();
+		} catch (IOException e) {
+			log.error("Error export", e);
+			return false;
+		}
 		return true;
 	}
 
-	private List<KeHoachLuongThucDuTruRes> buildDataExport() {
-		return new LinkedList<>();
+	@Override
+	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+
+		return chiTieuKeHoachNamRepo.search(req, pageable);
 	}
 
-
-
-	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
-		sheet = workbook.createSheet("Users");
-
-		Row row = sheet.createRow(0);
-
-		CellStyle style = workbook.createCellStyle();
-		XSSFFont font = workbook.createFont();
-		font.setBold(true);
-		font.setFontHeight(16);
-		style.setFont(font);
-
-		createCell(row, 0, "User ID", style, sheet);
-		createCell(row, 1, "E-mail", style, sheet);
-		createCell(row, 2, "Full Name", style, sheet);
-		createCell(row, 3, "Roles", style, sheet);
-		createCell(row, 4, "Enabled", style, sheet);
-
-	}
-
-	private void createCell(Row row, int columnCount, Object value, CellStyle style, XSSFSheet sheet) {
-		sheet.autoSizeColumn(columnCount);
-		Cell cell = row.createCell(columnCount);
-		if (value instanceof Integer) {
-			cell.setCellValue((Integer) value);
-		} else if (value instanceof Boolean) {
-			cell.setCellValue((Boolean) value);
-		}else {
-			cell.setCellValue((String) value);
-		}
-		cell.setCellStyle(style);
-	}
-
-//	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook) {
-//		int rowCount = 1;
-//
-//		CellStyle style = workbook.createCellStyle();
-//		XSSFFont font = workbook.createFont();
-//		font.setFontHeight(14);
-//		style.setFont(font);
-//
-//		List<KeHoachLuongThucDuTruRes> data = this.buildDataExport();
-//
-//		for (KeHoachLuongThucDuTruRes line : data) {
-//			Row row = sheet.createRow(rowCount++);
-//			int columnCount = 0;
-//
-//			createCell(row, columnCount++, user.getId(), style);
-//			createCell(row, columnCount++, user.getEmail(), style);
-//			createCell(row, columnCount++, user.getFullName(), style);
-//			createCell(row, columnCount++, user.getRoles().toString(), style);
-//			createCell(row, columnCount++, user.isEnabled(), style);
-//
-//		}
-//	}
-//
-//	public void export(HttpServletResponse response) throws IOException {
-//		writeHeaderLine();
-//		writeDataLines();
-//
-//		ServletOutputStream outputStream = response.getOutputStream();
-//		workbook.write(outputStream);
-//		workbook.close();
-//
-//		outputStream.close();
-//
-//	}
 }

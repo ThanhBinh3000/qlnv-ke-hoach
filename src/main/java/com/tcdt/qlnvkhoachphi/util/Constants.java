@@ -1,5 +1,8 @@
 package com.tcdt.qlnvkhoachphi.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 public class Constants {
 	public static final String FORMAT_DATE_STR = "dd/MM/yyyy";
 	public static final String FORMAT_DATE_TIME_STR = "dd/MM/yyyy HH:mm:ss";
@@ -108,5 +111,41 @@ public class Constants {
 
 	// file dinh kem
 	public static final String QLNV_KH_VON_PHI = "QLNV_KH_VON_PHI";
+
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public final class ChiTieuKeHoachNamExport {
+		public static final String SHEET_KE_HOACH_LUONG_THUC_DTNN = "Kế hoạch lương thực DTNN";
+		public static final String SHEET_KE_HOACH_MUOI_DTNN = "Kế hoạch muối DTNN";
+		public static final String SHEET_KE_HOACH_NHAP_VT_TB = "Kế hoạch nhập VT_TB";
+	}
+
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public final class ExcelHeader {
+		public static final String STT = "STT";
+		public static final String CUC_DTNN_KHU_VUC = "Cục DTNN khu vuc";
+		public static final String TON_KHO_DAU_NAM = "Tồn kho đầu năm";
+		public static final String TONG_SO_QUY_THOC = "Tổng số\n(quy thóc)";
+		public static final String TONG = "Tổng";
+		public static final String NAM_NHAP = "Nhập\n%s";
+		public static final String THOC = "Thóc";
+		public static final String GAO = "Gạo";
+		public static final String TRONG_DO = "Trong đó";
+		public static final String NHAP_TRONG_NAM = "Nhập trong năm";
+		public static final String XUAT_TRONG_NAM = "Xuất trong năm";
+		public static final String TON_KHO_CUOI_NAM = "Tồn kho cuối năm";
+		public static final String TONG_SO = "Tổng số";
+		public static final String MA_HANG = "Mã hàng";
+		public static final String MAT_HANG = "Mặt hàng";
+		public static final String DON_VI_TINH = "Đơn vị tính";
+		public static final String CHI_TIEU_NHAP_CAC_NAM_KHAC_CHUYEN_SANG = "Chỉ tiêu nhập các năm khác chuyển sang";
+		public static final String KE_HOACH_NAM = "Kế hoạch\n%s";
+	}
+
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public final class ExportDataType {
+		public static final String CHI_TIEU_LUONG_THUC = "LUONG_THUC";
+		public static final String CHI_TIEU_MUOI = "MUOI";
+		public static final String CHI_TIEU_VAT_TU = "VAT_TU";
+	}
 
 }

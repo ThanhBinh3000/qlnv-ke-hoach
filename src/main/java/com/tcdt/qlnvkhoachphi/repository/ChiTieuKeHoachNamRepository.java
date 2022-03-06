@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long> {
+public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long>, ChiTieuKeHoachNamRepositoryCustom {
     ChiTieuKeHoachNam findByNamKeHoachAndLastest(Integer namKh, boolean lastest);
 }
