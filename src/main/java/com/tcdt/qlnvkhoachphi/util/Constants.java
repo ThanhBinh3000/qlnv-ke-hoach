@@ -113,14 +113,17 @@ public class Constants {
 	public static final String QLNV_KH_VON_PHI = "QLNV_KH_VON_PHI";
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public final class ChiTieuKeHoachNamExport {
+	public static final class ChiTieuKeHoachNamExport {
 		public static final String SHEET_KE_HOACH_LUONG_THUC_DTNN = "Kế hoạch lương thực DTNN";
 		public static final String SHEET_KE_HOACH_MUOI_DTNN = "Kế hoạch muối DTNN";
 		public static final String SHEET_KE_HOACH_NHAP_VT_TB = "Kế hoạch nhập VT_TB";
+		public static final int SO_NAM_LUU_KHO_MUOI = 2;
+		public static final int SO_NAM_LUU_KHO_LUONG_THUC = 3;
+		public static final int SO_NAM_LUU_KHO_VAT_TU = 3;
 	}
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public final class ExcelHeader {
+	public static final class ExcelHeader {
 		public static final String STT = "STT";
 		public static final String CUC_DTNN_KHU_VUC = "Cục DTNN khu vuc";
 		public static final String TON_KHO_DAU_NAM = "Tồn kho đầu năm";
@@ -142,10 +145,11 @@ public class Constants {
 	}
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public final class ExportDataType {
+	public static final class ExportDataType {
 		public static final String CHI_TIEU_LUONG_THUC = "LUONG_THUC";
 		public static final String CHI_TIEU_MUOI = "MUOI";
 		public static final String CHI_TIEU_VAT_TU = "VAT_TU";
 	}
+
 
 }

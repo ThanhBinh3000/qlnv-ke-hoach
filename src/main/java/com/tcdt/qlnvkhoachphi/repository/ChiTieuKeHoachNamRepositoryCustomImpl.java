@@ -37,6 +37,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.NGAY_KY as ngayKy, ");
 		builder.append("ct.NAM_KE_HOACH as namKeHoach, ");
 		builder.append("ct.TRICH_YEU as trichYeu, ");
+		builder.append("ct.ID as id, ");
 		builder.append("ct.TRANG_THAI as trangThai ");
 
 		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
@@ -65,6 +66,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 				.map(res -> {
 					Tuple item = (Tuple) res;
 					return ChiTieuKeHoachNamRes.builder()
+							.id(item.get("id", BigDecimal.class).longValue())
 							.soQuyetDinh(item.get("soQD", String.class))
 							.ngayKy(DataUtils.convertToLocalDate(item.get("ngayKy", Timestamp.class)))
 							.namKeHoach(item.get("namKeHoach", BigDecimal.class).intValue())
