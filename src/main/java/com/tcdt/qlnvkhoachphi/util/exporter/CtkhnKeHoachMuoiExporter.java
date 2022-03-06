@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoachphi.util.exporter;
 
 import com.tcdt.qlnvkhoachphi.entities.MergeCellObj;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.util.Constants;
@@ -23,16 +24,12 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 	private int startRowIndex = 6;
 
 	@Override
-	public void export(XSSFWorkbook workbook) {
+	public void export(XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_MUOI_DTNN);
 
 		writeHeaderLine(workbook, sheet);
-		writeDataLines(sheet, workbook);
-	}
-
-	private List<KeHoachMuoiDuTruRes> buildDataExport() {
-		return new LinkedList<>();
+		writeDataLines(sheet, workbook, data);
 	}
 
 	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
@@ -114,50 +111,50 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 		}
 	}
 
-	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook) {
+	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
 		font.setFontHeight(14);
 		style.setFont(font);
 
-		List<KeHoachMuoiDuTruRes> data = this.buildDataExport();
 		Row row;
 
 
-		for (KeHoachMuoiDuTruRes line : data) {
+		for (KeHoachMuoiDuTruRes line : data.getKhMuoiDuTru()) {
 			row = sheet.createRow(startRowIndex++);
 			int colIndex = 0;
 			// stt
 			ExcelUtils.createCell(row, colIndex++, line.getStt(), style, sheet);
 
 			//cuc DTTNN khu vuc
-			ExcelUtils.createCell(row, colIndex++, line.getCucDTNNKhuVuc(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getTenDonVi(), style, sheet);
 
 			//TỒN KHO ĐẦU NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongSoMuoi(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongSoMuoi().toString(), style, sheet);
+
 			//Nhập
 			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//NHẬP TRONG NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getNtnTongSoMuoi(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getNtnTongSoMuoi().toString(), style, sheet);
 
 			//XUẤT TRONG NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi().toString(), style, sheet);
 
 			//Nhập
 			for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//TỒN KHO CUỐI NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getTkcnTongSoMuoi(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getTkcnTongSoMuoi().toString(), style, sheet);
 
 		}
 	}

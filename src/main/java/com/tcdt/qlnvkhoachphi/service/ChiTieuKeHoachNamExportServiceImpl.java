@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoachphi.service;
 import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
+import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.exporter.ExportFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,17 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 	@Autowired
 	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepo;
 
+	@Autowired
+	private ChiTieuKeHoachNamService chiTieuKeHoachNamSv;
+
 	@Override
-	public Boolean exportToExcel(HttpServletResponse response, List<String> types) {
+	public Boolean exportToExcel(HttpServletResponse response, List<String> types, Long id) throws Exception {
 		try {
 			XSSFWorkbook workbook = new XSSFWorkbook();
+
+			ChiTieuKeHoachNamRes data = chiTieuKeHoachNamSv.detail(id);
+
+			if (data == null) return false;
 
 			if (CollectionUtils.isEmpty(types)) {
 				types = new LinkedList<>();
@@ -41,7 +49,7 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 			}
 
 			for (String type : types) {
-				exportFactory.getExportService(type).export(workbook);
+				exportFactory.getExportService(type).export(workbook, data);
 			}
 
 			ServletOutputStream outputStream = response.getOutputStream();

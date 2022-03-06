@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,14 +20,14 @@ public class KeHoachMuoiDuTruRes {
 
     // Ton kho dau nam
     private Double tkdnTongSoMuoi;
-    private List<VatTuNhapRes> tkdnMuoi;
+    private List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
 
     // Nhap trong nam
     private Double ntnTongSoMuoi;
 
     // Xuat trong nam
     private Double xtnTongSoMuoi;
-    private List<VatTuNhapRes> xtnMuoi;
+    private List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
 
     // Ton kho cuoi nam
     private Double tkcnTongSoMuoi;

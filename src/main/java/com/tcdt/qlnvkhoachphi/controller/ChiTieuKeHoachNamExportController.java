@@ -3,8 +3,6 @@ package com.tcdt.qlnvkhoachphi.controller;
 import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.Resp;
 import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamExportService;
-import com.tcdt.qlnvkhoachphi.service.ImportService;
-import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,33 +28,14 @@ import java.util.List;
 public class ChiTieuKeHoachNamExportController extends BaseController {
 
 	@Autowired
-	private ImportService importSv;
-
-	@Autowired
 	private ChiTieuKeHoachNamExportService chiTieuKeHoachNamExportSv;
-
-	@ApiOperation(value = "Import file kế hoạch lương thực", response = List.class)
-	@PostMapping(value = "/import", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Resp> detail(@RequestPart("file") MultipartFile file) {
-		Resp resp = new Resp();
-		try {
-			resp.setData(importSv.importKeHoach(file));
-			resp.setStatusCode(Constants.RESP_SUCC);
-			resp.setMsg("Thành công");
-		} catch (Exception e) {
-			resp.setStatusCode(Constants.RESP_FAIL);
-			resp.setMsg(e.getMessage());
-			log.error(e.getMessage());
-		}
-		return ResponseEntity.ok(resp);
-	}
 
 	@ApiOperation(value = "Export Chỉ tiêu kế hoạch năm ra excel", response = List.class)
 	@PostMapping(value = "/export", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public void exportToExcel(HttpServletResponse response,
-							  @RequestParam(required = false) List<String> type) throws IOException {
+							  @RequestParam(required = false) List<String> type,
+							  @RequestParam Long id) throws IOException {
 
 		try {
 			response.setContentType("application/octet-stream");
@@ -67,7 +45,7 @@ public class ChiTieuKeHoachNamExportController extends BaseController {
 			String headerKey = "Content-Disposition";
 			String headerValue = "attachment; filename=chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
 			response.setHeader(headerKey, headerValue);
-			chiTieuKeHoachNamExportSv.exportToExcel(response, type);
+			chiTieuKeHoachNamExportSv.exportToExcel(response, type, id);
 		} catch (Exception e) {
 			log.error("Error can not export", e);
 		}

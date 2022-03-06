@@ -1,6 +1,8 @@
 package com.tcdt.qlnvkhoachphi.util.exporter;
 
 import com.tcdt.qlnvkhoachphi.entities.MergeCellObj;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.util.Constants;
@@ -20,19 +22,20 @@ import java.util.List;
 
 @Component
 public class CtkhnKeHoachVatTuExporter implements ExportService {
-	private int startRowIndex = 6;
+	private final int startRowIndex = 6;
+
+	private int firstRow = 0;
+	private int lastRow = 0;
+	private int firstCol = 0;
+	private int lastCol = 0;
 
 	@Override
-	public void export(XSSFWorkbook workbook) {
+	public void export(XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_NHAP_VT_TB);
 
 		writeHeaderLine(workbook, sheet);
-		writeDataLines(sheet, workbook);
-	}
-
-	private List<KeHoachVatTuRes> buildDataExport() {
-		return new LinkedList<>();
+		writeDataLines(sheet, workbook, data);
 	}
 
 	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
@@ -98,53 +101,65 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 		}
 	}
 
-	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook) {
+	private void buildColCucDtnnKhuVuc(XSSFSheet sheet, KeHoachVatTuRes data, CellStyle style, int colIndex) {
+		firstRow = startRowIndex;
+		firstCol = colIndex;
+		lastCol = colIndex;
+		//Build cell Cục DTTN Khu vực
+		lastRow = firstRow + data.getVatTuThietBi().size() - 1;
+
+		Row row = sheet.createRow(firstRow);
+
+		MergeCellObj mergeCellObj = ExcelUtils.buildMergeCell(row, data.getTenDonVi(), firstRow, lastRow, firstCol, lastCol);
+
+		CellRangeAddress cellRangeAddress = mergeCellObj.getCellAddresses();
+
+		sheet.addMergedRegion(cellRangeAddress);
+
+		ExcelUtils.createCell(mergeCellObj.getRow(), cellRangeAddress.getFirstColumn(), mergeCellObj.getValue(), style, sheet);
+
+		firstRow = lastRow + 1;
+	}
+
+	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
 		font.setFontHeight(14);
 		style.setFont(font);
-
-		List<KeHoachVatTuRes> data = this.buildDataExport();
 		Row row;
 
 
-		for (KeHoachVatTuRes line : data) {
-			row = sheet.createRow(startRowIndex++);
+		for (KeHoachVatTuRes line : data.getKhVatTu()) {
+			int startIndex = startRowIndex;
+			row = sheet.createRow(startIndex);
 			int colIndex = 0;
 			// stt
-			ExcelUtils.createCell(row, colIndex++, line.getStt(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getStt().toString(), style, sheet);
 
 			//cuc DTTNN khu vuc
-			ExcelUtils.createCell(row, colIndex++, line.getCucDTNNKhuVuc(), style, sheet);
+			this.buildColCucDtnnKhuVuc(sheet, line, style, colIndex++);
+
 
 			for (VatTuThietBiRes vatTuThietBiRes : line.getVatTuThietBi()) {
 				//Mã hàng
 				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
+				//mặt hàng
+				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTenVatTu(), style, sheet);
+				//Đơn vị tính
+				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getDonViTinh(), style, sheet);
+				//Tổng số
+				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongNhap().toString(), style, sheet);
+
+				//Tổng các năm trước
+				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
+				//Các năm trước
+				for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
+					ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
+				}
+				//Nhập trong năm
+				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
 			}
-
-
-			//mặt hàng
-//			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
-//				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
-//			}
-//
-//			//Đơn vị tính
-//			ExcelUtils.createCell(row, colIndex++, line.getNtnTongSoMuoi(), style, sheet);
-//
-//			//Tổng số
-//			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi(), style, sheet);
-//
-//			//Tổng
-//			for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
-//				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
-//			}
-//
-//			//Chỉ tiêu nhập các năm khác chuyển sang
-//			for (VatTuThietBiRes vatTuNhapRes : line.getVatTuThietBi()) {
-//				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong(), style, sheet);
-//			}
-
 		}
 	}
 }

@@ -143,9 +143,9 @@ public class Constants {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class ExportDataType {
-		public static final String CHI_TIEU_LUONG_THUC = "luongThuc";
-		public static final String CHI_TIEU_MUOI = "muoi";
-		public static final String CHI_TIEU_VAT_TU = "vatTu";
+		public static final String CHI_TIEU_LUONG_THUC = "LUONG_THUC";
+		public static final String CHI_TIEU_MUOI = "MUOI";
+		public static final String CHI_TIEU_VAT_TU = "VAT_TU";
 	}
 
 }
