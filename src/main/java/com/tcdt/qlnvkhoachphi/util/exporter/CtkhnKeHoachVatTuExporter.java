@@ -16,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -153,10 +154,16 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 
 				//Tổng các năm trước
 				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
-				//Các năm trước
-				for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
-					ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
+
+				//Các năm khác chuyển sang
+				if (CollectionUtils.isEmpty(vatTuThietBiRes.getCacNamTruoc())) {
+					ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_VAT_TU);
+				} else {
+					for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
+						ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
+					}
 				}
+
 				//Nhập trong năm
 				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
 			}

@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -120,7 +121,6 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 
 		Row row;
 
-
 		for (KeHoachMuoiDuTruRes line : data.getKhMuoiDuTru()) {
 			row = sheet.createRow(startRowIndex++);
 			int colIndex = 0;
@@ -135,8 +135,12 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongSoMuoi().toString(), style, sheet);
 
 			//Nhập
-			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+			if (CollectionUtils.isEmpty(line.getTkdnMuoi())) {
+				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
+			} else {
+				for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
+					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+				}
 			}
 
 			//NHẬP TRONG NĂM-------------------------
@@ -148,8 +152,12 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi().toString(), style, sheet);
 
 			//Nhập
-			for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+			if (CollectionUtils.isEmpty(line.getXtnMuoi())) {
+				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
+			} else {
+				for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
+					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+				}
 			}
 
 			//TỒN KHO CUỐI NĂM-------------------------

@@ -117,8 +117,9 @@ public class Constants {
 		public static final String SHEET_KE_HOACH_LUONG_THUC_DTNN = "Kế hoạch lương thực DTNN";
 		public static final String SHEET_KE_HOACH_MUOI_DTNN = "Kế hoạch muối DTNN";
 		public static final String SHEET_KE_HOACH_NHAP_VT_TB = "Kế hoạch nhập VT_TB";
-		public static final int SO_NAM_LUU_KHO_MUOI = 2;
-		public static final int SO_NAM_LUU_KHO_LUONG_THUC = 3;
+		public static final int SO_NAM_LUU_KHO_MUOI = 3;
+		public static final int SO_NAM_LUU_KHO_THOC = 3;
+		public static final int SO_NAM_LUU_KHO_GAO = 2;
 		public static final int SO_NAM_LUU_KHO_VAT_TU = 3;
 	}
 

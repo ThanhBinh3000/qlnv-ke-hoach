@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -197,8 +198,12 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongThoc().toString(), style, sheet);
 
 			//Thóc nhập
-			for (VatTuNhapRes vatTuNhapRes : line.getTkdnThoc()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+			if (CollectionUtils.isEmpty(line.getTkdnThoc())) {
+				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
+			} else {
+				for (VatTuNhapRes vatTuNhapRes : line.getTkdnThoc()) {
+					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+				}
 			}
 
 			//GẠO:
@@ -206,8 +211,12 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongGao().toString(), style, sheet);
 
 			//Gạo nhập
-			for (VatTuNhapRes vatTuNhapRes : line.getTkdnGao()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+			if (CollectionUtils.isEmpty(line.getTkdnGao())) {
+				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
+			} else {
+				for (VatTuNhapRes vatTuNhapRes : line.getTkdnGao()) {
+					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+				}
 			}
 
 			//NHẬP TRONG NĂM-------------------------
@@ -228,16 +237,23 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getXtnThoc().toString(), style, sheet);
 
 			//Nhập Thóc
-			for (VatTuNhapRes vatTuNhapRes : line.getXtnThoc()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+			if (CollectionUtils.isEmpty(line.getXtnThoc())) {
+				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
+			} else {
+				for (VatTuNhapRes vatTuNhapRes : line.getXtnThoc()) {
+					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+				}
 			}
-
 			//Gạo
 			ExcelUtils.createCell(row, colIndex++, line.getXtnGao().toString(), style, sheet);
 
 			//Nhập Gạo
-			for (VatTuNhapRes vatTuNhapRes : line.getXtnGao()) {
-				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+			if (CollectionUtils.isEmpty(line.getXtnGao())) {
+				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
+			} else {
+				for (VatTuNhapRes vatTuNhapRes : line.getXtnGao()) {
+					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
+				}
 			}
 
 			//TỒN KHO CUỐI NĂM-------------------------

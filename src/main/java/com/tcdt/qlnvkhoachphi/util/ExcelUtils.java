@@ -35,20 +35,9 @@ public class ExcelUtils {
 		}
 	}
 
-	public static void createEmptyCells(Row row, int columnCount, Object value, CellStyle style, XSSFSheet sheet) {
-		sheet.autoSizeColumn(columnCount);
-		Cell cell = row.createCell(columnCount);
-		cell.setCellStyle(style);
-		if (value == null) {
-			cell.setCellValue("");
-			return;
-		}
-		if (value instanceof Integer) {
-			cell.setCellValue((Integer) value);
-		} else if (value instanceof Boolean) {
-			cell.setCellValue((Boolean) value);
-		} else {
-			cell.setCellValue((String) value);
+	public static void createEmptyCells(Row row, int colIndex, CellStyle style, XSSFSheet sheet, int numCells) {
+		for (int i = 0; i < numCells; i++) {
+			ExcelUtils.createCell(row, colIndex++, "", style, sheet);
 		}
 	}
 }
