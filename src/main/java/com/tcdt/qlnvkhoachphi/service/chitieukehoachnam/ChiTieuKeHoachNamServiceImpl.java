@@ -112,7 +112,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	private ChiTieuKeHoachNamRes create(ChiTieuKeHoachNamReq req, String loaiQd, Long qdGocId) throws Exception {
 		if (req == null)
-			return  null;
+			return null;
 
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
@@ -165,12 +165,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private List<VatTuNhapQueryDTO> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList, Integer nameKeHoach) {
-		return keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach -3, nameKeHoach - 1);
+		return keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach - 3, nameKeHoach - 1);
 	}
 
 	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList, Integer namKeHoach) {
 		List<String> namList = new ArrayList<>();
-		for (int i = 1; i <= 3; i++ ) {
+		for (int i = 1; i <= 3; i++) {
 			namList.add(String.valueOf(namKeHoach - i));
 		}
 		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, vatTuIdList, namList);
@@ -215,7 +215,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req) throws Exception {
 		if (req == null)
-			return  null;
+			return null;
 
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
@@ -330,7 +330,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private KeHoachLuongThucMuoi saveKeHoachMuoi(KeHoachMuoiDuTruReq khMuoiReq, UserInfo userInfo, Long ctkhnId,
-													  Map<Long, KeHoachLuongThucMuoi> mapKhltm) throws Exception {
+												 Map<Long, KeHoachLuongThucMuoi> mapKhltm) throws Exception {
 
 		KeHoachLuongThucMuoi keHoachLuongThucMuoi = new KeHoachLuongThucMuoi();
 		keHoachLuongThucMuoi.setTrangThai(Constants.MOI_TAO);
@@ -356,7 +356,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private List<KeHoachVatTu> saveListKeHoachVatTu(KeHoachNhapVatTuThietBiReq khVatTuReq, UserInfo userInfo, Long ctkhnId,
-												 Map<Long, KeHoachVatTu> mapKhvt) throws Exception {
+													Map<Long, KeHoachVatTu> mapKhvt) throws Exception {
 
 		List<KeHoachVatTu> keHoachVatTuList = new ArrayList<>();
 		Set<Long> removeIds = new HashSet<>();
@@ -454,8 +454,91 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> GAO_ID.equals(kh.getVatTuId()) || THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhVatTuList(keHoachVatTus);
-		return buildDetailResponse(ctkhn);
+		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
+		addEmptyDataToExport(response);
+
+		return response;
 	}
+
+	private void addEmptyVatTuNhap(List<Integer> namCoData, Integer namKeHoach, List<VatTuNhapRes> vatTuNhapRes, Integer soNamLuuVatTu) {
+		List<String> namList = new ArrayList<>();
+
+		for (int i = 1; i <= soNamLuuVatTu; i++) {
+			namList.add(String.valueOf(namKeHoach - i));
+		}
+
+
+		for (String namStr : namList) {
+			Integer nam = Integer.parseInt(namStr);
+			if (namCoData.contains(nam)) continue;
+			vatTuNhapRes.add(VatTuNhapRes.builder()
+					.nam(nam)
+					.soLuong(0D)
+					.build());
+		}
+	}
+
+	private void addEmptyDataToExport(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes) {
+		//Luong thuc
+		for (KeHoachLuongThucDuTruRes keHoachLuongThucDuTruRes : chiTieuKeHoachNamRes.getKhLuongThuc()) {
+			//Tồn kho đầu năm
+			List<Integer> namTkdnThoc = keHoachLuongThucDuTruRes.getTkdnThoc()
+					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+			this.addEmptyVatTuNhap(namTkdnThoc, chiTieuKeHoachNamRes.getNamKeHoach(),
+					keHoachLuongThucDuTruRes.getTkdnThoc(), Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
+
+
+			List<Integer> namTkdnGao = keHoachLuongThucDuTruRes.getTkdnGao()
+					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+			this.addEmptyVatTuNhap(namTkdnGao, chiTieuKeHoachNamRes.getNamKeHoach(),
+					keHoachLuongThucDuTruRes.getTkdnGao(), Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
+
+
+			//Xuất trong năm
+			List<Integer> namXtnThoc = keHoachLuongThucDuTruRes.getXtnThoc()
+					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+			this.addEmptyVatTuNhap(namXtnThoc, chiTieuKeHoachNamRes.getNamKeHoach(), keHoachLuongThucDuTruRes.getXtnThoc(),
+					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
+
+
+			List<Integer> namXtnGao = keHoachLuongThucDuTruRes.getXtnGao()
+					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+			this.addEmptyVatTuNhap(namXtnGao, chiTieuKeHoachNamRes.getNamKeHoach(),
+					keHoachLuongThucDuTruRes.getXtnGao(), Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
+		}
+
+		//Muối
+		for (KeHoachMuoiDuTruRes keHoachMuoiDuTruRes : chiTieuKeHoachNamRes.getKhMuoiDuTru()) {
+			//Tồn kho đầu năm
+			List<Integer> tkdnMuoi = keHoachMuoiDuTruRes.getTkdnMuoi()
+					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+			this.addEmptyVatTuNhap(tkdnMuoi, chiTieuKeHoachNamRes.getNamKeHoach(), keHoachMuoiDuTruRes.getTkdnMuoi(),
+					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
+
+			//Tồn kho đầu năm
+			List<Integer> xtnMuoi = keHoachMuoiDuTruRes.getXtnMuoi()
+					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+			this.addEmptyVatTuNhap(xtnMuoi, chiTieuKeHoachNamRes.getNamKeHoach(), keHoachMuoiDuTruRes.getXtnMuoi(),
+					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
+		}
+
+		//Vat tu
+		for (KeHoachVatTuRes keHoachVatTuRes : chiTieuKeHoachNamRes.getKhVatTu()) {
+			for (VatTuThietBiRes vatTuThietBiRes : keHoachVatTuRes.getVatTuThietBi()) {
+				List<Integer> cacNamTruoc = vatTuThietBiRes.getCacNamTruoc()
+						.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+				this.addEmptyVatTuNhap(cacNamTruoc, chiTieuKeHoachNamRes.getNamKeHoach(), vatTuThietBiRes.getCacNamTruoc(),
+						Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_VAT_TU);
+			}
+		}
+	}
+
 
 	@Override
 	public boolean updateStatus(StatusReq req) throws Exception {
