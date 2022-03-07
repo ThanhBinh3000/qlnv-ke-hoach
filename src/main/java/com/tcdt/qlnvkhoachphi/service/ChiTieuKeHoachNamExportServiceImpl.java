@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoachphi.service;
 
+import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
@@ -65,14 +66,26 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 	}
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
+	public Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
 
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
 		req.setDonViId(userInfo.getDvql());
+		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
 		return chiTieuKeHoachNamRepo.search(req, pageable);
 	}
 
+	@Override
+	public Page<ChiTieuKeHoachNamRes> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
+
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request");
+
+		req.setDonViId(userInfo.getDvql());
+		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
+		return chiTieuKeHoachNamRepo.search(req, pageable);
+	}
 }

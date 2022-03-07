@@ -199,7 +199,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	public final ResponseEntity<Resp> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
 		Resp resp = new Resp();
 		try {
-			resp.setData(chiTieuKeHoachNamExportSv.search(req, pageable));
+			resp.setData(chiTieuKeHoachNamExportSv.searchQd(req, pageable));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {
@@ -216,7 +216,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	public final ResponseEntity<Resp> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
 		Resp resp = new Resp();
 		try {
-			resp.setData(chiTieuKeHoachNamExportSv.search(req, pageable));
+			resp.setData(chiTieuKeHoachNamExportSv.searchQdDc(req, pageable));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {

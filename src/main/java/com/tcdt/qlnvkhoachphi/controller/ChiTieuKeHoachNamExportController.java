@@ -51,21 +51,4 @@ public class ChiTieuKeHoachNamExportController extends BaseController {
 		}
 
 	}
-
-	@ApiOperation(value = "Tra cứu chỉ tiêu kế hoạch năm", response = List.class)
-	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/search")
-	public final ResponseEntity<Resp> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
-		Resp resp = new Resp();
-		try {
-			resp.setData(chiTieuKeHoachNamExportSv.search(req, pageable));
-			resp.setStatusCode(Constants.RESP_SUCC);
-			resp.setMsg("Thành công");
-		} catch (Exception e) {
-			resp.setStatusCode(Constants.RESP_FAIL);
-			resp.setMsg(e.getMessage());
-			log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
-		}
-		return ResponseEntity.ok(resp);
-	}
 }
