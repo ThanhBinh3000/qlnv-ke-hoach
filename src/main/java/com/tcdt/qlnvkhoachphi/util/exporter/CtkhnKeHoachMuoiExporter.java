@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.ExcelUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
@@ -15,25 +16,25 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class CtkhnKeHoachMuoiExporter implements ExportService {
-	private int startRowIndex = 6;
 
 	@Override
 	public void export(XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_MUOI_DTNN);
 
-		writeHeaderLine(workbook, sheet);
+		writeHeaderLine(workbook, sheet, data);
 		writeDataLines(sheet, workbook, data);
 	}
 
-	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
+	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet, ChiTieuKeHoachNamRes data) {
 		//STYLE
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
@@ -64,14 +65,17 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 		//TỒN KHO ĐẦU NĂM: Trong đó
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TRONG_DO, 2, 2, 3, 5));
 
+		List<Integer> tkdnn = data.getKhMuoiDuTru().get(0).getTkdnMuoi().stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+
 		//TỒN KHO ĐẦU NĂM: Nhập 2019
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 3, 5, 3, 3));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnn.get(0)), 3, 5, 3, 3));
 
 		//TỒN KHO ĐẦU NĂM: Nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 3, 5, 4, 4));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnn.get(1)), 3, 5, 4, 4));
 
 		//TỒN KHO ĐẦU NĂM: Nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 3, 5, 5, 5));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnn.get(2)), 3, 5, 5, 5));
 
 
 		//-------------------------NHẬP TRONG NĂM
@@ -90,14 +94,17 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 		//XUẤT TRONG NĂM: Trong đó
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row2, Constants.ExcelHeader.TRONG_DO, 2, 2, 10, 12));
 
+		List<Integer> xtn = data.getKhMuoiDuTru().get(0).getXtnMuoi().stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+
 		//XUẤT TRONG NĂM: nhập 2019
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 3, 5, 10, 10));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, xtn.get(0)), 3, 5, 10, 10));
 
 		//XUẤT TRONG NĂM: nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 3, 5, 11, 11));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, xtn.get(1)), 3, 5, 11, 11));
 
 		//XUẤT TRONG NĂM: nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 3, 5, 12, 12));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row3, String.format(Constants.ExcelHeader.NAM_NHAP, xtn.get(2)), 3, 5, 12, 12));
 
 		//TỒN KHO CUỐI NĂM------------------
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.TON_KHO_CUOI_NAM, 0, 1, 13, 15));
@@ -112,6 +119,29 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 		}
 	}
 
+	private int mergeCellData(Row row, XSSFSheet sheet, String data, CellStyle style, int colIndex,
+							  int firstRow, int lastRow, int firstCol, int lastCol) {
+		try {
+			lastRow = firstRow;
+			firstCol = colIndex;
+			lastCol = firstCol + 2;
+
+			MergeCellObj mergeCellObj = ExcelUtils.buildMergeCell(row, data, firstRow, lastRow, firstCol, lastCol);
+
+			CellRangeAddress cellRangeAddress = mergeCellObj.getCellAddresses();
+
+			sheet.addMergedRegion(cellRangeAddress);
+
+			ExcelUtils.createCell(mergeCellObj.getRow(), cellRangeAddress.getFirstColumn(), mergeCellObj.getValue(), style, sheet);
+
+			firstRow = lastRow + 1;
+		} catch (Exception e) {
+			log.error("abc", e);
+		}
+
+		return lastCol;
+	}
+
 	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 
 		CellStyle style = workbook.createCellStyle();
@@ -121,49 +151,56 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 
 		Row row;
 
+		int startRowIndex = 6;
+		int firstRow = 6;
+		int lastRow = 0;
+		int firstCol = 0;
+		int lastCol = 0;
+
 		for (KeHoachMuoiDuTruRes line : data.getKhMuoiDuTru()) {
 			row = sheet.createRow(startRowIndex++);
 			int colIndex = 0;
 			// stt
-			ExcelUtils.createCell(row, colIndex++, line.getStt(), style, sheet);
+			ExcelUtils.createCell(row, colIndex, line.getStt(), style, sheet);
 
 			//cuc DTTNN khu vuc
-			ExcelUtils.createCell(row, colIndex++, line.getTenDonVi(), style, sheet);
+			colIndex++;
+			ExcelUtils.createCell(row, colIndex, line.getTenDonVi(), style, sheet);
 
 			//TỒN KHO ĐẦU NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongSoMuoi().toString(), style, sheet);
+			colIndex++;
+			ExcelUtils.createCell(row, colIndex, line.getTkdnTongSoMuoi().toString(), style, sheet);
 
 			//Nhập
-			if (CollectionUtils.isEmpty(line.getTkdnMuoi())) {
-				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
-			} else {
-				for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
-					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
-				}
+			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
+				colIndex++;
+				ExcelUtils.createCell(row, colIndex, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//NHẬP TRONG NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getNtnTongSoMuoi().toString(), style, sheet);
+			colIndex++;
+			colIndex = this.mergeCellData(row, sheet, line.getNtnTongSoMuoi().toString(), style, colIndex,
+					firstRow, lastRow, firstCol, lastCol);
 
 			//XUẤT TRONG NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoMuoi().toString(), style, sheet);
+			colIndex++;
+			ExcelUtils.createCell(row, colIndex, line.getXtnTongSoMuoi().toString(), style, sheet);
 
 			//Nhập
-			if (CollectionUtils.isEmpty(line.getXtnMuoi())) {
-				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
-			} else {
-				for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
-					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
-				}
+			for (VatTuNhapRes vatTuNhapRes : line.getXtnMuoi()) {
+				colIndex++;
+				ExcelUtils.createCell(row, colIndex, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//TỒN KHO CUỐI NĂM-------------------------
 			//Tổng số
-			ExcelUtils.createCell(row, colIndex++, line.getTkcnTongSoMuoi().toString(), style, sheet);
-
+			colIndex++;
+//			ExcelUtils.createCell(row, colIndex, line.getTkcnTongSoMuoi().toString(), style, sheet);
+			this.mergeCellData(row, sheet, line.getTkcnTongSoMuoi().toString(), style, colIndex,
+					firstRow, lastRow, firstCol, lastCol);
 		}
 	}
 }

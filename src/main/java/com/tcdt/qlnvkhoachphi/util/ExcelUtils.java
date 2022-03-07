@@ -35,9 +35,4 @@ public class ExcelUtils {
 		}
 	}
 
-	public static void createEmptyCells(Row row, int colIndex, CellStyle style, XSSFSheet sheet, int numCells) {
-		for (int i = 0; i < numCells; i++) {
-			ExcelUtils.createCell(row, colIndex++, "", style, sheet);
-		}
-	}
 }

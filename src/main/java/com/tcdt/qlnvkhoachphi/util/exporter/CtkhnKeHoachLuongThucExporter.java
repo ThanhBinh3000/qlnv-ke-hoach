@@ -15,25 +15,24 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CtkhnKeHoachLuongThucExporter implements ExportService {
-	private int startRowIndex = 6;
 
 	@Override
 	public void export(XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_LUONG_THUC_DTNN);
 
-		writeHeaderLine(workbook, sheet);
+		writeHeaderLine(workbook, sheet, data);
 		writeDataLines(sheet, workbook, data);
 	}
 
-	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
+	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet, ChiTieuKeHoachNamRes data) {
 		//STYLE
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
@@ -78,22 +77,27 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 				add(ExcelUtils.buildMergeCell(row4, Constants.ExcelHeader.TONG, 4, 5, 3, 3));
 
 		//TỒN KHO ĐẦU NĂM: Thóc - Nhập 2019
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 4, 5, 4, 4));
+		List<Integer> tkdnnThoc = data.getKhLuongThuc().get(0).getTkdnThoc().stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnnThoc.get(0)), 4, 5, 4, 4));
 
 		//TỒN KHO ĐẦU NĂM: Thóc - Nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 4, 5, 5, 5));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnnThoc.get(1)), 4, 5, 5, 5));
 
 		//TỒN KHO ĐẦU NĂM: Thóc - Nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 4, 5, 6, 6));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnnThoc.get(2)), 4, 5, 6, 6));
 
 		//TỒN KHO ĐẦU NĂM: Tổng-gạo
+
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, Constants.ExcelHeader.TONG, 4, 5, 7, 7));
 
+		List<Integer> tkdnnGao = data.getKhLuongThuc().get(0).getTkdnGao().stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
 		//TỒN KHO ĐẦU NĂM: Gạo - Nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 4, 5, 8, 8));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnnGao.get(0)), 4, 5, 8, 8));
 
 		//TỒN KHO ĐẦU NĂM: Gạo - Nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 4, 5, 9, 9));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, tkdnnGao.get(1)), 4, 5, 9, 9));
 
 		//-------------------------NHẬP TRONG NĂM
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.NHAP_TRONG_NAM, 0, 1, 10, 12));
@@ -129,22 +133,27 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, Constants.ExcelHeader.THOC, 4, 5, 14, 14));
 
 		//XUẤT TRONG NĂM: Thóc- nhập 2019
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2019"), 4, 5, 15, 15));
+		List<Integer> xtnThoc = data.getKhLuongThuc().get(0).getXtnThoc().stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, xtnThoc.get(0)), 4, 5, 15, 15));
 
 		//XUẤT TRONG NĂM: Thóc- nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 4, 5, 16, 16));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, xtnThoc.get(1)), 4, 5, 16, 16));
 
 		//XUẤT TRONG NĂM: Thóc- nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 4, 5, 17, 17));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, xtnThoc.get(2)), 4, 5, 17, 17));
 
 		//XUẤT TRONG NĂM: Gạo- tổng
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, Constants.ExcelHeader.GAO, 4, 5, 18, 18));
 
 		//XUẤT TRONG NĂM: Gạo- nhập 2020
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2020"), 4, 5, 19, 19));
+		List<Integer> xtnGao = data.getKhLuongThuc().get(0).getXtnGao().stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
+
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, xtnGao.get(0)), 4, 5, 19, 19));
 
 		//XUẤT TRONG NĂM: Gạo- nhập 2021
-		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, "2021"), 4, 5, 20, 20));
+		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row4, String.format(Constants.ExcelHeader.NAM_NHAP, xtnGao.get(1)), 4, 5, 20, 20));
 
 		//TỒN KHO CUỐI NĂM------------------
 		mergeCellHeaderRow.add(ExcelUtils.buildMergeCell(row0, Constants.ExcelHeader.TON_KHO_CUOI_NAM, 0, 1, 21, 23));
@@ -178,6 +187,8 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 
 		Row row;
 
+		int startRowIndex = 6;
+
 
 		for (KeHoachLuongThucDuTruRes line : data.getKhLuongThuc()) {
 			row = sheet.createRow(startRowIndex++);
@@ -193,17 +204,12 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongSoQuyThoc().toString(), style, sheet);
 
 			//THÓC:
-
 			//Tổng
 			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongThoc().toString(), style, sheet);
 
 			//Thóc nhập
-			if (CollectionUtils.isEmpty(line.getTkdnThoc())) {
-				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
-			} else {
-				for (VatTuNhapRes vatTuNhapRes : line.getTkdnThoc()) {
-					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
-				}
+			for (VatTuNhapRes vatTuNhapRes : line.getTkdnThoc()) {
+				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//GẠO:
@@ -211,12 +217,8 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getTkdnTongGao().toString(), style, sheet);
 
 			//Gạo nhập
-			if (CollectionUtils.isEmpty(line.getTkdnGao())) {
-				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
-			} else {
-				for (VatTuNhapRes vatTuNhapRes : line.getTkdnGao()) {
-					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
-				}
+			for (VatTuNhapRes vatTuNhapRes : line.getTkdnGao()) {
+				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//NHẬP TRONG NĂM-------------------------
@@ -234,26 +236,18 @@ public class CtkhnKeHoachLuongThucExporter implements ExportService {
 			ExcelUtils.createCell(row, colIndex++, line.getXtnTongSoQuyThoc().toString(), style, sheet);
 
 			//Thóc
-			ExcelUtils.createCell(row, colIndex++, line.getXtnThoc().toString(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getXtnTongThoc().toString(), style, sheet);
 
 			//Nhập Thóc
-			if (CollectionUtils.isEmpty(line.getXtnThoc())) {
-				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
-			} else {
-				for (VatTuNhapRes vatTuNhapRes : line.getXtnThoc()) {
-					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
-				}
+			for (VatTuNhapRes vatTuNhapRes : line.getXtnThoc()) {
+				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 			//Gạo
-			ExcelUtils.createCell(row, colIndex++, line.getXtnGao().toString(), style, sheet);
+			ExcelUtils.createCell(row, colIndex++, line.getXtnTongGao().toString(), style, sheet);
 
 			//Nhập Gạo
-			if (CollectionUtils.isEmpty(line.getXtnGao())) {
-				ExcelUtils.createEmptyCells(row, colIndex++, style, sheet, Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
-			} else {
-				for (VatTuNhapRes vatTuNhapRes : line.getXtnGao()) {
-					ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
-				}
+			for (VatTuNhapRes vatTuNhapRes : line.getXtnGao()) {
+				ExcelUtils.createCell(row, colIndex++, vatTuNhapRes.getSoLuong().toString(), style, sheet);
 			}
 
 			//TỒN KHO CUỐI NĂM-------------------------
