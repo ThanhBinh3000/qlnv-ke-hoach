@@ -14,7 +14,11 @@ import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +27,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -255,7 +264,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setDonViId(donvi.getId());
             response.setMaDonVi(donvi.getMaDvi());
 
-            List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
+            List<VatTuThietBiRes> vatTuThietBi = response.getNhomVatTuThietBi().stream().flatMap(n -> n.getVatTuThietBi().stream()).collect(Collectors.toList());
             VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
             vatTuThietBiRes.setMaVatTu(maHang);
             vatTuThietBiRes.setTenVatTu(matHang);
@@ -277,7 +286,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         if (CollectionUtils.isEmpty(responses))
             return Collections.emptyList();
 
-        Set<String> maVatTus = responses.stream().flatMap(r -> r.getVatTuThietBi().stream())
+        Set<String> maVatTus = responses.stream().flatMap(r -> r.getNhomVatTuThietBi().stream()).flatMap(n -> n.getVatTuThietBi().stream())
                 .map(VatTuThietBiRes::getMaVatTu).collect(Collectors.toSet());
         if (StringUtils.isEmpty(maVatTus))
             throw new Exception("Vật tư không tồn tại");
