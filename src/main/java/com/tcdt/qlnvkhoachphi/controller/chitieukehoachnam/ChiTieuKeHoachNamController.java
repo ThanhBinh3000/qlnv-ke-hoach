@@ -212,7 +212,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Tra cứu quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/quyet-dinh-dieu-chinh/")
+	@GetMapping("/quyet-dinh-dieu-chinh")
 	public final ResponseEntity<Resp> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
 		Resp resp = new Resp();
 		try {
