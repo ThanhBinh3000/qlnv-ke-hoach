@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class KeHoachMuoiDuTruReq {
+	@NotNull
+	@Min(value = 0, message = "Stt phải lớn hơn 0")
 	private Integer stt;
 	private Long id;
 	@NotNull(message = "Không được để trống")
@@ -23,6 +26,7 @@ public class KeHoachMuoiDuTruReq {
 	private String trichYeu;
 
 	// Nhap trong nam
+	@Min(value = 0, message = "Số lượng phải lớn hơn 0")
 	private Double nhapTrongNam;
 
 	// Xuat trong nam

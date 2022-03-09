@@ -94,6 +94,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (chiTieuKeHoachNam != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
+		this.validateCreateCtkhnRequest(req);
 		return this.create(req, ChiTieuKeHoachEnum.QD.getValue(), null);
 	}
 
@@ -205,6 +206,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes updateQd(ChiTieuKeHoachNamReq req) throws Exception {
+		this.validateCreateCtkhnRequest(req);
 		return this.update(req);
 	}
 
@@ -902,4 +904,64 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return response;
 	}
 
+	private void validateCreateCtkhnRequest(ChiTieuKeHoachNamReq req) throws Exception {
+		Set<Long> donViIdSet = new HashSet<>();
+		Set<Long> vatTuIdSet = new HashSet<>();
+
+		List<String> maDviLtm = new ArrayList<>();
+		List<String> maVatTuLtm = new ArrayList<>();
+
+		maVatTuLtm.add(MUOI_MA_VT);
+		maVatTuLtm.add(GAO_MA_VT);
+		maVatTuLtm.add(THOC_MA_VT);
+
+		req.getKhLuongThuc().forEach(k -> {
+			if (k.getDonViId() != null)
+				donViIdSet.add(k.getDonViId());
+		});
+
+		req.getKhMuoi().forEach(k -> {
+			if (k.getDonViId() != null)
+				donViIdSet.add(k.getDonViId());
+		});
+
+		vatTuIdSet.add(MUOI_ID);
+		vatTuIdSet.add(GAO_ID);
+		vatTuIdSet.add(THOC_ID);
+
+		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDviLtm, maVatTuLtm, req.getNamKeHoach());
+
+		for (KeHoachLuongThucDuTruReq khReq : req.getKhLuongThuc()) {
+			List<VatTuNhapReq> xtnGao = khReq.getXtnGao();
+			List<VatTuNhapReq> xtnThoc = khReq.getXtnThoc();
+
+			TonKhoDauNamRes tonKhoDauNamGao = tonKhoDauNamResList.stream().filter(t -> khReq.getDonViId().equals(t.getDonViId()) && GAO_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
+			TonKhoDauNamRes tonKhoDauNamThoc = tonKhoDauNamResList.stream().filter(t -> khReq.getDonViId().equals(t.getDonViId()) && THOC_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
+			for (VatTuNhapReq xtnReq : xtnGao) {
+				this.validateXuatTrongNam(xtnReq, tonKhoDauNamGao);
+			}
+
+			for (VatTuNhapReq xtnReq : xtnThoc) {
+				this.validateXuatTrongNam(xtnReq, tonKhoDauNamThoc);
+			}
+		}
+	}
+
+	private void validateXuatTrongNam(VatTuNhapReq xtnReq, TonKhoDauNamRes tonKhoDauNam) throws Exception {
+		Integer nam = xtnReq.getNam();
+		if (tonKhoDauNam == null && xtnReq.getSoLuong() > 0) {
+			throw new Exception("Xuất trong năm không được lớn hơn tồn đầu năm.");
+		} else if (tonKhoDauNam != null) {
+			List<VatTuNhapRes> tonKho = tonKhoDauNam.getTonKho();
+
+			if (CollectionUtils.isEmpty(tonKho) && xtnReq.getSoLuong() > 0) {
+				throw new Exception("Xuất trong năm không được lớn hơn tồn đầu năm.");
+			}
+
+			VatTuNhapRes tkdn = tonKho.stream().filter(tk -> tk.getNam().equals(nam)).findFirst().orElse(null);
+			if ((tkdn == null && xtnReq.getSoLuong() > 0) || (tkdn != null && xtnReq.getSoLuong() > tkdn.getSoLuong())) {
+				throw new Exception("Xuất trong năm không được lớn hơn tồn đầu năm.");
+			}
+		}
+	}
 }
