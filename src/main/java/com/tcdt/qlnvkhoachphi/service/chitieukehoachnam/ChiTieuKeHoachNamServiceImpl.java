@@ -176,12 +176,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach - 3, nameKeHoach - 1);
 	}
 
-	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> vatTuIdList, Integer namKeHoach) {
+	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> maVatTuList, Integer namKeHoach) {
 		List<String> namList = new ArrayList<>();
 		for (int i = 1; i <= 3; i++) {
 			namList.add(String.valueOf(namKeHoach - i));
 		}
-		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, vatTuIdList, namList);
+		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, maVatTuList, namList);
 
 		List<TonKhoDauNamRes> tonKhoDauNamResList = new ArrayList<>();
 		for (KtTrangthaiHienthoi trangthaiHienthoi : trangthaiHienthoiList) {
@@ -906,9 +906,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	private void validateCreateCtkhnRequest(ChiTieuKeHoachNamReq req) throws Exception {
 		Set<Long> donViIdSet = new HashSet<>();
-		Set<Long> vatTuIdSet = new HashSet<>();
 
-		List<String> maDviLtm = new ArrayList<>();
 		List<String> maVatTuLtm = new ArrayList<>();
 
 		maVatTuLtm.add(MUOI_MA_VT);
@@ -925,11 +923,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				donViIdSet.add(k.getDonViId());
 		});
 
-		vatTuIdSet.add(MUOI_ID);
-		vatTuIdSet.add(GAO_ID);
-		vatTuIdSet.add(THOC_ID);
+		List<QlnvDmDonvi> listDonVi = Lists.newArrayList(qlnvDmDonviRepository.findAllById(donViIdSet));
+		if (CollectionUtils.isEmpty(listDonVi))
+			throw new Exception("Đơn vị không tồn tại.");
 
-		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDviLtm, maVatTuLtm, req.getNamKeHoach());
+		List<String> maDvis = listDonVi.stream().map(QlnvDmDonvi::getMaDvi).collect(Collectors.toList());
+		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDvis, maVatTuLtm, req.getNamKeHoach());
 
 		for (KeHoachLuongThucDuTruReq khReq : req.getKhLuongThuc()) {
 			List<VatTuNhapReq> xtnGao = khReq.getXtnGao();
@@ -943,6 +942,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 			for (VatTuNhapReq xtnReq : xtnThoc) {
 				this.validateXuatTrongNam(xtnReq, tonKhoDauNamThoc);
+			}
+		}
+
+		for (KeHoachMuoiDuTruReq khReq : req.getKhMuoi()) {
+			List<VatTuNhapReq> xtnMuoi = khReq.getXuatTrongNam();
+
+			TonKhoDauNamRes tonKhoDauNamMuoi = tonKhoDauNamResList.stream().filter(t -> khReq.getDonViId().equals(t.getDonViId()) && MUOI_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
+			for (VatTuNhapReq xtnReq : xtnMuoi) {
+				this.validateXuatTrongNam(xtnReq, tonKhoDauNamMuoi);
 			}
 		}
 	}
