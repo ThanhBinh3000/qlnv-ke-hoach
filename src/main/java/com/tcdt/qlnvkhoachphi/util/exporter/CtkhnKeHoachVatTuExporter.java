@@ -4,6 +4,7 @@ import com.tcdt.qlnvkhoachphi.entities.MergeCellObj;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.NhomVatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.ExcelUtils;
@@ -106,8 +107,12 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 		firstCol = colIndex;
 		lastCol = colIndex;
 		//Build cell Cục DTTN Khu vực
-		lastRow = firstRow + data.getVatTuThietBi().size() - 1;
-
+		lastRow = firstRow;// + data.getVatTuThietBi().size() - 1;
+		data.getNhomVatTuThietBi().forEach(n -> {
+			lastRow++;
+			lastRow = lastRow + n.getVatTuThietBi().size();
+		});
+		lastRow = lastRow - 1;
 		Row row = sheet.createRow(firstRow);
 
 		MergeCellObj mergeCellObj = ExcelUtils.buildMergeCell(row, data.getTenDonVi(), firstRow, lastRow, firstCol, lastCol);
@@ -139,29 +144,52 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 
 			//cuc DTTNN khu vuc
 			this.buildColCucDtnnKhuVuc(sheet, line, style, colIndex++);
+			List<NhomVatTuThietBiRes> nhomVatTuThietBiList = line.getNhomVatTuThietBi();
+			for (NhomVatTuThietBiRes nhomVatTuThietBiRes : nhomVatTuThietBiList) {
 
-
-			for (VatTuThietBiRes vatTuThietBiRes : line.getVatTuThietBi()) {
 				//Mã hàng
-				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getMaVatTuCha(), style, sheet);
 				//mặt hàng
-				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTenVatTu(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTenVatTuCha(), style, sheet);
 				//Đơn vị tính
-				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getDonViTinh(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getDonViTinh(), style, sheet);
 				//Tổng số
-				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongNhap().toString(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTongNhap().toString(), style, sheet);
 
 				//Tổng các năm trước
-				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
 
 				//Các năm khác chuyển sang
-				for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
+				for (VatTuNhapRes vtCacNamTruoc : nhomVatTuThietBiRes.getCacNamTruoc()) {
 					ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
 				}
 
 				//Nhập trong năm
-				ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
+				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
+
+				for (VatTuThietBiRes vatTuThietBiRes : nhomVatTuThietBiRes.getVatTuThietBi()) {
+					//Mã hàng
+					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
+					//mặt hàng
+					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTenVatTu(), style, sheet);
+					//Đơn vị tính
+					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getDonViTinh(), style, sheet);
+					//Tổng số
+					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongNhap().toString(), style, sheet);
+
+					//Tổng các năm trước
+					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
+
+					//Các năm khác chuyển sang
+					for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
+						ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
+					}
+
+					//Nhập trong năm
+					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
+				}
 			}
+
 		}
 	}
 }

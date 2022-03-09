@@ -828,7 +828,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 					nhomVatTuThietBiRes.setMaVatTuCha(vatTuCha.getMa());
 					nhomVatTuThietBiRes.setTenVatTuCha(vatTuCha.getTen());
 					nhomVatTuThietBiRes.setVatTuChaId(vatTuCha.getId());
-
+					nhomVatTuThietBiRes.setDonViTinh(vatTuCha.getMaDviTinh());
 					keHoachVatTuRes.getNhomVatTuThietBi().add(nhomVatTuThietBiRes);
 				}
 
@@ -875,7 +875,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		});
 
 		List<VatTuNhapQueryDTO> vatTuNhapQueryDTOList = this.getKeHoachVatTuThietBiCacNamTruoc(vatTuIdList, chiTieuKeHoachNam.getNamKeHoach());
-		System.out.println();
 		khVatTuResList.forEach(k -> {
 			for (NhomVatTuThietBiRes nhomVatTuThietBiRes : k.getNhomVatTuThietBi()) {
 				for (VatTuThietBiRes vatTu : nhomVatTuThietBiRes.getVatTuThietBi()) {
