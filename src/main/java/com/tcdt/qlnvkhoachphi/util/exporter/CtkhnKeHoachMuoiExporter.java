@@ -16,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 
 	@Override
 	public void export(XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
+		if (CollectionUtils.isEmpty(data.getKhMuoiDuTru())) {
+			log.info("Không có data chỉ tiêu kế hoạch muối");
+			throw new IllegalArgumentException("Không có data chỉ tiêu kế hoạch muối");
+		}
+
 		XSSFSheet sheet = workbook
 				.createSheet(Constants.ChiTieuKeHoachNamExport.SHEET_KE_HOACH_MUOI_DTNN);
 
@@ -35,6 +41,7 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 	}
 
 	private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet, ChiTieuKeHoachNamRes data) {
+
 		//STYLE
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
@@ -143,7 +150,6 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 	}
 
 	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
-
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
 		font.setFontHeight(14);
@@ -198,7 +204,6 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 			//TỒN KHO CUỐI NĂM-------------------------
 			//Tổng số
 			colIndex++;
-//			ExcelUtils.createCell(row, colIndex, line.getTkcnTongSoMuoi().toString(), style, sheet);
 			this.mergeCellData(row, sheet, line.getTkcnTongSoMuoi().toString(), style, colIndex,
 					firstRow, lastRow, firstCol, lastCol);
 		}

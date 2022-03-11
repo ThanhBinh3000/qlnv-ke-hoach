@@ -23,12 +23,6 @@ import java.util.List;
 
 @Component
 public class CtkhnKeHoachVatTuExporter implements ExportService {
-	private final int startRowIndex = 6;
-
-	private int firstRow = 0;
-	private int lastRow = 0;
-	private int firstCol = 0;
-	private int lastCol = 0;
 
 	@Override
 	public void export(XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
@@ -102,28 +96,15 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 		}
 	}
 
-	private void buildColCucDtnnKhuVuc(XSSFSheet sheet, KeHoachVatTuRes data, CellStyle style, int colIndex) {
-		firstRow = startRowIndex;
-		firstCol = colIndex;
-		lastCol = colIndex;
-		//Build cell Cục DTTN Khu vực
-		lastRow = firstRow;// + data.getVatTuThietBi().size() - 1;
-		data.getNhomVatTuThietBi().forEach(n -> {
-			lastRow++;
-			lastRow = lastRow + n.getVatTuThietBi().size();
-		});
-		lastRow = lastRow - 1;
-		Row row = sheet.createRow(firstRow);
-
-		MergeCellObj mergeCellObj = ExcelUtils.buildMergeCell(row, data.getTenDonVi(), firstRow, lastRow, firstCol, lastCol);
+	private void mergeCellData(XSSFSheet sheet, String data, CellStyle style, Row row,
+							   int firstRow, int lastRow, int firstCol, int lastCol) {
+		MergeCellObj mergeCellObj = ExcelUtils.buildMergeCell(row, data, firstRow, lastRow, firstCol, lastCol);
 
 		CellRangeAddress cellRangeAddress = mergeCellObj.getCellAddresses();
 
 		sheet.addMergedRegion(cellRangeAddress);
 
 		ExcelUtils.createCell(mergeCellObj.getRow(), cellRangeAddress.getFirstColumn(), mergeCellObj.getValue(), style, sheet);
-
-		firstRow = lastRow + 1;
 	}
 
 	private void writeDataLines(XSSFSheet sheet, XSSFWorkbook workbook, ChiTieuKeHoachNamRes data) {
@@ -132,21 +113,38 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 		XSSFFont font = workbook.createFont();
 		font.setFontHeight(14);
 		style.setFont(font);
+		style.setVerticalAlignment(VerticalAlignment.CENTER);
 		Row row;
 
+		int firstRow = 0;
+		int lastRow = 0;
+		int firstCol = 0;
+		int lastCol = 0;
+		int rowIndex = 6;
 
 		for (KeHoachVatTuRes line : data.getKhVatTu()) {
-			int startIndex = startRowIndex;
-			row = sheet.createRow(startIndex);
+			//Tạo row CỤC DTNN KHU VỰC/STT
+			row = sheet.createRow(rowIndex);
 			int colIndex = 0;
-			// stt
-			ExcelUtils.createCell(row, colIndex++, line.getStt().toString(), style, sheet);
-
-			//cuc DTTNN khu vuc
-			this.buildColCucDtnnKhuVuc(sheet, line, style, colIndex++);
 			List<NhomVatTuThietBiRes> nhomVatTuThietBiList = line.getNhomVatTuThietBi();
-			for (NhomVatTuThietBiRes nhomVatTuThietBiRes : nhomVatTuThietBiList) {
 
+			for (NhomVatTuThietBiRes nhomVatTuThietBiRes : nhomVatTuThietBiList) {
+				// stt
+				firstRow = rowIndex;
+				lastRow = firstRow + nhomVatTuThietBiRes.getVatTuThietBi().size();
+				firstCol = colIndex;
+				lastCol = firstCol;
+
+				this.mergeCellData(sheet, line.getStt().toString(), style, row, firstRow, lastRow, firstCol, lastCol);
+
+				//cuc DTTNN khu vuc
+				firstRow = rowIndex;
+				lastRow = firstRow + nhomVatTuThietBiRes.getVatTuThietBi().size();
+				firstCol = colIndex + 1;
+				lastCol = firstCol;
+
+				this.mergeCellData(sheet, line.getTenDonVi(), style, row, firstRow, lastRow, firstCol, lastCol);
+				colIndex = colIndex + 2;
 				//Mã hàng
 				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getMaVatTuCha(), style, sheet);
 				//mặt hàng
@@ -168,6 +166,9 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
 
 				for (VatTuThietBiRes vatTuThietBiRes : nhomVatTuThietBiRes.getVatTuThietBi()) {
+					rowIndex = rowIndex + 1;
+					row = sheet.createRow(rowIndex);
+					colIndex = 2;
 					//Mã hàng
 					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
 					//mặt hàng
@@ -188,6 +189,7 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 					//Nhập trong năm
 					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
 				}
+				rowIndex = rowIndex + 1;
 			}
 
 		}
