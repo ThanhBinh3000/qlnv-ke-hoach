@@ -110,6 +110,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tìm thấy quyết định gốc.");
 
 		ChiTieuKeHoachNam qdGoc = optionalQdGoc.get();
+		if (!ChiTieuKeHoachNamStatus.DA_DUYET.getId().equals(qdGoc.getTrangThai())) {
+			throw new Exception("Không thể điều chỉnh quyết định chưa duyệt");
+		}
 		qdGoc.setLastest(false);
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
@@ -402,17 +405,42 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
-	public boolean delete(Long id) throws Exception {
+	@Transactional(rollbackOn = Exception.class)
+	public boolean deleteQd(Long id) throws Exception {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request.");
 
-		Optional<ChiTieuKeHoachNam> optionalChiTieuKeHoachNam = chiTieuKeHoachNamRepository.findById(id);
-		if (!optionalChiTieuKeHoachNam.isPresent())
+		ChiTieuKeHoachNam item = chiTieuKeHoachNamRepository.findByIdAndLoaiQuyetDinh(id, ChiTieuKeHoachEnum.QD.getValue());
+		if (item == null)
 			throw new Exception("Không tìm thấy dữ liệu.");
 
-		ChiTieuKeHoachNam chiTieuKeHoachNam = optionalChiTieuKeHoachNam.get();
+		if (ChiTieuKeHoachNamStatus.DA_DUYET.getId().equals(item.getTrangThai())) {
+			throw new Exception("Không thể xóa quyết định đã duyệt");
+		}
 
+		return this.delete(item);
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public boolean deleteQdDc(Long id) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
+
+		ChiTieuKeHoachNam item = chiTieuKeHoachNamRepository.findByIdAndLoaiQuyetDinh(id, ChiTieuKeHoachEnum.QD_DC.getValue());
+		if (item == null)
+			throw new Exception("Không tìm thấy dữ liệu.");
+
+		if (ChiTieuKeHoachNamStatus.DA_DUYET.getId().equals(item.getTrangThai())) {
+			throw new Exception("Không thể xóa quyết định điều chỉnh đã duyệt");
+		}
+
+		return this.delete(item);
+	}
+
+	public boolean delete(ChiTieuKeHoachNam chiTieuKeHoachNam) throws Exception {
 		List<KeHoachLuongThucMuoi> keHoachLuongThucMuoiList = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		List<KeHoachXuatLuongThucMuoi> keHoachXuatLuongThucMuoiList = keHoachXuatLuongThucMuoiRepository.findByKeHoachIdIn(keHoachLuongThucMuoiList.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toList()));
 		keHoachXuatLuongThucMuoiRepository.deleteAll(keHoachXuatLuongThucMuoiList);
@@ -420,7 +448,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<KeHoachVatTu> keHoachVatTuList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		keHoachVatTuRepository.deleteAll(keHoachVatTuList);
 		chiTieuKeHoachNamRepository.delete(chiTieuKeHoachNam);
-
 		return true;
 	}
 

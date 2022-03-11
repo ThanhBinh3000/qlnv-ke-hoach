@@ -25,7 +25,9 @@ public interface ChiTieuKeHoachNamService {
 	@Transactional(rollbackOn = Exception.class)
 	QdDcChiTieuKeHoachRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception;
 
-	boolean delete(Long id) throws Exception;
+	boolean deleteQd(Long id) throws Exception;
+
+	boolean deleteQdDc(Long id) throws Exception;
 
 	ChiTieuKeHoachNamRes detailQd(Long id) throws Exception;
 

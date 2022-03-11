@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -224,7 +223,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 		return ResponseEntity.ok(resp);
 	}
 
-	@ApiOperation(value = "Export Chỉ tiêu kế hoạch năm ra excel", response = List.class)
+	@ApiOperation(value = "Export chi tiết chỉ tiêu kế hoạch năm ra excel", response = List.class)
 	@PostMapping(value = "/export", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public void exportToExcel(HttpServletResponse response,
@@ -244,5 +243,79 @@ public class ChiTieuKeHoachNamController extends BaseController {
 			log.error("Error can not export", e);
 		}
 
+	}
+
+	@ApiOperation(value = "Export Chỉ tiêu kế hoạch năm ra excel", response = List.class)
+	@PostMapping(value = "/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public void exportListQdToExcel(HttpServletResponse response) {
+
+		try {
+			response.setContentType("application/octet-stream");
+			DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+			String currentDateTime = dateFormatter.format(new Date());
+
+			String headerKey = "Content-Disposition";
+			String headerValue = "attachment; filename=chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
+			response.setHeader(headerKey, headerValue);
+			chiTieuKeHoachNamExportSv.exportListQdToExcel(response);
+		} catch (Exception e) {
+			log.error("Error can not export", e);
+		}
+
+	}
+
+	@ApiOperation(value = "Export quyết định điều chỉnh chỉ tiêu kế hoạch năm ra excel", response = List.class)
+	@PostMapping(value = "/quyet-dinh-dieu-chinh/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public void exportListQdDcToExcel(HttpServletResponse response) {
+
+		try {
+			response.setContentType("application/octet-stream");
+			DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+			String currentDateTime = dateFormatter.format(new Date());
+
+			String headerKey = "Content-Disposition";
+			String headerValue = "attachment; filename=quyent_dinh_dieu_chinh_chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
+			response.setHeader(headerKey, headerValue);
+			chiTieuKeHoachNamExportSv.exportListQdDcToExcel(response);
+		} catch (Exception e) {
+			log.error("Error can not export", e);
+		}
+
+	}
+
+	@ApiOperation(value = "Xóa chỉ tiêu kế hoạch năm lương thực, muối, vật tư", response = List.class)
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resp> deleteQd(@PathVariable("id") Long id) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.deleteQd(id));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Xóa quyết định điều chỉnh kế hoạch lương thực, muối, vật tư", response = List.class)
+	@DeleteMapping(value = "/quyet-dinh-dieu-chinh/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resp> deleteQdDc(@PathVariable("id") Long id) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.deleteQdDc(id));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
 	}
 }
