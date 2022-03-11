@@ -29,7 +29,9 @@ public class QlnvKhvonphiNcauXuatDtqgVtroHnam implements Serializable {
 	@Column(name = "QLNV_KHVONPHI_ID")
 	private Long qlnvKhvonphiId;
 
-	@Column(name = "LUONG_XUAT_VTRO")
-	private Long LuongXuatVtro;
+	@Column(name = "LUONG_XUAT_GAO_VTRO")
+	private Long luongXuatGaoVtro;
 
+	@Column(name = "LUONG_XUAT_THOC_VTRO")
+	private Long luongXuatThocVtro;
  }

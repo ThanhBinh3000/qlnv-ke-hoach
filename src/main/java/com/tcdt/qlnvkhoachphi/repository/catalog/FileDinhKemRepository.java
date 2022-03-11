@@ -14,14 +14,14 @@ import com.tcdt.qlnvkhoachphi.table.catalog.FileDinhKem;
 
 @Repository
 public interface FileDinhKemRepository extends CrudRepository<FileDinhKem, Long> {
-	String fileDinhKem = "SELECT * FROM FILE_DINH_KEM t "
+	String fileDinhKem = "SELECT * FROM FILE_DINH_KEM_KHVONPHI t "
 			+ "WHERE (:qlnvId is null or t.QLNV_ID = :qlnvId) ";
 	@Query(value = fileDinhKem, nativeQuery = true)
 	ArrayList<FileDinhKem> findFileDinhKemByQlnvId(Long qlnvId);
 
 	@Transactional
 	@Modifying
-	@Query(value = "DELETE FROM FILE_DINH_KEM u WHERE u.ID in ?1", nativeQuery = true)
+	@Query(value = "DELETE FROM FILE_DINH_KEM_KHVONPHI u WHERE u.ID in ?1", nativeQuery = true)
 	int deleteWithIds(List<Long> ids);
 
 

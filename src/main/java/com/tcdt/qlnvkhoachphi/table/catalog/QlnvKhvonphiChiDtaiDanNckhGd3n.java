@@ -36,7 +36,7 @@ public class QlnvKhvonphiChiDtaiDanNckhGd3n implements Serializable {
 	private String tenDtaiDan;
 
 	@Column(name = "MA_DVI")
-	private Long maDvi;
+	private String maDvi;
 
 	@Column(name = "TG_BDAU")
 	private Long   tgBdau;

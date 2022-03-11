@@ -83,8 +83,24 @@ public class Constants {
 	public static final String QLNV_KHVONPHI_TC_THOP_NNCAU_CHI_TX_GD3N = "29";
 	public static final String QLNV_KHVONPHI_TC_CTIET_NCAU_CHI_TX_GD3N = "30";
 	public static final String QLNV_KHVONPHI_TC_THOP_MTIEU_NVU_CYEU_NCAU_CHI_MOI_GD3N = "31";
+	public static final String QLNV_KHVONPHI_TC_KHOACH_DTAO_BOI_DUONG_GD3N = "32";
+
+    //3.2.8 Loại Bcao thực hiện dự toán chi
+	public static final String QLNV_KHVONPHI_BCAO_THINH_SDUNG_DTOAN_PL1 = "50";
+	public static final String QLNV_KHVONPHI_BCAO_THINH_SDUNG_DTOAN_PL2 = "51";
+	public static final String QLNV_KHVONPHI_BCAO_THINH_SDUNG_DTOAN_PL3 = "52";
+
+	// 3.2.9 Loại Bcao kết quả thực hiện vốn phí
+	public static final String QLNV_KHVONPHI_BCAO_KQUA_THIEN_NHAP_MUA_HANG = "90";
+	public static final String QLNV_KHVONPHI_BCAO_KQUA_THIEN_XUAT_HANG = "91";
+	public static final String QLNV_KHVONPHI_BCAO_KQUA_CTIET_THIEN_PHI_NHAP_MUA = "92";
+	public static final String QLNV_KHVONPHI_BCAO_KQUA_CTIET_THIEN_PHI_XUAT_HANG = "93";
+	public static final String QLNV_KHVONPHI_BCAO_KQUA_CTIET_THIEN_BQUAN_LAN_DAU = "94";
+	//3.2.6.10
+	public static final String QLNV_KHVONPHI_PA_GIAO_SO_KT = "60";
 
 	// Trang thái báo cáo
+	public static final String TT_BC_0 = "0"; // Đã xóa,
 	public static final String TT_BC_1 = "1"; // Đang soạn,
 	public static final String TT_BC_2 = "2"; // Trình duyệt,
 	public static final String TT_BC_3 = "3"; // Trưởng BP từ chối,
@@ -111,6 +127,22 @@ public class Constants {
 
 	// file dinh kem
 	public static final String QLNV_KH_VON_PHI = "QLNV_KH_VON_PHI";
+
+	public static final String QLNV_KHVONPHI_TD_DU_TOAN = "QLNV_KHVONPHI_TD_DU_TOAN";
+	public static final String QLNV_KHVONPHI_DC_DU_TOAN_CHI = "QLNV_KHVONPHI_DC_DU_TOAN_CHI";
+	public static final String QLNV_KHVONPHI_GIAO_DU_TOAN_CHI = "QLNV_KHVONPHI_GIAO_DU_TOAN_CHI";
+	public static final String QLNV_KHVONPHI_CVMB_TTTH = "QLNV_KHVONPHI_CVMB_TTTH";
+	public static final String QLNV_KHVONPHI_BC_DU_TOAN_CHI = "QLNV_KHVONPHI_BC_DU_TOAN_CHI";
+	public static final String QLNV_KHVONPHI_BC_KQ = "QLNV_KHVONPHI_BC_KQ";
+	public static final String QLNV_KHVONPHI_PHANBO_DTOAN_CHI = "QLNV_KHVONPHI_PHANBO_DTOAN_CHI";
+	public static final String QLNV_KHVONPHI_QD_GIAO_DTOAN_CHI = "QLNV_KHVONPHI_PHANBO_DTOAN_CHI";
+
+
+	public static final String QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG = "QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG";
+
+
+
+
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static final class ChiTieuKeHoachNamExport {

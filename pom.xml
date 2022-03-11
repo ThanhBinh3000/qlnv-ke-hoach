@@ -22,6 +22,26 @@
 		<start-class>com.tcdt.qlnvkhoachphi.QlnvKHoachPhiApplication</start-class>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0-b170201.1204</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>2.3.0-b170127.1453</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -243,14 +263,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
-<!--		<dependency>-->
-<!--			<groupId>com.opencsv</groupId>-->
-<!--			<artifactId>opencsv</artifactId>-->
-<!--			<version>5.6</version>-->
-<!--		</dependency>-->
-
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.activiti.dependencies</groupId>
 			<artifactId>activiti-dependencies</artifactId>
 			<version>7.1.0.M6</version>
@@ -267,7 +280,8 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-image-generator</artifactId>
 			<version>7.1.0.M6</version>
-		</dependency> -->
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

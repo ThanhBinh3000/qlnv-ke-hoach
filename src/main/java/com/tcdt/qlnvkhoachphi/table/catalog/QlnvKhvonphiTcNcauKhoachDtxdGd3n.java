@@ -47,6 +47,9 @@ public class QlnvKhvonphiTcNcauKhoachDtxdGd3n implements Serializable {
 	@Column(name = "DDIEM_MO_TK")
 	private String ddiemMoTk;
 
+	@Column(name = "MA_SO_DAN")
+	private String maSoDan;
+
 	@Column(name = "MA_NGANH_KTE")
 	private String maNganhKte;
 

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ClientCallExceptionHandler extends RuntimeException {
+	private static final long serialVersionUID = -291011096353901722L;
+
 	@ResponseBody
 	@ExceptionHandler(value = ClientCallException.class)
 	public ResponseEntity<?> handleException(ClientCallException exception) {

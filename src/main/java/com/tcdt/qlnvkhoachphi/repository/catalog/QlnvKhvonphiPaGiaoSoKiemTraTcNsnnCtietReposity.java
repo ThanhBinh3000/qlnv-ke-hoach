@@ -22,7 +22,7 @@ public interface QlnvKhvonphiPaGiaoSoKiemTraTcNsnnCtietReposity extends
 
 	@Transactional
 	@Modifying
-	@Query(value = "DELETE FROM QLNV_KHVONPHI_TC_DTOAN_CHI_MSAM_MMOC_TBI_CHUYEN_DUNG_GD3N u WHERE u.ID in ?1", nativeQuery = true)
+	@Query(value = "DELETE FROM QLNV_KHVONPHI_PA_GIAO_SO_KIEM_TRA_TC_NSNN_CTIET u WHERE u.ID in ?1", nativeQuery = true)
 	int deleteWithIds(List<Long> ids);
 	
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 public class QlnvKhvonphiTcDtoanPhiNxuatDtqgHnamEntity {
 	Long id;
 	Long qlnvKhvonphiId;
+	Long stt;
 	String maCucDtnnKvuc;
 	Long nxuatThocLuongXuat;
 	Long nxuatThocLuongNhap;
@@ -18,5 +19,5 @@ public class QlnvKhvonphiTcDtoanPhiNxuatDtqgHnamEntity {
 	Long nxuatGaoLuongDmucPhiNhap;
 	Long nxuatGaoLuongTtien;
 
-	Object lstTcDtoanPhiNxuatDtqgVtuTbiHnam;
+	Object lstTcDtoanPhiNxuatDtqgVtuTbiHnams;
 }

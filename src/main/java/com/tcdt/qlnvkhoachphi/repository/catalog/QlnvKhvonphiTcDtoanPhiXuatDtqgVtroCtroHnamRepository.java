@@ -15,21 +15,21 @@ public interface QlnvKhvonphiTcDtoanPhiXuatDtqgVtroCtroHnamRepository extends Cr
 	String qlnvKhvonphiTcDtoanPhiXuatDtqgVtroCtroHnam = "SELECT * FROM QLNV_KHVONPHI_TC_DTOAN_PHI_XUAT_DTQG_VTRO_CTRO_HNAM t "
 			+ "WHERE t.QLNV_KHVONPHI_ID = :qlnvKhvonphiId ";
 
-	String tongHop = " SELECT ROWNUM as ID,a.* FROM (\r\n" + 
-			"    SELECT '' as QLNV_KHVONPHI_ID\r\n" + 
-			"    ,'' as STT\r\n" + 
-			"    ,t.MA_DVI as MA_CUC_DTNN_KVUC\r\n" + 
-			"    ,Sum(t.LUONG_XUAT_VTRO) as LUONG\r\n" + 
-			"    ,'' as CPHI_XUAT_CO_DMUC\r\n" + 
-			"    ,'' as CPHI_XUAT_CHUA_DMUC\r\n" + 
-			"    ,'' as THANH_TIEN_CO_DMUC\r\n" + 
-			"    ,'' as THANH_TIEN_KHONG_DMUC\r\n" + 
-			"    ,'' as THANH_TIEN_CONG\r\n" + 
-			"			FROM (\r\n" + 
-			"                SELECT ct.LUONG_XUAT_VTRO,vp.MA_DVI FROM QLNV_KHVONPHI_NCAU_XUAT_DTQG_VTRO_HNAM ct \r\n" + 
-			"                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id \r\n" + 
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi \r\n" + 
-			"                WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t\r\n" + 
+	String tongHop = " SELECT ROWNUM as ID,a.* FROM (" + 
+			"    SELECT '' as QLNV_KHVONPHI_ID" + 
+			"    ,'' as STT" + 
+			"    ,t.MA_DVI as MA_CUC_DTNN_KVUC" + 
+			"    ,Sum(t.LUONG_XUAT_VTRO) as LUONG" + 
+			"    ,'' as CPHI_XUAT_CO_DMUC" + 
+			"    ,'' as CPHI_XUAT_CHUA_DMUC" + 
+			"    ,'' as THANH_TIEN_CO_DMUC" + 
+			"    ,'' as THANH_TIEN_KHONG_DMUC" + 
+			"    ,'' as THANH_TIEN_CONG" + 
+			"			FROM (" + 
+			"                SELECT ct.LUONG_XUAT_VTRO,vp.MA_DVI FROM QLNV_KHVONPHI_NCAU_XUAT_DTQG_VTRO_HNAM ct " + 
+			"                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
+			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi " + 
+			"                WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t" + 
 			"                GROUP BY t.MA_DVI) a";
 
 	@Query(value = tongHop, nativeQuery = true)

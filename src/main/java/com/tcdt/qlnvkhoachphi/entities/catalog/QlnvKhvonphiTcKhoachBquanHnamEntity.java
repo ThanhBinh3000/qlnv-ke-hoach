@@ -4,10 +4,9 @@ import lombok.Data;
 
 @Data
 public class QlnvKhvonphiTcKhoachBquanHnamEntity {
-
 	Long id;
 	Long qlnvKhvonphiId;
-
+	Long stt;
 	String maCucDtnnKvuc;
 	Long kphiBquanCoDmucThocTx;
 	Long kphiBquanCoDmucThocLd;
@@ -17,5 +16,5 @@ public class QlnvKhvonphiTcKhoachBquanHnamEntity {
 	Long kphiBquanChuaDmucTong;
 	Long tongCong;
 
-	Object lstTcKhoachBquanTbiVtuHnam;
+	Object lstTcKhoachBquanTbiVtuHnams;
 }

@@ -11,11 +11,13 @@ public class QlnvKhvonphiResp {
 	Long maDvi;
 	String maLoaiBcao;
 	Long namBcao;
+	Long namHienHanh;
 	String trangThai;
 	Date ngayTao;
 	String nguoiTao;
 	Date ngaySua;
 	String nguoiSua;
+	String lyDoTuChoi;
 
 	Object lstCTietBCao;
 	Object lstFile;

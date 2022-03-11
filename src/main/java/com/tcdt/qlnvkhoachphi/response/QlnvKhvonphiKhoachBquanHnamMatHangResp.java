@@ -9,7 +9,7 @@ public class QlnvKhvonphiKhoachBquanHnamMatHangResp {
 
 	Long id;
 	Long qlnvKhvonphiId;
-
+	Long stt;
 	Long KphiBquanThocTx;
 	Long KphiBquanThocLd;
 	Long KphiBquanGaoTx;

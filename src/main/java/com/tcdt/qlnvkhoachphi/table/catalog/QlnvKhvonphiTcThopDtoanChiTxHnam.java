@@ -80,15 +80,33 @@ public class QlnvKhvonphiTcThopDtoanChiTxHnam implements Serializable {
 	@Column(name = "K341_TCONG")
 	private Long k341Tcong;
 
-	@Column(name = "K341_LUONG")
-	private Long k341Luong;
+	@Column(name = "K341_LUONG_TU_CHU")
+	private Long k341LuongTuChu;
 
-	@Column(name = "K341_TX_THEO_DMUC")
-	private Long k341TxTheoDmuc;
+	@Column(name = "K341_TX_THEO_DMUC_TU_CHU")
+	private Long k341TxTheoDmucTuChu;
 
-	@Column(name = "K341_CHI_TX_KHONG_DMUC")
-	private Long k341ChiTxKhongDmuc;
-
+	@Column(name = "K341_CHI_TX_KHONG_DMUC_TU_CHU")
+	private Long k341ChiTxKhongDmucTuChu;
+	
+	@Column(name = "K341_LUONG_KHONG_TU_CHU")
+	private Long k341LuongKhongTuChu;
+	
+	@Column(name = "K341_TX_THEO_DMUC_KHONG_TU_CHU")
+	private Long k341TxTheoDmucKhongTuChu;
+	
+	@Column(name = "K341_CHI_TX_KHONG_DMUC_KHONG_TU_CHU")
+	private Long k341ChiTxKhongDmucKhongTuChu;
+	
+	@Column(name = "K085_DAO_TAO")
+	private Long k085DaoTao;
+	
+	@Column(name = "K102_NGHIEN_CUU_KHOA_HOC")
+	private Long k102NghienCuuKhoaHoc;
+	
+	@Column(name = "K398_DAM_BAO_XA_HOI")
+	private Long k398DamBaoXaHoi;
+	
 }
 
 

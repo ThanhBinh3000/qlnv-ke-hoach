@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class QlnvKhvonphiPaGiaoSoKiemTraTcNsnnCtietDviReq {
 	Long id;
-	String khuvucId;
-	Long soTranchi;
+	String maKhuVuc;
+	Long soTranChi;
+	String trangThai;
 }

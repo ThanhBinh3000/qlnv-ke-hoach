@@ -14,16 +14,16 @@ public interface QlnvKhvonphiNxuatDtqgHnamThocGaoRepository extends CrudReposito
 	String qlnvKhvonphiNxuatDtqgHnamThocGao = "SELECT * FROM QLNV_KHVONPHI_NXUAT_DTQG_HNAM_THOC_GAO t "
 			+ "WHERE t.QLNV_KHVONPHI_ID = :qlnvKhvonphiId ";
 
-	String tongHop = "SELECT ROWNUM as ID,a.* FROM (\r\n" + 
-			"			    SELECT '' as QLNV_KHVONPHI_ID\r\n" + 
-			"			    ,'' as STT\r\n" + 
-			"			    ,Sum(t.LUONG_THOC_XUAT) as LUONG_THOC_XUAT\r\n" + 
-			"                ,Sum(t.LUONG_THOC_NHAP) as LUONG_THOC_NHAP\r\n" + 
-			"			    ,Sum(t.LUONG_GAO_XUAT) as LUONG_GAO_XUAT\r\n" + 
-			"			    ,Sum(t.LUONG_GAO_NHAP) as LUONG_GAO_NHAP\r\n" + 
-			"						FROM (\r\n" + 
-			"			                SELECT * FROM QLNV_KHVONPHI_NXUAT_DTQG_HNAM_THOC_GAO ct \r\n" + 
-			"			                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id \r\n" + 
+	String tongHop = "SELECT ROWNUM as ID,a.* FROM (" + 
+			"			    SELECT '' as QLNV_KHVONPHI_NXUAT_DTQG_HNAM_THOC_GAO" + 
+			"			    ,'' as STT" + 
+			"			    ,Sum(t.LUONG_THOC_XUAT) as LUONG_THOC_XUAT" + 
+			"                ,Sum(t.LUONG_THOC_NHAP) as LUONG_THOC_NHAP" + 
+			"			    ,Sum(t.LUONG_GAO_XUAT) as LUONG_GAO_XUAT" + 
+			"			    ,Sum(t.LUONG_GAO_NHAP) as LUONG_GAO_NHAP" + 
+			"						FROM (" + 
+			"			                SELECT * FROM QLNV_KHVONPHI_NXUAT_DTQG_HNAM_THOC_GAO ct " + 
+			"			                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
 			"			                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t ) a";
 
 	@Query(value = tongHop, nativeQuery = true)
