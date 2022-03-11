@@ -122,9 +122,6 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 		int lastCol = 0;
 		int rowIndex = 6;
 
-		data.getKhVatTu().addAll(data.getKhVatTu());
-
-
 		for (KeHoachVatTuRes line : data.getKhVatTu()) {
 			//Tạo row CỤC DTNN KHU VỰC/STT
 			row = sheet.createRow(rowIndex);
