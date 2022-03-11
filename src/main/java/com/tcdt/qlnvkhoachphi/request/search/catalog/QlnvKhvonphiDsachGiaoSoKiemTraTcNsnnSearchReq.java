@@ -15,5 +15,4 @@ public class QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnSearchReq extends BaseRequest {
 	String maDviNhan;
 	String maGiao;
 	String maPa;
-	String trangThaiGiao;
 }

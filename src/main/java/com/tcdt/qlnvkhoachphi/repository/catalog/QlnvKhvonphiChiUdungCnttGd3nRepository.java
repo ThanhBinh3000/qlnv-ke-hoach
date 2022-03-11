@@ -15,8 +15,8 @@ public interface QlnvKhvonphiChiUdungCnttGd3nRepository extends CrudRepository <
 	String qlnvKhvonphiChiUdungCnttGd3n = "SELECT * FROM QLNV_KHVONPHI_CHI_UDUNG_CNTT_GD3N t "
 			+ "WHERE (:qlnvKhvonphiId is null or t.QLNV_KHVONPHI_ID = :qlnvKhvonphiId) ";
 	
-	String tongHop = "SELECT ct.ID,ct.QLNV_KHVONPHI_ID,ct.STT,ct.NDUNG,ct.LOAI_KHOACH,ct.LOAI_DAN,ct.TONG_DTOAN_SL,ct.TONG_DTOAN_GTRI,ct.THIEN_NAM_TRUOC,ct.CB_DTU_N,ct.TH_DTU_N,ct.CB_DTU_N1,ct.TH_DTU_N1,ct.CB_DTU_N2,ct.TH_DTU_N2,ct.CB_DTU_N3,ct.TH_DTU_N3,ct.GHI_CHU FROM QLNV_KHVONPHI_CHI_UDUNG_CNTT_GD3N ct \r\n" + 
-			"INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id  \r\n" + 
+	String tongHop = "SELECT ct.ID,ct.QLNV_KHVONPHI_ID,ct.STT,ct.NDUNG,ct.LOAI_KHOACH,ct.LOAI_DAN,ct.TONG_DTOAN_SL,ct.TONG_DTOAN_GTRI,ct.THIEN_NAM_TRUOC,ct.CB_DTU_N,ct.TH_DTU_N,ct.CB_DTU_N1,ct.TH_DTU_N1,ct.CB_DTU_N2,ct.TH_DTU_N2,ct.CB_DTU_N3,ct.TH_DTU_N3,ct.GHI_CHU FROM QLNV_KHVONPHI_CHI_UDUNG_CNTT_GD3N ct " + 
+			"INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id  " + 
 			"INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
 
 	@Query(value = tongHop, nativeQuery = true)

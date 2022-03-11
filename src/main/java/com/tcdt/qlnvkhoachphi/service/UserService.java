@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService {
 	UserActionRepository userActionRepository;
 
 	@Autowired
-	QlnvDmDonViService donViService;
+	QlnvDmService qlnvDmService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -7,6 +7,7 @@ import lombok.Data;
 public class QlnvKhvonphiTcDtoanPhiNxuatDtqgHnamResp {
 	Long id;
 	Long qlnvKhvonphiId;
+	Long stt;
 	String maCucDtnnKvuc;
 	Long nxuatThocLuongXuat;
 	Long nxuatThocLuongNhap;

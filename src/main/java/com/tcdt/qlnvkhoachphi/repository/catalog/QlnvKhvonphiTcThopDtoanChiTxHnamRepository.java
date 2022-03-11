@@ -15,20 +15,20 @@ public interface QlnvKhvonphiTcThopDtoanChiTxHnamRepository extends CrudReposito
 	String qlnvKhvonphiTcThopDtoanChiTxHnam = "SELECT * FROM QLNV_KHVONPHI_TC_THOP_DTOAN_CHI_TX_HNAM t "
 			+ "WHERE t.QLNV_KHVONPHI_ID = :qlnvKhvonphiId ";
 
-	String tongHop = "SELECT ROWNUM as ID,a.* FROM (\r\n" + 
-			"			    SELECT '' as QLNV_KHVONPHI_ID\r\n" + 
-			"			    ,'' as STT\r\n" + 
-			"			    ,t.MA_LOAI,t.MA_KHOAN,t.MA_CHI_MUC\r\n" + 
-			"			    ,Sum(t.SO_LUOT_NGUOI_N1) as SO_LUOT_NGUOI_N1\r\n" + 
-			"			    ,Sum(t.THANH_TIEN_N1) as THANH_TIEN_N1\r\n" + 
-			"			    ,Sum(t.SO_LUOT_NGUOI_N2) as SO_LUOT_NGUOI_N2\r\n" + 
-			"			    ,Sum(t.THANH_TIEN_N2) as THANH_TIEN_N2\r\n" + 
-			"			    ,Sum(t.SO_LUOT_NGUOI_N3) as SO_LUOT_NGUOI_N3\r\n" + 
-			"			    ,Sum(t.THANH_TIEN_N3) as THANH_TIEN_N3\r\n" + 
-			"						FROM (\r\n" + 
-			"			                SELECT * FROM QLNV_KHVONPHI_KHOACH_DTAO_BOI_DUONG_GD3N ct \r\n" + 
-			"			                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id \r\n" + 
-			"			                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t \r\n" + 
+	String tongHop = "SELECT ROWNUM as ID,a.* FROM (" + 
+			"			    SELECT '' as QLNV_KHVONPHI_ID" + 
+			"			    ,'' as STT" + 
+			"			    ,t.MA_LOAI,t.MA_KHOAN,t.MA_CHI_MUC" + 
+			"			    ,Sum(t.SO_LUOT_NGUOI_N1) as SO_LUOT_NGUOI_N1" + 
+			"			    ,Sum(t.THANH_TIEN_N1) as THANH_TIEN_N1" + 
+			"			    ,Sum(t.SO_LUOT_NGUOI_N2) as SO_LUOT_NGUOI_N2" + 
+			"			    ,Sum(t.THANH_TIEN_N2) as THANH_TIEN_N2" + 
+			"			    ,Sum(t.SO_LUOT_NGUOI_N3) as SO_LUOT_NGUOI_N3" + 
+			"			    ,Sum(t.THANH_TIEN_N3) as THANH_TIEN_N3" + 
+			"						FROM (" + 
+			"			                SELECT * FROM QLNV_KHVONPHI_KHOACH_DTAO_BOI_DUONG_GD3N ct " + 
+			"			                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
+			"			                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " + 
 			"						GROUP BY t.MA_LOAI,t.MA_KHOAN,t.MA_CHI_MUC) a";
 
 	@Query(value = tongHop, nativeQuery = true)
