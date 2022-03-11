@@ -16,6 +16,7 @@ import com.tcdt.qlnvkhoachphi.repository.KeHoachXuatLuongThucMuoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.KtTrangthaiHienthoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
+import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachLuongThucDuTruReq;
@@ -40,6 +41,8 @@ import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -971,5 +974,29 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				throw new Exception("Xuất trong năm không được lớn hơn tồn đầu năm.");
 			}
 		}
+	}
+
+	@Override
+	public Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
+
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request");
+
+		req.setDonViId(userInfo.getDvql());
+		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
+		return chiTieuKeHoachNamRepository.search(req, pageable);
+	}
+
+	@Override
+	public Page<ChiTieuKeHoachNamRes> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
+
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request");
+
+		req.setDonViId(userInfo.getDvql());
+		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
+		return chiTieuKeHoachNamRepository.search(req, pageable);
 	}
 }

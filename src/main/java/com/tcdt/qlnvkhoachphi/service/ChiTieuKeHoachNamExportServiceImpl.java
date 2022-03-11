@@ -1,18 +1,12 @@
 package com.tcdt.qlnvkhoachphi.service;
 
-import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachEnum;
-import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
-import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
-import com.tcdt.qlnvkhoachphi.table.UserInfo;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.exporter.ExportFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,9 +21,6 @@ import java.util.List;
 public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExportService {
 	@Autowired
 	private ExportFactory exportFactory;
-
-	@Autowired
-	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepo;
 
 	@Autowired
 	private ChiTieuKeHoachNamService chiTieuKeHoachNamSv;
@@ -63,29 +54,5 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
-
-		UserInfo userInfo = SecurityContextService.getUser();
-		if (userInfo == null)
-			throw new Exception("Bad request");
-
-		req.setDonViId(userInfo.getDvql());
-		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
-		return chiTieuKeHoachNamRepo.search(req, pageable);
-	}
-
-	@Override
-	public Page<ChiTieuKeHoachNamRes> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
-
-		UserInfo userInfo = SecurityContextService.getUser();
-		if (userInfo == null)
-			throw new Exception("Bad request");
-
-		req.setDonViId(userInfo.getDvql());
-		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
-		return chiTieuKeHoachNamRepo.search(req, pageable);
 	}
 }
