@@ -183,6 +183,4 @@ public class Constants {
 		public static final String CHI_TIEU_MUOI = "MUOI";
 		public static final String CHI_TIEU_VAT_TU = "VAT_TU";
 	}
-
-
 }
