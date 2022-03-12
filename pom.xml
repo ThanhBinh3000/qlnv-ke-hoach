@@ -263,7 +263,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.activiti.dependencies</groupId>
 			<artifactId>activiti-dependencies</artifactId>
 			<version>7.1.0.M6</version>
@@ -280,7 +280,7 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-image-generator</artifactId>
 			<version>7.1.0.M6</version>
-		</dependency>
+		</dependency> -->
 
 	</dependencies>
 	<dependencyManagement>
