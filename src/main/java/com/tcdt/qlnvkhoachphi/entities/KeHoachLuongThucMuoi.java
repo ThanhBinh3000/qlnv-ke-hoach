@@ -33,4 +33,8 @@ public class KeHoachLuongThucMuoi implements Serializable {
 
 	@Transient
 	private List<KeHoachXuatLuongThucMuoi> khxltms = new ArrayList<>();
+
+	public String groupByDonViIdAndVatTuId() {
+		return String.format("%s_%s", donViId, vatTuId);
+	}
 }

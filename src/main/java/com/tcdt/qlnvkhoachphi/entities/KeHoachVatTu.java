@@ -36,4 +36,8 @@ public class KeHoachVatTu implements Serializable {
 	private String trangThai;
 	private Integer sttDonVi;
 	private Integer sttVatTu;
+
+	public String groupByDonViIdAndVatTuId() {
+		return String.format("%s_%s", donViId, vatTuId);
+	}
 }

@@ -107,12 +107,28 @@ public class ChiTieuKeHoachNamController extends BaseController {
 		return ResponseEntity.ok(resp);
 	}
 
-	@ApiOperation(value = "Gửi duyệt/Phê duyệt/Từ chối chỉ tiêu kế hoạch năm", response = List.class)
+	@ApiOperation(value = "Gửi duyệt/Phê duyệt/Từ chối chỉ tiêu kế hoạch năm: 00 Mới Tạo, 01 Chờ Duyệt, 02 Đã duyệt, 03 Từ chối", response = List.class)
 	@PutMapping("/status")
-	public final ResponseEntity<Resp> updateStatus(@RequestBody StatusReq req) {
+	public final ResponseEntity<Resp> updateStatusQd(@RequestBody StatusReq req) {
 		Resp resp = new Resp();
 		try {
-			resp.setData(chiTieuKeHoachNamService.updateStatus(req));
+			resp.setData(chiTieuKeHoachNamService.updateStatusQd(req));
+			resp.setStatusCode(Constants.RESP_SUCC);
+			resp.setMsg("Thành công");
+		} catch (Exception e) {
+			resp.setStatusCode(Constants.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Gửi duyệt/Phê duyệt/Từ chối quyết định điều chỉnh chỉ tiêu kế hoạch năm: 00 Mới Tạo, 01 Chờ Duyệt, 02 Đã duyệt, 03 Từ chối", response = List.class)
+	@PutMapping("/quyet-dinh-dieu-chinh/status")
+	public final ResponseEntity<Resp> updateStatusQdDc(@RequestBody StatusReq req) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(chiTieuKeHoachNamService.updateStatusQdDc(req));
 			resp.setStatusCode(Constants.RESP_SUCC);
 			resp.setMsg("Thành công");
 		} catch (Exception e) {

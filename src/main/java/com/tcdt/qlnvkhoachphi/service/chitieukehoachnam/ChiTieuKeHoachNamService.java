@@ -33,7 +33,9 @@ public interface ChiTieuKeHoachNamService {
 
 	QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception;
 
-	boolean updateStatus(StatusReq req) throws Exception;
+	boolean updateStatusQd(StatusReq req) throws Exception;
+
+	boolean updateStatusQdDc(StatusReq req) throws Exception;
 
 	Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception;
 

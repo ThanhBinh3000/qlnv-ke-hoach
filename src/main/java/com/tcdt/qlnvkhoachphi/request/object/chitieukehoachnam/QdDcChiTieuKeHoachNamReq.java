@@ -14,8 +14,5 @@ public class QdDcChiTieuKeHoachNamReq {
     private ChiTieuKeHoachNamReq qdDc;
 
     @NotNull(message = "Không được để trống")
-    private ChiTieuKeHoachNamReq qd;
-
-    @NotNull(message = "Không được để trống")
     private Long qdGocId;
 }

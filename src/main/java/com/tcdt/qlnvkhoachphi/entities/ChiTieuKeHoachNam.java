@@ -49,4 +49,6 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 
 	@Transient
 	private List<KeHoachVatTu> khVatTuList = new ArrayList<>();
+
+
 }

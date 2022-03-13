@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoachphi.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
 import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.util.DataUtils;
@@ -72,6 +73,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.namKeHoach(item.get("namKeHoach", BigDecimal.class).intValue())
 							.trichYeu(item.get("trichYeu", String.class))
 							.trangThai(item.get("trangThai", String.class))
+							.tenTrangThai(ChiTieuKeHoachNamStatus.getTenById(item.get("trangThai", String.class)))
 							.build();
 				}).collect(Collectors.toList());
 
