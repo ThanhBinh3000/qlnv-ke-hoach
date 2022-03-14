@@ -1,11 +1,7 @@
 package com.tcdt.qlnvkhoachphi.query.dto;
 
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,5 +15,9 @@ public class VatTuNhapQueryDTO {
 		this.nam = nam;
 		this.soLuong = soLuong;
 		this.vatTuId = vatTuId;
+	}
+
+	public String groupByNamAndVatTuId() {
+		return String.format("%s_%s", nam.toString(), vatTuId.toString());
 	}
 }

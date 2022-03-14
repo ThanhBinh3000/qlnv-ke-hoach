@@ -320,9 +320,9 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             mapListNhomVatTu.put(stt, nhomVatTuThietBiList);
         }
 
-        for (KeHoachVatTuRes response : responses) {
-            response.setNhomVatTuThietBi(mapListNhomVatTu.get(response.getStt()));
-        }
+//        for (KeHoachVatTuRes response : responses) {
+//            response.setNhomVatTuThietBi(mapListNhomVatTu.get(response.getStt()));
+//        }
         return responses;
     }
 

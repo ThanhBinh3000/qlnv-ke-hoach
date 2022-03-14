@@ -122,76 +122,76 @@ public class CtkhnKeHoachVatTuExporter implements ExportService {
 		int lastCol = 0;
 		int rowIndex = 6;
 
-		for (KeHoachVatTuRes line : data.getKhVatTu()) {
-			//Tạo row CỤC DTNN KHU VỰC/STT
-			row = sheet.createRow(rowIndex);
-			int colIndex = 0;
-			List<NhomVatTuThietBiRes> nhomVatTuThietBiList = line.getNhomVatTuThietBi();
-
-			for (NhomVatTuThietBiRes nhomVatTuThietBiRes : nhomVatTuThietBiList) {
-				// stt
-				firstRow = rowIndex;
-				lastRow = firstRow + nhomVatTuThietBiRes.getVatTuThietBi().size();
-				firstCol = colIndex;
-				lastCol = firstCol;
-
-				this.mergeCellData(sheet, line.getStt().toString(), style, row, firstRow, lastRow, firstCol, lastCol);
-
-				//cuc DTTNN khu vuc
-				firstRow = rowIndex;
-				lastRow = firstRow + nhomVatTuThietBiRes.getVatTuThietBi().size();
-				firstCol = colIndex + 1;
-				lastCol = firstCol;
-
-				this.mergeCellData(sheet, line.getTenDonVi(), style, row, firstRow, lastRow, firstCol, lastCol);
-				colIndex = colIndex + 2;
-				//Mã hàng
-				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getMaVatTuCha(), style, sheet);
-				//mặt hàng
-				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTenVatTuCha(), style, sheet);
-				//Đơn vị tính
-				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getDonViTinh(), style, sheet);
-				//Tổng số
-				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTongNhap().toString(), style, sheet);
-
-				//Tổng các năm trước
-				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
-
-				//Các năm khác chuyển sang
-				for (VatTuNhapRes vtCacNamTruoc : nhomVatTuThietBiRes.getCacNamTruoc()) {
-					ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
-				}
-
-				//Nhập trong năm
-				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
-
-				for (VatTuThietBiRes vatTuThietBiRes : nhomVatTuThietBiRes.getVatTuThietBi()) {
-					rowIndex = rowIndex + 1;
-					row = sheet.createRow(rowIndex);
-					colIndex = 2;
-					//Mã hàng
-					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
-					//mặt hàng
-					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTenVatTu(), style, sheet);
-					//Đơn vị tính
-					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getDonViTinh(), style, sheet);
-					//Tổng số
-					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongNhap().toString(), style, sheet);
-
-					//Tổng các năm trước
-					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
-
-					//Các năm khác chuyển sang
-					for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
-						ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
-					}
-
-					//Nhập trong năm
-					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
-				}
-				rowIndex = rowIndex + 1;
-			}
-
-		}
+//		for (KeHoachVatTuRes line : data.getKhVatTu()) {
+//			//Tạo row CỤC DTNN KHU VỰC/STT
+//			row = sheet.createRow(rowIndex);
+//			int colIndex = 0;
+//			List<NhomVatTuThietBiRes> nhomVatTuThietBiList = line.getNhomVatTuThietBi();
+//
+//			for (NhomVatTuThietBiRes nhomVatTuThietBiRes : nhomVatTuThietBiList) {
+//				// stt
+//				firstRow = rowIndex;
+//				lastRow = firstRow + nhomVatTuThietBiRes.getVatTuThietBi().size();
+//				firstCol = colIndex;
+//				lastCol = firstCol;
+//
+//				this.mergeCellData(sheet, line.getStt().toString(), style, row, firstRow, lastRow, firstCol, lastCol);
+//
+//				//cuc DTTNN khu vuc
+//				firstRow = rowIndex;
+//				lastRow = firstRow + nhomVatTuThietBiRes.getVatTuThietBi().size();
+//				firstCol = colIndex + 1;
+//				lastCol = firstCol;
+//
+//				this.mergeCellData(sheet, line.getTenDonVi(), style, row, firstRow, lastRow, firstCol, lastCol);
+//				colIndex = colIndex + 2;
+//				//Mã hàng
+//				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getMaVatTuCha(), style, sheet);
+//				//mặt hàng
+//				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTenVatTuCha(), style, sheet);
+//				//Đơn vị tính
+//				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getDonViTinh(), style, sheet);
+//				//Tổng số
+//				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTongNhap().toString(), style, sheet);
+//
+//				//Tổng các năm trước
+//				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
+//
+//				//Các năm khác chuyển sang
+//				for (VatTuNhapRes vtCacNamTruoc : nhomVatTuThietBiRes.getCacNamTruoc()) {
+//					ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
+//				}
+//
+//				//Nhập trong năm
+//				ExcelUtils.createCell(row, colIndex++, nhomVatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
+//
+//				for (VatTuThietBiRes vatTuThietBiRes : nhomVatTuThietBiRes.getVatTuThietBi()) {
+//					rowIndex = rowIndex + 1;
+//					row = sheet.createRow(rowIndex);
+//					colIndex = 2;
+//					//Mã hàng
+//					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getMaVatTu(), style, sheet);
+//					//mặt hàng
+//					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTenVatTu(), style, sheet);
+//					//Đơn vị tính
+//					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getDonViTinh(), style, sheet);
+//					//Tổng số
+//					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongNhap().toString(), style, sheet);
+//
+//					//Tổng các năm trước
+//					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getTongCacNamTruoc().toString(), style, sheet);
+//
+//					//Các năm khác chuyển sang
+//					for (VatTuNhapRes vtCacNamTruoc : vatTuThietBiRes.getCacNamTruoc()) {
+//						ExcelUtils.createCell(row, colIndex++, vtCacNamTruoc.getSoLuong().toString(), style, sheet);
+//					}
+//
+//					//Nhập trong năm
+//					ExcelUtils.createCell(row, colIndex++, vatTuThietBiRes.getNhapTrongNam().toString(), style, sheet);
+//				}
+//				rowIndex = rowIndex + 1;
+//			}
+//
+//		}
 	}
 }
