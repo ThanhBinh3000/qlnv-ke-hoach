@@ -32,7 +32,6 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.K
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.TonKhoDauNamRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.NhomVatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.service.SecurityContextService;
 import com.tcdt.qlnvkhoachphi.table.UserInfo;
@@ -748,6 +747,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setTenTrangThai(ChiTieuKeHoachNamStatus.getTenById(chiTieuKeHoachNam.getTrangThai()));
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
+		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();

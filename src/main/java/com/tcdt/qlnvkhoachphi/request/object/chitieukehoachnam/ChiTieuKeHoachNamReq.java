@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,6 +25,10 @@ public class ChiTieuKeHoachNamReq {
 	private Integer namKeHoach;
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;
+
+	@NotNull(message = "Không được để trống")
+	private String ghiChu;
+
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruReq> khMuoi = new ArrayList<>();
 	private List<KeHoachNhapVatTuThietBiReq> khVatTu = new ArrayList<>();

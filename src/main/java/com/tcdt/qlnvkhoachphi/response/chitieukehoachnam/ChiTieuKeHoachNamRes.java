@@ -36,6 +36,7 @@ public class ChiTieuKeHoachNamRes {
 	private Long nguoiPheDuyetId;
 	private String lyDoTuChoi;
 	private Long qdGocId;
+	private String ghiChu;
 
 	private List<KeHoachLuongThucDuTruRes> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruRes> khMuoiDuTru = new ArrayList<>();
