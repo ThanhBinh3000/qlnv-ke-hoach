@@ -8,8 +8,8 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.NhomVatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
+import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamServiceImpl;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
@@ -107,6 +107,9 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
     @Autowired
     private QlnvDmDonviRepository qlnvDmDonviRepository;
 
+    @Autowired
+    private ChiTieuKeHoachNamService chiTieuKeHoachNamSv;
+
     private static Integer getNamNhap(Row row, Integer index) throws Exception {
         Cell cell = row.getCell(index, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
         if (cell == null)
@@ -178,6 +181,8 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
 
     private List<KeHoachVatTuRes> importKeHoachVatTu(Sheet sheet, Map<String, QlnvDmDonvi> mapDonVi) throws Exception {
 
+        List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAll());
+        Map<String, QlnvDmVattu> mapMaVatTu = vattuList.stream().collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
 
         List<KeHoachVatTuRes> responses = new ArrayList<>();
         Row headerNam = sheet.getRow(VAT_TU_DATA_ROW_NHAP_INDEX);
@@ -189,12 +194,10 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         Integer tkcnNamNhap4 = getNamNhap(headerNam4, TKCN_KE_HOACH_NHAP_4_INDEX);
 
         int count = 0;
+
         Double currentStt = null;
         String currentKhuVuc = null;
-
         Map<Double, KeHoachVatTuRes> map = new HashMap<>();
-        Map<Integer, List<VatTuThietBiRes>> mapVatTu = new HashMap<>();
-        Set<String> maVatTus =  new HashSet<>();
         for (Row currentRow : sheet) {
             if (count < DATA_ROW_INDEX) {
                 count++;
@@ -222,7 +225,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             Double tkcnNhap3 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_3_INDEX);
             Double tkcnNhap4 = getSoLuong(currentRow, TKCN_KE_HOACH_NHAP_4_INDEX);
 
-            if ("Cộng".equalsIgnoreCase(khuVuc) || sheet.getLastRowNum() == count) {
+            if ("Cộng".equalsIgnoreCase(khuVuc)) {
                 break;
             }
 
@@ -242,6 +245,7 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setDonViId(donvi.getId());
             response.setMaDonVi(donvi.getMaDvi());
 
+            List<VatTuThietBiRes> vatTuThietBi = response.getVatTuThietBi();
             VatTuThietBiRes vatTuThietBiRes = new VatTuThietBiRes();
             vatTuThietBiRes.setMaVatTu(maHang);
             vatTuThietBiRes.setTenVatTu(matHang);
@@ -249,38 +253,54 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             vatTuThietBiRes.setTongNhap(tkcnTongSo);
             vatTuThietBiRes.setTongCacNamTruoc(tkcnTong);
             vatTuThietBiRes.setNhapTrongNam(tkcnNhap4);
+
+            QlnvDmVattu vattu = mapMaVatTu.get(maHang);
+            if (vattu == null)
+                throw new Exception("Vật tư không tồn tại");
+
+            vatTuThietBiRes.setMaVatTuCha(vattu.getMaCha());
             List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap3, tkcnNhap3, null));
             //cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap4, tkcnNhap4, null));
             vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
-            mapVatTu.computeIfAbsent(currentStt != null ? currentStt.intValue() : null, k -> new ArrayList<>()).add(vatTuThietBiRes);
-            maVatTus.add(maHang);
+            vatTuThietBi.add(vatTuThietBiRes);
         }
 
         if (CollectionUtils.isEmpty(responses))
             return Collections.emptyList();
 
-        Set<QlnvDmVattu> qlnvDmVattus = qlnvDmVattuRepository.findByMaIn(maVatTus);
-        Set<String> maChas = qlnvDmVattus.stream().map(QlnvDmVattu::getMaCha).collect(Collectors.toSet());
-        qlnvDmVattus.addAll(qlnvDmVattuRepository.findByMaIn(maChas));
-        Map<String, QlnvDmVattu> mapMaVatTu = qlnvDmVattus.stream().collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
+        int vatTuStt = 0;
 
-        int sttVattu = 1;
-        Map<Integer, List<NhomVatTuThietBiRes>> mapListNhomVatTu = new HashMap<>();
-        for (Map.Entry<Integer, List<VatTuThietBiRes>> entry : mapVatTu.entrySet()) {
-            Integer stt = entry.getKey();
-            List<VatTuThietBiRes> vatTuThietBiResList = entry.getValue();
-            List<NhomVatTuThietBiRes> nhomVatTuThietBiList = new ArrayList<>();
-            for (VatTuThietBiRes vtRes : vatTuThietBiResList) {
+        for (KeHoachVatTuRes res : responses) {
+            Map<String, Set<VatTuThietBiRes>> mapNhomVatTu = new HashMap<>();
+            List<VatTuThietBiRes> vatTuThietBiRes = res.getVatTuThietBi();
+
+            Set<String> maChas = vatTuThietBiRes.stream().map(VatTuThietBiRes::getMaVatTuCha).filter(maVatTuCha -> !StringUtils.isEmpty(maVatTuCha)).collect(Collectors.toSet());
+            for (VatTuThietBiRes vtRes : vatTuThietBiRes) {
                 if (StringUtils.isEmpty(vtRes.getMaVatTu()))
+                    continue;
+
+                if (maChas.contains(vtRes.getMaVatTu()))
                     continue;
 
                 QlnvDmVattu vattu = mapMaVatTu.get(vtRes.getMaVatTu());
                 if (vattu == null)
                     throw new Exception("Vật tư không tồn tại");
 
+                vatTuStt++;
+                if (!StringUtils.isEmpty(vattu.getMaCha())) {
+                    QlnvDmVattu vattuCha = mapMaVatTu.get(vattu.getMaCha());
+
+                    if (vattuCha == null)
+                        throw new Exception("Vật tư không tồn tại");
+
+                    vtRes.setMaVatTuCha(vattuCha.getMa());
+                    vtRes.setVatTuChaId(vattuCha.getId());
+                    vtRes.setTenVatTuCha(vattuCha.getTen());
+                }
+                vtRes.setStt(vatTuStt);
                 vtRes.setVatTuId(vattu.getId());
                 vtRes.setTenVatTu(vattu.getTen());
                 vtRes.setMaVatTu(vattu.getMa());
@@ -288,41 +308,11 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
                 for (VatTuNhapRes vtNamTruocRes : vtRes.getCacNamTruoc()) {
                     vtNamTruocRes.setVatTuId(vattu.getId());
                 }
-
-                if (!StringUtils.isEmpty(vattu.getMaCha()) && maVatTus.contains(vattu.getMaCha())) {
-                    QlnvDmVattu vattuCha = mapMaVatTu.get(vattu.getMaCha());
-                    if (vattuCha == null)
-                        throw new Exception("Vật tư không tồn tại");
-
-                    vtRes.setMaVatTuCha(vattuCha.getMa());
-                    vtRes.setVatTuChaId(vattuCha.getId());
-                    vtRes.setTenVatTuCha(vattuCha.getTen());
-                    vtRes.setStt(sttVattu);
-
-                    for (VatTuNhapRes vtNamTruocRes : vtRes.getCacNamTruoc()) {
-                        vtNamTruocRes.setVatTuId(vattu.getId());
-                    }
-                    NhomVatTuThietBiRes nhomVatTuThietBiRes = nhomVatTuThietBiList.stream()
-                            .filter(n -> vattuCha.getId().equals(n.getVatTuChaId())).findFirst().orElse(null);
-                    if (nhomVatTuThietBiRes == null) {
-                        nhomVatTuThietBiRes = new NhomVatTuThietBiRes();
-                        nhomVatTuThietBiRes.setTenVatTuCha(vattuCha.getTen());
-                        nhomVatTuThietBiRes.setMaVatTuCha(vattuCha.getMa());
-                        nhomVatTuThietBiRes.setVatTuChaId(vattuCha.getId());
-                        nhomVatTuThietBiRes.setDonViTinh(vattuCha.getMaDviTinh());
-                        nhomVatTuThietBiList.add(nhomVatTuThietBiRes);
-                    }
-                    nhomVatTuThietBiRes.getVatTuThietBi().add(vtRes);
-
-                    sttVattu++;
-                }
+                chiTieuKeHoachNamSv.addVatTuThietBiChaRes(vtRes, mapMaVatTu, mapNhomVatTu);
             }
-            mapListNhomVatTu.put(stt, nhomVatTuThietBiList);
+            List<VatTuThietBiRes> finalVatTuThietBiRes = chiTieuKeHoachNamSv.tinhTongVatTuThietBiCha(mapNhomVatTu);
+            res.setVatTuThietBi(finalVatTuThietBiRes);
         }
-
-//        for (KeHoachVatTuRes response : responses) {
-//            response.setNhomVatTuThietBi(mapListNhomVatTu.get(response.getStt()));
-//        }
         return responses;
     }
 
