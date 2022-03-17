@@ -1,9 +1,7 @@
 package com.tcdt.qlnvkhoachphi.service;
 
-import com.tcdt.qlnvkhoachphi.entities.ChiTieuKeHoachNam;
-import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
-import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
+import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
@@ -19,6 +17,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,9 +46,6 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 
 	@Autowired
 	private ChiTieuKeHoachNamService chiTieuKeHoachNamSv;
-
-	@Autowired
-	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepository;
 
 	@Override
 	public Boolean exportToExcel(HttpServletResponse response, List<String> types, Long id) throws Exception {
@@ -81,18 +79,18 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 	}
 
 	@Override
-	public Boolean exportListQdToExcel(HttpServletResponse response) {
-		List<ChiTieuKeHoachNam> list = chiTieuKeHoachNamRepository.findAllByLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
-		return exportListToExcel(response, list);
+	public Boolean exportListQdToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) throws Exception {
+		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQd(req, PageRequest.of(0, Integer.MAX_VALUE));
+		return exportListToExcel(response, chiTieuKeHoachNamRes.get().collect(Collectors.toList()));
 	}
 
 	@Override
-	public Boolean exportListQdDcToExcel(HttpServletResponse response) {
-		List<ChiTieuKeHoachNam> list = chiTieuKeHoachNamRepository.findAllByLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
-		return exportListToExcel(response, list);
+	public Boolean exportListQdDcToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) throws Exception {
+		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQdDc(req, PageRequest.of(0, Integer.MAX_VALUE));
+		return exportListToExcel(response, chiTieuKeHoachNamRes.get().collect(Collectors.toList()));
 	}
 
-	public Boolean exportListToExcel(HttpServletResponse response, List<ChiTieuKeHoachNam> list) {
+	public Boolean exportListToExcel(HttpServletResponse response, List<ChiTieuKeHoachNamRes> list) {
 
 		if (CollectionUtils.isEmpty(list))
 			return true;
@@ -126,7 +124,7 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 			Row row;
 			int startRowIndex = 1;
 
-			for (ChiTieuKeHoachNam item : list) {
+			for (ChiTieuKeHoachNamRes item : list) {
 				row = sheet.createRow(startRowIndex);
 				ExcelUtils.createCell(row, 0, startRowIndex, style, sheet);
 				ExcelUtils.createCell(row, 1, item.getSoQuyetDinh(), style, sheet);

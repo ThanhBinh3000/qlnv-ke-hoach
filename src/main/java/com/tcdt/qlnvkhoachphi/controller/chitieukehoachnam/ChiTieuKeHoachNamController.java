@@ -264,7 +264,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	@ApiOperation(value = "Export Chỉ tiêu kế hoạch năm ra excel", response = List.class)
 	@PostMapping(value = "/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public void exportListQdToExcel(HttpServletResponse response) {
+	public void exportListQdToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) {
 
 		try {
 			response.setContentType("application/octet-stream");
@@ -274,7 +274,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 			String headerKey = "Content-Disposition";
 			String headerValue = "attachment; filename=chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
 			response.setHeader(headerKey, headerValue);
-			chiTieuKeHoachNamExportSv.exportListQdToExcel(response);
+			chiTieuKeHoachNamExportSv.exportListQdToExcel(response, req);
 		} catch (Exception e) {
 			log.error("Error can not export", e);
 		}
@@ -284,7 +284,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 	@ApiOperation(value = "Export quyết định điều chỉnh chỉ tiêu kế hoạch năm ra excel", response = List.class)
 	@PostMapping(value = "/quyet-dinh-dieu-chinh/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public void exportListQdDcToExcel(HttpServletResponse response) {
+	public void exportListQdDcToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) {
 
 		try {
 			response.setContentType("application/octet-stream");
@@ -294,7 +294,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 			String headerKey = "Content-Disposition";
 			String headerValue = "attachment; filename=quyent_dinh_dieu_chinh_chi-tieu-ke-hoach-nam_" + currentDateTime + ".xlsx";
 			response.setHeader(headerKey, headerValue);
-			chiTieuKeHoachNamExportSv.exportListQdDcToExcel(response);
+			chiTieuKeHoachNamExportSv.exportListQdDcToExcel(response, req);
 		} catch (Exception e) {
 			log.error("Error can not export", e);
 		}
