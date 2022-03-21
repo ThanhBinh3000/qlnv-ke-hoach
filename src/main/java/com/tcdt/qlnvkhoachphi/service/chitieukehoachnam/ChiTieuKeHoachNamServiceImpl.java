@@ -188,7 +188,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return results;
 	}
 
-	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> maVatTuList, Integer namKeHoach) {
+	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> maVatTuList, Integer namKeHoach, List<QlnvDmDonvi> list) throws Exception {
 		List<String> namList = new ArrayList<>();
 		for (int i = 1; i <= 3; i++) {
 			namList.add(String.valueOf(namKeHoach - i));
@@ -197,9 +197,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		List<TonKhoDauNamRes> tonKhoDauNamResList = new ArrayList<>();
 		for (KtTrangthaiHienthoi trangthaiHienthoi : trangthaiHienthoiList) {
+			QlnvDmDonvi donvi = list.stream().filter(d -> d.getMaDvi().equalsIgnoreCase(trangthaiHienthoi.getMaDonVi())).findFirst().orElse(null);
+			if (donvi == null)
+				throw new Exception("Đơn vị không tồn tại.");
+
 			TonKhoDauNamRes res = tonKhoDauNamResList.stream().filter(t -> trangthaiHienthoi.getMaDonVi().equals(t.getMaDonVi()) && trangthaiHienthoi.getMaVthh().equals(t.getMaVatTu())).findFirst().orElse(null);
 			if (res == null) {
 				res = new TonKhoDauNamRes();
+				res.setDonViId(donvi.getId());
 				res.setMaDonVi(trangthaiHienthoi.getMaDonVi());
 				res.setTenDonVi(trangthaiHienthoi.getTenDonVi());
 				res.setMaVatTu(trangthaiHienthoi.getMaVthh());
@@ -753,7 +758,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<KeHoachVatTu> keHoachVatTuList = chiTieuKeHoachNam.getKhVatTuList();
 
 		Set<Long> donViIdSet = new HashSet<>();
-		Set<Long> vatTuIdSet = new HashSet<>();
 
 		List<String> maDviLtm = new ArrayList<>();
 		List<String> maVatTuLtm = new ArrayList<>();
@@ -772,23 +776,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				donViIdSet.add(k.getDonViId());
 		});
 
-		vatTuIdSet.add(MUOI_ID);
-		vatTuIdSet.add(GAO_ID);
-		vatTuIdSet.add(THOC_ID);
-
-		keHoachVatTuList.forEach(k -> {
-			if (k.getDonViId() != null)
-				donViIdSet.add(k.getDonViId());
-
-			if (k.getVatTuId() != null)
-				vatTuIdSet.add(k.getVatTuId());
-
-			if (k.getVatTuChaId() != null)
-				vatTuIdSet.add(k.getVatTuChaId());
-		});
-
 		List<QlnvDmDonvi> dmDonviList = Lists.newArrayList(qlnvDmDonviRepository.findAllById(donViIdSet));
-
 
 		Map<Long, QlnvDmDonvi> mapDonVi = dmDonviList.stream().collect(Collectors.toMap(QlnvDmDonvi::getId, Function.identity()));
 
@@ -972,7 +960,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			keHoachVatTuRes.getVatTuThietBi().add(vatTuThietBiRes);
 		}
 
-		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDviLtm, maVatTuLtm, chiTieuKeHoachNam.getNamKeHoach());
+		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDviLtm, maVatTuLtm, chiTieuKeHoachNam.getNamKeHoach(), dmDonviList);
 		khLtResList.forEach(k -> {
 			TonKhoDauNamRes tonKhoDauNamGao = tonKhoDauNamResList.stream().filter(t -> k.getDonViId().equals(t.getDonViId()) && GAO_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
 			TonKhoDauNamRes tonKhoDauNamThoc = tonKhoDauNamResList.stream().filter(t -> k.getDonViId().equals(t.getDonViId()) && THOC_MA_VT.equals(t.getMaVatTu())).findFirst().orElse(null);
@@ -1141,7 +1129,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Đơn vị không tồn tại.");
 
 		List<String> maDvis = listDonVi.stream().map(QlnvDmDonvi::getMaDvi).collect(Collectors.toList());
-		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDvis, maVatTuLtm, req.getNamKeHoach());
+		List<TonKhoDauNamRes> tonKhoDauNamResList = this.getTonKhoDauNam(maDvis, maVatTuLtm, req.getNamKeHoach(), listDonVi);
 
 		for (KeHoachLuongThucDuTruReq khReq : req.getKhLuongThuc()) {
 			List<VatTuNhapReq> xtnGao = khReq.getXtnGao();
