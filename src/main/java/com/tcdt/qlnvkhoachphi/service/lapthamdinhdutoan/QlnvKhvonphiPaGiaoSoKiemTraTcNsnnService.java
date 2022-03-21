@@ -1,48 +1,54 @@
 package com.tcdt.qlnvkhoachphi.service.lapthamdinhdutoan;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.tcdt.qlnvkhoachphi.request.object.catalog.LstQlnvKhvonphiDsachGiaoSoReq;
+import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.tcdt.qlnvkhoachphi.request.object.catalog.NhomNutChucNangReq;
-import com.tcdt.qlnvkhoachphi.request.object.catalog.QlnvKhvonphiPaGiaoSoKiemTraTcNsnnReq;
-import com.tcdt.qlnvkhoachphi.request.object.catalog.QlnvKhvonphiQdCvGiaoSoKiemTraChiNsnnReq;
+import com.tcdt.qlnvkhoachphi.request.object.catalog.lapthamdinhdutoan.LstQlnvKhvonphiDsachGiaoSoReq;
+import com.tcdt.qlnvkhoachphi.request.object.catalog.lapthamdinhdutoan.QlnvKhvonphiPaGiaoSoKiemTraTcNsnnReq;
+import com.tcdt.qlnvkhoachphi.request.object.catalog.lapthamdinhdutoan.QlnvKhvonphiQdCvGiaoSoKiemTraChiNsnnReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnSearchReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.QlnvKhvonphiPaGiaoSoKiemTraTcNsnnSearchReq;
-import com.tcdt.qlnvkhoachphi.response.Resp;
+import com.tcdt.qlnvkhoachphi.response.lapthamdinhdutoan.QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnResp;
+import com.tcdt.qlnvkhoachphi.response.lapthamdinhdutoan.QlnvKhvonphiPaGiaoSoKiemTraTcNsnnResp;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiDsachGiaoSoKiemTraTcNsnn;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiPaGiaoSoKiemTraTcNsnn;
 
 public interface QlnvKhvonphiPaGiaoSoKiemTraTcNsnnService {
-	public Resp detailPa(String ids);
-	
-	public Resp findAll();
-	
-	public Resp detailGiaoSo(String maGiao);
-	
-	public Resp create(QlnvKhvonphiPaGiaoSoKiemTraTcNsnnReq objReq,
-			HttpServletRequest req);
-	
-	public Resp delete(String ids, HttpServletRequest req);
-	
-	public Resp update(QlnvKhvonphiPaGiaoSoKiemTraTcNsnnReq qlnvReq,
-			HttpServletRequest req);
-	
-	public Resp colectionPa(QlnvKhvonphiPaGiaoSoKiemTraTcNsnnSearchReq objReq,
-			HttpServletRequest req);
-	
-	public Resp giaoSo(LstQlnvKhvonphiDsachGiaoSoReq objReq,
-			HttpServletRequest req);
-	
-	public Resp colection(QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnSearchReq objReq,
-			HttpServletRequest req);
-	
-	public Resp genMaGiaoSo();
-	
-	public Resp genMaPa();
-	
-	public Resp function(NhomNutChucNangReq objReq, HttpServletRequest req);
-	
-	public Resp addQdAndCv(QlnvKhvonphiQdCvGiaoSoKiemTraChiNsnnReq objReq,
-			HttpServletRequest req);
-	
-	public Resp deleteQdCv(QlnvKhvonphiQdCvGiaoSoKiemTraChiNsnnReq objReq,
-			HttpServletRequest req);
+
+	public QlnvKhvonphiPaGiaoSoKiemTraTcNsnnResp detailPa(String ids);
+
+	public Iterable<QlnvKhvonphiPaGiaoSoKiemTraTcNsnn> findAll();
+
+	public QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnResp detailGiaoSo(String maGiao) throws Exception;
+
+	public QlnvKhvonphiPaGiaoSoKiemTraTcNsnnResp create(QlnvKhvonphiPaGiaoSoKiemTraTcNsnnReq objReq) throws Exception;
+
+	public void delete(String ids) throws Exception;
+
+	public QlnvKhvonphiPaGiaoSoKiemTraTcNsnnResp update(QlnvKhvonphiPaGiaoSoKiemTraTcNsnnReq qlnvReq) throws Exception;
+
+	public Page<QlnvKhvonphiPaGiaoSoKiemTraTcNsnn> colectionPa(QlnvKhvonphiPaGiaoSoKiemTraTcNsnnSearchReq objReq)
+			throws Exception;
+
+	public ArrayList<QlnvKhvonphiDsachGiaoSoKiemTraTcNsnn> giaoSo(LstQlnvKhvonphiDsachGiaoSoReq objReq)
+			throws Exception;
+
+	public Page<QlnvKhvonphiDsachGiaoSoKiemTraTcNsnn> colection(QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnSearchReq objReq)
+			throws Exception;
+
+	public String genMaGiaoSo();
+
+	public String genMaPa();
+
+	public QlnvKhvonphiPaGiaoSoKiemTraTcNsnn function(NhomNutChucNangReq objReq) throws Exception;
+
+	public QlnvKhvonphiPaGiaoSoKiemTraTcNsnn addQdAndCv(QlnvKhvonphiQdCvGiaoSoKiemTraChiNsnnReq objReq)
+			throws Exception;
+
+	public QlnvKhvonphiPaGiaoSoKiemTraTcNsnn deleteQdCv(QlnvKhvonphiQdCvGiaoSoKiemTraChiNsnnReq objReq)
+			throws Exception;
 }

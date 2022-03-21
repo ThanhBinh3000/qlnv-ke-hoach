@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.tcdt.qlnvkhoachphi.table.catalog.QlnvKhvonphiDsachGiaoSoKiemTraTcNsnn;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiDsachGiaoSoKiemTraTcNsnn;
 
 public interface QlnvKhvonphiDsachGiaoSoKiemTraTcNsnnRepository
 		extends CrudRepository<QlnvKhvonphiDsachGiaoSoKiemTraTcNsnn, Long> {

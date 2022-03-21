@@ -38,9 +38,6 @@ public class QlnvKhvonphiBcaoKquaThienNhapMuaHang implements Serializable {
 	@Column(name = "MA_VTU_PARENT")
 	private String maVtuParent;
 
-	@Column(name = "MA_VTU_CHILD")
-	private String maVtuChild;
-
 	@Column(name = "MA_DVI_TINH")
 	private String maDviTinh;
 

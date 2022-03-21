@@ -25,7 +25,11 @@ public class PathConstants {
 	public static final String URL_ADD_QD_CV = "/nhap-qd-cv";
 	public static final String URL_DELETE_QD_CV = "/xoa-qd-cv";
 	public static final String URL_SINH_MA_PA = "/sinh-ma-pa";
+	public static final String URL_EXPORT= "/export";
+	public static final String URL_IMPORT = "/import";
 
+//	1.2.1
+	public static final String URL_CAP_NGUON_VON_CHI = "/cap-nguon-von-chi";
 	//3.2.4	Quản lý lập, thẩm định dự toán NSNN tại Tổng cục DTNN
 	public static final String URL_LAP_THAM_DINH_DU_TOAN = "/lap-tham-dinh-du-toan";
 //	3.2.4.6
@@ -41,6 +45,10 @@ public class PathConstants {
 //	3.2.6
 	public static final String URL_QD_GIAO_DU_TOAN_CHI = "/quyet-dinh-giao-du-toan-chi";
 	public static final String URL_PHANBO_DTOAN_CHI = "/phan-bo-dtoan-chi";
+
+//	3.5
+	public static final String URL_DCHINH_SAU_QTOAN_DTQG = "/dieu-chinh-sau-quyet-toan";
+	public static final String URL_QTOAN_DTQG = "/quyet-toan";
 
 
 

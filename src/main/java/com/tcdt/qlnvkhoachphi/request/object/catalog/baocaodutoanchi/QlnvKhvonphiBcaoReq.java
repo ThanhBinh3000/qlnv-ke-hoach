@@ -31,6 +31,7 @@ public class QlnvKhvonphiBcaoReq {
 
 	String listIdFiles;
 
+	@NotNull(message = "Không được để trống")
 	ArrayList<FileDinhKemReq> fileDinhKems;
 
 	ArrayList<Object> lstCTietBCao;

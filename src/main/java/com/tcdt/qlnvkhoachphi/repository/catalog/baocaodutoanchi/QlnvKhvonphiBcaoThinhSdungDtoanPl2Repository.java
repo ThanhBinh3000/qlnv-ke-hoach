@@ -44,11 +44,11 @@ public interface QlnvKhvonphiBcaoThinhSdungDtoanPl2Repository extends CrudReposi
 			"                SELECT * FROM QLNV_KHVONPHI_BCAO_THINH_SDUNG_DTOAN_PL2 ct " +
 			"                INNER JOIN QLNV_KHVONPHI_BCAO vp ON vp.id = ct.QLNV_KHVONPHI_BCAO_ID " +
 			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha "+
-			"                AND (:namBcao is null or lower(vp.NAM_BCAO) = lower(concat(concat('%', :namBcao),'%'))) AND (:thangBcao is null or lower(vp.THANG_BCAO) = lower(concat(concat('%', :thangBcao),'%')))     ) t " +
+			"                AND:namBcao= vp.NAM_BCAO AND:maLoaiBcao= vp.MA_LOAI_BCAO AND :thangBcao = vp.THANG_BCAO ) t " +
 			"			GROUP BY t.MA_NDUNG) a";
 
 	@Query(value = tongHop, nativeQuery = true)
-	ArrayList<QlnvKhvonphiBcaoThinhSdungDtoanPl2> synthesis(String maDviCha,Long namBcao,Long thangBcao);
+	ArrayList<QlnvKhvonphiBcaoThinhSdungDtoanPl2> synthesis(String maDviCha,Long namBcao,Long thangBcao,String maLoaiBcao);
 
 	@Query(value = qlnvKhvonphiBcaoThinhSdungDtoanPl2, nativeQuery = true)
 	ArrayList<QlnvKhvonphiBcaoThinhSdungDtoanPl2> findQlnvKhvonphiBcaoThinhSdungDtoanPl2ByQlnvKhvonphiBcaoId(Long qlnvKhvonphiBcaoId);

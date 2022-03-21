@@ -1,12 +1,14 @@
 package com.tcdt.qlnvkhoachphi.util;
 
-import com.tcdt.qlnvkhoachphi.entities.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.Role;
 import com.tcdt.qlnvkhoachphi.table.UserInfo;
+import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 
 public class Utils {
 	public static String getTenTrangThai(String maTrangthai) {
 		switch (maTrangthai) {
+		case Constants.TT_BC_0:
+			return "Đã xóa";
 		case Constants.TT_BC_1:
 			return "Đang soạn";
 		case Constants.TT_BC_2:
@@ -25,6 +27,8 @@ public class Utils {
 			return "ĐV cấp trên từ chối";
 		case Constants.TT_BC_9:
 			return "Đv cấp trên duyệt";
+		case Constants.TT_BC_10:
+			return "Lãnh đạo yêu cầu điều chỉnh";
 		default:
 			return null;
 		}
@@ -52,18 +56,15 @@ public class Utils {
 			// check người dùng có quyền thao tác với action tương ứng hay ko
 			for (Role role : userInfo.getRoles()) {
 				if (role.getId().equals(Constants.NHAN_VIEN)) {
-					if (!maChucNang.equals(Constants.TT_BC_1)
-							&& !maChucNang.equals(Constants.TT_BC_2)) {
+					if (!maChucNang.equals(Constants.TT_BC_1) && !maChucNang.equals(Constants.TT_BC_2)) {
 						throw new UnsupportedOperationException("Người dùng không có quyền thao tác!");
 					}
 				} else if (role.getId().equals(Constants.TRUONG_BO_PHAN)) {
-					if (!maChucNang.equals(Constants.TT_BC_3)
-							&& !maChucNang.equals(Constants.TT_BC_4)) {
+					if (!maChucNang.equals(Constants.TT_BC_3) && !maChucNang.equals(Constants.TT_BC_4)) {
 						throw new UnsupportedOperationException("Người dùng không có quyền thao tác!");
 					}
 				} else if (role.getId().equals(Constants.LANH_DAO)) {
-					if (!maChucNang.equals(Constants.TT_BC_5)
-							&& !maChucNang.equals(Constants.TT_BC_6)) {
+					if (!maChucNang.equals(Constants.TT_BC_5) && !maChucNang.equals(Constants.TT_BC_6) && !maChucNang.equals(Constants.TT_BC_10)) {
 						throw new UnsupportedOperationException("Người dùng không có quyền thao tác!");
 					}
 				}
@@ -74,8 +75,7 @@ public class Utils {
 				if (!role.getId().equals(Constants.NHAN_VIEN)) {
 					throw new UnsupportedOperationException("Người dùng không có quyền thao tác!");
 				} else {
-					if (!maChucNang.equals(Constants.TT_BC_8)
-							&& !maChucNang.equals(Constants.TT_BC_9)) {
+					if (!maChucNang.equals(Constants.TT_BC_8) && !maChucNang.equals(Constants.TT_BC_9)) {
 						throw new UnsupportedOperationException("Người dùng không có quyền thao tác!");
 					}
 				}
@@ -87,37 +87,40 @@ public class Utils {
 		// check trạng thái hiện tại của báo cáo, xem action có đúng là trạng thái tiếp
 		// theo hoặc tiếp sau
 		int stt = Integer.parseInt(trangthai);
-		int sttNext = stt + 1;
-		int sttPrevious = stt - 1;
+		int sttNext = stt + 2;
+//		int sttPrevious = stt - 1;
 		int maChucNangInt = Integer.parseInt(maChucNang);
 
-		if (sttPrevious == 0) {
-			if (sttNext != maChucNangInt) {
-				throw new UnsupportedOperationException("Mã chức năng: " + maChucNang
-						+ " không khớp với trạng thái: " + trangthai + " của Báo cáo!");
-			}
-		} else if ((sttNext != maChucNangInt && sttPrevious != maChucNangInt)) {
-			throw new UnsupportedOperationException("Mã chức năng: " + maChucNang
-					+ " không khớp với trạng thái: " + trangthai + " của Báo cáo!");
+//		if (sttPrevious == 0) {
+//			if (sttNext != maChucNangInt) {
+//				throw new UnsupportedOperationException(
+//						"Mã chức năng: " + maChucNang + " không khớp với trạng thái: " + trangthai + " của Báo cáo!");
+//			}
+//		} else 
+		if (((stt <= maChucNangInt) && (maChucNangInt <= sttNext))) {
+			throw new UnsupportedOperationException(
+					"Mã chức năng: " + maChucNang + " không khớp với trạng thái: " + trangthai + " của Báo cáo!");
 		}
 
 		switch (maChucNang) {
 		case Constants.TT_BC_2:// Trình duyệt
-			return(Constants.TT_BC_2);
+			return (Constants.TT_BC_2);
 		case Constants.TT_BC_3:// Trưởng BP từ chối
-			return(Constants.TT_BC_3);
+			return (Constants.TT_BC_3);
 		case Constants.TT_BC_4:// Trưởng BP duyệt
-			return(Constants.TT_BC_4);
+			return (Constants.TT_BC_4);
 		case Constants.TT_BC_5:// Lãnh đạo từ chối
-			return(Constants.TT_BC_5);
+			return (Constants.TT_BC_5);
 		case Constants.TT_BC_6:// Lãnh đạo duyệt
-			return(Constants.TT_BC_6);
+			return (Constants.TT_BC_6);
 		case Constants.TT_BC_7:// Gửi ĐV cấp trên
-			return(Constants.TT_BC_7);
+			return (Constants.TT_BC_7);
 		case Constants.TT_BC_8:// ĐV cấp trên từ chối
-			return(Constants.TT_BC_8);
+			return (Constants.TT_BC_8);
 		case Constants.TT_BC_9:// Đv cấp trên duyệt
-			return(Constants.TT_BC_9);
+			return (Constants.TT_BC_9);
+		case Constants.TT_BC_10:// Lãnh đạo yêu cầu điều chỉnh
+			return (Constants.TT_BC_10);
 		default:
 			return "";
 		}

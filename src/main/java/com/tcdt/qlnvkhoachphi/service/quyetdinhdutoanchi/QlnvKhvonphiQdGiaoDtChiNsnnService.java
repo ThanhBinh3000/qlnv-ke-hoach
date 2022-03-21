@@ -1,19 +1,23 @@
 package com.tcdt.qlnvkhoachphi.service.quyetdinhdutoanchi;
 
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.tcdt.qlnvkhoachphi.request.object.catalog.quyetdinhdutoanchi.QlnvKhvonphiQdGiaoDtChiNsnnReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.quyetdinhdutoanchi.QlnvKhvonphiQdGiaoDtChiNsnnSearchReq;
 import com.tcdt.qlnvkhoachphi.response.Resp;
+import com.tcdt.qlnvkhoachphi.response.quyetdinhdutoanchi.QlnvKhvonphiQdGiaoDtChiNsnnResp;
+import com.tcdt.qlnvkhoachphi.table.catalog.quyetdinhgiaodutoanchi.QlnvKhvonphiQdGiaoDtChiNsnn;
 
 public interface QlnvKhvonphiQdGiaoDtChiNsnnService {
+	
 	public Resp detail(String ids);
 
-	public Resp colectionPa(QlnvKhvonphiQdGiaoDtChiNsnnSearchReq objReq);
+	public Page<QlnvKhvonphiQdGiaoDtChiNsnn> colection(QlnvKhvonphiQdGiaoDtChiNsnnSearchReq objReq);
+	
+	public QlnvKhvonphiQdGiaoDtChiNsnnResp create(QlnvKhvonphiQdGiaoDtChiNsnnReq objReq) throws Exception;
 
-	public Resp create(QlnvKhvonphiQdGiaoDtChiNsnnReq objReq, HttpServletRequest req);
+	public void delete(String ids) throws Exception;
 
-	public Resp delete(String ids, HttpServletRequest req);
-
-	public Resp update(QlnvKhvonphiQdGiaoDtChiNsnnReq objReq, HttpServletRequest req);
+	public QlnvKhvonphiQdGiaoDtChiNsnnResp update(QlnvKhvonphiQdGiaoDtChiNsnnReq objReq) throws JsonMappingException, Exception;
 }

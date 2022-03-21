@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tcdt.qlnvkhoachphi.table.catalog.QlnvKhvonphiChiTxGd3n;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiChiTxGd3n;
 
 @Repository
 public interface QlnvKhvonphiChiTxGd3nRepository extends CrudRepository<QlnvKhvonphiChiTxGd3n, Long> {

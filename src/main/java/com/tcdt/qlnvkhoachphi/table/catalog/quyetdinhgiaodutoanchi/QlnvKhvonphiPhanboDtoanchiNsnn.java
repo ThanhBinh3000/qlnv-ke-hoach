@@ -30,13 +30,17 @@ public class QlnvKhvonphiPhanboDtoanchiNsnn implements Serializable{/**
 	@Transient
 	String tenDvi;
 	
-	String noiQd;
+	String soQd;
 	
 //	SO_QD_BTC
-	String soQdBtc;
+	
+//	ID_SO_QD_BTC
+	String idSoQdBtc;
 	
 //	SO_QD_TCDT
-	String soQdTcdt;
+	
+//	ID_SO_QD_TC
+	String idSoQdTc;
 	
 	String phanBoTong;
 	
@@ -45,8 +49,6 @@ public class QlnvKhvonphiPhanboDtoanchiNsnn implements Serializable{/**
 	String tenTrangThai;
 	
 	String lyDoTuChoi;
-	
-	String ghiChu;
 	
 	String vanBan;
 	Date ngayTao;

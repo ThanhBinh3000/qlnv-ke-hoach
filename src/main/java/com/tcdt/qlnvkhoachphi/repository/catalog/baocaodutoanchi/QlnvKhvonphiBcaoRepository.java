@@ -21,7 +21,7 @@ public interface QlnvKhvonphiBcaoRepository extends CrudRepository<QlnvKhvonphiB
 			+ "AND (:trangThai is null or lower(t.TRANG_THAI) like lower(concat(concat('%', :trangThai),'%'))) "
 			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))"
 			+ "AND (:maLoaiBcao is null or lower(t.MA_LOAI_BCAO) like lower(concat(concat('%', :maLoaiBcao),'%')) "
-			+ " or lower(t.MA_LOAI_BCAO) like lower(concat(concat('%', :maLoaiBcao),'%')) and t.LOAI_BAO_CAO=:loaiBaoCao )";
+			+ " or lower(t.MA_LOAI_BCAO) like lower(concat(concat('%', :maLoaiBcao),'%')) and lower(t.LOAI_BAO_CAO) like lower(concat(concat('%', :loaiBaoCao),'%'))  )";
 
 	String countQuery = "SELECT * FROM QLNV_KHVONPHI_BCAO t "
 			+ "WHERE (:namBcao is null or lower(t.NAM_BCAO) like lower(concat(concat('%', :namBcao),'%'))) "
@@ -32,7 +32,7 @@ public interface QlnvKhvonphiBcaoRepository extends CrudRepository<QlnvKhvonphiB
 			+ "AND (:trangThai is null or lower(t.TRANG_THAI) like lower(concat(concat('%', :trangThai),'%'))) "
 			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))"
 			+ "AND (:maLoaiBcao is null or lower(t.MA_LOAI_BCAO) like lower(concat(concat('%', :maLoaiBcao),'%')) "
-			+ " or lower(t.MA_LOAI_BCAO) like lower(concat(concat('%', :maLoaiBcao),'%')) and t.LOAI_BAO_CAO=:loaiBaoCao )";
+			+ " or lower(t.MA_LOAI_BCAO) like lower(concat(concat('%', :maLoaiBcao),'%')) and lower(t.LOAI_BAO_CAO) like lower(concat(concat('%', :loaiBaoCao),'%'))  )";
 
 	@Query(value = value, countQuery = countQuery, nativeQuery = true)
 	Page<QlnvKhvonphiBcao> selectParams(String maDvi, String ngayTaoTu, String ngayTaoDen, String trangThai,

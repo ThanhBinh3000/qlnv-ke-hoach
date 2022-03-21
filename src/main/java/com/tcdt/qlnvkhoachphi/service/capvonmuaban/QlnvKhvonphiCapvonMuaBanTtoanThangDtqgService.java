@@ -1,22 +1,26 @@
 package com.tcdt.qlnvkhoachphi.service.capvonmuaban;
 
+import org.springframework.data.domain.Page;
+
 import com.tcdt.qlnvkhoachphi.request.object.catalog.NhomNutChucNangReq;
 import com.tcdt.qlnvkhoachphi.request.object.catalog.QlnvKhvonphiCapvonMuaBanTtoanThangDtqgReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.QlnvKhvonphiCapvonMuaBanTtoanThangDtqgSearchReq;
-import com.tcdt.qlnvkhoachphi.response.Resp;
-import com.tcdt.qlnvkhoachphi.table.UserInfo;
+import com.tcdt.qlnvkhoachphi.response.capvonmuaban.QlnvKhvonphiCapvonMuaBanTtoanThangDtqgResp;
+import com.tcdt.qlnvkhoachphi.table.catalog.capvonmuaban.QlnvKhvonphiCapvonMuaBanTtoanThangDtqg;
 
 public interface QlnvKhvonphiCapvonMuaBanTtoanThangDtqgService {
-	public Resp getDetail(String ids);
+	public QlnvKhvonphiCapvonMuaBanTtoanThangDtqgResp getDetail(Long id);
 
-	public Resp getList(QlnvKhvonphiCapvonMuaBanTtoanThangDtqgSearchReq objReq);
+	public Page<QlnvKhvonphiCapvonMuaBanTtoanThangDtqg> getList(QlnvKhvonphiCapvonMuaBanTtoanThangDtqgSearchReq objReq);
 
-	public Resp create(QlnvKhvonphiCapvonMuaBanTtoanThangDtqgReq objReq, UserInfo userInfo);
+	public QlnvKhvonphiCapvonMuaBanTtoanThangDtqgResp create(QlnvKhvonphiCapvonMuaBanTtoanThangDtqgReq objReq)
+			throws Exception;
 
-	public Resp delete(String ids, UserInfo userInfo);
+	public void delete(String idso) throws Exception;
 
-	public Resp update(QlnvKhvonphiCapvonMuaBanTtoanThangDtqgReq objReq, UserInfo userInfo);
-	
-	public Resp function(NhomNutChucNangReq objReq, UserInfo userInfo);
-	
+	public QlnvKhvonphiCapvonMuaBanTtoanThangDtqgResp update(QlnvKhvonphiCapvonMuaBanTtoanThangDtqgReq objReq)
+			throws Exception;
+
+	public QlnvKhvonphiCapvonMuaBanTtoanThangDtqg function(NhomNutChucNangReq objReq) throws Exception;
+
 }
