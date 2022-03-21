@@ -1,25 +1,15 @@
 package com.tcdt.qlnvkhoachphi.table.catalog.capvonmuaban;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
@@ -59,18 +49,4 @@ public class QlnvKhvonphiCapvonMuaBanTtoanThangDtqg implements Serializable {
 	Date ngaySua;
 	String nguoiSua;
 	String lyDoTuChoi;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "qlnvCapvonMuaBan")
-	@Fetch(value = FetchMode.SUBSELECT)
-	@JsonManagedReference
-	private List<QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet> listCtiet = new ArrayList<>();
-
-	public void setListCtiet(List<QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet> listCtiet) {
-		this.listCtiet.clear();
-		for (QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet child : listCtiet) {
-			child.setQlnvCapvonMuaBan(this);
-		}
-		this.listCtiet.addAll(listCtiet);
-	}
-
 }

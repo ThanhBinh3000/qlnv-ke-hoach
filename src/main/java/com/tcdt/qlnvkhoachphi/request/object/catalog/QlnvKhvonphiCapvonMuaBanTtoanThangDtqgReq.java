@@ -21,16 +21,19 @@ public class QlnvKhvonphiCapvonMuaBanTtoanThangDtqgReq {
 	String maDviCap;
 	
 	@NotNull(message = "Không được để trống")
+	String maDviNhan;
+	
+	@NotNull(message = "Không được để trống")
 	String maLoaiGnhan;
 	
 	@NotNull(message = "Không được để trống")
 	String soQd;
 
-	String lyDoTuChoi;
-
 	String listIdFiles;
 	
-	ArrayList<FileDinhKemReq> fileDinhKems;
+	String listIdDeletes;
+	
+	ArrayList<FileDinhKemReq> lstFile;
 
 	ArrayList<QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet> lstCTiet;
 

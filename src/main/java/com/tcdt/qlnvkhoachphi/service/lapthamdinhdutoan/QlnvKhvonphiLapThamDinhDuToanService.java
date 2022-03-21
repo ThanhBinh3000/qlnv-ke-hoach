@@ -1,23 +1,29 @@
 package com.tcdt.qlnvkhoachphi.service.lapthamdinhdutoan;
 
+import org.springframework.data.domain.Page;
+
+import com.tcdt.qlnvkhoachphi.request.object.catalog.NhomNutChucNangReq;
 import com.tcdt.qlnvkhoachphi.request.object.catalog.QlnvKhvonphiLapThamDinhDuToanReq;
 import com.tcdt.qlnvkhoachphi.request.object.catalog.TongHopReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.QlnvKhvonphiLapThamDinhDuToanSearchReq;
+import com.tcdt.qlnvkhoachphi.response.QlnvKhvonphiResp;
 import com.tcdt.qlnvkhoachphi.response.Resp;
-import com.tcdt.qlnvkhoachphi.table.UserInfo;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiLapThamDinhDuToan;
 
 public interface QlnvKhvonphiLapThamDinhDuToanService {
-	public Resp getDetail(String ids);
+	public QlnvKhvonphiResp getDetail(Long ids);
 
-	public Resp getList(QlnvKhvonphiLapThamDinhDuToanSearchReq objReq);
+	public Page<QlnvKhvonphiLapThamDinhDuToan> getList(QlnvKhvonphiLapThamDinhDuToanSearchReq objReq) throws Exception;
 
-	public Resp create(QlnvKhvonphiLapThamDinhDuToanReq objReq, UserInfo userInfo);
+	public QlnvKhvonphiResp create(QlnvKhvonphiLapThamDinhDuToanReq objReq) throws Exception;
 
-	public Resp synthetic(TongHopReq objReq);
+	public Object synthetic(TongHopReq objReq);
 
-	public Resp delete(String ids, UserInfo userInfo);
+	public void delete(String ids) throws Exception;
 
-	public Resp update(QlnvKhvonphiLapThamDinhDuToanReq qlnvBaoCaoReq, UserInfo userInfo);
+	public QlnvKhvonphiResp update(QlnvKhvonphiLapThamDinhDuToanReq objReq) throws Exception;
 
-	public Resp validate(QlnvKhvonphiLapThamDinhDuToanReq qlnvBaoCaoReq);
+	public QlnvKhvonphiLapThamDinhDuToan function(NhomNutChucNangReq objReq) throws Exception;
+
+	public Resp validate(QlnvKhvonphiLapThamDinhDuToanReq objReq);
 }

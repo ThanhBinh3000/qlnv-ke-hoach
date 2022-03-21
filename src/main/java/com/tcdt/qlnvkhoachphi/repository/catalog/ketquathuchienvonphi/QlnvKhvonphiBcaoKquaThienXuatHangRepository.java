@@ -17,12 +17,33 @@ public interface QlnvKhvonphiBcaoKquaThienXuatHangRepository extends CrudReposit
 	String qlnvKhvonphiBcaoKquaThienXuatHang = "SELECT * FROM QLNV_KHVONPHI_BCAO_KQUA_THIEN_XUAT_HANG t "
 			+ "WHERE t.QLNV_KHVONPHI_BCAO_ID = :qlnvKhvonphiBcaoId ";
 
-	String tongHop = "SELECT ct.ID,ct.QLNV_KHVONPHI_ID,ct.STT,ct.TEN_DAN,ct.MA_KHOACH,ct.MA_KHOI_DAN,ct.MA_DDIEM_XD,ct.DDIEM_MO_TAIKHOAN,ct.MASO_DAN,ct.MA_NGANH_KTE,ct.NLUC_TKE,ct.NAM_KC_TTE,ct.NAM_HT_TTE,ct.QD_DUYET_DAN_DTU_SONGAYTHANG,ct.QD_DUYET_DAN_DTU_TONG_VON,ct.QD_DCHINH_DAN_DTU_SONGAYTHANG,ct.QD_DCHINH_DAN_DTU_TONG_VON,ct.QD_DUYET_TK_DTOAN_SONGAYTHANG,ct.QD_DUYET_TK_DTOAN_TONG,ct.QD_DUYET_TK_DTOAN_XL,ct.QD_DUYET_TK_DTOAN_TB,ct.QD_DUYET_TK_DTOAN_CK,ct.KLTH_CAP_DEN_3006_SONGAYTHANG,ct.KLTH_CAP_DEN_3006_NSTT,ct.KLTH_CAP_DEN_3006_DTOAN_CHI_TX,ct.KLTH_CAP_DEN_3006_QUYKHAC,ct.KLTH_CAP_DEN_3112_SONGAYTHANG,ct.KLTH_CAP_DEN_3112_NSTT,ct.KLTH_CAP_DEN_3112_DTOAN_CHI_TX,ct.KLTH_CAP_DEN_3112_QUYKHAC,ct.NCAU_VON_N1,ct.NCAU_VON_N2,ct.NCAU_VON_N3,ct.GHICHU FROM QLNV_KHVONPHI_DM_VONDT_XDCBGD3N ct" +
-			"INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id" +
-			"INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
+	String tongHop = "SELECT ROWNUM as ID,a.* FROM (" +
+			"    SELECT '' as QLNV_KHVONPHI_BCAO_ID" +
+			"    ,'' as STT" +
+			"    ,'' as SO_QD" +
+			"    ,t.MA_VTU_PARENT" +
+			"    ,t.MA_VTU" +
+			"    ,t.MA_DVI_TINH" +
+
+			"    ,Sum(t.SO_LUONG_KHOACH) as SO_LUONG_KHOACH" +
+			"    ,Sum(t.SO_LUONG_TTE) as SO_LUONG_TTE" +
+			"    ,Sum(t.DG_GIA_KHOACH) as DG_GIA_KHOACH" +
+			"    ,Sum(t.DG_GIA_BAN_TTHIEU) as DG_GIA_BAN_TTHIEU" +
+			"    ,Sum(t.DG_GIA_BAN_TTE) as DG_GIA_BAN_TTE" +
+			"    ,Sum(t.TT_GIA_HTOAN) as TT_GIA_HTOAN" +
+			"    ,Sum(t.TT_GIA_BAN_TTE) as TT_GIA_BAN_TTE" +
+			"    ,Sum(t.TT_CLECH_GIA_TTE_VA_GIA_HTOAN) as TT_CLECH_GIA_TTE_VA_GIA_HTOAN" +
+
+			"    ,'' as GHI_CHU" +
+			"			FROM (" +
+			"                SELECT * FROM QLNV_KHVONPHI_BCAO_KQUA_THIEN_XUAT_HANG ct " +
+			"                INNER JOIN QLNV_KHVONPHI_BCAO vp ON vp.id = ct.QLNV_KHVONPHI_BCAO_ID " +
+			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha "+
+			"                 AND:namBcao= vp.NAM_BCAO AND:maLoaiBcao= vp.MA_LOAI_BCAO AND:dotBcao= vp.DOT_BCAO  ) t " +
+			"			GROUP BY t.MA_VTU,t.MA_DVI_TINH,t.MA_VTU_PARENT) a";
 
 	@Query(value = tongHop, nativeQuery = true)
-	ArrayList<QlnvKhvonphiBcaoKquaThienXuatHang> synthesis(String maDviCha, String namHienHanh);
+	ArrayList<QlnvKhvonphiBcaoKquaThienXuatHang> synthesis(String maDviCha,Long namBcao,Long dotBcao,String maLoaiBcao);
 
 	@Query(value = qlnvKhvonphiBcaoKquaThienXuatHang, nativeQuery = true)
 	ArrayList<QlnvKhvonphiBcaoKquaThienXuatHang> findQlnvKhvonphiBcaoKquaThienXuatHangByQlnvKhvonphiBcaoId(Long qlnvKhvonphiBcaoId);

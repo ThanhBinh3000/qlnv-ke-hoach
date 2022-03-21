@@ -48,9 +48,6 @@ public class QlnvKhvonphiBcaoKquaCtietThien implements Serializable {
 	@Column(name = "MA_NDUNG_CHI_PARENT")
 	private String maNdungChiParent;
 
-	@Column(name = "MA_NDUNG_CHI_CHILD")
-	private String maNdungChiChild;
-
 	@Column(name = "TRONG_DOT_TCONG")
 	private Long trongDotTcong;
 
@@ -74,6 +71,9 @@ public class QlnvKhvonphiBcaoKquaCtietThien implements Serializable {
 
 	@Column(name = "LOAI_BAO_CAO")
 	private Long loaiBaoCao;
+
+	@Column(name = "PARENT_ID")
+	private Long parentId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bcaoKquaCtietThien", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)

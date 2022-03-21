@@ -22,8 +22,8 @@ public class QlnvKhvonphiDchinhSauQtoanDtqgCtiet implements Serializable {
 	@SequenceGenerator(sequenceName = "QLNV_KHVONPHI_DCHINH_SAU_QTOAN_DTQG_CTIET_SEQ", allocationSize = 1, name = "QLNV_KHVONPHI_DCHINH_SAU_QTOAN_DTQG_CTIET_SEQ")
 	private Long id;
 
-	@Column(name = "QLNV_KHVONPHI_CAPVON_ID")
-	private Long qlnvKhvonphiCapvonId;
+	@Column(name = "QLNV_KHVONPHI_DCHINH_ID")
+	private Long qlnvKhvonphiDchinhId;
 
 	@Column(name = "MA_DVI_THIEN")
 	private String maDviThien;

@@ -51,4 +51,7 @@ public class QlnvKhvonphiPhanboDtoanchiNsnnCtiet {
 	
 	@Column(name = "CAN_CU_DTOAN")
 	private String canCuDtoan;
+	
+	@Column(name = "PHAN_BO")
+	private String phanBo;
 }

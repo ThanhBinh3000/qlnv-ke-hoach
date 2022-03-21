@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoachphi.request.object.catalog.dieuchinhdutoan;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class QlnvKhvonphiDchinhDuToanChiNsnnReq {
 	Long namHienHanh;
 	String ngayqd;
 	String phanBo;
+	String trangThai;
 
 	String listIdDeletes;
 

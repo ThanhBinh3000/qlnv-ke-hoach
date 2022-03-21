@@ -6,5 +6,5 @@ public class TongHopBcaoReq {
 	String maDvi;
 	String maLoaiBcao;
 	Long namBcao;
-	Long thangBcao;
+	Long thangordotBcao;
 }

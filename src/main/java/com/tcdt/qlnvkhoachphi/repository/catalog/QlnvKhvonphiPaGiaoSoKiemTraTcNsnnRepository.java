@@ -4,9 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import com.tcdt.qlnvkhoachphi.table.catalog.QlnvKhvonphiPaGiaoSoKiemTraTcNsnn;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiPaGiaoSoKiemTraTcNsnn;
 
+@Repository
 public interface QlnvKhvonphiPaGiaoSoKiemTraTcNsnnRepository extends 
 	CrudRepository<QlnvKhvonphiPaGiaoSoKiemTraTcNsnn, Long>{
 	

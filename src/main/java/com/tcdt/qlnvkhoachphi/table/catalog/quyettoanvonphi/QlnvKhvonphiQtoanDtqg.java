@@ -28,10 +28,10 @@ public class QlnvKhvonphiQtoanDtqg implements Serializable {
 	@Transient
 	String tenDvi;
 	String soQd;
-	Date ngayQuyetDinh;
 	String trangThai;
 	@Transient
 	String tenTrangThai;
+	String vanBan;
 
 	Date ngayTao;
 	String nguoiTao;

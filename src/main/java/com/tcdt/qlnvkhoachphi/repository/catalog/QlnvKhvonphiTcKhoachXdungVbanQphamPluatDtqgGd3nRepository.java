@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.tcdt.qlnvkhoachphi.table.catalog.QlnvKhvonphiTcKhoachXdungVbanQphamPluatDtqgGd3n;
+import com.tcdt.qlnvkhoachphi.table.catalog.lapthamdinhdutoan.QlnvKhvonphiTcKhoachXdungVbanQphamPluatDtqgGd3n;
 
 public interface QlnvKhvonphiTcKhoachXdungVbanQphamPluatDtqgGd3nRepository extends CrudRepository <QlnvKhvonphiTcKhoachXdungVbanQphamPluatDtqgGd3n, Long>{
 	String qlnvKhvonphiTcKhoachXdungVbanQphamPluatDtqgGd3n = "SELECT * FROM QLNV_KHVONPHI_TC_KHOACH_XDUNG_VBAN_QPHAM_PLUAT_DTQG_GD3N t "

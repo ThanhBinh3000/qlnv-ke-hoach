@@ -3,8 +3,6 @@ package com.tcdt.qlnvkhoachphi.response.capvonmuaban;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import com.tcdt.qlnvkhoachphi.table.catalog.capvonmuaban.QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet;
 
 import lombok.Data;
@@ -15,11 +13,15 @@ public class QlnvKhvonphiCapvonMuaBanTtoanThangDtqgResp {
 	String maLoaiGnhan;
 	String maDviLap;
 	String tenDviLap;
-	String tenDviCap;
 	String maDviCap;
+	String tenDviCap;
+	String maDviNhan;
+	String tenDviNhan;
 	String ngayQuyetDinh;
 	Date ngayTao;
 	String nguoiTao;
+	Date ngaySua;
+	String nguoiSua;
 	String soQd;
 	String trangThai;
 	String tenTrangThai;

@@ -21,4 +21,9 @@ public interface QlnvDmClient {
 	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/json" })
 	public Resp getDmKhoachVphiByIdDetail(@PathVariable("ids") String ids);
 
+	@GetMapping(PathClientConstants.URL_DM_VPHI_GET_ALL)
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/json" })
+	public Resp getAllByLoaiDmAndLevelDm(@PathVariable("loaiDm") String loaiDm,
+			@PathVariable("levelDm") Integer levelDm);
+
 }

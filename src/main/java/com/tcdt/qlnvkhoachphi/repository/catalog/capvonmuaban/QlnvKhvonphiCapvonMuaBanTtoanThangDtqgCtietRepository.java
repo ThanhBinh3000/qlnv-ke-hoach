@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.tcdt.qlnvkhoachphi.table.catalog.capvonmuaban.QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet;
 @Repository
 public interface QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtietRepository extends CrudRepository<QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet, Long>{
-	
+
 	String qlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet = "SELECT * FROM QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG_CTIET t "
 			+ "WHERE t.QLNV_KHVONPHI_CAPVON_ID = :qlnvKhvonphiCapVonId ";
 

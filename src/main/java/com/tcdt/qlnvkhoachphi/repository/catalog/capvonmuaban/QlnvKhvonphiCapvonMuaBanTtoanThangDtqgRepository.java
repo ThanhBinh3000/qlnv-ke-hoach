@@ -12,31 +12,30 @@ import com.tcdt.qlnvkhoachphi.table.catalog.capvonmuaban.QlnvKhvonphiCapvonMuaBa
 public interface QlnvKhvonphiCapvonMuaBanTtoanThangDtqgRepository
 		extends CrudRepository<QlnvKhvonphiCapvonMuaBanTtoanThangDtqg, Long> {
 
-	String value = "SELECT * FROM QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG t"
-			+ "WHERE (:maDviLap is null or t.MA_DVI_LAP =  :maDviLap)"
-			+ "AND (:maDviCap is null or t.MA_DVI_CAP = :maDviCap)"
-			+ "AND (:maLoaiGnhan is null or t.MA_LOAI_GNHAN = :maLoaiGnhan)"
-			+ "AND (:soQd is null or lower(t.SO_QD) like lower(concat(concat('%', :soQd),'%')))"
-			+ "AND (:trangThai is null or t.TRANG_THAI = :trangThai)"
-			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))"
+	String value = "SELECT * FROM QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG t\r\n"
+			+ "WHERE (:maDviLap is null or t.MA_DVI_LAP =  :maDviLap)\r\n"
+			+ "AND (:maDviCap is null or t.MA_DVI_CAP = :maDviCap)\r\n"
+			+ "AND (:maLoaiGnhan is null or t.MA_LOAI_GNHAN = :maLoaiGnhan)\r\n"
+			+ "AND (:soQd is null or lower(t.SO_QD) like lower(concat(concat('%', :soQd),'%')))\r\n"
+			+ "AND (:trangThai is null or t.TRANG_THAI = :trangThai)\r\n"
+			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))\r\n"
 			+ "AND t.trang_thai != '0'";
 
-	String countQuery = "SELECT * FROM QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG t"
-			+ "WHERE (:maDviLap is null or t.MA_DVI_LAP =  :maDviLap)"
-			+ "AND (:maDviCap is null or t.MA_DVI_CAP = :maDviCap)"
-			+ "AND (:maLoaiGnhan is null or t.MA_LOAI_GNHAN = :maLoaiGnhan)"
-			+ "AND (:soQd is null or lower(t.SO_QD) like lower(concat(concat('%', :soQd),'%')))"
-			+ "AND (:trangThai is null or t.TRANG_THAI = :trangThai)"
-			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))"
+	String countQuery = "SELECT * FROM QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG t\r\n"
+			+ "WHERE (:maDviLap is null or t.MA_DVI_LAP =  :maDviLap)\r\n"
+			+ "AND (:maDviCap is null or t.MA_DVI_CAP = :maDviCap)\r\n"
+			+ "AND (:maLoaiGnhan is null or t.MA_LOAI_GNHAN = :maLoaiGnhan)\r\n"
+			+ "AND (:soQd is null or lower(t.SO_QD) like lower(concat(concat('%', :soQd),'%')))\r\n"
+			+ "AND (:trangThai is null or t.TRANG_THAI = :trangThai)\r\n"
+			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))\r\n"
 			+ "AND t.trang_thai != '0'";
 
 	@Query(value = value, countQuery = countQuery, nativeQuery = true)
 	Page<QlnvKhvonphiCapvonMuaBanTtoanThangDtqg> selectParams(String maDviLap, String maDviCap, String maLoaiGnhan,
 			String ngayTaoTu, String ngayTaoDen, String trangThai, String soQd, Pageable pageable);
-	/*
-	 * @Query(value = value, countQuery = countQuery, nativeQuery = true)
-	 * Page<QlnvKhvonphiCapvonMuaBanTtoanThangDtqg> selectParams(String maDviLap,
-	 * String maDviCap, String maLoaiGnhan, String ngayQuyetDinh, String ngayTaoTu,
-	 * String ngayTaoDen, String trangThai, String soQd, Pageable pageable);
-	 */
+//	@Query(value = value, countQuery = countQuery, nativeQuery = true)
+//	Page<QlnvKhvonphiCapvonMuaBanTtoanThangDtqg> selectParams(String maDviLap, String maDviCap, String maLoaiGnhan,
+//			String ngayQuyetDinh, String ngayTaoTu, String ngayTaoDen, String trangThai, String soQd,
+//			Pageable pageable);
+
 }

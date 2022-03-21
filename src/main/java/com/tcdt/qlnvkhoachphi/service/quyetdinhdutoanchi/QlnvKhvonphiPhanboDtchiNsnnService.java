@@ -1,24 +1,26 @@
 package com.tcdt.qlnvkhoachphi.service.quyetdinhdutoanchi;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+
+import org.springframework.data.domain.Page;
 
 import com.tcdt.qlnvkhoachphi.request.object.catalog.quyetdinhdutoanchi.QlnvKhvonphiPhanboDtoanChiNsnnReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.quyetdinhdutoanchi.QlnvKhvonphiPhanboDtoanChiNsnnSearchReq;
-import com.tcdt.qlnvkhoachphi.response.Resp;
+import com.tcdt.qlnvkhoachphi.response.quyetdinhdutoanchi.QlnvKhvonphiPhanboDtoanChiNsnnResp;
+import com.tcdt.qlnvkhoachphi.table.catalog.quyetdinhgiaodutoanchi.QlnvKhvonphiPhanboDtoanchiNsnn;
+import com.tcdt.qlnvkhoachphi.table.catalog.quyetdinhgiaodutoanchi.QlnvKhvonphiPhanboDtoanchiNsnnCtiet;
 
 public interface QlnvKhvonphiPhanboDtchiNsnnService {
-	public Resp create(QlnvKhvonphiPhanboDtoanChiNsnnReq objReq,
-			HttpServletRequest req);
 	
-	public Resp update(QlnvKhvonphiPhanboDtoanChiNsnnReq objReq,
-			HttpServletRequest req);
-	
-	public Resp delete(String ids, HttpServletRequest req);
-	
-	public Resp detail(String ids);
-	
-	public Resp colection(QlnvKhvonphiPhanboDtoanChiNsnnSearchReq objReq,
-			HttpServletRequest req);
-	
-	public Resp synthesis(String maDviThien, HttpServletRequest req);
+	public QlnvKhvonphiPhanboDtoanChiNsnnResp create(QlnvKhvonphiPhanboDtoanChiNsnnReq objReq) throws Exception;
+
+	public QlnvKhvonphiPhanboDtoanChiNsnnResp update(QlnvKhvonphiPhanboDtoanChiNsnnReq objReq) throws Exception;
+
+	public void delete(String ids) throws Exception;
+
+	public QlnvKhvonphiPhanboDtoanChiNsnnResp detail(String ids);
+
+	public Page<QlnvKhvonphiPhanboDtoanchiNsnn> colection(QlnvKhvonphiPhanboDtoanChiNsnnSearchReq objReq);
+
+	public ArrayList<QlnvKhvonphiPhanboDtoanchiNsnnCtiet> synthesis(String maDviThien);
 }

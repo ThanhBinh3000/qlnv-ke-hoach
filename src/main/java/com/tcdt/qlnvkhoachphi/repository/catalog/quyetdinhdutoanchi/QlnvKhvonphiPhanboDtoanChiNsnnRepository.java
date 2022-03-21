@@ -13,16 +13,16 @@ public interface QlnvKhvonphiPhanboDtoanChiNsnnRepository extends CrudRepository
 
 	String value = "SELECT * FROM QLNV_KHVONPHI_PHANBO_DTOAN_CHI_NSNN t "
 			+ "WHERE (:maDvi is null or lower(t.MA_DVI) like lower(concat(concat('%', :maDvi),'%'))) "
-			+ "AND (:noiQd is null or lower(t.NOI_QD) like lower(concat(concat('%', :noiQd),'%'))) "
+			+ "AND (:soQd is null or lower(t.SO_QD) like lower(concat(concat('%', :soQd),'%'))) "
 			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))"
 			+ "AND (:trangThai is null or lower(t.TRANG_THAI) like lower(concat(concat('%', :trangThai),'%'))) ";
 	String countQuery = "SELECT count(1) FROM QLNV_KHVONPHI_PHANBO_DTOAN_CHI_NSNN t "
 			+ "WHERE (:maDvi is null or lower(t.MA_DVI) like lower(concat(concat('%', :maDvi),'%'))) "
-			+ "AND (:noiQd is null or lower(t.NOI_QD) like lower(concat(concat('%', :noiQd),'%'))) "
+			+ "AND (:soQd is null or lower(t.SO_QD) like lower(concat(concat('%', :soQd),'%'))) "
 			+ "AND (:ngayTaoTu is null or :ngayTaoDen is null or TO_DATE(TRUNC(t.NGAY_TAO)) >= TO_DATE(:ngayTaoTu,'DD/MM/YYYY') AND TO_DATE(TRUNC(t.NGAY_TAO)) <= TO_DATE(:ngayTaoDen,'DD/MM/YYYY'))"
 			+ "AND (:trangThai is null or lower(t.TRANG_THAI) like lower(concat(concat('%', :trangThai),'%'))) ";
 	
 	@Query(value = value, countQuery = countQuery, nativeQuery = true)
-	Page<QlnvKhvonphiPhanboDtoanchiNsnn> selectParams(String maDvi, String noiQd,
+	Page<QlnvKhvonphiPhanboDtoanchiNsnn> selectParams(String maDvi, String soQd,
 			String ngayTaoTu, String ngayTaoDen, String trangThai, Pageable pageable);
 }

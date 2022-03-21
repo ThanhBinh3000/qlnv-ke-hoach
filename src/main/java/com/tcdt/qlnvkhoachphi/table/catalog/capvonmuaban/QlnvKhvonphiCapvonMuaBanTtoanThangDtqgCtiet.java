@@ -5,16 +5,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
 
@@ -28,8 +23,8 @@ public class QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet implements Serializable
 	@SequenceGenerator(sequenceName = "QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG_CTIET_SEQ", allocationSize = 1, name = "QLNV_KHVONPHI_CAPVON_MUA_BAN_TTOAN_THANG_DTQG_CTIET_SEQ")
 	private Long id;
 
-//	@Column(name = "QLNV_KHVONPHI_CAPVON_ID")
-//	private Long qlnvKhvonphiCapvonId;
+	@Column(name = "QLNV_KHVONPHI_CAPVON_ID")
+	private Long qlnvKhvonphiCapvonId;
 
 	@Column(name = "MA_DVI_THIEN")
 	private String maDviThien;
@@ -64,14 +59,8 @@ public class QlnvKhvonphiCapvonMuaBanTtoanThangDtqgCtiet implements Serializable
 	@Column(name = "MA_HDONG")
 	private String maHdong;
 
-	@Column(name = "GHI_CHU")
+	@Column(name = "GHICHU")
 	private String ghiChu;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "qlnvKhvonphiCapvonId", nullable = false)
-	@JsonBackReference
-	private QlnvKhvonphiCapvonMuaBanTtoanThangDtqg qlnvCapvonMuaBan;
-
 }
 
 
