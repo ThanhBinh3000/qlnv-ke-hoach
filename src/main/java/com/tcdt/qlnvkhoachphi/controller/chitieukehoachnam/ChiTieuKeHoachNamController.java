@@ -10,6 +10,7 @@ import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamExportService;
 import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
+import com.tcdt.qlnvkhoachphi.util.FileResourcesUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -350,11 +351,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
         File file = null;
         try {
             String filename = "excel/chi_tieu_ke_hoach_nam_import.xlsx";
-
-            ClassLoader classLoader = getClass().getClassLoader();
-            URL resource = classLoader.getResource(filename);
-
-            file = new File(resource.toURI());
+            file = FileResourcesUtils.getFileFromResource(filename);
             inputStreamResource = new InputStreamResource(new FileInputStream(file));
         } catch (Exception e) {
             log.error(e.getMessage());
