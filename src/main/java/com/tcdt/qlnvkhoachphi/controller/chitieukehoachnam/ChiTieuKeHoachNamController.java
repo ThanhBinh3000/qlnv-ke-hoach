@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,7 +44,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Tạo mới Chỉ tiêu kế hoạch năm", response = List.class)
 	@PostMapping
-	public final ResponseEntity<Resp> create(@RequestBody ChiTieuKeHoachNamReq req) {
+	public final ResponseEntity<Resp> create(@Valid @RequestBody ChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.createQd(req));
@@ -76,7 +77,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Sửa chỉ tiêu kế hoạch năm", response = List.class)
 	@PutMapping()
-	public final ResponseEntity<Resp> updateQd(@RequestBody ChiTieuKeHoachNamReq req) {
+	public final ResponseEntity<Resp> updateQd(@Valid @RequestBody ChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.updateQd(req));
@@ -109,7 +110,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Gửi duyệt/Phê duyệt/Từ chối chỉ tiêu kế hoạch năm: 00 Mới Tạo, 01 Chờ Duyệt, 02 Đã duyệt, 03 Từ chối", response = List.class)
 	@PutMapping("/status")
-	public final ResponseEntity<Resp> updateStatusQd(@RequestBody StatusReq req) {
+	public final ResponseEntity<Resp> updateStatusQd(@Valid @RequestBody StatusReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.updateStatusQd(req));
@@ -125,7 +126,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Gửi duyệt/Phê duyệt/Từ chối quyết định điều chỉnh chỉ tiêu kế hoạch năm: 00 Mới Tạo, 01 Chờ Duyệt, 02 Đã duyệt, 03 Từ chối", response = List.class)
 	@PutMapping("/quyet-dinh-dieu-chinh/status")
-	public final ResponseEntity<Resp> updateStatusQdDc(@RequestBody StatusReq req) {
+	public final ResponseEntity<Resp> updateStatusQdDc(@Valid @RequestBody StatusReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.updateStatusQdDc(req));
@@ -141,7 +142,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Tạo mới quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
 	@PostMapping("/quyet-dinh-dieu-chinh")
-	public final ResponseEntity<Resp> createQdDc(@RequestBody QdDcChiTieuKeHoachNamReq req) {
+	public final ResponseEntity<Resp> createQdDc(@Valid @RequestBody QdDcChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.createQdDc(req));
@@ -157,7 +158,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
 	@ApiOperation(value = "Sửa quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
 	@PutMapping("/quyet-dinh-dieu-chinh")
-	public final ResponseEntity<Resp> updateQdDc(@RequestBody QdDcChiTieuKeHoachNamReq req) {
+	public final ResponseEntity<Resp> updateQdDc(@Valid @RequestBody QdDcChiTieuKeHoachNamReq req) {
 		Resp resp = new Resp();
 		try {
 			resp.setData(chiTieuKeHoachNamService.updateQdDc(req));

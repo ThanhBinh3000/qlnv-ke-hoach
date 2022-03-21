@@ -26,7 +26,6 @@ public class ChiTieuKeHoachNamReq {
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;
 
-	@NotNull(message = "Không được để trống")
 	private String ghiChu;
 
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();

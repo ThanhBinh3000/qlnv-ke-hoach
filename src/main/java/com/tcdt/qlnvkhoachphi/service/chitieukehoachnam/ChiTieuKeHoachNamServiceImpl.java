@@ -123,9 +123,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request.");
 
-		Integer namKeHoach = req.getNamKeHoach();
 		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
-		BeanUtils.copyProperties(req, chiTieuKeHoachNam);
+		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.MOI_TAO.getId());
