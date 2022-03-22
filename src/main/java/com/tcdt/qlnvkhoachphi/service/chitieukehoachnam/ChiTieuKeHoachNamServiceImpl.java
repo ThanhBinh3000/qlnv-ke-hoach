@@ -1136,6 +1136,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				donViIdSet.add(k.getDonViId());
 		});
 
+		req.getKhVatTu().forEach(k -> {
+			if (k.getDonViId() != null)
+				donViIdSet.add(k.getDonViId());
+		});
+
 		List<QlnvDmDonvi> listDonVi = Lists.newArrayList(qlnvDmDonviRepository.findAllById(donViIdSet));
 		if (CollectionUtils.isEmpty(listDonVi))
 			throw new Exception("Đơn vị không tồn tại.");
