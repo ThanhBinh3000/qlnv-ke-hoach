@@ -806,6 +806,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			res.setDonViId(donVi.getId());
 			res.setTenDonvi(donVi.getTenDvi());
 			res.setMaDonVi(donVi.getMaDvi());
+			res.setDonViTinh(keHoachLuongThucMuoi.getDonViTinh());
 			maDviLtm.add(donVi.getMaDvi());
 
 			// Nhap trong nam
@@ -886,6 +887,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			res.setDonViId(donVi.getId());
 			res.setTenDonVi(donVi.getTenDvi());
 			res.setMaDonVi(donVi.getMaDvi());
+			res.setDonViTinh(keHoachLuongThucMuoi.getDonViTinh());
 			maDviLtm.add(donVi.getMaDvi());
 
 			// Nhap trong nam

@@ -17,7 +17,7 @@ public class KeHoachMuoiDuTruRes {
     private Long donViId;
     private String maDonVi;
     private String tenDonVi;
-
+    private String donViTinh;
     // Ton kho dau nam
     private Double tkdnTongSoMuoi;
     private List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();

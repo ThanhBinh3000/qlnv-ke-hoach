@@ -20,7 +20,7 @@ public class KeHoachLuongThucDuTruRes {
 	private Long donViId;
 	private String maDonVi;
 	private String tenDonvi;
-
+	private String donViTinh;
 	// Ton kho dau nam
 	private Double tkdnTongSoQuyThoc;
 	private Double tkdnTongThoc;
