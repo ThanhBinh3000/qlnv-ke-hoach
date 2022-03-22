@@ -16,12 +16,15 @@ import java.util.List;
 public class ChiTieuKeHoachNamReq {
 	@ApiModelProperty(notes = "Bắt buộc nhập đối với update")
 	private Long id;
+	@NotNull(message = "Không được để trống")
 	@Size(max = 20, message = "Số quyết định không được vượt quá 20 ký tự.")
 	private String soQuyetDinh;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKy;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayHieuLuc;
+
+	@NotNull(message = "Không được để trống")
 	private Integer namKeHoach;
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;

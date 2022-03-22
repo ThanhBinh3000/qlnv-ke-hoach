@@ -42,11 +42,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -252,6 +254,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNam ctkhn = optional.get();
 		Long ctkhnId = ctkhn.getId();
+
+		ctkhn.setSoQuyetDinh(req.getSoQuyetDinh());
+		ctkhn.setNgayHieuLuc(req.getNgayHieuLuc());
+		ctkhn.setNgayKy(req.getNgayKy());
+		ctkhn.setNamKeHoach(req.getNamKeHoach());
+		ctkhn.setTrichYeu(req.getTrichYeu());
+		ctkhn.setGhiChu(req.getGhiChu());
+		chiTieuKeHoachNamRepository.save(ctkhn);
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(ctkhn.getId());
 
@@ -977,11 +987,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 			k.setTkdnTongThoc(k.getTkdnThoc().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum());
 			k.setTkdnTongGao(k.getTkdnGao().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum());
-			k.setTkdnTongSoQuyThoc(k.getTkdnTongGao() + k.getTkdnTongThoc());
+			k.setTkdnTongSoQuyThoc((k.getTkdnTongGao() * 2) + k.getTkdnTongThoc());
 
-			k.setTkcnTongGao(k.getTkdnTongGao() - k.getXtnTongGao());
-			k.setTkcnTongThoc(k.getTkdnTongThoc() - k.getXtnTongThoc());
-			k.setTkcnTongSoQuyThoc(k.getTkcnTongThoc() + k.getTkcnTongGao());
+			k.setTkcnTongGao(k.getTkdnTongGao() - k.getXtnTongGao() + k.getNtnGao());
+			k.setTkcnTongThoc(k.getTkdnTongThoc() - k.getXtnTongThoc() + k.getNtnThoc());
+			k.setTkcnTongSoQuyThoc(k.getTkcnTongThoc() + (k.getTkcnTongGao() * 2));
 		});
 
 		khMuoiResList.forEach(k -> {
@@ -994,7 +1004,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				k.setTkdnTongSoMuoi(0d);
 			}
 
-			k.setTkcnTongSoMuoi(k.getTkdnTongSoMuoi() - k.getXtnTongSoMuoi());
+			k.setTkcnTongSoMuoi(k.getTkdnTongSoMuoi() - k.getXtnTongSoMuoi() + k.getNtnTongSoMuoi());
 		});
 
 		List<VatTuNhapQueryDTO> vatTuNhapQueryDTOList = this.getKeHoachVatTuThietBiCacNamTruoc(vatTuIdList, chiTieuKeHoachNam.getNamKeHoach());
