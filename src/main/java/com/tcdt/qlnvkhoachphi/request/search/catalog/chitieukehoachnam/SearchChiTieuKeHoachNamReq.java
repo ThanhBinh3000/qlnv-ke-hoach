@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoachphi.request;
+package com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

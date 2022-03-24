@@ -10,4 +10,6 @@ import java.util.Set;
 @Repository
 public interface QlnvDmVattuRepository extends CrudRepository<QlnvDmVattu, Long> {
     Set<QlnvDmVattu> findByMaIn(Collection<String> maVatTus);
+
+    Set<QlnvDmVattu> findByIdIn(Collection<Long> vatTuIds);
 }

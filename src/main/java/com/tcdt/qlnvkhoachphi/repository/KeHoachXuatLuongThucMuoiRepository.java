@@ -11,4 +11,5 @@ import java.util.List;
 public interface KeHoachXuatLuongThucMuoiRepository extends CrudRepository<KeHoachXuatLuongThucMuoi, Long> {
 	List<KeHoachXuatLuongThucMuoi> findByKeHoachId(Long id);
 	List<KeHoachXuatLuongThucMuoi> findByKeHoachIdIn(Collection<Long> ids);
+	List<KeHoachXuatLuongThucMuoi> findByKeHoachIdInAndNamKeHoachIn(Collection<Long> ids, Collection<Integer> namList);
 }

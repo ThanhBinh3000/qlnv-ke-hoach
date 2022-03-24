@@ -2,7 +2,7 @@ package com.tcdt.qlnvkhoachphi.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
-import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.util.DataUtils;
 import org.apache.commons.lang3.StringUtils;

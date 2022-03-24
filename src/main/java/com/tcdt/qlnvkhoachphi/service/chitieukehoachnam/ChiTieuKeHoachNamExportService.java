@@ -1,6 +1,6 @@
-package com.tcdt.qlnvkhoachphi.service;
+package com.tcdt.qlnvkhoachphi.service.chitieukehoachnam;
 
-import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;

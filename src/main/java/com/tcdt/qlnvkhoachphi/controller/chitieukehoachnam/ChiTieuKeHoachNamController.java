@@ -1,13 +1,14 @@
 package com.tcdt.qlnvkhoachphi.controller.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoachphi.controller.BaseController;
-import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
 import com.tcdt.qlnvkhoachphi.response.Resp;
-import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamExportService;
-import com.tcdt.qlnvkhoachphi.service.ChiTieuKeHoachNamImportService;
+import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamExportService;
+import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.FileResourcesUtils;
@@ -360,5 +361,22 @@ public class ChiTieuKeHoachNamController extends BaseController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
                 .contentLength(file.length()) //
                 .body(inputStreamResource);
+    }
+
+    @ApiOperation(value = "Lấy số lượng trước điều chỉnh", response = List.class)
+    @GetMapping(value = "/quyet-dinh-dieu-chinh/so-luong-truoc-dieu-chinh", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Resp> soLuongTruocDc(@RequestBody SoLuongTruocDieuChinhSearchReq req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.getSoLuongTruocDc(req));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
     }
 }

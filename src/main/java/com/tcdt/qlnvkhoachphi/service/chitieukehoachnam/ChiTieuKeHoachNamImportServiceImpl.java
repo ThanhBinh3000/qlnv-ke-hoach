@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoachphi.service;
+package com.tcdt.qlnvkhoachphi.service.chitieukehoachnam;
 
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
@@ -9,8 +9,6 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.K
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
-import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
-import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamServiceImpl;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.StringHelper;

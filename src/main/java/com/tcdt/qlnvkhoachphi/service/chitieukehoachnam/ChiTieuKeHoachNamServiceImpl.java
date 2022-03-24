@@ -16,7 +16,7 @@ import com.tcdt.qlnvkhoachphi.repository.KeHoachXuatLuongThucMuoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.KtTrangthaiHienthoiRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
-import com.tcdt.qlnvkhoachphi.request.SearchChiTieuKeHoachNamReq;
+import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachLuongThucDuTruReq;
@@ -25,8 +25,10 @@ import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.KeHoachNhapVatTuT
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.VatTuNhapReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.VatTuThietBiReq;
+import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.QdDcChiTieuKeHoachRes;
+import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.SoLuongTruocDieuChinhRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
@@ -38,24 +40,26 @@ import com.tcdt.qlnvkhoachphi.table.UserInfo;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.Constants;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
+
+	private static final Integer SO_NAM_CU = 3;
 	@Autowired
 	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepository;
 
@@ -84,6 +88,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	public static final Long MUOI_ID = 481L;
 	public static final String MUOI_MA_VT = "04";
 	private static final Integer MAX_CAP_VAT_TU = 3;
+
+	private static final List<Long> THOC_GAO_MUOI_IDS = Arrays.asList(THOC_ID, GAO_ID, MUOI_ID);
+
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
@@ -192,7 +199,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> maVatTuList, Integer namKeHoach, List<QlnvDmDonvi> list) throws Exception {
 		List<String> namList = new ArrayList<>();
-		for (int i = 1; i <= 3; i++) {
+		for (int i = 1; i <= SO_NAM_CU; i++) {
 			namList.add(String.valueOf(namKeHoach - i));
 		}
 		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, maVatTuList, namList);
@@ -261,6 +268,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setNamKeHoach(req.getNamKeHoach());
 		ctkhn.setTrichYeu(req.getTrichYeu());
 		ctkhn.setGhiChu(req.getGhiChu());
+		ctkhn.setNgaySua(LocalDate.now());
+		ctkhn.setNguoiSuaId(userInfo.getId());
 		chiTieuKeHoachNamRepository.save(ctkhn);
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(ctkhn.getId());
@@ -1213,5 +1222,112 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		req.setDonViId(userInfo.getDvql());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req, pageable);
+	}
+
+	@Override
+	public SoLuongTruocDieuChinhRes getSoLuongTruocDc(SoLuongTruocDieuChinhSearchReq req) throws Exception {
+
+		Long ctkhnId = req.getCtkhnId();
+		Long donViId = req.getDonViId();
+		Set<Long> vatTuIds = req.getVatTuIds();
+
+		if (ctkhnId == null || CollectionUtils.isEmpty(vatTuIds) || donViId == null)
+			return null;
+
+		Optional<ChiTieuKeHoachNam> optional = chiTieuKeHoachNamRepository.findById(ctkhnId);
+		if (!optional.isPresent())
+			throw new Exception("Chỉ tiêu kế hoạch không tồn tại.");
+
+		Optional<QlnvDmDonvi> qDonVi = qlnvDmDonviRepository.findById(donViId);
+
+		if (!qDonVi.isPresent())
+			throw new Exception("Đơn vị không tồn tại.");
+		QlnvDmDonvi donVi = qDonVi.get();
+
+		List<String> maVatTuList = qlnvDmVattuRepository.findByIdIn(vatTuIds).stream().map(QlnvDmVattu::getMa).collect(Collectors.toList());
+
+		Integer nam = optional.get().getNamKeHoach();
+
+		List<Integer> namList = new ArrayList<>();
+		for (int i = 1; i <= SO_NAM_CU; i++) {
+			namList.add(nam - i);
+		}
+		List<VatTuNhapRes> tonKhoDauNam = new ArrayList<>();
+		List<VatTuNhapRes> nhapTrongNam = new ArrayList<>();
+		List<VatTuNhapRes> xuatTrongNam = new ArrayList<>();
+		List<VatTuNhapRes> keHoachVatTuNamTruoc = new ArrayList<>();
+
+		if (vatTuIds.contains(GAO_ID) || vatTuIds.contains(THOC_ID)|| vatTuIds.contains(MUOI_ID)) {
+			List<KeHoachLuongThucMuoi> khltmList = keHoachLuongThucMuoiRepository.findByCtkhnIdAndDonViIdAndVatTuIdIn(ctkhnId, donViId, vatTuIds);
+			Set<Long> khxltmIds = khltmList.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toSet());
+			List<KeHoachXuatLuongThucMuoi> khxltmList = keHoachXuatLuongThucMuoiRepository.findByKeHoachIdInAndNamKeHoachIn(khxltmIds, namList);
+			for (KeHoachLuongThucMuoi khltm : khltmList) {
+				VatTuNhapRes nhap = new VatTuNhapRes();
+				nhap.setSoLuong(khltm.getSoLuongNhap());
+				nhap.setVatTuId(khltm.getVatTuId());
+				nhapTrongNam.add(nhap);
+
+				List<KeHoachXuatLuongThucMuoi> khxltmByKeHoach = khxltmList.stream().filter(k -> k.getKeHoachId().equals(khltm.getId())).collect(Collectors.toList());
+				for (KeHoachXuatLuongThucMuoi khxltm : khxltmByKeHoach) {
+					VatTuNhapRes xuat = new VatTuNhapRes();
+					xuat.setSoLuong(khxltm.getSoLuongXuat());
+					xuat.setNam(khxltm.getNamKeHoach());
+					xuat.setVatTuId(khltm.getVatTuId());
+					xuatTrongNam.add(xuat);
+				}
+			}
+
+			List<TonKhoDauNamRes> tonKhoDauNamList = this.getTonKhoDauNam(Collections.singletonList(donVi.getMaDvi()), maVatTuList, nam, Collections.singletonList(donVi));
+			tonKhoDauNam = tonKhoDauNamList.stream().flatMap(t -> t.getTonKho().stream()).distinct().collect(Collectors.toList());
+			for (Integer n : namList) {
+				for (Long id : THOC_GAO_MUOI_IDS) {
+					if (vatTuIds.contains(id)) {
+						VatTuNhapRes res = tonKhoDauNam.stream()
+								.filter(nhap -> nhap.getNam().equals(n) && nhap.getVatTuId().equals(GAO_ID))
+								.findFirst().orElse(null);
+
+						if (res == null)
+							tonKhoDauNam.add(new VatTuNhapRes(n, 0d, id));
+					}
+				}
+			}
+		}
+
+		vatTuIds.removeAll(Stream.of(GAO_ID, THOC_ID, MUOI_ID).collect(Collectors.toSet()));
+
+		if (!CollectionUtils.isEmpty(vatTuIds)) {
+
+			List<KeHoachVatTu> khvtList = keHoachVatTuRepository.findByCtkhnIdAndVatTuIdInAndDonViId(ctkhnId, vatTuIds, donViId);
+			for (KeHoachVatTu khvt : khvtList) {
+				VatTuNhapRes nhap = new VatTuNhapRes();
+				nhap.setSoLuong(khvt.getSoLuongNhap());
+				nhap.setVatTuId(khvt.getVatTuId());
+				nhapTrongNam.add(nhap);
+			}
+
+			List<VatTuNhapQueryDTO> vatTuNhapQueryDTOs = this.getKeHoachVatTuThietBiCacNamTruoc(Lists.newArrayList(vatTuIds), nam);
+			vatTuNhapQueryDTOs.forEach(dto -> keHoachVatTuNamTruoc.add(new VatTuNhapRes(dto.getNam(), dto.getSoLuong(), dto.getVatTuId())));
+
+			for (Integer n : namList) {
+				for (Long id : THOC_GAO_MUOI_IDS) {
+					if (vatTuIds.contains(id)) {
+						VatTuNhapRes res = keHoachVatTuNamTruoc.stream()
+								.filter(nhap -> nhap.getNam().equals(n) && nhap.getVatTuId().equals(GAO_ID))
+								.findFirst().orElse(null);
+
+						if (res == null)
+							keHoachVatTuNamTruoc.add(new VatTuNhapRes(n, 0d, id));
+					}
+				}
+			}
+		}
+		SoLuongTruocDieuChinhRes response = new SoLuongTruocDieuChinhRes();
+		response.setTonKhoDauNam(tonKhoDauNam);
+		response.setNhapTrongNam(nhapTrongNam);
+		response.setXuatTrongNam(xuatTrongNam);
+		response.setKeHoachVatTuNamTruoc(keHoachVatTuNamTruoc);
+		response.setDonViId(req.getDonViId());
+
+		return response;
 	}
 }
