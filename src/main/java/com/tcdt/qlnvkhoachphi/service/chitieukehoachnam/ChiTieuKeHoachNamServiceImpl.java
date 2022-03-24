@@ -89,6 +89,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	private static final Integer MAX_CAP_VAT_TU = 3;
 
 	private static final List<Long> THOC_GAO_MUOI_IDS = Arrays.asList(THOC_ID, GAO_ID, MUOI_ID);
+	// TODO: FIXME: Fix cứng id đơn vị để dùng tạm, sẽ update sử dũng mã đơn vị thay vì id đơn vị
+	private static final Long DON_VI_ID_1 = 1L;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -136,7 +138,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.MOI_TAO.getId());
-		chiTieuKeHoachNam.setDonViId(userInfo.getDvql());
+		chiTieuKeHoachNam.setDonViId(DON_VI_ID_1);
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLastest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
@@ -1211,7 +1213,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDonViId(userInfo.getDvql());
+		req.setDonViId(DON_VI_ID_1);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
 		return chiTieuKeHoachNamRepository.search(req, pageable);
 	}
@@ -1223,7 +1225,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDonViId(userInfo.getDvql());
+		req.setDonViId(DON_VI_ID_1);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req, pageable);
 	}
