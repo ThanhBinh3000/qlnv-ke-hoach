@@ -794,6 +794,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				donViIdSet.add(k.getDonViId());
 		});
 
+		keHoachVatTuList.forEach(k -> {
+			if (k.getDonViId() != null)
+				donViIdSet.add(k.getDonViId());
+		});
+
 		List<QlnvDmDonvi> dmDonviList = Lists.newArrayList(qlnvDmDonviRepository.findAllById(donViIdSet));
 
 		Map<Long, QlnvDmDonvi> mapDonVi = dmDonviList.stream().collect(Collectors.toMap(QlnvDmDonvi::getId, Function.identity()));
