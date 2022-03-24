@@ -40,7 +40,6 @@ import com.tcdt.qlnvkhoachphi.table.UserInfo;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.Constants;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

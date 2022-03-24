@@ -11,24 +11,23 @@ import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamExportS
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoachphi.service.chitieukehoachnam.ChiTieuKeHoachNamService;
 import com.tcdt.qlnvkhoachphi.util.Constants;
-import com.tcdt.qlnvkhoachphi.util.FileResourcesUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -345,22 +344,23 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @PostMapping("/download/import-template")
     @ApiOperation(value = "Download template import chỉ tiêu kế hoạch năm", response = List.class)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<InputStreamResource> downloadTemplateImportCtkhn(HttpServletResponse response){
+    public void downloadTemplateImportCtkhn(HttpServletResponse response) throws IOException {
 
-        InputStreamResource inputStreamResource = null;
-        File file = null;
+        String folder = "excel";
+        String filename = "chi_tieu_ke_hoach_nam_import.xlsx";
+        InputStream inputStream = new ClassPathResource(folder + "/" + filename).getInputStream();
+
         try {
-            String filename = "excel/chi_tieu_ke_hoach_nam_import.xlsx";
-            file = FileResourcesUtils.getFileFromResource(filename);
-            inputStreamResource = new InputStreamResource(new FileInputStream(file));
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment; filename=" + filename;
+            response.setHeader(headerKey, headerValue);
+
+            ServletOutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(inputStream, outputStream);
+            outputStream.close();
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                .contentLength(file.length()) //
-                .body(inputStreamResource);
     }
 
     @ApiOperation(value = "Lấy số lượng trước điều chỉnh", response = List.class)
