@@ -80,11 +80,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Autowired
 	private KtTrangthaiHienthoiRepository ktTrangthaiHienthoiRepository;
 
-	public static final Long THOC_ID = 3L;
-	public static final String THOC_MA_VT = "010101";
-	public static final Long GAO_ID = 4L;
-	public static final String GAO_MA_VT = "010103";
-	public static final Long MUOI_ID = 481L;
+	public static final Long THOC_ID = 2L;
+	public static final String THOC_MA_VT = "0101";
+	public static final Long GAO_ID = 6L;
+	public static final String GAO_MA_VT = "0102";
+	public static final Long MUOI_ID = 78L;
 	public static final String MUOI_MA_VT = "04";
 	private static final Integer MAX_CAP_VAT_TU = 3;
 
