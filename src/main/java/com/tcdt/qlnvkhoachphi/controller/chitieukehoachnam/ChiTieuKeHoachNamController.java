@@ -364,7 +364,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     }
 
     @ApiOperation(value = "Lấy số lượng trước điều chỉnh", response = List.class)
-    @GetMapping(value = "/quyet-dinh-dieu-chinh/so-luong-truoc-dieu-chinh", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/quyet-dinh-dieu-chinh/so-luong-truoc-dieu-chinh", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resp> soLuongTruocDc(@RequestBody SoLuongTruocDieuChinhSearchReq req) {
         Resp resp = new Resp();
