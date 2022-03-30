@@ -96,7 +96,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(req.getNamKeHoach(), true);
-		if (chiTieuKeHoachNam != null)
+		if (chiTieuKeHoachNam != null && !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(chiTieuKeHoachNam.getTrangThai()))
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
 		this.validateCreateCtkhnRequest(req);
@@ -383,7 +383,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (id != null) {
 			keHoachLuongThucMuoi = mapKhltm.get(id);
 			if (keHoachLuongThucMuoi == null)
-				throw new Exception("Kế hoạch lương thực không tồn tại.");
+				throw new Exception("Kế hoạch muối không tồn tại.");
 
 			mapKhltm.remove(id);
 		}
@@ -524,7 +524,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhVatTuList(keHoachVatTus);
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
-		addEmptyDataToExport(response);
 
 		return response;
 	}
