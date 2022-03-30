@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long>, ChiTieuKeHoachNamRepositoryCustom {
-    ChiTieuKeHoachNam findByNamKeHoachAndLastest(Integer namKh, boolean lastest);
+    List<ChiTieuKeHoachNam> findByNamKeHoachAndLastest(Integer namKh, boolean lastest);
 
     List<ChiTieuKeHoachNam> findAllByLoaiQuyetDinh(String loaiQuyetDinh);
 

@@ -95,8 +95,10 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
-		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(req.getNamKeHoach(), true);
-		if (chiTieuKeHoachNam != null && !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(chiTieuKeHoachNam.getTrangThai()))
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(req.getNamKeHoach(), true)
+				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+				.findFirst().orElse(null);
+		if (chiTieuKeHoachNam != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
 		this.validateCreateCtkhnRequest(req);
@@ -489,7 +491,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	public QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception {
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
-		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(qdDc.getNamKeHoach(), true);
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(qdDc.getNamKeHoach(), true)
+				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+				.findFirst().orElse(null);
 		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
 
 		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
@@ -524,7 +528,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhVatTuList(keHoachVatTus);
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
-
+		addEmptyDataToExport(response);
 		return response;
 	}
 
@@ -562,21 +566,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 			this.addEmptyVatTuNhap(namTkdnGao, chiTieuKeHoachNamRes.getNamKeHoach(),
 					keHoachLuongThucDuTruRes.getTkdnGao(), Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
-
-
-			//Xuất trong năm
-			List<Integer> namXtnThoc = keHoachLuongThucDuTruRes.getXtnThoc()
-					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
-
-			this.addEmptyVatTuNhap(namXtnThoc, chiTieuKeHoachNamRes.getNamKeHoach(), keHoachLuongThucDuTruRes.getXtnThoc(),
-					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_THOC);
-
-
-			List<Integer> namXtnGao = keHoachLuongThucDuTruRes.getXtnGao()
-					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
-
-			this.addEmptyVatTuNhap(namXtnGao, chiTieuKeHoachNamRes.getNamKeHoach(),
-					keHoachLuongThucDuTruRes.getXtnGao(), Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_GAO);
 		}
 
 		//Muối
@@ -588,12 +577,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			this.addEmptyVatTuNhap(tkdnMuoi, chiTieuKeHoachNamRes.getNamKeHoach(), keHoachMuoiDuTruRes.getTkdnMuoi(),
 					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
 
-			//Tồn kho đầu năm
-			List<Integer> xtnMuoi = keHoachMuoiDuTruRes.getXtnMuoi()
-					.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
-
-			this.addEmptyVatTuNhap(xtnMuoi, chiTieuKeHoachNamRes.getNamKeHoach(), keHoachMuoiDuTruRes.getXtnMuoi(),
-					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
 		}
 
 //		//Vat tu
