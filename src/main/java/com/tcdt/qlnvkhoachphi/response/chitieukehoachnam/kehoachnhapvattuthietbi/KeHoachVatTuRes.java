@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class KeHoachVatTuRes {
-	private Long id;
 	private Integer stt;
 	private Long donViId;
 	private String maDonVi;

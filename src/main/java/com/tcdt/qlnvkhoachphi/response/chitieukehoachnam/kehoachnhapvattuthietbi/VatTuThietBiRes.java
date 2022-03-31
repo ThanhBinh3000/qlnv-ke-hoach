@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class VatTuThietBiRes {
 
+	private Long id;
 	private Integer stt;
 	private String donViTinh;
 

@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 public class VatTuThietBiReq {
+	private Long id;
 	@Min(value = 0, message = "Stt phải lớn hơn 0")
 	private Integer stt;
 	@NotNull(message = "Không được để trống")

@@ -410,7 +410,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		for (VatTuThietBiReq vatTuReq : khVatTuReq.getVatTuThietBi()) {
 			KeHoachVatTu keHoachVatTu = new KeHoachVatTu();
 			keHoachVatTu.setTrangThai(Constants.MOI_TAO);
-			Long id = khVatTuReq.getId();
+			Long id = vatTuReq.getId();
 			if (id != null) {
 				keHoachVatTu = mapKhvt.get(id);
 				if (keHoachVatTu == null)
@@ -931,7 +931,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			}
 
 			keHoachVatTuRes.setStt(keHoachVatTu.getSttDonVi());
-			keHoachVatTuRes.setId(keHoachVatTu.getId());
 			QlnvDmDonvi donVi = dmDonviList.stream().filter(d -> d.getId().equals(keHoachVatTu.getDonViId())).findFirst().orElse(null);
 
 			if (donVi == null)
@@ -939,7 +938,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 			String tenDvi = donVi.getTenDvi();
 			String maDvi = donVi.getMaDvi();
-			keHoachVatTuRes.setId(keHoachVatTu.getId());
 			keHoachVatTuRes.setMaDonVi(maDvi);
 			keHoachVatTuRes.setDonViId(keHoachVatTu.getDonViId());
 			keHoachVatTuRes.setTenDonVi(tenDvi);
@@ -956,6 +954,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			vatTuThietBiRes.setMaVatTu(vattu.getMa());
 			vatTuThietBiRes.setDonViTinh(keHoachVatTu.getDonViTinh());
 			vatTuThietBiRes.setNhapTrongNam(keHoachVatTu.getSoLuongNhap());
+			vatTuThietBiRes.setId(keHoachVatTu.getId());
 
 			if (!StringUtils.isEmpty(vattu.getMaCha())) {
 				QlnvDmVattu vattuCha = vattuList.stream().filter(v -> v.getMa().equalsIgnoreCase(vattu.getMaCha())).findFirst().orElse(null);
