@@ -1072,6 +1072,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			vatTuSet.add(vatTuChaRes);
 			mapNhomVatTu.remove(vattu.getMa());
 			mapNhomVatTu.computeIfAbsent(vattu.getMaCha(), k -> new HashSet<>()).addAll(vatTuSet);
+		} else {
+			mapNhomVatTu.computeIfAbsent(vattu.getMa(), k -> new HashSet<>()).add(vatTuRes);
 		}
 
 		if (vatTuChaRes != null)
