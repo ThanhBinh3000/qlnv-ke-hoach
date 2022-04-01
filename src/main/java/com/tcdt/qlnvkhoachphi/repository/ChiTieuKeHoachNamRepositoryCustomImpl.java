@@ -83,7 +83,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 
 	private void setConditionSearchCtkhn(SearchChiTieuKeHoachNamReq req, StringBuilder builder) {
-		builder.append("WHERE 1 = 1 ");
+		builder.append("WHERE ct.LASTEST = 1 ");
 
 		if (!StringUtils.isEmpty(req.getSoQD())) {
 			builder.append("AND ").append("ct.SO_QUYET_DINH = :soQD ");
