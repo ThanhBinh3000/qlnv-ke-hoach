@@ -117,7 +117,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (!ChiTieuKeHoachNamStatus.DA_DUYET.getId().equals(qdGoc.getTrangThai())) {
 			throw new Exception("Không thể điều chỉnh quyết định chưa duyệt");
 		}
-		qdGoc.setLastest(false);
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
 		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId());
@@ -521,7 +520,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 
 		for (KeHoachLuongThucMuoi keHoachLuongThucMuoi : keHoachLuongThucMuois) {
-			keHoachLuongThucMuoi.setKhxltms(mapKhxltm.get(keHoachLuongThucMuoi.getId()));
+			keHoachLuongThucMuoi.setKhxltms(Optional.ofNullable(mapKhxltm.get(keHoachLuongThucMuoi.getId())).orElse(new ArrayList<>()));
 		}
 
 		ctkhn.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> GAO_ID.equals(kh.getVatTuId()) || THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
@@ -678,7 +677,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			List<KeHoachXuatLuongThucMuoi> khxList = new ArrayList<>();
 			for (KeHoachXuatLuongThucMuoi khx : kh.getKhxltms()) {
 				KeHoachXuatLuongThucMuoi cloneKhx = new KeHoachXuatLuongThucMuoi();
-				BeanUtils.copyProperties(kh, cloneKh, "id", "keHoachId");
+				BeanUtils.copyProperties(khx, cloneKhx, "id", "keHoachId");
 				cloneKhx.setKeHoachId(cloneKh.getId());
 				khxList.add(cloneKhx);
 			}
