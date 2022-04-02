@@ -16,6 +16,7 @@ public class SearchChiTieuKeHoachNamReq {
 	private String soQD;
 	private String trichYeu;
 	private Long donViId;
+	private Long dvql;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyTuNgay;
 

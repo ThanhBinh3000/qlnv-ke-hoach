@@ -42,9 +42,12 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.TRANG_THAI as trangThai ");
 
 		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
-		builder.append("INNER JOIN QLNV_DM_DONVI dv on dv.ID = ct.DON_VI_ID ");
+		builder.append("INNER JOIN QLNV_DM_DONVI dv ON dv.ID = ct.DON_VI_ID ");
+		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
+		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI ");
 		//Sort
 		Sort sort = pageable.getSort();
 		if (sort.isSorted()) {
@@ -86,7 +89,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("WHERE ct.LASTEST = 1 ");
 
 		if (!StringUtils.isEmpty(req.getSoQD())) {
-			builder.append("AND ").append("ct.SO_QUYET_DINH = :soQD ");
+			builder.append("AND ").append("ct.SO_QUYET_DINH LIKE :soQD ");
 		}
 		if (req.getNgayKyTuNgay() != null) {
 			builder.append("AND ").append("ct.NGAY_KY >= :ngayKyTuNgay ");
@@ -95,13 +98,14 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			builder.append("AND ").append("ct.NGAY_KY <= :ngayKyDenNgay ");
 		}
 		if (!StringUtils.isEmpty(req.getTrichYeu())) {
-			builder.append("AND ").append("ct.TRICH_YEU = :trichYeu ");
+			builder.append("AND ").append("ct.TRICH_YEU LIKE :trichYeu ");
 		}
 		if (req.getDonViId() != null) {
-			builder.append("AND ").append("dv.ID = :donViId ");
+			builder.append("AND ").append("(khltm.DON_VI_ID = :donViId OR khvt.DON_VI_ID = :donViId) ");
 		}
-		if (!StringUtils.isEmpty(req.getTenDonVi())) {
-			builder.append("AND ").append("dv.TEN_DVI = :tenDonVi ");
+
+		if (req.getDvql() != null) {
+			builder.append("AND ").append("dv.ID = :dvql ");
 		}
 
 		if (!StringUtils.isEmpty(req.getLoaiQuyetDinh())) {
@@ -114,6 +118,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT COUNT(1) AS totalRecord FROM CHI_TIEU_KE_HOACH_NAM ct ");
 		builder.append("INNER JOIN QLNV_DM_DONVI dv on dv.ID = ct.DON_VI_ID ");
+		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 
 		this.setConditionSearchCtkhn(req, builder);
 
@@ -132,7 +138,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 	private void setParameterSearchCtkhn(SearchChiTieuKeHoachNamReq req, Query query) {
 		if (!StringUtils.isEmpty(req.getSoQD())) {
-			query.setParameter("soQD", req.getSoQD());
+			query.setParameter("soQD", "%" + req.getSoQD() + "%");
 		}
 		if (req.getNgayKyTuNgay() != null) {
 			query.setParameter("ngayKyTuNgay", req.getNgayKyTuNgay());
@@ -141,17 +147,18 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			query.setParameter("ngayKyDenNgay", req.getNgayKyDenNgay());
 		}
 		if (!StringUtils.isEmpty(req.getTrichYeu())) {
-			query.setParameter("trichYeu", req.getTrichYeu());
+			query.setParameter("trichYeu", "%" + req.getTrichYeu() + "%");
 		}
 		if (req.getDonViId() != null) {
 			query.setParameter("donViId", req.getDonViId());
 		}
-		if (!StringUtils.isEmpty(req.getTenDonVi())) {
-			query.setParameter("tenDonVi", req.getTenDonVi());
-		}
 
 		if (!StringUtils.isEmpty(req.getLoaiQuyetDinh())) {
 			query.setParameter("loaiQuyetDinh", req.getLoaiQuyetDinh());
+		}
+
+		if (req.getDvql() != null) {
+			query.setParameter("dvql", req.getDvql());
 		}
 	}
 }

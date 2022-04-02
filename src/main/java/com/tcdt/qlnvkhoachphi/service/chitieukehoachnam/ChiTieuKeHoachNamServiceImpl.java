@@ -1198,7 +1198,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDonViId(DON_VI_ID_1);
+		req.setDvql(DON_VI_ID_1);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
 		return chiTieuKeHoachNamRepository.search(req, pageable);
 	}
@@ -1210,7 +1210,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDonViId(DON_VI_ID_1);
+		req.setDvql(DON_VI_ID_1);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req, pageable);
 	}
