@@ -95,15 +95,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
-		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(req.getNamKeHoach(), true)
-				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
-				.findFirst().orElse(null);
-		if (chiTieuKeHoachNam != null)
+		ChiTieuKeHoachNam exist = this.existCtkhn(req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue());
+		if (exist != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
 		this.validateCreateCtkhnRequest(req);
 		return this.create(req, ChiTieuKeHoachEnum.QD.getValue(), null);
 	}
+
+
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -119,6 +119,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
+		ChiTieuKeHoachNam exist = this.existCtkhn(req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue());
+		if (exist != null)
+			throw new Exception("Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
+
+		this.validateCreateCtkhnRequest(req.getQdDc());
 		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId());
 		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
 		response.setQdDc(qdDc);
@@ -182,7 +187,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	private List<VatTuNhapQueryDTO> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList, Integer nameKeHoach) {
 		int tuNam = nameKeHoach - 3;
 		int denNam = nameKeHoach - 1;
-		List<VatTuNhapQueryDTO> results = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach - 3, nameKeHoach - 1);
+		List<VatTuNhapQueryDTO> results = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach - 3, nameKeHoach - 1, ChiTieuKeHoachNamStatus.DA_DUYET.getId());
 		Map<String, VatTuNhapQueryDTO> map = results.stream().collect(Collectors.toMap(VatTuNhapQueryDTO::groupByNamAndVatTuId, Function.identity()));
 		for (Long vatuId : vatTuIdList) {
 			for (int i = tuNam; i <= denNam; i++) {
@@ -235,21 +240,21 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes updateQd(ChiTieuKeHoachNamReq req) throws Exception {
 		this.validateCreateCtkhnRequest(req);
-		return this.update(req);
+		return this.update(req, ChiTieuKeHoachEnum.QD.getValue());
 	}
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public QdDcChiTieuKeHoachRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
-
-		ChiTieuKeHoachNamRes qdDc = this.update(req.getQdDc());
+		this.validateCreateCtkhnRequest(req.getQdDc());
+		ChiTieuKeHoachNamRes qdDc = this.update(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue());
 		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
 		response.setQdDc(qdDc);
 		response.setQd(this.detailQd(qdDc.getQdGocId()));
 		return response;
 	}
 
-	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req) throws Exception {
+	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req, String loaiQd) throws Exception {
 		if (req == null)
 			return null;
 
@@ -263,6 +268,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNam ctkhn = optional.get();
 		Long ctkhnId = ctkhn.getId();
+
+		ChiTieuKeHoachNam exist = this.existCtkhn(req.getNamKeHoach(), loaiQd);
+		if (exist != null && !exist.getId().equals(ctkhnId))
+			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm không tồn tại"
+					: "Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
 		ctkhn.setSoQuyetDinh(req.getSoQuyetDinh());
 		ctkhn.setNgayHieuLuc(req.getNgayHieuLuc());
@@ -490,7 +500,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	public QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception {
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
-		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastest(qdDc.getNamKeHoach(), true)
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(qdDc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue())
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
@@ -1320,5 +1330,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setDonViId(req.getDonViId());
 
 		return response;
+	}
+
+	private ChiTieuKeHoachNam existCtkhn(Integer namKeHoach, String loaiQd) {
+		return chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
+				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+				.findFirst().orElse(null);
+
 	}
 }

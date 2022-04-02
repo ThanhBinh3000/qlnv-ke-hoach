@@ -13,8 +13,11 @@ import java.util.List;
 public interface KeHoachVatTuRepository extends CrudRepository<KeHoachVatTu, Long> {
 	List<KeHoachVatTu> findByCtkhnId(Long ctkhnId);
 
-	@Query("SELECT new com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO(khn.namKeHoach, vt.soLuongNhap, vt.vatTuId) FROM ChiTieuKeHoachNam khn INNER JOIN KeHoachVatTu vt ON khn.id = vt.ctkhnId WHERE vt.vatTuId IN ?1 AND khn.namKeHoach >= ?2 AND khn.namKeHoach <= ?3")
-	List<VatTuNhapQueryDTO> findKeHoachVatTuCacNamTruocByVatTuId(List<Long> vatTuIdList, int tuNam, int denNam);
+	@Query("SELECT new com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO(khn.namKeHoach, vt.soLuongNhap, vt.vatTuId) " +
+			"FROM ChiTieuKeHoachNam khn " +
+			"INNER JOIN KeHoachVatTu vt ON khn.id = vt.ctkhnId " +
+			"WHERE vt.vatTuId IN ?1 AND khn.namKeHoach >= ?2 AND khn.namKeHoach <= ?3 AND khn.trangThai = ?4")
+	List<VatTuNhapQueryDTO> findKeHoachVatTuCacNamTruocByVatTuId(List<Long> vatTuIdList, int tuNam, int denNam, String trangThai);
 
 	List<KeHoachVatTu> findByCtkhnIdAndVatTuIdInAndDonViId(Long ctkhnId, Collection<Long> vatTuIds, Long donViId);
 }
