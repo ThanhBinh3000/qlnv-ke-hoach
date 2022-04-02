@@ -1003,9 +1003,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		});
 
 		List<VatTuNhapQueryDTO> vatTuNhapQueryDTOList = this.getKeHoachVatTuThietBiCacNamTruoc(vatTuIdList, chiTieuKeHoachNam.getNamKeHoach());
-		khVatTuResList.forEach(k -> {
+		for (KeHoachVatTuRes k : khVatTuResList) {
 			Map<String, Set<VatTuThietBiRes>> mapNhomVatTu = new HashMap<>();
 			List<VatTuThietBiRes> vatTuThietBi = k.getVatTuThietBi();
+			if (CollectionUtils.isEmpty(vatTuThietBi))
+				continue;
+
 			for (VatTuThietBiRes vatTuRes : vatTuThietBi) {
 				List<VatTuNhapQueryDTO> khntList = vatTuNhapQueryDTOList.stream()
 						.filter(kh -> kh.getVatTuId().equals(vatTuRes.getVatTuId()))
@@ -1013,16 +1016,16 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				for (VatTuNhapQueryDTO vtn : khntList) {
 					vatTuRes.getCacNamTruoc().add(new VatTuNhapRes(vtn.getNam(), vtn.getSoLuong(), vtn.getVatTuId()));
 				}
-				Double tongCacNamTruoc = vatTuRes.getCacNamTruoc().stream().mapToDouble(VatTuNhapRes::getSoLuong).sum();
-				vatTuRes.setTongCacNamTruoc(tongCacNamTruoc);
-				vatTuRes.setTongNhap(vatTuRes.getNhapTrongNam() + tongCacNamTruoc);
+				Double tongCacNamTruoc = vatTuRes.getCacNamTruoc().stream().filter(v -> v.getSoLuong() != null).mapToDouble(VatTuNhapRes::getSoLuong).sum();
+				vatTuRes.setTongCacNamTruoc(Optional.ofNullable(tongCacNamTruoc).orElse(0d));
+				vatTuRes.setTongNhap(Optional.ofNullable(vatTuRes.getNhapTrongNam()).orElse(0d) + Optional.ofNullable(tongCacNamTruoc).orElse(0d));
 
 				this.addVatTuThietBiChaRes(vatTuRes, mapMaVatTu, mapNhomVatTu);
 			}
 
 			List<VatTuThietBiRes> finalVatTuThietBiRes = this.tinhTongVatTuThietBiCha(mapNhomVatTu);
 			k.setVatTuThietBi(finalVatTuThietBiRes);
-		});
+		}
 
 		khLtResList.sort(Comparator.comparing(KeHoachLuongThucDuTruRes::getStt));
 		khMuoiResList.sort(Comparator.comparing(KeHoachMuoiDuTruRes::getStt));
@@ -1049,9 +1052,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			vatTuChaRes.setMaVatTuCha(vattuCha.getMaCha());
 			vatTuChaRes.setDonViTinh(vatTuRes.getDonViTinh());
 
-			vatTuChaRes.setNhapTrongNam(Optional.ofNullable(vatTuChaRes.getNhapTrongNam()).orElse(0d) + vatTuRes.getNhapTrongNam());
-			vatTuChaRes.setTongNhap(Optional.ofNullable(vatTuChaRes.getTongNhap()).orElse(0d) + vatTuRes.getTongNhap());
-			vatTuChaRes.setTongCacNamTruoc(Optional.ofNullable(vatTuChaRes.getTongCacNamTruoc()).orElse(0d) + vatTuRes.getTongCacNamTruoc());
+			vatTuChaRes.setNhapTrongNam(Optional.ofNullable(vatTuChaRes.getNhapTrongNam()).orElse(0d) + Optional.ofNullable(vatTuRes.getNhapTrongNam()).orElse(0d));
+			vatTuChaRes.setTongNhap(Optional.ofNullable(vatTuChaRes.getTongNhap()).orElse(0d) + Optional.ofNullable(vatTuRes.getTongNhap()).orElse(0d));
+			vatTuChaRes.setTongCacNamTruoc(Optional.ofNullable(vatTuChaRes.getTongCacNamTruoc()).orElse(0d) + Optional.ofNullable(vatTuRes.getTongCacNamTruoc()).orElse(0d));
 
 			List<VatTuNhapRes> vatTuNhapResList = new ArrayList<>();
 			for (VatTuNhapRes vatTuNhapRes : cacNamTruoc) {
