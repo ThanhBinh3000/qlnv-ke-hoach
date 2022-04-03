@@ -24,4 +24,5 @@ public class SearchChiTieuKeHoachNamReq {
 	private LocalDate ngayKyDenNgay;
 	private String tenDonVi;
 	private String loaiQuyetDinh;
+	private Integer namKeHoach;
 }
