@@ -19,7 +19,7 @@ public class SearchChiTieuKeHoachNamReq {
 	private Long dvql;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyTuNgay;
-
+	private String trangThai;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyDenNgay;
 	private String tenDonVi;

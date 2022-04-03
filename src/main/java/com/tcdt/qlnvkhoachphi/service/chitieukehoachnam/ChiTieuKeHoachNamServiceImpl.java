@@ -636,14 +636,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (!qdGocOptional.isPresent())
 			throw new Exception("Không tìm thấy dữ liệu.");
 
-		ChiTieuKeHoachNam qdGoc = optionalChiTieuKeHoachNam.get();
+		ChiTieuKeHoachNam qdGoc = qdGocOptional.get();
 
 		// Duyệt điều chỉnh -> tạo quyết đinh mới từ quyết định gốc
 		this.mergeQdDcAndQd(dc, qdGoc);
 		return true;
 	}
 
-	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc) {
+	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc) throws Exception {
 		// QdDc
 		List<KeHoachLuongThucMuoi> khltmListDc = this.retrieveKhltm(dc);
 		List<KeHoachVatTu> khvtListDc = keHoachVatTuRepository.findByCtkhnId(dc.getId());
@@ -667,6 +667,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		qdGoc.setLastest(false);
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
+		ChiTieuKeHoachNam lastestExist = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue())
+				.stream().findFirst().orElse(null);
+		if (lastestExist != null) {
+			this.delete(lastestExist);
+		}
 		ChiTieuKeHoachNam lastest = ChiTieuKeHoachNam.builder()
 				.namKeHoach(qdGoc.getNamKeHoach())
 				.donViId(qdGoc.getDonViId())
@@ -675,7 +680,10 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.soQuyetDinh(qdGoc.getSoQuyetDinh())
 				.trichYeu(qdGoc.getTrichYeu())
 				.qdGocId(qdGoc.getId())
-				.lastest(true).build();
+				.lastest(true)
+				.loaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue())
+				.trangThai(qdGoc.getTrangThai())
+				.build();
 		chiTieuKeHoachNamRepository.save(lastest);
 
 		for (KeHoachLuongThucMuoi kh : khltmListQd) {

@@ -111,6 +111,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		if (!StringUtils.isEmpty(req.getLoaiQuyetDinh())) {
 			builder.append("AND ").append("ct.LOAI_QUYET_DINH = :loaiQuyetDinh ");
 		}
+
+		if (!StringUtils.isEmpty(req.getTrangThai())) {
+			builder.append("AND ").append("ct.TRANG_THAI = :trangThai ");
+		}
 	}
 
 	private int countCtkhn(SearchChiTieuKeHoachNamReq req) {
@@ -159,6 +163,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (req.getDvql() != null) {
 			query.setParameter("dvql", req.getDvql());
+		}
+
+		if (!StringUtils.isEmpty(req.getTrangThai())) {
+			query.setParameter("trangThai", req.getTrangThai());
 		}
 	}
 }
