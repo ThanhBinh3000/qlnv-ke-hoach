@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoachphi.service.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
+import com.tcdt.qlnvkhoachphi.request.PaggingReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.util.Constants;
@@ -79,13 +80,15 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 
 	@Override
 	public Boolean exportListQdToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) throws Exception {
-		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQd(req, PageRequest.of(0, Integer.MAX_VALUE));
+		req.setPaggingReq(new PaggingReq(0, Integer.MAX_VALUE));
+		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQd(req);
 		return exportListToExcel(response, chiTieuKeHoachNamRes.get().collect(Collectors.toList()));
 	}
 
 	@Override
 	public Boolean exportListQdDcToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) throws Exception {
-		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQdDc(req, PageRequest.of(0, Integer.MAX_VALUE));
+		req.setPaggingReq(new PaggingReq(0, Integer.MAX_VALUE));
+		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQdDc(req);
 		return exportListToExcel(response, chiTieuKeHoachNamRes.get().collect(Collectors.toList()));
 	}
 

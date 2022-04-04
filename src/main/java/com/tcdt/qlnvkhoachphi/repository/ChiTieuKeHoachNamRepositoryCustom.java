@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ChiTieuKeHoachNamRepositoryCustom {
-	Page<ChiTieuKeHoachNamRes> search (SearchChiTieuKeHoachNamReq req, Pageable pageable);
+	Page<ChiTieuKeHoachNamRes> search (SearchChiTieuKeHoachNamReq req);
 }

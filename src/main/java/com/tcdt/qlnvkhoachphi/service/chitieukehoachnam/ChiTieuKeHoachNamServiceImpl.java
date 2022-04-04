@@ -1210,7 +1210,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
+	public Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req) throws Exception {
 
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
@@ -1218,11 +1218,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		req.setDvql(DON_VI_ID_1);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
-		return chiTieuKeHoachNamRepository.search(req, pageable);
+		return chiTieuKeHoachNamRepository.search(req);
 	}
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) throws Exception {
+	public Page<ChiTieuKeHoachNamRes> searchQdDc(SearchChiTieuKeHoachNamReq req) throws Exception {
 
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
@@ -1230,7 +1230,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		req.setDvql(DON_VI_ID_1);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
-		return chiTieuKeHoachNamRepository.search(req, pageable);
+		return chiTieuKeHoachNamRepository.search(req);
 	}
 
 	@Override

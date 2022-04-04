@@ -2,15 +2,14 @@ package com.tcdt.qlnvkhoachphi.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
+import com.tcdt.qlnvkhoachphi.request.BaseRequest;
+import com.tcdt.qlnvkhoachphi.request.PaggingReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.util.DataUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
@@ -21,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //Ctkhn: Chỉ tiêu kế hoạch năm
@@ -32,7 +32,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 	private ObjectMapper objectMapper;
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ct.SO_QUYET_DINH as soQD, ");
 		builder.append("ct.NGAY_KY as ngayKy, ");
@@ -48,12 +48,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		setConditionSearchCtkhn(req, builder);
 
 		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI ");
-		//Sort
-		Sort sort = pageable.getSort();
-		if (sort.isSorted()) {
-			builder.append("ORDER BY ").append(sort.get()
-					.map(o -> o.getProperty() + " " + o.getDirection()).collect(Collectors.joining(", ")));
-		}
+		builder.append("ORDER BY ct.NGAY_KY DESC");
 
 		Query query = em.createNativeQuery(builder.toString(), Tuple.class);
 
@@ -61,7 +56,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		this.setParameterSearchCtkhn(req, query);
 
 		//Set pageable
-		query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
+		query.setFirstResult(req.getPaggingReq().getPage() * req.getPaggingReq().getLimit()).setMaxResults(req.getPaggingReq().getLimit());
 
 		List<?> data = query.getResultList();
 
@@ -80,8 +75,9 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.build();
 				}).collect(Collectors.toList());
 
-
-		return new PageImpl<>(response, pageable, this.countCtkhn(req));
+		int page = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getPage).orElse(BaseRequest.DEFAULT_PAGE);
+		int limit = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getLimit).orElse(BaseRequest.DEFAULT_LIMIT);
+		return new PageImpl<>(response, PageRequest.of(page, limit), this.countCtkhn(req));
 	}
 
 

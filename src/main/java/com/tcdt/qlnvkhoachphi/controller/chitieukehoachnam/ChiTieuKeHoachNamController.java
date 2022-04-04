@@ -214,10 +214,10 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @ApiOperation(value = "Tra cứu chỉ tiêu kế hoạch năm", response = List.class)
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public final ResponseEntity<Resp> searchQd(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+    public final ResponseEntity<Resp> searchQd(SearchChiTieuKeHoachNamReq req) {
         Resp resp = new Resp();
         try {
-            resp.setData(chiTieuKeHoachNamService.searchQd(req, pageable));
+            resp.setData(chiTieuKeHoachNamService.searchQd(req));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -231,10 +231,10 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @ApiOperation(value = "Tra cứu quyết định điều chỉnh chỉ tiêu kế hoạch năm", response = List.class)
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/quyet-dinh-dieu-chinh")
-    public final ResponseEntity<Resp> searchQdDc(SearchChiTieuKeHoachNamReq req, Pageable pageable) {
+    public final ResponseEntity<Resp> searchQdDc(SearchChiTieuKeHoachNamReq req) {
         Resp resp = new Resp();
         try {
-            resp.setData(chiTieuKeHoachNamService.searchQdDc(req, pageable));
+            resp.setData(chiTieuKeHoachNamService.searchQdDc(req));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
