@@ -270,7 +270,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @ApiOperation(value = "Export Chỉ tiêu kế hoạch năm ra excel", response = List.class)
     @PostMapping(value = "/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void exportListQdToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) {
+    public void exportListQdToExcel(HttpServletResponse response, @RequestBody SearchChiTieuKeHoachNamReq req) {
 
         try {
             response.setContentType("application/octet-stream");
@@ -290,7 +290,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @ApiOperation(value = "Export quyết định điều chỉnh chỉ tiêu kế hoạch năm ra excel", response = List.class)
     @PostMapping(value = "/quyet-dinh-dieu-chinh/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void exportListQdDcToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) {
+    public void exportListQdDcToExcel(HttpServletResponse response, @RequestBody SearchChiTieuKeHoachNamReq req) {
 
         try {
             response.setContentType("application/octet-stream");

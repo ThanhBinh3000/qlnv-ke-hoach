@@ -80,14 +80,14 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 
 	@Override
 	public Boolean exportListQdToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) throws Exception {
-		req.setPaggingReq(new PaggingReq(0, Integer.MAX_VALUE));
+		req.setPaggingReq(new PaggingReq(Integer.MAX_VALUE, 0));
 		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQd(req);
 		return exportListToExcel(response, chiTieuKeHoachNamRes.get().collect(Collectors.toList()));
 	}
 
 	@Override
 	public Boolean exportListQdDcToExcel(HttpServletResponse response, SearchChiTieuKeHoachNamReq req) throws Exception {
-		req.setPaggingReq(new PaggingReq(0, Integer.MAX_VALUE));
+		req.setPaggingReq(new PaggingReq(Integer.MAX_VALUE, 0));
 		Page<ChiTieuKeHoachNamRes> chiTieuKeHoachNamRes = chiTieuKeHoachNamSv.searchQdDc(req);
 		return exportListToExcel(response, chiTieuKeHoachNamRes.get().collect(Collectors.toList()));
 	}
