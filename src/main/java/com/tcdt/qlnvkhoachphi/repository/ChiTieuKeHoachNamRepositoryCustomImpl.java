@@ -120,7 +120,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 	private int countCtkhn(SearchChiTieuKeHoachNamReq req) {
 		int total = 0;
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT COUNT(1) AS totalRecord FROM CHI_TIEU_KE_HOACH_NAM ct ");
+		builder.append("SELECT DISTINCT ct.ID FROM CHI_TIEU_KE_HOACH_NAM ct ");
 		builder.append("INNER JOIN QLNV_DM_DONVI dv on dv.ID = ct.DON_VI_ID ");
 		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
@@ -133,11 +133,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		List<?> dataCount = query.getResultList();
 
-		if (!CollectionUtils.isEmpty(dataCount)) {
+		if (CollectionUtils.isEmpty(dataCount)) {
 			return total;
 		}
-		Tuple result = (Tuple) dataCount.get(0);
-		return result.get("totalRecord", BigInteger.class).intValue();
+		return dataCount.size();
 	}
 
 	private void setParameterSearchCtkhn(SearchChiTieuKeHoachNamReq req, Query query) {
