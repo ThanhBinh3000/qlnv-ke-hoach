@@ -43,7 +43,6 @@ import com.tcdt.qlnvkhoachphi.util.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -139,6 +138,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request.");
 
+		QlnvDmDonvi donVi = qlnvDmDonviRepository.findById(DON_VI_ID_1).get();
+
 		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
@@ -148,18 +149,21 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLastest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
+		chiTieuKeHoachNam.setMaDvi(donVi.getMaDvi());
+		chiTieuKeHoachNam.setCapDvi(donVi.getCapDvi());
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		Long ctkhnId = chiTieuKeHoachNam.getId();
 
 		List<KeHoachLuongThucMuoi> keHoachThocGaoList = new ArrayList<>();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = new ArrayList<>();
 		List<KeHoachVatTu> keHoachVatTuList = new ArrayList<>();
+
 		for (KeHoachLuongThucDuTruReq khltReq : req.getKhLuongThuc()) {
-			KeHoachLuongThucMuoi khGao = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, GAO_ID, khltReq.getNtnGao(), null, new HashMap<>());
+			KeHoachLuongThucMuoi khGao = this.saveKeHoachLuongThuc(khltReq, ctkhnId, GAO_MA_VT, GAO_ID, khltReq.getNtnGao(), null, new HashMap<>());
 			List<KeHoachXuatLuongThucMuoi> khXuatGaoList = this.saveListKeHoachXuat(khGao.getId(), khltReq.getXtnGao(), new HashMap<>());
 			khGao.setKhxltms(khXuatGaoList);
 
-			KeHoachLuongThucMuoi khThoc = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, THOC_ID, khltReq.getNtnThoc(), null, new HashMap<>());
+			KeHoachLuongThucMuoi khThoc = this.saveKeHoachLuongThuc(khltReq, ctkhnId, THOC_MA_VT, THOC_ID, khltReq.getNtnThoc(), null, new HashMap<>());
 			List<KeHoachXuatLuongThucMuoi> khXuatThocList = this.saveListKeHoachXuat(khThoc.getId(), khltReq.getXtnThoc(), new HashMap<>());
 			khThoc.setKhxltms(khXuatThocList);
 
@@ -300,11 +304,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		for (KeHoachLuongThucDuTruReq khltReq : req.getKhLuongThuc()) {
 			Long gaoId = khltReq.getKhGaoId();
-			KeHoachLuongThucMuoi khGao = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, GAO_ID, khltReq.getNtnGao(), gaoId, mapKhltm);
+			KeHoachLuongThucMuoi khGao = this.saveKeHoachLuongThuc(khltReq, ctkhnId, GAO_MA_VT, GAO_ID, khltReq.getNtnGao(), gaoId, mapKhltm);
 			this.saveListKeHoachXuat(khGao.getId(), khltReq.getXtnGao(), mapKhxltm);
 
 			Long thocId = khltReq.getKhThocId();
-			KeHoachLuongThucMuoi khThoc = this.saveKeHoachLuongThuc(khltReq, userInfo, ctkhnId, THOC_ID, khltReq.getNtnThoc(), thocId, mapKhltm);
+			KeHoachLuongThucMuoi khThoc = this.saveKeHoachLuongThuc(khltReq, ctkhnId, THOC_MA_VT, THOC_ID, khltReq.getNtnThoc(), thocId, mapKhltm);
 			this.saveListKeHoachXuat(khThoc.getId(), khltReq.getXtnThoc(), mapKhxltm);
 		}
 
@@ -334,7 +338,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return this.buildDetailResponse(ctkhn);
 	}
 
-	private KeHoachLuongThucMuoi saveKeHoachLuongThuc(KeHoachLuongThucDuTruReq khltReq, UserInfo userInfo, Long ctkhnId,
+	private KeHoachLuongThucMuoi saveKeHoachLuongThuc(KeHoachLuongThucDuTruReq khltReq, Long ctkhnId, String maVatTu,
 													  Long vatuId, Double ntnSoLuong, Long id, Map<Long, KeHoachLuongThucMuoi> mapKhltm) throws Exception {
 
 		KeHoachLuongThucMuoi keHoachLuongThucMuoi = new KeHoachLuongThucMuoi();
@@ -348,10 +352,13 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		keHoachLuongThucMuoi.setStt(khltReq.getStt());
 		keHoachLuongThucMuoi.setCtkhnId(ctkhnId);
 		keHoachLuongThucMuoi.setDonViId(khltReq.getDonViId());
+		keHoachLuongThucMuoi.setMaDvi(khltReq.getMaDvi());
 		keHoachLuongThucMuoi.setVatTuId(vatuId);
+		keHoachLuongThucMuoi.setMaVatTu(maVatTu);
 		Double soLuongNhap = ntnSoLuong == null ? 0 : ntnSoLuong;
 		keHoachLuongThucMuoi.setSoLuongNhap(soLuongNhap);
 		keHoachLuongThucMuoi.setDonViTinh(khltReq.getDonViTinh());
+
 		mapKhltm.remove(id);
 		return keHoachLuongThucMuoiRepository.save(keHoachLuongThucMuoi);
 	}
@@ -402,7 +409,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		keHoachLuongThucMuoi.setStt(khMuoiReq.getStt());
 		keHoachLuongThucMuoi.setCtkhnId(ctkhnId);
 		keHoachLuongThucMuoi.setDonViId(khMuoiReq.getDonViId());
+		keHoachLuongThucMuoi.setMaDvi(khMuoiReq.getMaDvi());
 		keHoachLuongThucMuoi.setVatTuId(MUOI_ID);
+		keHoachLuongThucMuoi.setMaVatTu(MUOI_MA_VT);
 		Double soLuongNhap = khMuoiReq.getNhapTrongNam() == null ? 0 : khMuoiReq.getNhapTrongNam();
 		keHoachLuongThucMuoi.setSoLuongNhap(soLuongNhap);
 		keHoachLuongThucMuoi.setDonViTinh(khMuoiReq.getDonViTinh());
@@ -431,12 +440,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			keHoachVatTu.setSttDonVi(khVatTuReq.getStt());
 			keHoachVatTu.setCtkhnId(ctkhnId);
 			keHoachVatTu.setDonViId(khVatTuReq.getDonViId());
-
+			keHoachVatTu.setMaDvi(khVatTuReq.getMaDvi());
 			keHoachVatTu.setSttVatTu(vatTuReq.getStt());
 			keHoachVatTu.setDonViTinh(vatTuReq.getDonViTinh());
 			keHoachVatTu.setSoLuongNhap(vatTuReq.getNhapTrongNam());
 			keHoachVatTu.setVatTuId(vatTuReq.getVatTuId());
 			keHoachVatTu.setVatTuChaId(vatTuReq.getVatTuChaId());
+			keHoachVatTu.setMaVatTu(vatTuReq.getMaVatTu());
+			keHoachVatTu.setMaVatTuCha(vatTuReq.getMaVatTuCha());
 			keHoachVatTuRepository.save(keHoachVatTu);
 			keHoachVatTuList.add(keHoachVatTu);
 		}

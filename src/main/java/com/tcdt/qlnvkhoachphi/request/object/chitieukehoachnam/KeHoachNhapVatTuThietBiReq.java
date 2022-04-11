@@ -15,8 +15,9 @@ public class KeHoachNhapVatTuThietBiReq {
 	@Min(value = 0, message = "Stt phải lớn hơn 0")
 	private Integer stt;
 	private Long id;
-	@NotNull(message = "Không được để trống")
 	private Long donViId;
+	private String maDvi;
+
 	private String tenDonVi;
 
 	private List<VatTuThietBiReq> vatTuThietBi = new ArrayList<>();

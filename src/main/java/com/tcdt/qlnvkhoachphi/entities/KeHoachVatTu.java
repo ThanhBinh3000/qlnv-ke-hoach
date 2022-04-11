@@ -29,8 +29,11 @@ public class KeHoachVatTu implements Serializable {
 	private Long id;
 	private Long ctkhnId;
 	private Long donViId;
+	private String maDvi;
 	private Long vatTuId;
+	private String maVatTu;
 	private Long vatTuChaId;
+	private String maVatTuCha;
 	private Double soLuongNhap;
 	private String donViTinh;
 	private String trangThai;

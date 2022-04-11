@@ -18,8 +18,9 @@ public class VatTuThietBiReq {
 	private String donViTinh;
 	@NotNull(message = "Không được để trống")
 	private Long vatTuId;
+	private String maVatTu;
 	private Long vatTuChaId;
-
+	private String maVatTuCha;
 	// Nhap trong nam
 	@Min(value = 0, message = "Số lượng phải lớn hơn 0")
 	private Double nhapTrongNam;

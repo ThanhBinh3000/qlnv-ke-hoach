@@ -16,8 +16,8 @@ public class KeHoachMuoiDuTruReq {
 	@Min(value = 0, message = "Stt phải lớn hơn 0")
 	private Integer stt;
 	private Long id;
-	@NotNull(message = "Không được để trống")
 	private Long donViId;
+	private String maDvi;
 	private String tenDonVi;
 	@NotNull(message = "Không được để trống")
 	@Size(max = 50, message = "Đơn vị tính không được vượt quá 50 ký tự.")

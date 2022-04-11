@@ -17,8 +17,9 @@ public class  KeHoachLuongThucDuTruReq {
 	private Integer stt;
 	private Long khGaoId;
 	private Long khThocId;
-	@NotNull(message = "Không được để trống")
 	private Long donViId;
+	private String maDvi;
+
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;
 	private String tenDonVi;
