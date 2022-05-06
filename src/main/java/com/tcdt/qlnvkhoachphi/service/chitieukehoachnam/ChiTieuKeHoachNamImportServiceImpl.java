@@ -90,13 +90,13 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
     // Ke hoach vat tu
     private static final Integer MA_HANG_INDEX = 2;
     private static final Integer MAT_HANG_INDEX = 3;
-    private static final Integer DON_VI_TINH_INDEX = 4;
-    private static final Integer TKCN_TONG_SO_INDEX = 5;
-    private static final Integer TKCN_TONG_INDEX = 6;
-    private static final Integer TKCN_KE_HOACH_NHAP_1_INDEX = 7;
-    private static final Integer TKCN_KE_HOACH_NHAP_2_INDEX = 8;
-    private static final Integer TKCN_KE_HOACH_NHAP_3_INDEX = 9;
-    private static final Integer TKCN_KE_HOACH_NHAP_4_INDEX = 10;
+    private static final Integer DON_VI_TINH_INDEX = 6;
+    private static final Integer TKCN_TONG_SO_INDEX = 7;
+    private static final Integer TKCN_TONG_INDEX = 8;
+    private static final Integer TKCN_KE_HOACH_NHAP_1_INDEX = 9;
+    private static final Integer TKCN_KE_HOACH_NHAP_2_INDEX = 10;
+    private static final Integer TKCN_KE_HOACH_NHAP_3_INDEX = 11;
+    private static final Integer TKCN_KE_HOACH_NHAP_4_INDEX = 12;
 
 
     @Autowired
@@ -104,9 +104,6 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
 
     @Autowired
     private QlnvDmDonviRepository qlnvDmDonviRepository;
-
-    @Autowired
-    private ChiTieuKeHoachNamService chiTieuKeHoachNamSv;
 
     private static Integer getNamNhap(Row row, Integer index) throws Exception {
         Cell cell = row.getCell(index, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -188,9 +185,6 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         Integer tkcnNamNhap2 = getNamNhap(headerNam, TKCN_KE_HOACH_NHAP_2_INDEX);
         Integer tkcnNamNhap3 = getNamNhap(headerNam, TKCN_KE_HOACH_NHAP_3_INDEX);
 
-        Row headerNam4 = sheet.getRow(VAT_TU_DATA_ROW_NHAP_4_INDEX);
-        Integer tkcnNamNhap4 = getNamNhap(headerNam4, TKCN_KE_HOACH_NHAP_4_INDEX);
-
         int count = 0;
 
         Double currentStt = null;
@@ -261,7 +255,6 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap1, tkcnNhap1, null));
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap2, tkcnNhap2, null));
             cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap3, tkcnNhap3, null));
-            //cacNamTruoc.add(new VatTuNhapRes(null, tkcnNamNhap4, tkcnNhap4, null));
             vatTuThietBiRes.setCacNamTruoc(cacNamTruoc);
             vatTuThietBi.add(vatTuThietBiRes);
         }
@@ -272,15 +265,10 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
         int vatTuStt = 0;
 
         for (KeHoachVatTuRes res : responses) {
-            Map<String, Set<VatTuThietBiRes>> mapNhomVatTu = new HashMap<>();
             List<VatTuThietBiRes> vatTuThietBiRes = res.getVatTuThietBi();
 
-            Set<String> maChas = vatTuThietBiRes.stream().map(VatTuThietBiRes::getMaVatTuCha).filter(maVatTuCha -> !StringUtils.isEmpty(maVatTuCha)).collect(Collectors.toSet());
             for (VatTuThietBiRes vtRes : vatTuThietBiRes) {
                 if (StringUtils.isEmpty(vtRes.getMaVatTu()))
-                    continue;
-
-                if (maChas.contains(vtRes.getMaVatTu()))
                     continue;
 
                 QlnvDmVattu vattu = mapMaVatTu.get(vtRes.getMaVatTu());
@@ -302,14 +290,11 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
                 vtRes.setVatTuId(vattu.getId());
                 vtRes.setTenVatTu(vattu.getTen());
                 vtRes.setMaVatTu(vattu.getMa());
-
+                vtRes.setKyHieu(vattu.getKyHieu());
                 for (VatTuNhapRes vtNamTruocRes : vtRes.getCacNamTruoc()) {
                     vtNamTruocRes.setVatTuId(vattu.getId());
                 }
-                chiTieuKeHoachNamSv.addVatTuThietBiChaRes(vtRes, mapMaVatTu, mapNhomVatTu);
             }
-            List<VatTuThietBiRes> finalVatTuThietBiRes = chiTieuKeHoachNamSv.tinhTongVatTuThietBiCha(mapNhomVatTu);
-            res.setVatTuThietBi(finalVatTuThietBiRes);
         }
         return responses;
     }
