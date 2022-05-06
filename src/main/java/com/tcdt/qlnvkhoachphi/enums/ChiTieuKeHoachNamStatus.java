@@ -1,10 +1,10 @@
 package com.tcdt.qlnvkhoachphi.enums;
 
 public enum ChiTieuKeHoachNamStatus {
-	MOI_TAO("00", "Mới tạo"),
-	CHO_DUYET("01", "Chờ duyệt"),
-	DA_DUYET("02", "Đã duyệt"),
-	TU_CHOI("03", "Từ chối");
+	DU_THAO("00", "Dự Thảo"),
+	LANH_DAO_DUYET("01", "Lãnh Đạo Duyệt"),
+	BAN_HANH("02", "Ban Hành"),
+	TU_CHOI("03", "Từ Chối");
 
 	private final String id;
 	private final String ten;
