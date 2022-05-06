@@ -16,7 +16,7 @@ public class KeHoachVatTuRes {
 	private String maDonVi;
 	private String tenDonVi;
 
-	private List<VatTuThietBiRes> vatTuThietBi = new ArrayList();
+	private List<VatTuThietBiRes> vatTuThietBi = new ArrayList<>();
 
 	public List<VatTuThietBiRes> getVatTuThietBi() {
 

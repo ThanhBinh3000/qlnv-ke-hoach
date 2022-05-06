@@ -32,6 +32,9 @@ public class ChiTieuKeHoachNamReq {
 	@NotNull(message = "Không được để trống")
 	private String ghiChu;
 
+	@NotNull(message = "Không được để trống")
+	private String canCu;
+
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruReq> khMuoi = new ArrayList<>();
 	private List<KeHoachNhapVatTuThietBiReq> khVatTu = new ArrayList<>();

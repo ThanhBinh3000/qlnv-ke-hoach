@@ -34,4 +34,5 @@ public class QlnvDmVattu {
 	private String maDviTinh;
 	private String trangThai;
 	private String cap;
+	private String kyHieu;
 }

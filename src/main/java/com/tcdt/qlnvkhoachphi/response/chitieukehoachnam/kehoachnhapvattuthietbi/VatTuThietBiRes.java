@@ -22,6 +22,7 @@ public class VatTuThietBiRes {
 	private String maVatTuCha;
 	private Long vatTuChaId;
 	private String tenVatTuCha;
+	private String kyHieu;
 
 	// Nhap trong nam
 	private Double nhapTrongNam;

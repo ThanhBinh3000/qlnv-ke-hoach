@@ -42,6 +42,7 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private Long qdGocId;
 	private String capDvi;
 	private String maDvi;
+	private String canCu;
 
 	@Lob
 	private String ghiChu;

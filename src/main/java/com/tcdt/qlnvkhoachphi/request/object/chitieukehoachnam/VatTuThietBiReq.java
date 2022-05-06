@@ -18,13 +18,16 @@ public class VatTuThietBiReq {
 	private String donViTinh;
 	@NotNull(message = "Không được để trống")
 	private Long vatTuId;
+
+	@NotNull(message = "Không được để trống")
 	private String maVatTu;
+
+	@NotNull(message = "Không được để trống")
 	private Long vatTuChaId;
+
+	@NotNull(message = "Không được để trống")
 	private String maVatTuCha;
 	// Nhap trong nam
 	@Min(value = 0, message = "Số lượng phải lớn hơn 0")
 	private Double nhapTrongNam;
-
-	// Chi tieu cac nam truoc
-//	private List<VatTuNhapReq> nhapCacNamTruoc = new ArrayList<>();
 }

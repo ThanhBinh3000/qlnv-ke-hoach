@@ -102,8 +102,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return this.create(req, ChiTieuKeHoachEnum.QD.getValue(), null);
 	}
 
-
-
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public QdDcChiTieuKeHoachRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
@@ -179,7 +177,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 
 		for (KeHoachNhapVatTuThietBiReq khvtReq : req.getKhVatTu()) {
-			keHoachVatTuList.addAll(this.saveListKeHoachVatTu(khvtReq, userInfo, ctkhnId, new HashMap<>()));
+			keHoachVatTuList.addAll(this.saveListKeHoachVatTu(khvtReq, ctkhnId, new HashMap<>()));
 		}
 
 		chiTieuKeHoachNam.setKhLuongThucList(keHoachThocGaoList);
@@ -323,7 +321,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.stream().collect(Collectors.toMap(KeHoachVatTu::getId, Function.identity()));
 
 		for (KeHoachNhapVatTuThietBiReq khvtReq : req.getKhVatTu()) {
-			this.saveListKeHoachVatTu(khvtReq, userInfo, ctkhnId, mapKhvt);
+			this.saveListKeHoachVatTu(khvtReq, ctkhnId, mapKhvt);
 		}
 
 		if (!CollectionUtils.isEmpty(mapKhxltm.values()))
@@ -420,7 +418,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return keHoachLuongThucMuoi;
 	}
 
-	private List<KeHoachVatTu> saveListKeHoachVatTu(KeHoachNhapVatTuThietBiReq khVatTuReq, UserInfo userInfo, Long ctkhnId,
+	private List<KeHoachVatTu> saveListKeHoachVatTu(KeHoachNhapVatTuThietBiReq khVatTuReq, Long ctkhnId,
 													Map<Long, KeHoachVatTu> mapKhvt) throws Exception {
 
 		List<KeHoachVatTu> keHoachVatTuList = new ArrayList<>();
@@ -769,7 +767,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	public ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam) throws Exception {
 		List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAll());
-		Map<String, QlnvDmVattu> mapMaVatTu = vattuList.stream().collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
 
 		ChiTieuKeHoachNamRes response = new ChiTieuKeHoachNamRes();
 		response.setId(chiTieuKeHoachNam.getId());
@@ -782,6 +779,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
+		response.setCanCu(chiTieuKeHoachNam.getCanCu());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();
@@ -835,7 +833,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			QlnvDmDonvi donVi = mapDonVi.get(keHoachLuongThucMuoi.getDonViId());
 			if (donVi == null)
 				throw new Exception("Đơn vị không tồn tại");
-
 
 			// set donvi
 			res.setDonViId(donVi.getId());
@@ -982,6 +979,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			vatTuThietBiRes.setMaVatTu(vattu.getMa());
 			vatTuThietBiRes.setDonViTinh(keHoachVatTu.getDonViTinh());
 			vatTuThietBiRes.setNhapTrongNam(keHoachVatTu.getSoLuongNhap());
+			vatTuThietBiRes.setKyHieu(vattu.getKyHieu());
 			vatTuThietBiRes.setId(keHoachVatTu.getId());
 
 			if (!StringUtils.isEmpty(vattu.getMaCha())) {
@@ -1033,7 +1031,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		List<VatTuNhapQueryDTO> vatTuNhapQueryDTOList = this.getKeHoachVatTuThietBiCacNamTruoc(vatTuIdList, chiTieuKeHoachNam.getNamKeHoach());
 		for (KeHoachVatTuRes k : khVatTuResList) {
-			Map<String, Set<VatTuThietBiRes>> mapNhomVatTu = new HashMap<>();
 			List<VatTuThietBiRes> vatTuThietBi = k.getVatTuThietBi();
 			if (CollectionUtils.isEmpty(vatTuThietBi))
 				continue;
@@ -1048,12 +1045,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				Double tongCacNamTruoc = vatTuRes.getCacNamTruoc().stream().filter(v -> v.getSoLuong() != null).mapToDouble(VatTuNhapRes::getSoLuong).sum();
 				vatTuRes.setTongCacNamTruoc(Optional.ofNullable(tongCacNamTruoc).orElse(0d));
 				vatTuRes.setTongNhap(Optional.ofNullable(vatTuRes.getNhapTrongNam()).orElse(0d) + Optional.ofNullable(tongCacNamTruoc).orElse(0d));
-
-				this.addVatTuThietBiChaRes(vatTuRes, mapMaVatTu, mapNhomVatTu);
 			}
-
-			List<VatTuThietBiRes> finalVatTuThietBiRes = this.tinhTongVatTuThietBiCha(mapNhomVatTu);
-			k.setVatTuThietBi(finalVatTuThietBiRes);
 		}
 
 		khLtResList.sort(Comparator.comparing(KeHoachLuongThucDuTruRes::getStt));
