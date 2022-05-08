@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam;
 
+import com.tcdt.qlnvkhoachphi.request.object.catalog.FileDinhKemReq;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,5 @@ public class ChiTieuKeHoachNamReq {
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruReq> khMuoi = new ArrayList<>();
 	private List<KeHoachNhapVatTuThietBiReq> khVatTu = new ArrayList<>();
-
-
+	private List<FileDinhKemReq> fileDinhKemReqs = new ArrayList<>();
 }

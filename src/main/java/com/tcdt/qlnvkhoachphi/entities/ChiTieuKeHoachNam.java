@@ -14,13 +14,15 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "CHI_TIEU_KE_HOACH_NAM")
+@Table(name = ChiTieuKeHoachNam.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 6093365068005372524L;
+	public static final String TABLE_NAME = "CHI_TIEU_KE_HOACH_NAM";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHI_TIEU_KE_HOACH_NAM_SEQ")
 	@SequenceGenerator(sequenceName = "CHI_TIEU_KE_HOACH_NAM_SEQ", allocationSize = 1, name = "CHI_TIEU_KE_HOACH_NAM_SEQ")
@@ -55,5 +57,6 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	@Transient
 	private List<KeHoachVatTu> khVatTuList = new ArrayList<>();
 
-
+	@Transient
+	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
 }

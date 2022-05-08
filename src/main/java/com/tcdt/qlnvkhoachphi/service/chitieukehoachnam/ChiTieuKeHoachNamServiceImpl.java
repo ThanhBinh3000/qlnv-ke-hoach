@@ -1,21 +1,14 @@
 package com.tcdt.qlnvkhoachphi.service.chitieukehoachnam;
 
 import com.google.common.collect.Lists;
-import com.tcdt.qlnvkhoachphi.entities.ChiTieuKeHoachNam;
-import com.tcdt.qlnvkhoachphi.entities.KeHoachLuongThucMuoi;
-import com.tcdt.qlnvkhoachphi.entities.KeHoachVatTu;
-import com.tcdt.qlnvkhoachphi.entities.KeHoachXuatLuongThucMuoi;
-import com.tcdt.qlnvkhoachphi.entities.KtTrangthaiHienthoi;
+import com.tcdt.qlnvkhoachphi.entities.*;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
 import com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO;
-import com.tcdt.qlnvkhoachphi.repository.ChiTieuKeHoachNamRepository;
-import com.tcdt.qlnvkhoachphi.repository.KeHoachLuongThucMuoiRepository;
-import com.tcdt.qlnvkhoachphi.repository.KeHoachVatTuRepository;
-import com.tcdt.qlnvkhoachphi.repository.KeHoachXuatLuongThucMuoiRepository;
-import com.tcdt.qlnvkhoachphi.repository.KtTrangthaiHienthoiRepository;
+import com.tcdt.qlnvkhoachphi.repository.*;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
+import com.tcdt.qlnvkhoachphi.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -36,10 +29,12 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.TonKho
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.service.SecurityContextService;
+import com.tcdt.qlnvkhoachphi.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoachphi.table.UserInfo;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.Constants;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -78,6 +73,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Autowired
 	private KtTrangthaiHienthoiRepository ktTrangthaiHienthoiRepository;
+
+	@Autowired
+	private FileDinhKemService fileDinhKemService;
 
 	public static final Long THOC_ID = 2L;
 	public static final String THOC_MA_VT = "0101";
@@ -183,6 +181,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setKhLuongThucList(keHoachThocGaoList);
 		chiTieuKeHoachNam.setKhMuoiList(keHoachMuoiList);
 		chiTieuKeHoachNam.setKhVatTuList(keHoachVatTuList);
+
+		List<FileDinhKem> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
+		chiTieuKeHoachNam.setFileDinhKems(fileDinhKems);
 		return this.buildDetailResponse(chiTieuKeHoachNam);
 	}
 
@@ -333,6 +334,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (!CollectionUtils.isEmpty(mapKhvt.values()))
 			keHoachVatTuRepository.deleteAll(mapKhvt.values());
 
+		List<FileDinhKem> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
+		ctkhn.setFileDinhKems(fileDinhKems);
 		return this.buildDetailResponse(ctkhn);
 	}
 
@@ -545,6 +548,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> GAO_ID.equals(kh.getVatTuId()) || THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhVatTuList(keHoachVatTus);
+
+		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId()));
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
 		addEmptyDataToExport(response);
 		return response;
@@ -780,6 +785,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
 		response.setCanCu(chiTieuKeHoachNam.getCanCu());
+		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();

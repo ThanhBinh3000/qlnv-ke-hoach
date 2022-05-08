@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoachphi.response.chitieukehoachnam;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tcdt.qlnvkhoachphi.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
@@ -42,4 +43,6 @@ public class ChiTieuKeHoachNamRes {
 	private List<KeHoachLuongThucDuTruRes> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruRes> khMuoiDuTru = new ArrayList<>();
 	private List<KeHoachVatTuRes> khVatTu = new ArrayList<>();
+
+	private List<FileDinhKemChung> fileDinhKemChungs = new ArrayList<>();
 }
