@@ -10,5 +10,7 @@ public interface FileDinhKemService {
                                                Long dataId,
                                                String dataType);
 
-    List<FileDinhKemChung> search(Long dataId);
+    List<FileDinhKemChung> search(Long dataId, String dataType);
+
+    void delete(Long dataId, String dataType);
 }

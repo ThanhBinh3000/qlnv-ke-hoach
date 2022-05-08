@@ -497,6 +497,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<KeHoachVatTu> keHoachVatTuList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		keHoachVatTuRepository.deleteAll(keHoachVatTuList);
 		chiTieuKeHoachNamRepository.delete(chiTieuKeHoachNam);
+		fileDinhKemService.delete(chiTieuKeHoachNam.getId(), ChiTieuKeHoachNam.TABLE_NAME);
 		return true;
 	}
 
@@ -542,7 +543,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhVatTuList(keHoachVatTus);
 
-		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId()));
+		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId(), ChiTieuKeHoachNam.TABLE_NAME));
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
 		addEmptyDataToExport(response);
 		return response;

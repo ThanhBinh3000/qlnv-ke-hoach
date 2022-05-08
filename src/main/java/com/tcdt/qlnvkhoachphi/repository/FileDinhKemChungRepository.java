@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface FileDinhKemChungRepository extends CrudRepository<FileDinhKemChung, Long> {
 
-	List<FileDinhKemChung> findByDataId(Long dataId);
+	List<FileDinhKemChung> findByDataIdAndDataType(Long dataId, String dataType);
 
 	@Transactional
 	@Modifying

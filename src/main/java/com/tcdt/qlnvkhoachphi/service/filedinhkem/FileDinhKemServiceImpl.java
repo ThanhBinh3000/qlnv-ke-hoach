@@ -42,7 +42,12 @@ public class FileDinhKemServiceImpl implements FileDinhKemService {
     }
 
     @Override
-    public List<FileDinhKemChung> search(Long dataId) {
-        return fileDinhKemChungRepository.findByDataId(dataId);
+    public List<FileDinhKemChung> search(Long dataId, String dataType) {
+        return fileDinhKemChungRepository.findByDataIdAndDataType(dataId, dataType);
+    }
+
+    @Override
+    public void delete(Long dataId, String dataType) {
+        fileDinhKemChungRepository.deleteByDataIdAndDataType(dataId, dataType);
     }
 }
