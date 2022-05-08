@@ -22,13 +22,25 @@ public class KeHoachMuoiDuTruRes {
     private Double tkdnTongSoMuoi;
     private List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
 
-    // Nhap trong nam
+    // Ton kho cuoi nam
+    private Double tkcnTongSoMuoi;
+
+    // Nhap trong nam QD
     private Double ntnTongSoMuoi;
 
-    // Xuat trong nam
+    // Xuat trong nam QD
     private Double xtnTongSoMuoi;
     private List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
 
-    // Ton kho cuoi nam
-    private Double tkcnTongSoMuoi;
+    // Nhap trong nam QDDC
+    private Double tdcNtnTongSoMuoi;
+    private Double dcNtnTongSoMuoi;
+    private Double sdcNtnTongSoMuoi;
+
+    // Xuat trong nam QDDC
+    private Double tdcXtnTongSoMuoi;
+    private Double sdcXtnTongSoMuoi;
+    private List<VatTuNhapRes> tdcXtnMuoi = new ArrayList<>();
+    private List<VatTuNhapRes> dcXtnMuoi = new ArrayList<>();
+    private List<VatTuNhapRes> sdcXtnMuoi = new ArrayList<>();
 }

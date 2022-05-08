@@ -8,7 +8,6 @@ import com.tcdt.qlnvkhoachphi.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoachphi.repository.*;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoachphi.repository.catalog.QlnvDmVattuRepository;
-import com.tcdt.qlnvkhoachphi.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.StatusReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -20,7 +19,6 @@ import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.VatTuNhapReq;
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.VatTuThietBiReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.QdDcChiTieuKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.SoLuongTruocDieuChinhRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.VatTuNhapRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachluongthucdutru.KeHoachLuongThucDuTruRes;
@@ -34,7 +32,6 @@ import com.tcdt.qlnvkhoachphi.table.UserInfo;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoachphi.util.Constants;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -102,7 +99,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public QdDcChiTieuKeHoachRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
+	public ChiTieuKeHoachNamRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
 		Long qdGocId = req.getQdGocId();
 		Optional<ChiTieuKeHoachNam> optionalQdGoc = chiTieuKeHoachNamRepository.findById(qdGocId);
 		if (!optionalQdGoc.isPresent())
@@ -120,10 +117,10 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		this.validateCreateCtkhnRequest(req.getQdDc());
 		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId());
-		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
-		response.setQdDc(qdDc);
-		response.setQd(this.detailQd(qdGocId));
-		return response;
+		ChiTieuKeHoachNamRes qd = this.detailQd(qdGocId);
+		this.setDataTruocSauDieuChinh(qdDc, qd);
+
+		return qdDc;
 	}
 
 	private ChiTieuKeHoachNamRes create(ChiTieuKeHoachNamReq req, String loaiQd, Long qdGocId) throws Exception {
@@ -182,7 +179,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setKhMuoiList(keHoachMuoiList);
 		chiTieuKeHoachNam.setKhVatTuList(keHoachVatTuList);
 
-		List<FileDinhKem> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
+		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		chiTieuKeHoachNam.setFileDinhKems(fileDinhKems);
 		return this.buildDetailResponse(chiTieuKeHoachNam);
 	}
@@ -248,13 +245,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public QdDcChiTieuKeHoachRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
+	public ChiTieuKeHoachNamRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
 		this.validateCreateCtkhnRequest(req.getQdDc());
 		ChiTieuKeHoachNamRes qdDc = this.update(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue());
-		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
-		response.setQdDc(qdDc);
-		response.setQd(this.detailQd(qdDc.getQdGocId()));
-		return response;
+		ChiTieuKeHoachNamRes qd = this.detailQd(qdDc.getQdGocId());
+		this.setDataTruocSauDieuChinh(qdDc, qd);
+		return qdDc;
 	}
 
 	public ChiTieuKeHoachNamRes update(ChiTieuKeHoachNamReq req, String loaiQd) throws Exception {
@@ -334,7 +330,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (!CollectionUtils.isEmpty(mapKhvt.values()))
 			keHoachVatTuRepository.deleteAll(mapKhvt.values());
 
-		List<FileDinhKem> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
+		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		ctkhn.setFileDinhKems(fileDinhKems);
 		return this.buildDetailResponse(ctkhn);
 	}
@@ -510,17 +506,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
-	public QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception {
+	public ChiTieuKeHoachNamRes detailQdDc(Long id) throws Exception {
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(qdDc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue())
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
-
-		QdDcChiTieuKeHoachRes response = new QdDcChiTieuKeHoachRes();
-		response.setQdDc(qdDc);
-		response.setQd(qd);
-		return response;
+		this.setDataTruocSauDieuChinh(qdDc, qd);
+		return qdDc;
 	}
 
 	public ChiTieuKeHoachNamRes detail(Long id) throws Exception {
@@ -785,7 +778,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
 		response.setCanCu(chiTieuKeHoachNam.getCanCu());
-		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
+		response.setFileDinhKemChungs(chiTieuKeHoachNam.getFileDinhKems());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();
@@ -1363,5 +1356,172 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 
+	}
+
+	private void setDataTruocSauDieuChinh(ChiTieuKeHoachNamRes qdDc, ChiTieuKeHoachNamRes qd) {
+		this.setDataTruocSauDieuChinhLuongThuc(qdDc, qd);
+		this.setDataTruocSauDieuChinhMuoi(qdDc, qd);
+		this.setDataTruocSauDieuChinhVatTu(qdDc, qd);
+	}
+
+	private void setDataTruocSauDieuChinhVatTu(ChiTieuKeHoachNamRes qdDc, ChiTieuKeHoachNamRes qd) {
+		List<KeHoachVatTuRes> qdkh = qd.getKhVatTu();
+		List<KeHoachVatTuRes> dcKh = qdDc.getKhVatTu();
+		for (KeHoachVatTuRes dcRes : dcKh) {
+			String maDvi = dcRes.getMaDonVi();
+
+			if (StringUtils.isEmpty(maDvi))
+				continue;
+
+			Optional<KeHoachVatTuRes> optionalQd = qdkh.stream()
+					.filter(l -> l.getMaDonVi().equals(maDvi))
+					.findFirst();
+			if (!optionalQd.isPresent())
+				continue;
+
+			KeHoachVatTuRes qdRes = optionalQd.get();
+			List<VatTuThietBiRes> dcVatTuThietBi = dcRes.getVatTuThietBi();
+			List<VatTuThietBiRes> qdVatTuThietBi = qdRes.getVatTuThietBi();
+
+			for (VatTuThietBiRes dcVt : dcVatTuThietBi) {
+				String maVatTu = dcVt.getMaVatTu();
+				if (StringUtils.isEmpty(maVatTu))
+					continue;
+
+				Optional<VatTuThietBiRes> optionalVtQd = qdVatTuThietBi.stream()
+						.filter(l -> l.getMaVatTu().equals(maVatTu))
+						.findFirst();
+				if (!optionalVtQd.isPresent())
+					continue;
+				VatTuThietBiRes qdVt = optionalVtQd.get();
+
+				// Truoc dieu chinh Nhap Trong Nam
+				dcVt.setTdcNhapTrongNam(qdVt.getNhapTrongNam());
+				dcVt.setTdcTongNhap(qdVt.getTongNhap());
+				dcVt.setTdcTongCacNamTruoc(qdVt.getTdcTongCacNamTruoc());
+				dcVt.setTdcCacNamTruoc(qdVt.getCacNamTruoc());
+
+				// Sau dieu chinh Nhap Trong Nam
+				dcVt.setSdcNhapTrongNam(dcVt.getNhapTrongNam());
+				dcVt.setSdcTongNhap(dcVt.getTongNhap());
+				dcVt.setSdcTongCacNamTruoc(dcVt.getTongCacNamTruoc());
+				dcVt.setSdcCacNamTruoc(qdVt.getCacNamTruoc());
+
+				// Dieu chinh
+				Double dcNhapTrongNam = Optional.ofNullable(dcVt.getSdcNhapTrongNam()).orElse(0D) - Optional.ofNullable(qdVt.getNhapTrongNam()).orElse(0D);
+				dcVt.setDcNhapTrongNam(dcNhapTrongNam);
+			}
+		}
+	}
+
+	private void setDataTruocSauDieuChinhMuoi(ChiTieuKeHoachNamRes qdDc, ChiTieuKeHoachNamRes qd) {
+		// Luong Thuc
+		List<KeHoachMuoiDuTruRes> qdMuoi = qd.getKhMuoiDuTru();
+		List<KeHoachMuoiDuTruRes> dcMuoi = qdDc.getKhMuoiDuTru();
+		for (KeHoachMuoiDuTruRes dcRes : dcMuoi) {
+			String maDvi = dcRes.getMaDonVi();
+			if (StringUtils.isEmpty(maDvi))
+				continue;
+
+			Optional<KeHoachMuoiDuTruRes> optionalQd = qdMuoi.stream()
+					.filter(l -> l.getMaDonVi().equals(maDvi))
+					.findFirst();
+			if (!optionalQd.isPresent())
+				continue;
+
+			KeHoachMuoiDuTruRes qdRes = optionalQd.get();
+
+			// Nhap Trong Nam
+			dcRes.setTdcNtnTongSoMuoi(qdRes.getNtnTongSoMuoi());
+			dcRes.setSdcNtnTongSoMuoi(dcRes.getNtnTongSoMuoi());
+			Double dcNtnTongSoMuoi = Optional.ofNullable(dcRes.getSdcNtnTongSoMuoi()).orElse(0D) - Optional.ofNullable(qdRes.getNtnTongSoMuoi()).orElse(0D);
+			dcRes.setDcNtnTongSoMuoi(dcNtnTongSoMuoi);
+
+			// Truoc dieu chinh Xuat Trong Nam
+			dcRes.setTdcXtnTongSoMuoi(qdRes.getXtnTongSoMuoi());
+			dcRes.setTdcXtnMuoi(qdRes.getXtnMuoi());
+
+			// Sau dieu chinh Xuat Trong Nam
+			dcRes.setSdcXtnTongSoMuoi(dcRes.getXtnTongSoMuoi());
+			dcRes.setSdcXtnMuoi(dcRes.getSdcXtnMuoi());
+
+			// Dieu chinh Xuat Trong Nam
+			dcRes.setDcXtnMuoi(this.getDcXtnLuongThucMuoi(dcRes.getSdcXtnMuoi(), qdRes.getXtnMuoi()));
+		}
+	}
+
+	private void setDataTruocSauDieuChinhLuongThuc(ChiTieuKeHoachNamRes qdDc, ChiTieuKeHoachNamRes qd) {
+		// Luong Thuc
+		List<KeHoachLuongThucDuTruRes> qdLuongThuc = qd.getKhLuongThuc();
+		List<KeHoachLuongThucDuTruRes> dcLuongThuc = qdDc.getKhLuongThuc();
+		for (KeHoachLuongThucDuTruRes dcRes : dcLuongThuc) {
+			String maDvi = dcRes.getMaDonVi();
+			if (StringUtils.isEmpty(maDvi))
+				continue;
+
+			Optional<KeHoachLuongThucDuTruRes> optionalQd = qdLuongThuc.stream()
+					.filter(l -> l.getMaDonVi().equals(maDvi))
+					.findFirst();
+			if (!optionalQd.isPresent())
+				continue;
+
+			KeHoachLuongThucDuTruRes qdRes = optionalQd.get();
+
+			// Truoc dieu chinh Nhap Trong Nam
+			dcRes.setTdcNtnTongSoQuyThoc(qdRes.getNtnTongSoQuyThoc());
+			dcRes.setTdcNtnGao(qdRes.getNtnGao());
+			dcRes.setTdcNtnThoc(qdRes.getNtnThoc());
+
+			// Sau dieu chinh Nhap Trong Nam
+			dcRes.setSdcNtnTongSoQuyThoc(dcRes.getNtnTongSoQuyThoc());
+			dcRes.setSdcNtnThoc(dcRes.getNtnThoc());
+			dcRes.setSdcNtnGao(dcRes.getNtnGao());
+
+			// Dieu chinh Nhap Trong Nam
+			Double dcNtnGao = Optional.ofNullable(dcRes.getSdcNtnGao()).orElse(0D) - Optional.ofNullable(qdRes.getNtnGao()).orElse(0D);
+			Double dcNtnThoc = Optional.ofNullable(dcRes.getSdcNtnThoc()).orElse(0D) - Optional.ofNullable(qdRes.getNtnThoc()).orElse(0D);
+			dcRes.setDcNtnGao(dcNtnGao);
+			dcRes.setDcNtnThoc(dcNtnThoc);
+
+			// Truoc dieu chinh Xuat Trong Nam
+			dcRes.setTdcXtnTongSoQuyThoc(qdRes.getXtnTongSoQuyThoc());
+			dcRes.setTdcXtnThoc(qdRes.getXtnThoc());
+			dcRes.setTdcXtnGao(qdRes.getXtnGao());
+			dcRes.setTdcXtnThoc(qdRes.getXtnThoc());
+			dcRes.setTdcXtnGao(qdRes.getXtnGao());
+
+			// Sau dieu chinh Xuat Trong Nam
+			dcRes.setSdcXtnTongSoQuyThoc(dcRes.getXtnTongSoQuyThoc());
+			dcRes.setSdcXtnTongThoc(dcRes.getXtnTongThoc());
+			dcRes.setSdcXtnTongGao(dcRes.getXtnTongGao());
+			dcRes.setSdcXtnThoc(dcRes.getXtnThoc());
+			dcRes.setSdcXtnGao(dcRes.getXtnGao());
+
+			dcRes.setDcXtnThoc(this.getDcXtnLuongThucMuoi(dcRes.getSdcXtnThoc(), qdRes.getXtnThoc()));
+			dcRes.setDcXtnGao(this.getDcXtnLuongThucMuoi(dcRes.getSdcXtnGao(), qdRes.getXtnGao()));
+
+		}
+	}
+
+	private List<VatTuNhapRes> getDcXtnLuongThucMuoi(List<VatTuNhapRes> dcRes, List<VatTuNhapRes> qdRes) {
+		List<VatTuNhapRes> dcXtns = new ArrayList<>();
+		for (VatTuNhapRes dcVtRes : dcRes) {
+			Integer nam = dcVtRes.getNam();
+			if (nam == null)
+				continue;
+
+			Optional<VatTuNhapRes> optionalQdVt = qdRes.stream().filter(t -> nam.equals(t.getNam())).findFirst();
+			if (!optionalQdVt.isPresent())
+				continue;
+
+			VatTuNhapRes qdVtRes = optionalQdVt.get();
+			VatTuNhapRes dcXtn = new VatTuNhapRes();
+			dcXtn.setNam(nam);
+			Double soLuong = Optional.ofNullable(dcVtRes.getSoLuong()).orElse(0D) - Optional.ofNullable(qdVtRes.getSoLuong()).orElse(0D);
+			dcXtn.setSoLuong(soLuong);
+			dcXtn.setVatTuId(dcVtRes.getVatTuId());
+			dcXtns.add(dcXtn);
+		}
+		return dcXtns;
 	}
 }

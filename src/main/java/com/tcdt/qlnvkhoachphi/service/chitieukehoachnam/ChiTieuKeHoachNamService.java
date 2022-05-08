@@ -7,12 +7,10 @@ import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.ChiTieuKeHoachNam
 import com.tcdt.qlnvkhoachphi.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
-import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.QdDcChiTieuKeHoachRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.SoLuongTruocDieuChinhRes;
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -24,13 +22,13 @@ public interface ChiTieuKeHoachNamService {
 	ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception;
 
 	@Transactional(rollbackOn = Exception.class)
-	QdDcChiTieuKeHoachRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception;
+	ChiTieuKeHoachNamRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception;
 
 	@Transactional(rollbackOn = Exception.class)
 	ChiTieuKeHoachNamRes updateQd(ChiTieuKeHoachNamReq req) throws Exception;
 
 	@Transactional(rollbackOn = Exception.class)
-	QdDcChiTieuKeHoachRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception;
+	ChiTieuKeHoachNamRes updateQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception;
 
 	boolean deleteQd(Long id) throws Exception;
 
@@ -38,7 +36,7 @@ public interface ChiTieuKeHoachNamService {
 
 	ChiTieuKeHoachNamRes detailQd(Long id) throws Exception;
 
-	QdDcChiTieuKeHoachRes detailQdDc(Long id) throws Exception;
+	ChiTieuKeHoachNamRes detailQdDc(Long id) throws Exception;
 
 	boolean updateStatusQd(StatusReq req) throws Exception;
 

@@ -24,9 +24,22 @@ public class VatTuThietBiRes {
 	private String tenVatTuCha;
 	private String kyHieu;
 
-	// Nhap trong nam
+	// Nhap trong nam QD
 	private Double nhapTrongNam;
 	private Double tongNhap;
 	private Double tongCacNamTruoc;
 	private List<VatTuNhapRes> cacNamTruoc = new ArrayList<>();
+
+	// Nhap trong nam QDDC
+	private Double tdcNhapTrongNam;
+	private Double tdcTongNhap;
+	private Double tdcTongCacNamTruoc;
+	private List<VatTuNhapRes> tdcCacNamTruoc = new ArrayList<>();
+
+	private Double dcNhapTrongNam;
+
+	private Double sdcNhapTrongNam;
+	private Double sdcTongNhap;
+	private Double sdcTongCacNamTruoc;
+	private List<VatTuNhapRes> sdcCacNamTruoc = new ArrayList<>();
 }
