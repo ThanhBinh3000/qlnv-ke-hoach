@@ -44,5 +44,5 @@ public class ChiTieuKeHoachNamRes {
 	private List<KeHoachMuoiDuTruRes> khMuoiDuTru = new ArrayList<>();
 	private List<KeHoachVatTuRes> khVatTu = new ArrayList<>();
 
-	private List<FileDinhKemChung> fileDinhKemChungs = new ArrayList<>();
+	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
 }

@@ -779,7 +779,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
 		response.setCanCu(chiTieuKeHoachNam.getCanCu());
-		response.setFileDinhKemChungs(chiTieuKeHoachNam.getFileDinhKems());
+		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();
