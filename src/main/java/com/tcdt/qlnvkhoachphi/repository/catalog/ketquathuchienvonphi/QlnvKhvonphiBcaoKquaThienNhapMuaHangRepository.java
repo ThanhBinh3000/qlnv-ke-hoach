@@ -35,7 +35,7 @@ public interface QlnvKhvonphiBcaoKquaThienNhapMuaHangRepository extends CrudRepo
 			"			FROM (" +
 			"                SELECT * FROM QLNV_KHVONPHI_BCAO_KQUA_THIEN_NHAP_MUA_HANG ct " +
 			"                INNER JOIN QLNV_KHVONPHI_BCAO vp ON vp.id = ct.QLNV_KHVONPHI_BCAO_ID " +
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha "+
+			"                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha "+
 			"                AND:namBcao= vp.NAM_BCAO AND:maLoaiBcao= vp.MA_LOAI_BCAO AND:dotBcao= vp.DOT_BCAO ) t " +
 			"			GROUP BY t.MA_VTU,t.MA_DVI_TINH,t.MA_VTU_PARENT) a";
 

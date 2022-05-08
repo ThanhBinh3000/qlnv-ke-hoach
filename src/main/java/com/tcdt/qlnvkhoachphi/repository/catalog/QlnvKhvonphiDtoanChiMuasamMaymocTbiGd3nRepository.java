@@ -25,7 +25,7 @@ public interface QlnvKhvonphiDtoanChiMuasamMaymocTbiGd3nRepository extends CrudR
 			"			FROM (" + 
 			"                SELECT * FROM QLNV_KHVONPHI_DTOAN_CHI_MUASAM_MAYMOC_TBI_GD3N ct " + 
 			"                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " + 
+			"                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " +
 			"			GROUP BY t.MA_TBI) a";
 
 	@Query(value = tongHop, nativeQuery = true)

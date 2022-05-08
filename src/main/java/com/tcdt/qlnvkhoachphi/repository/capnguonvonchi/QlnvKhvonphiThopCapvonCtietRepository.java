@@ -28,7 +28,7 @@ public interface QlnvKhvonphiThopCapvonCtietRepository extends CrudRepository<Ql
 			"    ,'' as GHI_CHU"
 			+ "FROM (" + "SELECT * FROM QLNV_KHVONPHI_THOP_CAPVON_CTIET ct "
 			+ "INNER JOIN QLNV_KHVONPHI_THOP_CAPVON vp ON vp.id = ct.qlnv_khvonphi_dchinh_id "
-			+ "INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi " + "WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t "
+			+ "INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi " + "WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t "
 			+ "GROUP BY t.MA_KHOAN_MUC,t.MA_NOI_DUNG,t.MA_NHOM_CHI) a";
 
 	@Query(value = tongHop, nativeQuery = true)

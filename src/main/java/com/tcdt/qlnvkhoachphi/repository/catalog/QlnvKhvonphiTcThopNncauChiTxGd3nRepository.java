@@ -34,7 +34,7 @@ public interface QlnvKhvonphiTcThopNncauChiTxGd3nRepository extends CrudReposito
 			"    , Sum(t.CLECH_TRAN_CHI_VS_NCAU_N3) as CLECH_TRAN_CHI_VS_NCAU_CHI_N3 " + 
 			"     FROM ( SELECT * FROM QLNV_KHVONPHI_CHI_TX_GD3N ct " + 
 			"     INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"     INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi  " + 
+			"     INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi  " +
 			"     WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " + 
 			"     GROUP BY t.MA_NOI_DUNG,t.MA_NHOM_CHI) a";
 

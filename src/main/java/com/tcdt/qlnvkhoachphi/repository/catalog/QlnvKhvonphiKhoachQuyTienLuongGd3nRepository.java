@@ -57,7 +57,7 @@ public interface QlnvKhvonphiKhoachQuyTienLuongGd3nRepository extends CrudReposi
 			"			FROM (" + 
 			"                SELECT ct.MA_DVI,ct.TONG_CBO_N,ct.TONG_BCHE_DUOC_PD_N,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_N,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_THEO_BCHE_N,ct.LUONG_CBAN_N,ct.PHU_CAP_N,ct.CAC_KHOAN_DGOP_N,ct.TONG_CBO_THIEN_N,ct.TONG_BCHE_DUOC_PD_THIEN_N,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_THIEN_N,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_THEO_BCHE_THIEN_N,ct.LUONG_CBAN_THIEN_N,ct.PHU_CAP_THIEN_N,ct.CAC_KHOAN_DGOP_THIEN_N,ct.TONG_CBO_N1,ct.TONG_BCHE_DUOC_PD_N1,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_N1,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_THEO_BCHE_N1,ct.LUONG_CBAN_N1,ct.PHU_CAP_N1,ct.CAC_KHOAN_DGOP_N1,ct.TONG_CBO_N2,ct.TONG_BCHE_DUOC_PD_N2,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_N2,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_THEO_BCHE_N2,ct.LUONG_CBAN_N2,ct.PHU_CAP_N2,ct.CAC_KHOAN_DGOP_N2,ct.TONG_CBO_N3,ct.TONG_BCHE_DUOC_PD_N3,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_N3,ct.TONG_QUY_LUONG_CO_TCHAT_LUONG_THEO_BCHE_N3,ct.LUONG_CBAN_N3,ct.PHU_CAP_N3,ct.CAC_KHOAN_DGOP_N3 FROM QLNV_KHVONPHI_KHOACH_QUY_TIEN_LUONG_GD3N ct " + 
 			"                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " + 
+			"                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " +
 			"			GROUP BY t.MA_DVI) a";
 
 	@Query(value = tongHop, nativeQuery = true)

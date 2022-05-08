@@ -29,7 +29,7 @@ public interface QlnvKhvonphiTcKhoachBquanHnamRepository extends CrudRepository 
 			"        FROM (" + 
 			"            SELECT vp.MA_DVI,ct.KPHI_BQUAN_THOC_TX,ct.KPHI_BQUAN_THOC_LD,ct.KPHI_BQUAN_GAO_TX,ct.KPHI_BQUAN_GAO_LD FROM QLNV_KHVONPHI_KHOACH_BQUAN_HNAM_THOC_GAO ct " + 
 			"            INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"            INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi " + 
+			"            INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi " +
 			"            WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " + 
 			"        GROUP BY t.MA_DVI) a ";
 

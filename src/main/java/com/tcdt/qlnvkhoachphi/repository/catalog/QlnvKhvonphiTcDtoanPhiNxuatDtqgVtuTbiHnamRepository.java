@@ -24,7 +24,7 @@ public interface QlnvKhvonphiTcDtoanPhiNxuatDtqgVtuTbiHnamRepository extends Cru
 			"            FROM (" + 
 			"                SELECT * FROM QLNV_KHVONPHI_NXUAT_DTQG_HNAM_VATTU ct " + 
 			"                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi " + 
+			"                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi " +
 			"                WHERE dv.ma_dvi_cha=:maDviCha " + 
 			"                AND vp.nam_hien_hanh=:namHienHanh" + 
 			"                AND vp.ma_dvi=:maDvi) t " + 

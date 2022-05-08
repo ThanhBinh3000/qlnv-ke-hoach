@@ -32,7 +32,7 @@ public interface QlnvKhvonphiTcTminhChiCacDtaiDanNckhGd3nRepository extends Crud
 			",ct.KPHI_TGIAN_THUHOI as TGIAN_THU_HOI " + 
 			"FROM QLNV_KHVONPHI_CHI_DTAI_DAN_NCKH_GD3N ct   " + 
 			"			INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"			INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
+			"			INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
 
 	@Query(value = tongHop, nativeQuery = true)
 	ArrayList<QlnvKhvonphiTcTminhChiCacDtaiDanNckhGd3n> synthesis(String maDviCha, String namHienHanh);

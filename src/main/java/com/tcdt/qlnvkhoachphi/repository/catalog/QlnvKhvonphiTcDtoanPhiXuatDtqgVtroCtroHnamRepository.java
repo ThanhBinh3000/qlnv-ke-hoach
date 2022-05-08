@@ -28,7 +28,7 @@ public interface QlnvKhvonphiTcDtoanPhiXuatDtqgVtroCtroHnamRepository extends Cr
 			"			FROM (" + 
 			"                SELECT ct.LUONG_XUAT_VTRO,vp.MA_DVI FROM QLNV_KHVONPHI_NCAU_XUAT_DTQG_VTRO_HNAM ct " + 
 			"                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi " + 
+			"                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi " +
 			"                WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t" + 
 			"                GROUP BY t.MA_DVI) a";
 

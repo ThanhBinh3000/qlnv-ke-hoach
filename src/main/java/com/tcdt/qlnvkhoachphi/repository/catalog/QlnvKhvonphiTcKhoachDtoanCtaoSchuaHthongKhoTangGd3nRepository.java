@@ -41,7 +41,7 @@ public interface QlnvKhvonphiTcKhoachDtoanCtaoSchuaHthongKhoTangGd3nRepository e
 			",ct.PHAT_SINH_N3 as PSINH_MOI_N3" + 
 			"FROM QLNV_KHVONPHI_KHOACH_CTAO_SCHUA_GD3N ct " + 
 			"			INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"			INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
+			"			INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
 
 	@Query(value = tongHop, nativeQuery = true)
 	ArrayList<QlnvKhvonphiTcKhoachDtoanCtaoSchuaHthongKhoTangGd3n> synthesis(String maDviCha, String namHienHanh);

@@ -42,7 +42,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.TRANG_THAI as trangThai ");
 
 		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
-		builder.append("INNER JOIN QLNV_DM_DONVI dv ON dv.ID = ct.DON_VI_ID ");
+		builder.append("INNER JOIN DM_DONVI dv ON dv.ID = ct.DON_VI_ID ");
 		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
@@ -121,7 +121,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		int total = 0;
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT DISTINCT ct.ID FROM CHI_TIEU_KE_HOACH_NAM ct ");
-		builder.append("INNER JOIN QLNV_DM_DONVI dv on dv.ID = ct.DON_VI_ID ");
+		builder.append("INNER JOIN DM_DONVI dv on dv.ID = ct.DON_VI_ID ");
 		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 

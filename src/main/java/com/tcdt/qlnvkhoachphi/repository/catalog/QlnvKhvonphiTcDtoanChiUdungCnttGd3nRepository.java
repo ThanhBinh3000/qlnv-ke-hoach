@@ -34,7 +34,7 @@ public interface QlnvKhvonphiTcDtoanChiUdungCnttGd3nRepository extends CrudRepos
 			",ct.TH_DTU_N3 as DTOAN_THIEN_N3_TH" + 
 			",ct.GHI_CHU FROM QLNV_KHVONPHI_CHI_UDUNG_CNTT_GD3N ct " + 
 			"			INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id  " + 
-			"			INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
+			"			INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh";
 
 
 	@Query(value = tongHop, nativeQuery = true)

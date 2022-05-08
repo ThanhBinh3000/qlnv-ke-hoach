@@ -24,7 +24,7 @@ public interface QlnvKhvonphiNxuatDtqgHnamThocGaoRepository extends CrudReposito
 			"						FROM (" + 
 			"			                SELECT * FROM QLNV_KHVONPHI_NXUAT_DTQG_HNAM_THOC_GAO ct " + 
 			"			                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"			                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t ) a";
+			"			                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t ) a";
 
 	@Query(value = tongHop, nativeQuery = true)
 	QlnvKhvonphiNxuatDtqgHnamThocGao synthesis(String maDviCha, String namHienHanh);

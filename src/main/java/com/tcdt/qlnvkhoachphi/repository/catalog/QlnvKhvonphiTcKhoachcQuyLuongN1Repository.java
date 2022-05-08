@@ -37,7 +37,7 @@ public interface QlnvKhvonphiTcKhoachcQuyLuongN1Repository extends CrudRepositor
 			"						FROM (" + 
 			"			                SELECT ct.MA_DVI,ct.BCHE_GIAO_N1,ct.DU_KIEN_SO_CCVC_CO_MAT_N1,ct.DU_KIEN_SO_HDONG_CO_MAT_N1,ct.BCHE_CHUA_SDUNG,ct.TONGQUY_LUONG_PCAP_THEO_LUONG_CCVC_HDLD,ct.TONG_SO,ct.CCVC_DU_KIEN_CO_MAT_N1_CONG,ct.CCVC_DU_KIEN_CO_MAT_N1_LUONG_THEO_BAC,ct.CCVC_DU_KIEN_CO_MAT_N1_PCAP,ct.CCVC_DU_KIEN_CO_MAT_N1_CKDG,ct.QUY_LUONG_TANG_NANG_BAC_LUONG_N1,ct.BCHE_CHUA_SDUNG_CONG,ct.BCHE_CHUA_SDUNG_LUONG,ct.BCHE_CHUA_SDUNG_CKDG,ct.QUY_LUONG_PCAP_THEO_HDLD FROM QLNV_KHVONPHI_KHOACH_QUY_TIEN_LUONG_HNAM ct " + 
 			"			                INNER JOIN QLNV_KHVONPHI vp ON vp.id = ct.qlnv_khvonphi_id " + 
-			"			                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " + 
+			"			                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha AND vp.nam_hien_hanh=:namHienHanh) t " +
 			"						GROUP BY t.MA_DVI) a";
 
 	@Query(value = tongHop, nativeQuery = true)

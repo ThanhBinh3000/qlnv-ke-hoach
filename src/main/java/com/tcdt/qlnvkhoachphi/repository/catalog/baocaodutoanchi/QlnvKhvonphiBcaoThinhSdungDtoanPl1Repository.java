@@ -68,7 +68,7 @@ public interface QlnvKhvonphiBcaoThinhSdungDtoanPl1Repository extends CrudReposi
 			"			FROM (" +
 			"                SELECT * FROM QLNV_KHVONPHI_BCAO_THINH_SDUNG_DTOAN_PL1 ct " +
 			"                INNER JOIN QLNV_KHVONPHI_BCAO vp ON vp.id = ct.QLNV_KHVONPHI_BCAO_ID " +
-			"                INNER JOIN qlnv_dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha "+
+			"                INNER JOIN dm_donvi dv ON dv.id = vp.ma_dvi WHERE dv.ma_dvi_cha=:maDviCha "+
 			"                AND:namBcao= vp.NAM_BCAO AND:maLoaiBcao= vp.MA_LOAI_BCAO AND :thangBcao = vp.THANG_BCAO ) t " +
 			"			GROUP BY t.MA_NDUNG) a";
 
