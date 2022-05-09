@@ -49,7 +49,9 @@ import java.util.stream.Stream;
 @Service
 public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
-	private static final Integer SO_NAM_CU = 3;
+	public static final int SO_NAM_LUU_KHO_THOC_MUOI = 3;
+	public static final int SO_NAM_LUU_KHO_GAO = 2;
+
 	@Autowired
 	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepository;
 
@@ -80,7 +82,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	public static final String GAO_MA_VT = "0102";
 	public static final Long MUOI_ID = 78L;
 	public static final String MUOI_MA_VT = "04";
-	private static final Integer MAX_CAP_VAT_TU = 3;
 
 	private static final List<Long> THOC_GAO_MUOI_IDS = Arrays.asList(THOC_ID, GAO_ID, MUOI_ID);
 	// TODO: FIXME: Fix cứng id đơn vị để dùng tạm, sẽ update sử dũng mã đơn vị thay vì id đơn vị
@@ -204,20 +205,37 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return results;
 	}
 
-	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList, List<String> maVatTuList, Integer namKeHoach, List<QlnvDmDonvi> list) throws Exception {
+	private List<TonKhoDauNamRes> getTonKhoDauNam(List<String> maDonViList,
+												  List<String> maVatTuList,
+												  Integer namKeHoach,
+												  List<QlnvDmDonvi> list) throws Exception {
 		List<String> namList = new ArrayList<>();
-		for (int i = 1; i <= SO_NAM_CU; i++) {
+		for (int i = 1; i <= SO_NAM_LUU_KHO_THOC_MUOI; i++) {
 			namList.add(String.valueOf(namKeHoach - i));
 		}
 		List<KtTrangthaiHienthoi> trangthaiHienthoiList = ktTrangthaiHienthoiRepository.findAllByMaDonViInAndMaVthhInAndNamIn(maDonViList, maVatTuList, namList);
 
 		List<TonKhoDauNamRes> tonKhoDauNamResList = new ArrayList<>();
 		for (KtTrangthaiHienthoi trangthaiHienthoi : trangthaiHienthoiList) {
-			QlnvDmDonvi donvi = list.stream().filter(d -> d.getMaDvi().equalsIgnoreCase(trangthaiHienthoi.getMaDonVi())).findFirst().orElse(null);
+			// Gao lay 2 nam
+			boolean ignore = GAO_MA_VT.equalsIgnoreCase(trangthaiHienthoi.getMaVthh())
+					&& (namKeHoach - Integer.parseInt(trangthaiHienthoi.getNam())) > SO_NAM_LUU_KHO_GAO;
+
+			if (ignore)
+				continue;
+
+			QlnvDmDonvi donvi = list.stream()
+					.filter(d -> d.getMaDvi().equalsIgnoreCase(trangthaiHienthoi.getMaDonVi()))
+					.findFirst().orElse(null);
+
 			if (donvi == null)
 				throw new Exception("Đơn vị không tồn tại.");
 
-			TonKhoDauNamRes res = tonKhoDauNamResList.stream().filter(t -> trangthaiHienthoi.getMaDonVi().equals(t.getMaDonVi()) && trangthaiHienthoi.getMaVthh().equals(t.getMaVatTu())).findFirst().orElse(null);
+			TonKhoDauNamRes res = tonKhoDauNamResList.stream()
+					.filter(t -> trangthaiHienthoi.getMaDonVi().equals(t.getMaDonVi())
+							&& trangthaiHienthoi.getMaVthh().equals(t.getMaVatTu()))
+					.findFirst().orElse(null);
+
 			if (res == null) {
 				res = new TonKhoDauNamRes();
 				res.setDonViId(donvi.getId());
@@ -1270,7 +1288,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		Integer nam = optional.get().getNamKeHoach();
 
 		List<Integer> namList = new ArrayList<>();
-		for (int i = 1; i <= SO_NAM_CU; i++) {
+		for (int i = 1; i <= SO_NAM_LUU_KHO_THOC_MUOI; i++) {
 			namList.add(nam - i);
 		}
 		List<VatTuNhapRes> tonKhoDauNam = new ArrayList<>();
@@ -1303,8 +1321,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			for (Integer n : namList) {
 				for (Long id : THOC_GAO_MUOI_IDS) {
 					if (vatTuIds.contains(id)) {
+						// Gao lay 2 nam
+						boolean ignore = GAO_ID.equals(id)
+								&& (nam - n) > SO_NAM_LUU_KHO_GAO;
+
+						if (ignore)
+							continue;
+
 						VatTuNhapRes res = tonKhoDauNam.stream()
-								.filter(nhap -> nhap.getNam().equals(n) && nhap.getVatTuId().equals(GAO_ID))
+								.filter(nhap -> nhap.getNam().equals(n) && nhap.getVatTuId().equals(id))
 								.findFirst().orElse(null);
 
 						if (res == null)
