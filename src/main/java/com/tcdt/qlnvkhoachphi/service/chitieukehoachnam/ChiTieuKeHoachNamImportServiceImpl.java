@@ -11,6 +11,7 @@ import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoachphi.table.catalog.QlnvDmVattu;
+import com.tcdt.qlnvkhoachphi.util.Constants;
 import com.tcdt.qlnvkhoachphi.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Cell;
@@ -354,15 +355,15 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setMaDonVi(donvi.getMaDvi());
 
             List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
-            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap1, tkdnMuoiNhap1, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
-            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap2, tkdnMuoiNhap2, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
-            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap3, tkdnMuoiNhap3, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap1, tkdnMuoiNhap1, Constants.LuongThucMuoiConst.MUOI_ID));
+            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap2, tkdnMuoiNhap2, Constants.LuongThucMuoiConst.MUOI_ID));
+            tkdnMuoi.add(new VatTuNhapRes(null, tkdnNamMuoiNhap3, tkdnMuoiNhap3, Constants.LuongThucMuoiConst.MUOI_ID));
             response.setTkdnMuoi(tkdnMuoi);
 
             List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
-            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap1, xtnMuoiNhap1, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
-            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap2, xtnMuoiNhap2, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
-            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap3, xtnMuoiNhap3, ChiTieuKeHoachNamServiceImpl.MUOI_ID));
+            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap1, xtnMuoiNhap1, Constants.LuongThucMuoiConst.MUOI_ID));
+            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap2, xtnMuoiNhap2, Constants.LuongThucMuoiConst.MUOI_ID));
+            xtnMuoi.add(new VatTuNhapRes(null, xtnNamMuoiNhap3, xtnMuoiNhap3, Constants.LuongThucMuoiConst.MUOI_ID));
             response.setXtnMuoi(xtnMuoi);
 
             responses.add(response);
@@ -446,14 +447,14 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setMaDonVi(donvi.getMaDvi());
 
             List<VatTuNhapRes> tkdnThoc = new ArrayList<>();
-            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, ChiTieuKeHoachNamServiceImpl.THOC_ID));
-            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, ChiTieuKeHoachNamServiceImpl.THOC_ID));
-            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap1, tkdnThocNhap1, Constants.LuongThucMuoiConst.THOC_ID));
+            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap2, tkdnThocNhap2, Constants.LuongThucMuoiConst.THOC_ID));
+            tkdnThoc.add(new VatTuNhapRes(null, tkdnNamThocNhap3, tkdnThocNhap3, Constants.LuongThucMuoiConst.THOC_ID));
             response.setTkdnThoc(tkdnThoc);
 
             List<VatTuNhapRes> tkdnGao = new ArrayList<>();
-            tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, ChiTieuKeHoachNamServiceImpl.GAO_ID));
-            tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, ChiTieuKeHoachNamServiceImpl.GAO_ID));
+            tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap1, tkdnGaoNhap1, Constants.LuongThucMuoiConst.GAO_ID));
+            tkdnGao.add(new VatTuNhapRes(null, tkdnNamGaoNhap2, tkdnGaoNhap2, Constants.LuongThucMuoiConst.GAO_ID));
             response.setTkdnGao(tkdnGao);
 
             response.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
@@ -465,13 +466,13 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             response.setXtnTongGao(xtnTongGao);
 
             List<VatTuNhapRes> xtnThoc = new ArrayList<>();
-            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, ChiTieuKeHoachNamServiceImpl.THOC_ID));
-            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, ChiTieuKeHoachNamServiceImpl.THOC_ID));
-            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, ChiTieuKeHoachNamServiceImpl.THOC_ID));
+            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap1, xtnThocNhap1, Constants.LuongThucMuoiConst.THOC_ID));
+            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap2, xtnThocNhap2, Constants.LuongThucMuoiConst.THOC_ID));
+            xtnThoc.add(new VatTuNhapRes(null, xtnNamThocNhap3, xtnThocNhap3, Constants.LuongThucMuoiConst.THOC_ID));
             response.setXtnThoc(xtnThoc);
             List<VatTuNhapRes> xtnGao = new ArrayList<>();
-            xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, ChiTieuKeHoachNamServiceImpl.GAO_ID));
-            xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, ChiTieuKeHoachNamServiceImpl.GAO_ID));
+            xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap1, xtnGaoNhap1, Constants.LuongThucMuoiConst.GAO_ID));
+            xtnGao.add(new VatTuNhapRes(null, xtnNamGaoNhap2, xtnGaoNhap2, Constants.LuongThucMuoiConst.GAO_ID));
             response.setXtnGao(xtnGao);
 
             response.setTkcnTongSoQuyThoc(tkcnTongSoQuyThoc);

@@ -3,6 +3,9 @@ package com.tcdt.qlnvkhoachphi.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Constants {
 	public static final String FORMAT_DATE_STR = "dd/MM/yyyy";
 	public static final String FORMAT_DATE_TIME_STR = "dd/MM/yyyy HH:mm:ss";
@@ -261,4 +264,14 @@ public class Constants {
 	public static final String DM_DVI_TINH = "DMDVT";//Danh đơn vị tính
 	public static final String DM_NOI_DUNG = "DMNDC";
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public static final class LuongThucMuoiConst {
+		public static final Long THOC_ID = 2L;
+		public static final String THOC_MA_VT = "0101";
+		public static final Long GAO_ID = 6L;
+		public static final String GAO_MA_VT = "0102";
+		public static final Long MUOI_ID = 78L;
+		public static final String MUOI_MA_VT = "04";
+		public static final List<Long> THOC_GAO_MUOI_IDS = Arrays.asList(THOC_ID, GAO_ID, MUOI_ID);
+	}
 }
