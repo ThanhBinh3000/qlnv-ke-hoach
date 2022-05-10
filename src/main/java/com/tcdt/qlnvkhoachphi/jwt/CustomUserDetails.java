@@ -63,7 +63,7 @@ public class CustomUserDetails implements UserDetails {
 		}
 	}
 
-	public long getDvql() {
+	public String getDvql() {
 		return user.getDvql();
 	}
 

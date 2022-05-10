@@ -17,7 +17,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +26,6 @@ import java.util.stream.Collectors;
 public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamRepositoryCustom {
 	@PersistenceContext
 	private EntityManager em;
-
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Override
 	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req) {
@@ -100,8 +96,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			builder.append("AND ").append("(khltm.DON_VI_ID = :donViId OR khvt.DON_VI_ID = :donViId) ");
 		}
 
-		if (req.getDvql() != null) {
-			builder.append("AND ").append("dv.ID = :dvql ");
+		if (!StringUtils.isEmpty(req.getDvql())) {
+			builder.append("AND ").append("dv.MA_DVI = :dvql ");
 		}
 
 		if (!StringUtils.isEmpty(req.getLoaiQuyetDinh())) {
@@ -114,6 +110,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (req.getNamKeHoach() != null) {
 			builder.append("AND ").append("ct.NAM_KE_HOACH = :namKeHoach ");
+		}
+
+		if (!StringUtils.isEmpty(req.getCapDvi())) {
+			builder.append("AND ").append("dv.CAP_DVI = :capDvi ");
 		}
 	}
 
@@ -160,7 +160,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			query.setParameter("loaiQuyetDinh", req.getLoaiQuyetDinh());
 		}
 
-		if (req.getDvql() != null) {
+		if (!StringUtils.isEmpty(req.getDvql())) {
 			query.setParameter("dvql", req.getDvql());
 		}
 
@@ -170,6 +170,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (req.getNamKeHoach() != null) {
 			query.setParameter("namKeHoach", req.getNamKeHoach());
+		}
+
+		if (!StringUtils.isEmpty(req.getCapDvi())) {
+			query.setParameter("capDvi", req.getCapDvi());
 		}
 	}
 }

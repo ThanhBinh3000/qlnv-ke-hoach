@@ -84,8 +84,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	public static final String MUOI_MA_VT = "04";
 
 	private static final List<Long> THOC_GAO_MUOI_IDS = Arrays.asList(THOC_ID, GAO_ID, MUOI_ID);
-	// TODO: FIXME: Fix cứng id đơn vị để dùng tạm, sẽ update sử dũng mã đơn vị thay vì id đơn vị
-	private static final Long DON_VI_ID_1 = 1L;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -132,19 +130,16 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request.");
 
-		QlnvDmDonvi donVi = qlnvDmDonviRepository.findById(DON_VI_ID_1).get();
-
 		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.DU_THAO.getId());
-		chiTieuKeHoachNam.setDonViId(DON_VI_ID_1);
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLastest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
-		chiTieuKeHoachNam.setMaDvi(donVi.getMaDvi());
-		chiTieuKeHoachNam.setCapDvi(donVi.getCapDvi());
+		chiTieuKeHoachNam.setMaDvi(userInfo.getDvql());
+		chiTieuKeHoachNam.setCapDvi(userInfo.getCapDvi());
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		Long ctkhnId = chiTieuKeHoachNam.getId();
 
@@ -700,11 +695,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		ChiTieuKeHoachNam lastest = ChiTieuKeHoachNam.builder()
 				.namKeHoach(qdGoc.getNamKeHoach())
-				.donViId(qdGoc.getDonViId())
+				.maDvi(qdGoc.getMaDvi())
+				.capDvi(qdGoc.getCapDvi())
 				.ngayKy(qdGoc.getNgayKy())
 				.ngayHieuLuc(qdGoc.getNgayHieuLuc())
 				.soQuyetDinh(qdGoc.getSoQuyetDinh())
 				.trichYeu(qdGoc.getTrichYeu())
+				.canCu(qdGoc.getCanCu())
+				.ghiChu(qdGoc.getGhiChu())
 				.qdGocId(qdGoc.getId())
 				.lastest(true)
 				.loaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue())
@@ -1246,7 +1244,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDvql(DON_VI_ID_1);
+		req.setDvql(userInfo.getDvql());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
 		return chiTieuKeHoachNamRepository.search(req);
 	}
@@ -1258,7 +1256,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDvql(DON_VI_ID_1);
+		req.setDvql(userInfo.getDvql());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req);
 	}

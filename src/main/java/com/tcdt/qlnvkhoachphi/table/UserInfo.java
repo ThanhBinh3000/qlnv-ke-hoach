@@ -3,16 +3,7 @@ package com.tcdt.qlnvkhoachphi.table;
 import java.sql.Timestamp;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 
@@ -28,7 +19,7 @@ public class UserInfo {
 	String password;
 	String fullName;
 	String status;
-	Long dvql;
+	String dvql;
 	String token;
 	String sysType;
 	Long groupId;
@@ -44,6 +35,9 @@ public class UserInfo {
 	String department;
 	long notifyViewId;
 	String groupsArr;
+
+	@Transient
+	String capDvi;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id") })
