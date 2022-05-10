@@ -1,6 +1,6 @@
 package com.tcdt.qlnvkhoachphi.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoachphi.enums.ChiTieuKeHoachNamStatus;
 import com.tcdt.qlnvkhoachphi.request.BaseRequest;
 import com.tcdt.qlnvkhoachphi.request.PaggingReq;
@@ -8,7 +8,6 @@ import com.tcdt.qlnvkhoachphi.request.search.catalog.chitieukehoachnam.SearchChi
 import com.tcdt.qlnvkhoachphi.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoachphi.util.DataUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.util.CollectionUtils;
 
@@ -29,21 +28,36 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 	@Override
 	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req) {
+		String loaiQd = req.getLoaiQuyetDinh();
+
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ct.SO_QUYET_DINH as soQD, ");
 		builder.append("ct.NGAY_KY as ngayKy, ");
 		builder.append("ct.NAM_KE_HOACH as namKeHoach, ");
 		builder.append("ct.TRICH_YEU as trichYeu, ");
 		builder.append("ct.ID as id, ");
-		builder.append("ct.TRANG_THAI as trangThai ");
+		builder.append("ct.TRANG_THAI as trangThai, ");
+		builder.append("ct.LY_DO_TU_CHOI as lyDoTuChoi ");
+
+		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
+			builder.append(", qdGoc.ID as qdGocId, ");
+			builder.append("qdGoc.SO_QUYET_DINH as soQDGoc ");
+		}
 
 		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
 		builder.append("INNER JOIN DM_DONVI dv ON dv.ID = ct.DON_VI_ID ");
+
+		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
+			builder.append("INNER JOIN CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
+		}
 		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
-		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI ");
+		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI ");
+		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
+			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
+		}
 		builder.append("ORDER BY ct.NGAY_KY DESC");
 
 		Query query = em.createNativeQuery(builder.toString(), Tuple.class);
@@ -60,7 +74,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 				.stream()
 				.map(res -> {
 					Tuple item = (Tuple) res;
-					return ChiTieuKeHoachNamRes.builder()
+					ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = ChiTieuKeHoachNamRes.builder()
 							.id(item.get("id", BigDecimal.class).longValue())
 							.soQuyetDinh(item.get("soQD", String.class))
 							.ngayKy(DataUtils.convertToLocalDate(item.get("ngayKy", Timestamp.class)))
@@ -68,7 +82,14 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.trichYeu(item.get("trichYeu", String.class))
 							.trangThai(item.get("trangThai", String.class))
 							.tenTrangThai(ChiTieuKeHoachNamStatus.getTenById(item.get("trangThai", String.class)))
+							.lyDoTuChoi(item.get("lyDoTuChoi", String.class))
 							.build();
+
+					if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
+						chiTieuKeHoachNamRes.setQdGocId(item.get("qdGocId", BigDecimal.class).longValue());
+						chiTieuKeHoachNamRes.setSoQdGoc(item.get("soQDGoc", String.class));
+					}
+					return chiTieuKeHoachNamRes;
 				}).collect(Collectors.toList());
 
 		int page = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getPage).orElse(BaseRequest.DEFAULT_PAGE);

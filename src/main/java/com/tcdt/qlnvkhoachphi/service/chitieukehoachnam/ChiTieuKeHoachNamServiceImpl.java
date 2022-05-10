@@ -117,8 +117,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		this.validateCreateCtkhnRequest(req.getQdDc());
 		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId());
 		ChiTieuKeHoachNamRes qd = this.detailQd(qdGocId);
-		this.setDataTruocSauDieuChinh(qdDc, qd);
 
+		this.setData(qdDc, qd);
 		return qdDc;
 	}
 
@@ -262,7 +262,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		this.validateCreateCtkhnRequest(req.getQdDc());
 		ChiTieuKeHoachNamRes qdDc = this.update(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue());
 		ChiTieuKeHoachNamRes qd = this.detailQd(qdDc.getQdGocId());
-		this.setDataTruocSauDieuChinh(qdDc, qd);
+
+		this.setData(qdDc, qd);
 		return qdDc;
 	}
 
@@ -526,7 +527,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
-		this.setDataTruocSauDieuChinh(qdDc, qd);
+		this.setData(qdDc, qd);
 		return qdDc;
 	}
 
@@ -795,6 +796,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
 		response.setCanCu(chiTieuKeHoachNam.getCanCu());
+		response.setLyDoTuChoi(chiTieuKeHoachNam.getLyDoTuChoi());
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
@@ -1258,6 +1260,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		req.setDvql(userInfo.getDvql());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
+		Page<ChiTieuKeHoachNamRes> responses = chiTieuKeHoachNamRepository.search(req);
 		return chiTieuKeHoachNamRepository.search(req);
 	}
 
@@ -1380,6 +1383,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 
+	}
+
+	private void setData(ChiTieuKeHoachNamRes qdDc, ChiTieuKeHoachNamRes qd) {
+		qdDc.setQdGocId(qd.getId());
+		qdDc.setSoQdGoc(qd.getSoQuyetDinh());
+		this.setDataTruocSauDieuChinh(qdDc, qd);
 	}
 
 	private void setDataTruocSauDieuChinh(ChiTieuKeHoachNamRes qdDc, ChiTieuKeHoachNamRes qd) {
