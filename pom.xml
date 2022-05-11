@@ -10,16 +10,16 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tcdt</groupId>
-	<artifactId>qlnv-khoachphi</artifactId>
+	<artifactId>qlnv-khoach</artifactId>
 	<version>0.0.1</version>
 	<!-- <packaging>war</packaging> -->
-	<name>qlnv-khoachphi</name>
-	<description>qlnv-khoachphi project for Spring Boot</description>
+	<name>qlnv-khoach</name>
+	<description>qlnv-khoach project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
 		<jjwt.version>0.10.6</jjwt.version>
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
-		<start-class>com.tcdt.qlnvkhoachphi.QlnvKHoachPhiApplication</start-class>
+		<start-class>com.tcdt.qlnvkhoach.QlnvKHoachApplication</start-class>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->

@@ -18,7 +18,7 @@
 
 		<listeners>
 			<listener>
-				<class>com.tcdt.qlnvkhoachphi.config.CacheLogger</class>
+				<class>com.tcdt.qlnvkhoach.config.CacheLogger</class>
 				<event-firing-mode>ASYNCHRONOUS</event-firing-mode>
 				<event-ordering-mode>UNORDERED</event-ordering-mode>
 				<events-to-fire-on>CREATED</events-to-fire-on>
@@ -36,12 +36,12 @@
 
 	<cache alias="dmDonviCache" uses-template="default">
 		<key-type>java.lang.String</key-type>
-		<value-type>com.tcdt.qlnvkhoachphi.entities.catalog.QlnvDmDonvi</value-type>
+		<value-type>com.tcdt.qlnvkhoach.entities.catalog.QlnvDmDonvi</value-type>
 	</cache>
 
 	<cache alias="dmKhoachVonPhiCache" uses-template="default">
 		<key-type>java.lang.String</key-type>
-		<value-type>com.tcdt.qlnvkhoachphi.entities.catalog.QlnvDmKhoachVonPhi</value-type>
+		<value-type>com.tcdt.qlnvkhoach.entities.catalog.QlnvDmKhoachVonPhi</value-type>
 	</cache>
 
 </config>
