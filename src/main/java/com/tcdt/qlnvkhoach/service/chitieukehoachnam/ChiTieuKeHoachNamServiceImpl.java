@@ -482,7 +482,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tìm thấy dữ liệu.");
 
 		if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(item.getTrangThai())) {
-			throw new Exception("Không thể xóa quyết định đã duyệt");
+			throw new Exception("Không thể xóa quyết định đã ban hành");
 		}
 
 		return this.delete(item);
@@ -500,7 +500,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tìm thấy dữ liệu.");
 
 		if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(item.getTrangThai())) {
-			throw new Exception("Không thể xóa quyết định điều chỉnh đã duyệt");
+			throw new Exception("Không thể xóa quyết định điều chỉnh đã ban hành");
 		}
 
 		return this.delete(item);
@@ -520,11 +520,18 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Override
 	public ChiTieuKeHoachNamRes detailQd(Long id) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
 		return this.detail(id);
 	}
 
 	@Override
 	public ChiTieuKeHoachNamRes detailQdDc(Long id) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
+
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(qdDc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue())
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
@@ -754,29 +761,36 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	public boolean updateStatus(StatusReq req, ChiTieuKeHoachNam chiTieuKeHoachNam, UserInfo userInfo) throws Exception {
 		String trangThai = chiTieuKeHoachNam.getTrangThai();
-		if (ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId().equals(req.getTrangThai())) {
+		if (ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(req.getTrangThai())) {
 			if (!ChiTieuKeHoachNamStatus.DU_THAO.getId().equals(trangThai))
 				return false;
 
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId());
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId());
 			chiTieuKeHoachNam.setNguoiGuiDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayGuiDuyet(LocalDate.now());
 
+		} else if (ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
+				return false;
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId());
+			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
+			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
 		} else if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(req.getTrangThai())) {
 			if (!ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId().equals(trangThai))
 				return false;
+
 			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.BAN_HANH.getId());
 			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
 		} else if (ChiTieuKeHoachNamStatus.TU_CHOI.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId().equals(trangThai))
+			if (!ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
 				return false;
 
 			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.TU_CHOI.getId());
 			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
 			chiTieuKeHoachNam.setLyDoTuChoi(req.getLyDoTuChoi());
-		} else {
+		}  else {
 			throw new Exception("Bad request.");
 		}
 
@@ -795,6 +809,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setNgayKy(chiTieuKeHoachNam.getNgayKy());
 		response.setTrangThai(chiTieuKeHoachNam.getTrangThai());
 		response.setTenTrangThai(ChiTieuKeHoachNamStatus.getTenById(chiTieuKeHoachNam.getTrangThai()));
+		response.setTrangThaiDuyet(ChiTieuKeHoachNamStatus.getTrangThaiDuyetById(chiTieuKeHoachNam.getTrangThai()));
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());

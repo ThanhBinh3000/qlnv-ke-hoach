@@ -82,6 +82,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.trichYeu(item.get("trichYeu", String.class))
 							.trangThai(item.get("trangThai", String.class))
 							.tenTrangThai(ChiTieuKeHoachNamStatus.getTenById(item.get("trangThai", String.class)))
+							.trangThaiDuyet(ChiTieuKeHoachNamStatus.getTrangThaiDuyetById(item.get("trangThai", String.class)))
 							.lyDoTuChoi(item.get("lyDoTuChoi", String.class))
 							.build();
 

@@ -132,7 +132,7 @@ public class ChiTieuKeHoachNamExportServiceImpl implements ChiTieuKeHoachNamExpo
 				ExcelUtils.createCell(row, 2, LocalDateTimeUtils.localDateToString(item.getNgayKy()), style, sheet);
 				ExcelUtils.createCell(row, 3, item.getNamKeHoach(), style, sheet);
 				ExcelUtils.createCell(row, 4, item.getTrichYeu(), style, sheet);
-				ExcelUtils.createCell(row, 5, ChiTieuKeHoachNamStatus.getTenById(item.getTrangThai()), style, sheet);
+				ExcelUtils.createCell(row, 5, ChiTieuKeHoachNamStatus.getTrangThaiDuyetById(item.getTrangThai()), style, sheet);
 				startRowIndex++;
 			}
 

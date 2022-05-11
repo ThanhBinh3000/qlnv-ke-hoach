@@ -1,17 +1,20 @@
 package com.tcdt.qlnvkhoach.enums;
 
 public enum ChiTieuKeHoachNamStatus {
-	DU_THAO("00", "Dự Thảo"),
-	LANH_DAO_DUYET("01", "Lãnh Đạo Duyệt"),
-	BAN_HANH("02", "Ban Hành"),
-	TU_CHOI("03", "Từ Chối");
+	DU_THAO("00", "Dự Thảo", "Dự Thảo"),
+	LANH_DAO_DUYET("01", "Lãnh Đạo Duyệt", "Lãnh Đạo Duyệt"),
+	BAN_HANH("02", "Ban Hành", "Ban Hành"),
+	TU_CHOI("03", "Từ Chối", "Từ Chối"),
+	DU_THAO_TRINH_DUYET("04", "Dự Thảo", "Trình Duyệt");
 
 	private final String id;
 	private final String ten;
+	private final String trangThaiDuyet;
 
-	ChiTieuKeHoachNamStatus(String id, String ten) {
+	ChiTieuKeHoachNamStatus(String id, String ten, String trangThaiDuyet) {
 		this.id = id;
 		this.ten = ten;
+		this.trangThaiDuyet = trangThaiDuyet;
 	}
 
 	public String getId() {
@@ -22,10 +25,23 @@ public enum ChiTieuKeHoachNamStatus {
 		return ten;
 	}
 
+	public String getTrangThaiDuyet() {
+		return trangThaiDuyet;
+	}
+
 	public static String getTenById(String id) {
 		for (ChiTieuKeHoachNamStatus status : ChiTieuKeHoachNamStatus.values()) {
 			if (status.getId().equals(id))
 				return status.getTen();
+		}
+
+		return null;
+	}
+
+	public static String getTrangThaiDuyetById(String id) {
+		for (ChiTieuKeHoachNamStatus status : ChiTieuKeHoachNamStatus.values()) {
+			if (status.getId().equals(id))
+				return status.getTrangThaiDuyet();
 		}
 
 		return null;
