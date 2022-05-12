@@ -24,4 +24,11 @@ public class SearchChiTieuKeHoachNamReq extends BaseRequest {
 	private String tenDonVi;
 	private String loaiQuyetDinh;
 	private Integer namKeHoach;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate ngayKyTuNgayCt;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate ngayKyDenNgayCt;
+	private String trichYeuCt;
+	private String soCt;
 }

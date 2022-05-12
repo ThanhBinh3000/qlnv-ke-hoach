@@ -37,6 +37,16 @@ public class UserInfo {
 	String groupsArr;
 
 	@Transient
+	String maQd;
+	@Transient
+	String maTr;
+	@Transient
+	String maKhqlh;
+	@Transient
+	String maKtbq;
+	@Transient
+	String maTckt;
+	@Transient
 	String capDvi;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {

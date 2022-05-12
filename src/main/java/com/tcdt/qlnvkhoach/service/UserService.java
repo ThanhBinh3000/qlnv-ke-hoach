@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoach.service;
 
+import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,15 +29,22 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	QlnvDmService qlnvDmService;
 
+	@Autowired
+	QlnvDmDonviRepository qlnvDmDonviRepository;
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserInfo user = userRepository.findByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException(username);
 		}
-		// TODO:cache thong tin don vi cua user dang nhap
-//		QlnvDmDonvi abc = donViService.getDonViById(user.getDvql());
-//		System.out.println(abc);
+		QlnvDmDonvi dvi = qlnvDmDonviRepository.findByMaDvi(user.getDvql());
+		user.setMaQd(dvi.getMaQd());
+		user.setMaTr(dvi.getMaTr());
+		user.setMaKhqlh(dvi.getMaKhqlh());
+		user.setMaKtbq(dvi.getMaKtbq());
+		user.setMaTckt(dvi.getMaTckt());
+		user.setCapDvi(dvi.getCapDvi());
 		return new CustomUserDetails(user);
 	}
 

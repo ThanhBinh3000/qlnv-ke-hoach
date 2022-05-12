@@ -1264,8 +1264,13 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		req.setDvql(userInfo.getDvql());
+		String capDvi = userInfo.getCapDvi();
+		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)){
+			req.setDvql(userInfo.getDvql());
+		}
+		req.setCapDvi(capDvi);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
+
 		return chiTieuKeHoachNamRepository.search(req);
 	}
 
@@ -1276,6 +1281,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
+		String capDvi = userInfo.getCapDvi();
+		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)){
+			req.setDvql(userInfo.getDvql());
+		}
+		req.setCapDvi(capDvi);
 		req.setDvql(userInfo.getDvql());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req);
