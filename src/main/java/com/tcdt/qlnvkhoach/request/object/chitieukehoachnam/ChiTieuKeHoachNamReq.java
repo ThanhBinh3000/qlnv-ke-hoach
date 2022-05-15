@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ChiTieuKeHoachNamReq {
 	@ApiModelProperty(notes = "Bắt buộc nhập đối với update")
 	private Long id;
-	@NotNull(message = "Không được để trống")
+	@NotBlank(message = "Số quyết định Không được để trống")
 	@Size(max = 20, message = "Số quyết định không được vượt quá 20 ký tự.")
 	private String soQuyetDinh;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -26,12 +27,13 @@ public class ChiTieuKeHoachNamReq {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayHieuLuc;
 
-	@NotNull(message = "Không được để trống")
+	@NotNull(message = "Năm kế hoạch không được để trống")
 	private Integer namKeHoach;
+
+	@NotBlank(message = "Trích yếu Không được để trống")
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;
 
-	@NotNull(message = "Không được để trống")
 	private String ghiChu;
 
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
@@ -39,5 +41,6 @@ public class ChiTieuKeHoachNamReq {
 	private List<KeHoachNhapVatTuThietBiReq> khVatTu = new ArrayList<>();
 	private List<FileDinhKemReq> fileDinhKemReqs = new ArrayList<>();
 
+	@NotEmpty(message = " Căn cứ không được để trống")
 	private List<FileDinhKemReq> canCus = new ArrayList<>();
 }

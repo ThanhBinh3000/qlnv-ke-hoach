@@ -1191,15 +1191,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private void validateCreateCtkhnRequest(ChiTieuKeHoachNamReq req) throws Exception {
-		String ghiChu = Optional.ofNullable(req.getGhiChu()).orElse("").trim();
-		String soQd = Optional.ofNullable(req.getSoQuyetDinh()).orElse("").trim();
-		if (StringUtils.isEmpty(ghiChu)) {
-			throw new Exception("Ghi chú không được để trống.");
-		}
-
-		if (StringUtils.isEmpty(soQd)) {
-			throw new Exception("Số quyết định không được để trống.");
-		}
 		Set<Long> donViIdSet = new HashSet<>();
 
 		List<String> maVatTuLtm = new ArrayList<>();
