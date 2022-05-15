@@ -580,6 +580,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId(), Collections.singleton(ChiTieuKeHoachNam.TABLE_NAME)));
 
+		if (ChiTieuKeHoachEnum.QD.getValue().equals(ctkhn.getLoaiQuyetDinh())) {
+			ctkhn.setCanCus(fileDinhKemService.search(ctkhn.getId(), Collections.singleton(ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU)));
+		}
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
 		addEmptyDataToExport(response);
 		return response;
