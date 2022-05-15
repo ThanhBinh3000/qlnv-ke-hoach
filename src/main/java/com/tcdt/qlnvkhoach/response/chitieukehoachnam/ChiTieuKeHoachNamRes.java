@@ -40,11 +40,11 @@ public class ChiTieuKeHoachNamRes {
 	private Long qdGocId;
 	private String soQdGoc;
 	private String ghiChu;
-	private String canCu;
 
 	private List<KeHoachLuongThucDuTruRes> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruRes> khMuoiDuTru = new ArrayList<>();
 	private List<KeHoachVatTuRes> khVatTu = new ArrayList<>();
 
 	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+	private List<FileDinhKemChung> canCus = new ArrayList<>();
 }

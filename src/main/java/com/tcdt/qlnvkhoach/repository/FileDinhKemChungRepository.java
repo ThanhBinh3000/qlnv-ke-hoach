@@ -7,12 +7,13 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface FileDinhKemChungRepository extends CrudRepository<FileDinhKemChung, Long> {
 
-	List<FileDinhKemChung> findByDataIdAndDataType(Long dataId, String dataType);
+	List<FileDinhKemChung> findByDataIdAndDataTypeIn(Long dataId, Collection<String> dataTypes);
 
 	@Transactional
 	@Modifying
@@ -21,5 +22,5 @@ public interface FileDinhKemChungRepository extends CrudRepository<FileDinhKemCh
 
 	@Transactional
 	@Modifying
-	int deleteByDataIdAndDataType(Long dataId, String dataType);
+	int deleteByDataIdAndDataTypeIn(Long dataId, Collection<String> dataTypes);
 }

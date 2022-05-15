@@ -23,7 +23,7 @@ public class FileDinhKemServiceImpl implements FileDinhKemService {
                                                       Long dataId,
                                                       String dataType) {
 
-        fileDinhKemChungRepository.deleteByDataIdAndDataType(dataId, dataType);
+        fileDinhKemChungRepository.deleteByDataIdAndDataTypeIn(dataId, Collections.singleton(dataType));
 
         if (CollectionUtils.isEmpty(fileDinhKemReqs))
             return Collections.emptyList();
@@ -42,12 +42,17 @@ public class FileDinhKemServiceImpl implements FileDinhKemService {
     }
 
     @Override
-    public List<FileDinhKemChung> search(Long dataId, String dataType) {
-        return fileDinhKemChungRepository.findByDataIdAndDataType(dataId, dataType);
+    public List<FileDinhKemChung> search(Long dataId, Collection<String> dataTypes) {
+        return fileDinhKemChungRepository.findByDataIdAndDataTypeIn(dataId, dataTypes);
     }
 
     @Override
-    public void delete(Long dataId, String dataType) {
-        fileDinhKemChungRepository.deleteByDataIdAndDataType(dataId, dataType);
+    public void delete(Long dataId, Collection<String> dataTypes) {
+        fileDinhKemChungRepository.deleteByDataIdAndDataTypeIn(dataId, dataTypes);
+    }
+
+    @Override
+    public void saveFileDinhKems(Collection<FileDinhKemChung> fileDinhKemChungs) {
+        fileDinhKemChungRepository.saveAll(fileDinhKemChungs);
     }
 }

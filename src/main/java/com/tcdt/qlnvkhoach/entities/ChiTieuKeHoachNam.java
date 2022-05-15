@@ -22,6 +22,8 @@ import java.util.List;
 public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 6093365068005372524L;
 	public static final String TABLE_NAME = "CHI_TIEU_KE_HOACH_NAM";
+	public static final String CAN_CU = "CAN_CU";
+	public static final String FILE_DINH_KEM_DATA_TYPE_CAN_CU = String.format("%s_%s",TABLE_NAME, CAN_CU);
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHI_TIEU_KE_HOACH_NAM_SEQ")
@@ -44,7 +46,6 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private Long qdGocId;
 	private String capDvi;
 	private String maDvi;
-	private String canCu;
 
 	@Lob
 	private String ghiChu;
@@ -59,4 +60,7 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 
 	@Transient
 	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+
+	@Transient
+	private List<FileDinhKemChung> canCus = new ArrayList<>();
 }

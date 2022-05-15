@@ -150,9 +150,6 @@ public class Constants {
 		public static String ID = "id";
 	}
 
-
-
-
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static final class ChiTieuKeHoachNamExport {
 		public static final String SHEET_KE_HOACH_LUONG_THUC_DTNN = "Kế hoạch lương thực DTNN";

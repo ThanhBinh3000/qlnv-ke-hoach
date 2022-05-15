@@ -52,6 +52,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	public static final int SO_NAM_LUU_KHO_THOC_MUOI = 3;
 	public static final int SO_NAM_LUU_KHO_GAO = 2;
 
+
 	@Autowired
 	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepository;
 
@@ -174,6 +175,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		chiTieuKeHoachNam.setFileDinhKems(fileDinhKems);
+
+		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
+		chiTieuKeHoachNam.setCanCus(canCus);
 		return this.buildDetailResponse(chiTieuKeHoachNam);
 	}
 
@@ -349,6 +353,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		ctkhn.setFileDinhKems(fileDinhKems);
+
+		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
+		ctkhn.setCanCus(canCus);
 		return this.buildDetailResponse(ctkhn);
 	}
 
@@ -514,7 +521,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<KeHoachVatTu> keHoachVatTuList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		keHoachVatTuRepository.deleteAll(keHoachVatTuList);
 		chiTieuKeHoachNamRepository.delete(chiTieuKeHoachNam);
-		fileDinhKemService.delete(chiTieuKeHoachNam.getId(), ChiTieuKeHoachNam.TABLE_NAME);
+		fileDinhKemService.delete(chiTieuKeHoachNam.getId(), Lists.newArrayList(ChiTieuKeHoachNam.TABLE_NAME, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU));
 		return true;
 	}
 
@@ -567,7 +574,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		ctkhn.setKhVatTuList(keHoachVatTus);
 
-		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId(), ChiTieuKeHoachNam.TABLE_NAME));
+		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId(), Collections.singleton(ChiTieuKeHoachNam.TABLE_NAME)));
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn);
 		addEmptyDataToExport(response);
 		return response;
@@ -712,7 +719,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.ngayHieuLuc(qdGoc.getNgayHieuLuc())
 				.soQuyetDinh(qdGoc.getSoQuyetDinh())
 				.trichYeu(qdGoc.getTrichYeu())
-				.canCu(qdGoc.getCanCu())
 				.ghiChu(qdGoc.getGhiChu())
 				.qdGocId(qdGoc.getId())
 				.lastest(true)
@@ -743,6 +749,16 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			cloneKh.setCtkhnId(lastest.getId());
 			keHoachVatTuRepository.save(cloneKh);
 		}
+
+		// file dinh kem, can cu
+		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.search(qdGoc.getId(), Lists.newArrayList(ChiTieuKeHoachNam.TABLE_NAME, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU));
+		for (FileDinhKemChung fileDinhKemChung : fileDinhKems) {
+			FileDinhKemChung cloneFdk = new FileDinhKemChung();
+			BeanUtils.copyProperties(fileDinhKemChung, cloneFdk, "id", "dataId");
+			cloneFdk.setDataId(lastest.getId());
+			fileDinhKemService.saveFileDinhKems(Collections.singletonList(cloneFdk));
+		}
+
 	}
 	private List<KeHoachLuongThucMuoi> retrieveKhltm(ChiTieuKeHoachNam chiTieuKeHoachNam) {
 		List<KeHoachLuongThucMuoi> khltmList = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
@@ -813,7 +829,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
-		response.setCanCu(chiTieuKeHoachNam.getCanCu());
+		response.setCanCus(chiTieuKeHoachNam.getCanCus());
 		response.setLyDoTuChoi(chiTieuKeHoachNam.getLyDoTuChoi());
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 
