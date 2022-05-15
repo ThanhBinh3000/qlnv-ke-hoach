@@ -13,4 +13,6 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
     List<ChiTieuKeHoachNam> findAllByLoaiQuyetDinh(String loaiQuyetDinh);
 
     ChiTieuKeHoachNam findByIdAndLoaiQuyetDinh(Long id, String loaiQuyetDinh);
+
+    ChiTieuKeHoachNam findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLastestIsTrue(String id, String loaiQuyetDinh);
 }

@@ -57,7 +57,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
 		}
-		builder.append("ORDER BY ct.NGAY_KY DESC");
+		builder.append("ORDER BY ct.NAM_KE_HOACH DESC");
 
 		Query query = em.createNativeQuery(builder.toString(), Tuple.class);
 

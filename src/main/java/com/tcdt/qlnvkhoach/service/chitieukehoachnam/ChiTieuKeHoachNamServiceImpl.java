@@ -80,7 +80,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
-		ChiTieuKeHoachNam exist = this.existCtkhn(req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue());
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), req.getSoQuyetDinh());
 		if (exist != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -102,7 +102,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue());
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), req.getQdDc().getSoQuyetDinh());
 		if (exist != null)
 			throw new Exception("Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -283,7 +283,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ChiTieuKeHoachNam ctkhn = optional.get();
 		Long ctkhnId = ctkhn.getId();
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(req.getNamKeHoach(), loaiQd);
+		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh());
 		if (exist != null && !exist.getId().equals(ctkhnId))
 			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm không tồn tại"
 					: "Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
@@ -364,7 +364,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		KeHoachLuongThucMuoi keHoachLuongThucMuoi = new KeHoachLuongThucMuoi();
 		keHoachLuongThucMuoi.setTrangThai(Constants.MOI_TAO);
-		if (id != null) {
+		if (id != null && id > 0) {
 			keHoachLuongThucMuoi = mapKhltm.get(id);
 			if (keHoachLuongThucMuoi == null)
 				throw new Exception("Kế hoạch lương thực không tồn tại.");
@@ -393,7 +393,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			Long id = vatTuNhapReq.getId();
 			KeHoachXuatLuongThucMuoi khxltm = new KeHoachXuatLuongThucMuoi();
 
-			if (id != null) {
+			if (id != null && id > 0) {
 				khxltm = mapKhxltm.get(id);
 				if (khxltm == null)
 					throw new Exception("Kế hoạch xuất lương thực muối không tồn tại.");
@@ -419,7 +419,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		KeHoachLuongThucMuoi keHoachLuongThucMuoi = new KeHoachLuongThucMuoi();
 		keHoachLuongThucMuoi.setTrangThai(Constants.MOI_TAO);
 		Long id = khMuoiReq.getId();
-		if (id != null) {
+		if (id != null && id > 0) {
 			keHoachLuongThucMuoi = mapKhltm.get(id);
 			if (keHoachLuongThucMuoi == null)
 				throw new Exception("Kế hoạch muối không tồn tại.");
@@ -450,7 +450,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			KeHoachVatTu keHoachVatTu = new KeHoachVatTu();
 			keHoachVatTu.setTrangThai(Constants.MOI_TAO);
 			Long id = vatTuReq.getId();
-			if (id != null) {
+			if (id != null && id > 0) {
 				keHoachVatTu = mapKhvt.get(id);
 				if (keHoachVatTu == null)
 					throw new Exception("Kế hoạch nhập vật tư thiết bị không tồn tại.");
@@ -490,6 +490,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định đã ban hành");
+		} else if (ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
+			throw new Exception("Không thể xóa quyết định trình duyệt");
 		}
 
 		return this.delete(item);
@@ -507,7 +509,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tìm thấy dữ liệu.");
 
 		if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(item.getTrangThai())) {
-			throw new Exception("Không thể xóa quyết định điều chỉnh đã ban hành");
+			throw new Exception("Không thể xóa quyết định đã ban hành");
+		} else if (ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
+			throw new Exception("Không thể xóa quyết định trình duyệt");
 		}
 
 		return this.delete(item);
@@ -1191,8 +1195,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private void validateCreateCtkhnRequest(ChiTieuKeHoachNamReq req) throws Exception {
-		Set<Long> donViIdSet = new HashSet<>();
 
+		Set<Long> donViIdSet = new HashSet<>();
 		List<String> maVatTuLtm = new ArrayList<>();
 
 		maVatTuLtm.add(Constants.LuongThucMuoiConst.MUOI_MA_VT);
@@ -1412,7 +1416,13 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return response;
 	}
 
-	private ChiTieuKeHoachNam existCtkhn(Integer namKeHoach, String loaiQd) {
+	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update, Integer namKeHoach, String loaiQd, String soQd) throws Exception {
+		if (update == null || !update.getSoQuyetDinh().equalsIgnoreCase(soQd)) {
+			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLastestIsTrue(soQd, loaiQd);
+			if (exist != null)
+				throw new Exception("Số quyết định " + soQd + " đã tồn tại");
+		}
+
 		return chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
 				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
