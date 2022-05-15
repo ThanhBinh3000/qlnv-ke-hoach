@@ -41,6 +41,6 @@ public class ChiTieuKeHoachNamReq {
 	private List<KeHoachNhapVatTuThietBiReq> khVatTu = new ArrayList<>();
 	private List<FileDinhKemReq> fileDinhKemReqs = new ArrayList<>();
 
-	@NotEmpty(message = " Căn cứ không được để trống")
+	// Chi tieu ke hoach nam
 	private List<FileDinhKemReq> canCus = new ArrayList<>();
 }
