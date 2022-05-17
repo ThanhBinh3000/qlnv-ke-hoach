@@ -5,7 +5,6 @@ import com.tcdt.qlnvkhoach.entities.*;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcLtVt;
 import com.tcdt.qlnvkhoach.enums.*;
-import com.tcdt.qlnvkhoach.repository.ChiTieuKeHoachNamRepository;
 import com.tcdt.qlnvkhoach.repository.KeHoachVatTuRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcLtVtRespository;
@@ -52,9 +51,6 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
     private FileDinhKemService fileDinhKemService;
 
     @Autowired
-    private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepository;
-
-    @Autowired
     private ChiTieuKeHoachNamService chiTieuKeHoachNamService;
 
     @Autowired
@@ -65,7 +61,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         List<DxDcKeHoachNam> list = dxDcKeHoachNamRepository.findAll();
         List<DxDcKeHoachNamRes> responses = new ArrayList<>();
         for (DxDcKeHoachNam dxDc : list) {
-            ChiTieuKeHoachNam chiTieuKeHoachNam = this.getChiTieuKeHoachNam(dxDc.getKeHoachNamId());
+            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuKeHoachNam(dxDc.getKeHoachNamId());
             this.retrieveDataChiTieuKeHoachNam(chiTieuKeHoachNam);
             dxDc.setKeHoachNam(chiTieuKeHoachNam);
             dxDc.setDxDcLtVtList(dxDcLtVtRespository.findByDxdckhnId(dxDc.getId()));
@@ -82,7 +78,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (userInfo == null)
             throw new Exception("Bad request");
 
-        ChiTieuKeHoachNam chiTieuKeHoachNam = this.getChiTieuKeHoachNam(req.getKeHoachNamId());
+        ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuKeHoachNam(req.getKeHoachNamId());
         if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(chiTieuKeHoachNam.getTrangThai())) {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
@@ -129,7 +125,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         DxDcKeHoachNam dxDc = optional.get();
 
-        ChiTieuKeHoachNam ctkhn = this.getChiTieuKeHoachNam(req.getKeHoachNamId());
+        ChiTieuKeHoachNam ctkhn = chiTieuKeHoachNamService.getChiTieuKeHoachNam(req.getKeHoachNamId());
         if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(ctkhn.getTrangThai())) {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
@@ -218,7 +214,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     private DxDcKeHoachNamRes buildResponse(DxDcKeHoachNam dxDc) throws Exception {
 
-        ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam());
+        ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam(), dxDc.getKeHoachNam().getNamKeHoach());
 
         DxDcKeHoachNamRes response = new DxDcKeHoachNamRes();
         BeanUtils.copyProperties(dxDc, response);
@@ -436,7 +432,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         DxDcKeHoachNam dxDc = optional.get();
 
-        ChiTieuKeHoachNam ctkhn = this.getChiTieuKeHoachNam(dxDc.getKeHoachNamId());
+        ChiTieuKeHoachNam ctkhn = chiTieuKeHoachNamService.getChiTieuKeHoachNam(dxDc.getKeHoachNamId());
         if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(ctkhn.getTrangThai())) {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
@@ -496,13 +492,5 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         dxDcKeHoachNamRepository.save(dxDc);
         return true;
-    }
-
-    private ChiTieuKeHoachNam getChiTieuKeHoachNam(Long id) throws Exception {
-        Optional<ChiTieuKeHoachNam> optionalKhn = chiTieuKeHoachNamRepository.findById(id);
-        if (!optionalKhn.isPresent())
-            throw new Exception("Không tồn tại chỉ tiêu kế hoạch năm.");
-
-        return optionalKhn.get();
     }
 }
