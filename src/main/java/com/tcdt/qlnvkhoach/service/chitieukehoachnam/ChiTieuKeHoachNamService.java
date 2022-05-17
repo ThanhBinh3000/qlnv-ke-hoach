@@ -1,6 +1,8 @@
 package com.tcdt.qlnvkhoach.service.chitieukehoachnam;
 
 
+import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
+import com.tcdt.qlnvkhoach.entities.KeHoachLuongThucMuoi;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -42,7 +44,11 @@ public interface ChiTieuKeHoachNamService {
 
 	boolean updateStatusQdDc(StatusReq req) throws Exception;
 
-    void addVatTuThietBiChaRes(VatTuThietBiRes vatTuRes, Map<String, QlnvDmVattu> mapMaVatTu, Map<String, Set<VatTuThietBiRes>> mapNhomVatTu);
+	List<KeHoachLuongThucMuoi> retrieveKhltm(ChiTieuKeHoachNam chiTieuKeHoachNam);
+
+	ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam) throws Exception;
+
+	void addVatTuThietBiChaRes(VatTuThietBiRes vatTuRes, Map<String, QlnvDmVattu> mapMaVatTu, Map<String, Set<VatTuThietBiRes>> mapNhomVatTu);
 
 	List<VatTuThietBiRes> tinhTongVatTuThietBiCha(Map<String, Set<VatTuThietBiRes>> mapNhomVatTu);
 

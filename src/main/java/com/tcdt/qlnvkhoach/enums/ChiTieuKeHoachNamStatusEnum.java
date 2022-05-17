@@ -1,6 +1,6 @@
 package com.tcdt.qlnvkhoach.enums;
 
-public enum ChiTieuKeHoachNamStatus {
+public enum ChiTieuKeHoachNamStatusEnum {
 	DU_THAO("00", "Dự Thảo", "Dự Thảo"),
 	LANH_DAO_DUYET("01", "Lãnh Đạo Duyệt", "Lãnh Đạo Duyệt"),
 	BAN_HANH("02", "Ban Hành", "Ban Hành"),
@@ -11,7 +11,7 @@ public enum ChiTieuKeHoachNamStatus {
 	private final String ten;
 	private final String trangThaiDuyet;
 
-	ChiTieuKeHoachNamStatus(String id, String ten, String trangThaiDuyet) {
+	ChiTieuKeHoachNamStatusEnum(String id, String ten, String trangThaiDuyet) {
 		this.id = id;
 		this.ten = ten;
 		this.trangThaiDuyet = trangThaiDuyet;
@@ -30,7 +30,7 @@ public enum ChiTieuKeHoachNamStatus {
 	}
 
 	public static String getTenById(String id) {
-		for (ChiTieuKeHoachNamStatus status : ChiTieuKeHoachNamStatus.values()) {
+		for (ChiTieuKeHoachNamStatusEnum status : ChiTieuKeHoachNamStatusEnum.values()) {
 			if (status.getId().equals(id))
 				return status.getTen();
 		}
@@ -39,7 +39,7 @@ public enum ChiTieuKeHoachNamStatus {
 	}
 
 	public static String getTrangThaiDuyetById(String id) {
-		for (ChiTieuKeHoachNamStatus status : ChiTieuKeHoachNamStatus.values()) {
+		for (ChiTieuKeHoachNamStatusEnum status : ChiTieuKeHoachNamStatusEnum.values()) {
 			if (status.getId().equals(id))
 				return status.getTrangThaiDuyet();
 		}

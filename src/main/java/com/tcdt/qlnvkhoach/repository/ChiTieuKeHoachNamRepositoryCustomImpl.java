@@ -1,7 +1,7 @@
 package com.tcdt.qlnvkhoach.repository;
 
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
-import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatus;
+import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
@@ -80,8 +80,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.namKeHoach(item.get("namKeHoach", BigDecimal.class).intValue())
 							.trichYeu(item.get("trichYeu", String.class))
 							.trangThai(item.get("trangThai", String.class))
-							.tenTrangThai(ChiTieuKeHoachNamStatus.getTenById(item.get("trangThai", String.class)))
-							.trangThaiDuyet(ChiTieuKeHoachNamStatus.getTrangThaiDuyetById(item.get("trangThai", String.class)))
+							.tenTrangThai(ChiTieuKeHoachNamStatusEnum.getTenById(item.get("trangThai", String.class)))
+							.trangThaiDuyet(ChiTieuKeHoachNamStatusEnum.getTrangThaiDuyetById(item.get("trangThai", String.class)))
 							.lyDoTuChoi(item.get("lyDoTuChoi", String.class))
 							.build();
 

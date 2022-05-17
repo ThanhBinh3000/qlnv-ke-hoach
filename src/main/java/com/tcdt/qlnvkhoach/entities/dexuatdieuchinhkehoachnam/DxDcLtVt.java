@@ -35,11 +35,14 @@ public class DxDcLtVt implements Serializable {
     private String maVatTuCha; // DM_VATTU
 
     @Column(name = "SO_LUONG")
-    private Long soLuong;
+    private Double soLuong;
 
     @Column(name = "DON_VI_TINH")
     private String donViTinh;
 
     @Column(name = "CHI_TIEU")
     private String chiTieu;
+
+    @Column(name = "LOAI")
+    private String loai;
 }

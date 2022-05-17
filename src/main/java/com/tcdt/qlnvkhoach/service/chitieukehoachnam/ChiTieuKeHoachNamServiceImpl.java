@@ -3,7 +3,7 @@ package com.tcdt.qlnvkhoach.service.chitieukehoachnam;
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.*;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
-import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatus;
+import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoach.repository.*;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
@@ -97,7 +97,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tìm thấy quyết định gốc.");
 
 		ChiTieuKeHoachNam qdGoc = optionalQdGoc.get();
-		if (!ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(qdGoc.getTrangThai())) {
+		if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(qdGoc.getTrangThai())) {
 			throw new Exception("Không thể điều chỉnh quyết định chưa duyệt");
 		}
 		chiTieuKeHoachNamRepository.save(qdGoc);
@@ -126,7 +126,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
-		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.DU_THAO.getId());
+		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLastest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
@@ -184,7 +184,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	private List<VatTuNhapQueryDTO> getKeHoachVatTuThietBiCacNamTruoc(List<Long> vatTuIdList, Integer nameKeHoach) {
 		int tuNam = nameKeHoach - 3;
 		int denNam = nameKeHoach - 1;
-		List<VatTuNhapQueryDTO> results = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach - 3, nameKeHoach - 1, ChiTieuKeHoachNamStatus.BAN_HANH.getId(), ChiTieuKeHoachEnum.QD.getValue(), true);
+		List<VatTuNhapQueryDTO> results = keHoachVatTuRepository.findKeHoachVatTuCacNamTruocByVatTuId(vatTuIdList, nameKeHoach - 3, nameKeHoach - 1, ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId(), ChiTieuKeHoachEnum.QD.getValue(), true);
 		Map<String, VatTuNhapQueryDTO> map = results.stream().collect(Collectors.toMap(VatTuNhapQueryDTO::groupByNamAndVatTuId, Function.identity()));
 		for (Long vatuId : vatTuIdList) {
 			for (int i = tuNam; i <= denNam; i++) {
@@ -285,7 +285,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh());
 		if (exist != null && !exist.getId().equals(ctkhnId))
-			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm không tồn tại"
+			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm đã tồn tại"
 					: "Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
 		ctkhn.setSoQuyetDinh(req.getSoQuyetDinh());
@@ -488,9 +488,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (item == null)
 			throw new Exception("Không tìm thấy dữ liệu.");
 
-		if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(item.getTrangThai())) {
+		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định đã ban hành");
-		} else if (ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
+		} else if (ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định trình duyệt");
 		}
 
@@ -508,9 +508,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (item == null)
 			throw new Exception("Không tìm thấy dữ liệu.");
 
-		if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(item.getTrangThai())) {
+		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định đã ban hành");
-		} else if (ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
+		} else if (ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định trình duyệt");
 		}
 
@@ -545,7 +545,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(qdDc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue())
-				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+				.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
 		this.setData(qdDc, qd);
@@ -676,8 +676,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNam dc = optionalChiTieuKeHoachNam.get();
 		this.updateStatus(req, dc, userInfo);
-		if (!ChiTieuKeHoachNamStatus.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai()))
-			return true;
+		if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai()))
+			return false;
 
 		Optional<ChiTieuKeHoachNam> qdGocOptional = chiTieuKeHoachNamRepository.findById(dc.getQdGocId());
 		if (!qdGocOptional.isPresent())
@@ -768,7 +768,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 
 	}
-	private List<KeHoachLuongThucMuoi> retrieveKhltm(ChiTieuKeHoachNam chiTieuKeHoachNam) {
+
+	@Override
+	public List<KeHoachLuongThucMuoi> retrieveKhltm(ChiTieuKeHoachNam chiTieuKeHoachNam) {
 		List<KeHoachLuongThucMuoi> khltmList = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 
 		Set<Long> khIdList = khltmList.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toSet());
@@ -785,32 +787,32 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	public boolean updateStatus(StatusReq req, ChiTieuKeHoachNam chiTieuKeHoachNam, UserInfo userInfo) throws Exception {
 		String trangThai = chiTieuKeHoachNam.getTrangThai();
-		if (ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatus.DU_THAO.getId().equals(trangThai))
+		if (ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equals(trangThai))
 				return false;
 
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId());
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId());
 			chiTieuKeHoachNam.setNguoiGuiDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayGuiDuyet(LocalDate.now());
 
-		} else if (ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
+		} else if (ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
 				return false;
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId());
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId());
 			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
-		} else if (ChiTieuKeHoachNamStatus.BAN_HANH.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatus.LANH_DAO_DUYET.getId().equals(trangThai))
+		} else if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equals(trangThai))
 				return false;
 
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.BAN_HANH.getId());
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId());
 			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
-		} else if (ChiTieuKeHoachNamStatus.TU_CHOI.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatus.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
+		} else if (ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equals(req.getTrangThai())) {
+			if (!ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
 				return false;
 
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatus.TU_CHOI.getId());
+			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId());
 			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
 			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
 			chiTieuKeHoachNam.setLyDoTuChoi(req.getLyDoTuChoi());
@@ -822,6 +824,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return true;
 	}
 
+	@Override
 	public ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam) throws Exception {
 		List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAll());
 
@@ -832,8 +835,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setNgayHieuLuc(chiTieuKeHoachNam.getNgayHieuLuc());
 		response.setNgayKy(chiTieuKeHoachNam.getNgayKy());
 		response.setTrangThai(chiTieuKeHoachNam.getTrangThai());
-		response.setTenTrangThai(ChiTieuKeHoachNamStatus.getTenById(chiTieuKeHoachNam.getTrangThai()));
-		response.setTrangThaiDuyet(ChiTieuKeHoachNamStatus.getTrangThaiDuyetById(chiTieuKeHoachNam.getTrangThai()));
+		response.setTenTrangThai(ChiTieuKeHoachNamStatusEnum.getTenById(chiTieuKeHoachNam.getTrangThai()));
+		response.setTrangThaiDuyet(ChiTieuKeHoachNamStatusEnum.getTrangThaiDuyetById(chiTieuKeHoachNam.getTrangThai()));
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
@@ -1431,7 +1434,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 
 		return chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
-				.stream().filter(c -> !ChiTieuKeHoachNamStatus.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+				.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 				.findFirst().orElse(null);
 
 	}
