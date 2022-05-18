@@ -1,7 +1,14 @@
 package com.tcdt.qlnvkhoach.service;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,6 +25,7 @@ import com.tcdt.qlnvkhoach.util.Constants;
 
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -32,6 +40,9 @@ public class QlnvDmService {
 
 	@Autowired
 	private QlnvDmDonviRepository qlnvDmDonviRepository;
+
+	@Autowired
+	private QlnvDmVattuRepository qlnvDmVattuRepository;
 
 	@Autowired
 	private QlnvDmKhoachVonPhiRepository qlnvDmKhoachVonPhiRepository;
@@ -85,5 +96,25 @@ public class QlnvDmService {
 			throw e;
 		}
 		return qlnvDmVonPhi;
+	}
+
+	public Map<String, QlnvDmVattu> getMapVatTu(Collection<String> maVatTus) {
+		if (CollectionUtils.isEmpty(maVatTus))
+			return Collections.emptyMap();
+
+		return qlnvDmVattuRepository.findByMaIn(maVatTus).stream()
+				.collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
+	}
+
+	public Map<String, QlnvDmDonvi> getMapDonVi(Collection<String> maDvis) {
+		if (CollectionUtils.isEmpty(maDvis))
+			return Collections.emptyMap();
+
+		return qlnvDmDonviRepository.findByMaDviIn(maDvis).stream()
+				.collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
+	}
+
+	public QlnvDmDonvi getDonViByMa(String maDvi) {
+		return qlnvDmDonviRepository.findByMaDvi(maDvi);
 	}
 }

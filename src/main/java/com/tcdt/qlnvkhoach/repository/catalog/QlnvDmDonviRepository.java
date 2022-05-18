@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.repository.catalog;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -42,4 +43,6 @@ public interface QlnvDmDonviRepository extends CrudRepository<QlnvDmDonvi, Long>
 	int deleteWithIds(List<Long> ids);
 
 	Iterable<QlnvDmDonvi> findByTrangThai(String trangThai);
+
+	List<QlnvDmDonvi> findByMaDviIn(Collection<String> maDvis);
 }

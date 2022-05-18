@@ -23,4 +23,6 @@ public interface DxDcKeHoachNamService {
 
     @Transactional(rollbackOn = Exception.class)
     boolean updateStatus(StatusReq req) throws Exception;
+
+    DxDcKeHoachNamRes getSoLuongTruocDieuChinh(Long ctkhnId) throws Exception;
 }

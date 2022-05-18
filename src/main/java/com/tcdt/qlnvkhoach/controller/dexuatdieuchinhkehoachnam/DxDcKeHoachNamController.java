@@ -126,4 +126,21 @@ public class DxDcKeHoachNamController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
+
+    @ApiOperation(value = "Lấy số lượng trước điều chỉnh", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/so-luong-truoc-dieu-chinh/{ctkhnId}")
+    public final ResponseEntity<Resp> getSoLuongTruocDieuChinh(@PathVariable("ctkhnId") Long ctkhnId) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(dxDcKeHoachNamService.getSoLuongTruocDieuChinh(ctkhnId));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error("Lấy số lượng trước điều chỉnh lỗi ", e);
+        }
+        return ResponseEntity.ok(resp);
+    }
 }

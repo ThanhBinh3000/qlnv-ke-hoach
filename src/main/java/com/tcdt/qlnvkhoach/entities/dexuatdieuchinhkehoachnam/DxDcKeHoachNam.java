@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam;
 
 import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -99,4 +100,7 @@ public class DxDcKeHoachNam implements Serializable {
 
     @Transient
     private ChiTieuKeHoachNam keHoachNam;
+
+    @Transient
+    private QlnvDmDonvi donVi;
 }

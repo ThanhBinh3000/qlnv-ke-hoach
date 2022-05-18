@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface DxDcKeHoachNamRepository extends JpaRepository<DxDcKeHoachNam, Long>, DxDcKeHoachNamRepositoryCustom {
-    List<DxDcKeHoachNam> findByKeHoachNamId(Long keHoachNamId);
+    List<DxDcKeHoachNam> findByKeHoachNamIdAndMaDvi(Long keHoachNamId, String maDvi);
 
     DxDcKeHoachNam findFirstBySoVanBan(String soVanBan);
+
+    List<DxDcKeHoachNam> findByMaDvi(String maDvi);
 }

@@ -22,8 +22,10 @@ public class DxDcKeHoachNamRes {
     private String lyDoTuChoi;
     private String nguyenNhan;
     private String noiDung;
-    private Long keHoachNamId;
-    private String soQdKeHoachNam;
+    private Long keHoachNamId; // can cu
+    private String soQdKeHoachNam;// can cu
+    private String tenDonVi;
+    private String maDonVi;
 
     private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
     private List<DxDcLtRes> dxDcltList = new ArrayList<>();
