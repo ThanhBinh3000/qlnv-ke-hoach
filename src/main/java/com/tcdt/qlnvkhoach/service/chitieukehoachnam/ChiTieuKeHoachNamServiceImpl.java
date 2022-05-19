@@ -176,7 +176,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		chiTieuKeHoachNam.setFileDinhKems(fileDinhKems);
 
-		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
+		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
 		chiTieuKeHoachNam.setCanCus(canCus);
 		return this.buildDetailResponse(chiTieuKeHoachNam, namKeHoach);
 	}
@@ -360,7 +360,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		ctkhn.setFileDinhKems(fileDinhKems);
 
-		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
+		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
 		ctkhn.setCanCus(canCus);
 		return this.buildDetailResponse(ctkhn, namKeHoach);
 	}
