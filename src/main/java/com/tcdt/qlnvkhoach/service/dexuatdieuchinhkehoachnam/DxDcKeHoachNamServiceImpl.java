@@ -151,7 +151,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         List<DxDcLtVtReq> dxDcLtVtReqList = req.getDxDcLtVtReqList();
         dxDc.setDxDcLtVtList(this.saveListDxDcLtVt(dxDcLtVtReqList, dxDc.getId(), new HashMap<>()));
 
-        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), ChiTieuKeHoachNam.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), DxDcKeHoachNam.TABLE_NAME);
         dxDc.setFileDinhKems(fileDinhKems);
         this.retrieveDataChiTieuKeHoachNam(chiTieuKeHoachNam);
         dxDc.setKeHoachNam(chiTieuKeHoachNam);
@@ -201,7 +201,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         List<DxDcLtVtReq> dxDcLtVtReqList = req.getDxDcLtVtReqList();
         dxDc.setDxDcLtVtList(this.saveListDxDcLtVt(dxDcLtVtReqList, dxDc.getId(), mapDxDcLtVt));
 
-        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), ChiTieuKeHoachNam.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), DxDcKeHoachNam.TABLE_NAME);
         dxDc.setFileDinhKems(fileDinhKems);
         this.retrieveDataChiTieuKeHoachNam(ctkhn);
         dxDc.setKeHoachNam(ctkhn);
