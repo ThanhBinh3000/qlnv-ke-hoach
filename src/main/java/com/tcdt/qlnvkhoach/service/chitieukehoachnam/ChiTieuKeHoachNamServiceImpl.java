@@ -52,7 +52,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	public static final int SO_NAM_LUU_KHO_THOC_MUOI = 3;
 	public static final int SO_NAM_LUU_KHO_GAO = 2;
 
-
 	@Autowired
 	private ChiTieuKeHoachNamRepository chiTieuKeHoachNamRepository;
 
@@ -1300,11 +1299,13 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		String capDvi = userInfo.getCapDvi();
-		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)){
-			req.setDvql(userInfo.getDvql());
+		if (!StringUtils.hasText(req.getCapDvi())) {
+			String capDvi = userInfo.getCapDvi();
+			req.setCapDvi(capDvi);
+			if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)) {
+				req.setDvql(userInfo.getDvql());
+			}
 		}
-		req.setCapDvi(capDvi);
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
 
 		return chiTieuKeHoachNamRepository.search(req);

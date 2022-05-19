@@ -15,10 +15,11 @@ public class DxDcKeHoachNamRes {
     private String soVanBan;
     private LocalDate ngayKy;
     private LocalDate ngayHieuLuc;
-    private Long namKeHoach;
+    private Integer namKeHoach;
     private String trichYeu;
     private String trangThai;
     private String tenTrangThai;
+    private String trangThaiDuyet;
     private String lyDoTuChoi;
     private String nguyenNhan;
     private String noiDung;

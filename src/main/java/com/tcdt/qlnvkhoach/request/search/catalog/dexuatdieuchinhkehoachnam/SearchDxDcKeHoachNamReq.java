@@ -13,4 +13,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class SearchDxDcKeHoachNamReq extends BaseRequest {
 	private String soVanBan;
+	private String soQuyetDinh;
+	private String trichYeuQd;
+	private String trichYeuDx;
+	private Integer namKeHoach;
+	private String maDonVi;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate ngayKyTuNgayQd;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate ngayKyDenNgayQd;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate ngayKyTuNgayDx;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate ngayKyDenNgayDx;
 }

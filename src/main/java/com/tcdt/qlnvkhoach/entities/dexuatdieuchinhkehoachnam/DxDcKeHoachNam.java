@@ -42,7 +42,7 @@ public class DxDcKeHoachNam implements Serializable {
     private LocalDate ngayHieuLuc;
 
     @Column(name = "NAM_KE_HOACH")
-    private Long namKeHoach;
+    private Integer namKeHoach;
 
     @Column(name = "TRICH_YEU")
     private String trichYeu;

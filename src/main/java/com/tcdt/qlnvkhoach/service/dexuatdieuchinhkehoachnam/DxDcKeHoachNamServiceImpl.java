@@ -5,9 +5,11 @@ import com.tcdt.qlnvkhoach.entities.*;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcLtVt;
 import com.tcdt.qlnvkhoach.enums.*;
+import com.tcdt.qlnvkhoach.query.dto.DxDcQueryDto;
 import com.tcdt.qlnvkhoach.repository.KeHoachVatTuRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcLtVtRespository;
+import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcLtVtReq;
@@ -30,12 +32,27 @@ import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoach.util.Constants;
+import com.tcdt.qlnvkhoach.util.ExcelUtils;
+import com.tcdt.qlnvkhoach.util.LocalDateTimeUtils;
+import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
@@ -43,7 +60,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
+
+    private static final String SHEET_DE_XUAT_DIEU_CHINH_KE_HOACH_NAM = "Đề xuất điều chỉnh kế hoạch năm";
+    private static final String STT = "STT";
+    private static final String SO_VAN_BAN = "Số Văn Bản";
+    private static final String NGAY_HIEU_LUC = "Ngày Đề Xuất";
+    private static final String SO_QUYET_DINH = "Số QD giao chỉ tiêu kế hoạch năm";
+    private static final String TRANG_THAI = "Trạng Thái";
+    private static final String NAM_KE_HOACH = "Năm kế hoạch";
 
     @Autowired
     private DxDcKeHoachNamRepository dxDcKeHoachNamRepository;
@@ -64,34 +90,34 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
     private QlnvDmService qlnvDmService;
 
     @Override
-    public List<DxDcKeHoachNamRes> search(SearchDxDcKeHoachNamReq req) throws Exception {
+    public Page<DxDcKeHoachNamRes> search(SearchDxDcKeHoachNamReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
-            throw new Exception("Bad request");
+         throw new Exception("Bad request");
 
-        List<DxDcKeHoachNam> list = new ArrayList<>();
-        if (Constants.TONG_CUC.equals(userInfo.getCapDvi())) {
-            list = dxDcKeHoachNamRepository.findAll();
-        } else if (Constants.CUC_KHU_VUC.equals(userInfo.getCapDvi())) {
-            list = dxDcKeHoachNamRepository.findByMaDvi(userInfo.getDvql());
+        if (Constants.CUC_KHU_VUC.equals(userInfo.getCapDvi())) {
+            req.setMaDonVi(userInfo.getDvql());
         }
 
-        Set<String> maDvis = list.stream().map(DxDcKeHoachNam::getMaDvi).collect(Collectors.toSet());
+        List<DxDcQueryDto> data = dxDcKeHoachNamRepository.search(req);
+        Set<String> maDvis = data.stream().map(DxDcQueryDto::getDx).map(DxDcKeHoachNam::getMaDvi).collect(Collectors.toSet());
         Map<String, QlnvDmDonvi> mapDvi = qlnvDmService.getMapDonVi(maDvis);
+
         List<DxDcKeHoachNamRes> responses = new ArrayList<>();
-        for (DxDcKeHoachNam dxDc : list) {
-            QlnvDmDonvi donVi = mapDvi.get(dxDc.getMaDvi());
+        for (DxDcQueryDto item : data) {
+            DxDcKeHoachNam dx = item.getDx();
+            String soQuyetDinh = item.getSoQuyetDinh();
+            QlnvDmDonvi donVi = mapDvi.get(dx.getMaDvi());
             if (donVi == null)
                 throw new Exception("Không tìm thấy thông tin đơn vị");
 
-            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuKeHoachNam(dxDc.getKeHoachNamId());
-            this.retrieveDataChiTieuKeHoachNam(chiTieuKeHoachNam);
-            dxDc.setKeHoachNam(chiTieuKeHoachNam);
-            dxDc.setDxDcLtVtList(dxDcLtVtRespository.findByDxdckhnId(dxDc.getId()));
-            dxDc.setDonVi(donVi);
-            responses.add(this.buildResponse(dxDc, userInfo.getDvql()));
+            dx.setDonVi(donVi);
+            DxDcKeHoachNamRes dxDcKeHoachNamRes = this.buildResponse(dx, userInfo.getDvql());
+            dxDcKeHoachNamRes.setSoQdKeHoachNam(soQuyetDinh);
+            responses.add(dxDcKeHoachNamRes);
         }
-        return responses;
+
+        return new PageImpl<>(responses, PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit()), dxDcKeHoachNamRepository.countDxDcKeHoachNam(req));
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -241,15 +267,18 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     private DxDcKeHoachNamRes buildResponse(DxDcKeHoachNam dxDc, String dvql) throws Exception {
 
-        ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam(), dxDc.getKeHoachNam().getNamKeHoach());
-
         DxDcKeHoachNamRes response = new DxDcKeHoachNamRes();
         BeanUtils.copyProperties(dxDc, response);
-        response.setSoQdKeHoachNam(dxDc.getKeHoachNam().getSoQuyetDinh());
+        if (dxDc.getKeHoachNam() != null) {
+            ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam(), dxDc.getKeHoachNam().getNamKeHoach());
+            response.setSoQdKeHoachNam(dxDc.getKeHoachNam().getSoQuyetDinh());
+            response.setDxDcltList(this.buildListDxDcLtRes(dxDc, chiTieuKeHoachNamRes, dvql));
+            response.setDxDcMuoiList(this.buildListDxDcMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql));
+            response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, chiTieuKeHoachNamRes, dvql));
+        }
+        response.setTenTrangThai(DxDcKeHoachNamStatusEnum.getTenById(dxDc.getTrangThai()));
+        response.setTrangThaiDuyet(DxDcKeHoachNamStatusEnum.getTrangThaiDuyetById(dxDc.getTrangThai()));
         response.setFileDinhKems(dxDc.getFileDinhKems());
-        response.setDxDcltList(this.buildListDxDcLtRes(dxDc, chiTieuKeHoachNamRes, dvql));
-        response.setDxDcMuoiList(this.buildListDxDcMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql));
-        response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, chiTieuKeHoachNamRes, dvql));
         response.setTenDonVi(dxDc.getDonVi().getTenDvi());
         response.setMaDonVi(dxDc.getDonVi().getMaDvi());
         return response;
@@ -290,6 +319,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             dxDcVtRes.setSdcKeHoachNam(vt.getSoLuong());
             dxDcVtRes.setSdcTongSo(dxDcVtRes.getSdcKeHoachNam() + dxDcVtRes.getSdcCacNamTruoc());
             dxDcVtRes.setDc(dxDcVtRes.getSdcKeHoachNam() - dxDcVtRes.getTdcKeHoachNam());
+            dxDcVtRes.setId(vt.getId());
             dxDcVtResList.add(dxDcVtRes);
         }
         return dxDcVtResList;
@@ -310,6 +340,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                 return;
             dxDcMuoiRes.setSdc(muoi.getSoLuong());
             dxDcMuoiRes.setDc(muoi.getSoLuong() - dxDcMuoiRes.getTdc());
+            dxDcMuoiRes.setId(muoi.getId());
         });
         return muoiResponseList;
     }
@@ -330,8 +361,10 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
             if (Constants.LuongThucMuoiConst.GAO_MA_VT.equals(lt.getMaVatTu())) {
                 dxDcLtRes.setSdcGao(lt.getSoLuong());
+                dxDcLtRes.setGaoId(lt.getId());
             } else {
                 dxDcLtRes.setSdcThoc(lt.getSoLuong());
+                dxDcLtRes.setThocId(lt.getId());
             }
         });
 
@@ -462,7 +495,9 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         dxDcKeHoachNamRes.setDxDcltList(this.buildListDxDcLtResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, true));
         dxDcKeHoachNamRes.setDxDcMuoiList(this.buildListDxDcMuoiResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, true));
         dxDcKeHoachNamRes.setDxDcVtList(this.buildListDxDcVtResTruocDieuChinh(chiTieuKeHoachNamRes, dvql));
-
+        dxDcKeHoachNamRes.setNamKeHoach(ctkhn.getNamKeHoach());
+        dxDcKeHoachNamRes.setKeHoachNamId(ctkhnId);
+        dxDcKeHoachNamRes.setSoQdKeHoachNam(ctkhn.getSoQuyetDinh());
         return dxDcKeHoachNamRes;
     }
 
@@ -635,5 +670,64 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         ltResponseList.add(ltXuatRes);
         ltResponseList.add(ltNhapRes);
         return ltResponseList;
+    }
+
+    @Override
+    public Boolean exportListToExcel(SearchDxDcKeHoachNamReq req, HttpServletResponse response) throws Exception {
+        req.setPaggingReq(new PaggingReq(Integer.MAX_VALUE, 0));
+        List<DxDcKeHoachNamRes> list = this.search(req).get().collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(list))
+            return true;
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+
+            //STYLE
+            CellStyle style = workbook.createCellStyle();
+            XSSFFont font = workbook.createFont();
+            font.setFontHeight(11);
+            font.setBold(true);
+            style.setFont(font);
+            style.setAlignment(HorizontalAlignment.CENTER);
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
+            XSSFSheet sheet = workbook.createSheet(SHEET_DE_XUAT_DIEU_CHINH_KE_HOACH_NAM);
+            Row row0 = sheet.createRow(0);
+            //STT
+
+            ExcelUtils.createCell(row0, 0, STT, style, sheet);
+            ExcelUtils.createCell(row0, 1, SO_VAN_BAN, style, sheet);
+            ExcelUtils.createCell(row0, 2, NGAY_HIEU_LUC, style, sheet);
+            ExcelUtils.createCell(row0, 3, SO_QUYET_DINH, style, sheet);
+            ExcelUtils.createCell(row0, 4, NAM_KE_HOACH, style, sheet);
+            ExcelUtils.createCell(row0, 5, TRANG_THAI, style, sheet);
+
+            style = workbook.createCellStyle();
+            font = workbook.createFont();
+            font.setFontHeight(11);
+            style.setFont(font);
+
+            Row row;
+            int startRowIndex = 1;
+
+            for (DxDcKeHoachNamRes item : list) {
+                row = sheet.createRow(startRowIndex);
+                ExcelUtils.createCell(row, 0, startRowIndex, style, sheet);
+                ExcelUtils.createCell(row, 1, item.getSoVanBan(), style, sheet);
+                ExcelUtils.createCell(row, 2, LocalDateTimeUtils.localDateToString(item.getNgayHieuLuc()), style, sheet);
+                ExcelUtils.createCell(row, 3, item.getSoQdKeHoachNam(), style, sheet);
+                ExcelUtils.createCell(row, 4, item.getNamKeHoach(), style, sheet);
+                ExcelUtils.createCell(row, 5, DxDcKeHoachNamStatusEnum.getTrangThaiDuyetById(item.getTrangThai()), style, sheet);
+                startRowIndex++;
+            }
+
+            ServletOutputStream outputStream = response.getOutputStream();
+            workbook.write(outputStream);
+            workbook.close();
+            outputStream.close();
+        } catch (Exception e) {
+            log.error("Error export", e);
+            return false;
+        }
+        return null;
     }
 }

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DxDcLtRes {
 
+    private Long gaoId;
+    private Long thocId;
     private String chiTieu;
 
     private Double tdcTongSoQuyThoc;

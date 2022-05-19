@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,30 +20,27 @@ import java.util.List;
 public class DxDcKeHoachNamReq {
     private Long id;
 
-    @NotNull(message = "Không được để trống")
+    @NotBlank(message = "Số văn bản không được để trống")
     private String soVanBan;
 
-    @NotNull(message = "Không được để trống")
+    @NotNull(message = "Ngày ký không được để trống")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngayKy;
 
-    @NotNull(message = "Không được để trống")
+    @NotNull(message = "Ngày hiệu lực không được để trống")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngayHieuLuc;
 
-    @NotNull(message = "Không được để trống")
-    private Long namKeHoach;
+    @NotNull(message = "Năm kế hoạch không được để trống")
+    private Integer namKeHoach;
 
-    @NotNull(message = "Không được để trống")
     private String trichYeu;
 
-    @NotNull(message = "Không được để trống")
     private String nguyenNhan;
 
-    @NotNull(message = "Không được để trống")
     private String noiDung;
 
-    @NotNull(message = "Không được để trống")
+    @NotNull(message = "Căn cứ không được để trống")
     private Long keHoachNamId;
 
     private List<DxDcLtVtReq> dxDcLtVtReqList = new ArrayList<>();

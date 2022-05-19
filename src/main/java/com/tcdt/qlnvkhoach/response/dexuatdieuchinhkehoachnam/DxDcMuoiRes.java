@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class DxDcMuoiRes {
+    private Long id;
     private String chiTieu;
     private String maVatTu;
     private Double tdc;

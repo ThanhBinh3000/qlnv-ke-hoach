@@ -4,12 +4,13 @@ import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.dexuatdieuchinhkehoachnam.SearchDxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRes;
+import org.springframework.data.domain.Page;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.List;
 
 public interface DxDcKeHoachNamService {
-    List<DxDcKeHoachNamRes> search(SearchDxDcKeHoachNamReq req) throws Exception;
+    Page<DxDcKeHoachNamRes> search(SearchDxDcKeHoachNamReq req) throws Exception;
 
     DxDcKeHoachNamRes create(DxDcKeHoachNamReq req) throws Exception;
 
@@ -25,4 +26,6 @@ public interface DxDcKeHoachNamService {
     boolean updateStatus(StatusReq req) throws Exception;
 
     DxDcKeHoachNamRes getSoLuongTruocDieuChinh(Long ctkhnId) throws Exception;
+
+    Boolean exportListToExcel(SearchDxDcKeHoachNamReq req, HttpServletResponse response) throws Exception;
 }
