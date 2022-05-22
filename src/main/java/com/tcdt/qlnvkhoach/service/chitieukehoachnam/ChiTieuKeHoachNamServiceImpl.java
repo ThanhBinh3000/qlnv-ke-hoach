@@ -554,7 +554,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Bad request.");
 
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
-		ChiTieuKeHoachNam chiTieuKeHoachNam = this.getChiTieuKeHoachNam(qdDc.getId());
+		ChiTieuKeHoachNam chiTieuKeHoachNam = this.getChiTieuKeHoachNam(qdDc.getQdGocId());
 		ChiTieuKeHoachNamRes qd = this.detail(chiTieuKeHoachNam.getId());
 		this.setData(qdDc, qd);
 		return qdDc;
