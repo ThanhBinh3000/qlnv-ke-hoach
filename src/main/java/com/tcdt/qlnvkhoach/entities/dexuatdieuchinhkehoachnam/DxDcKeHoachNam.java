@@ -50,6 +50,9 @@ public class DxDcKeHoachNam implements Serializable {
     @Column(name = "TRANG_THAI")
     private String trangThai;
 
+    @Column(name = "TRANG_THAI_TONG_CUC")
+    private String trangThaiTongCuc;
+
     @Column(name = "NGAY_TAO")
     private LocalDate ngayTao;
 

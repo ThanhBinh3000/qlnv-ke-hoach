@@ -59,4 +59,6 @@ public interface ChiTieuKeHoachNamService {
 	SoLuongTruocDieuChinhRes getSoLuongTruocDc(SoLuongTruocDieuChinhSearchReq req) throws Exception;
 
 	ChiTieuKeHoachNam getChiTieuKeHoachNam(Long id) throws Exception;
+
+    void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam);
 }

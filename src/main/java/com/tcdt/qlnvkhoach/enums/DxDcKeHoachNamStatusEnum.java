@@ -30,7 +30,7 @@ public enum DxDcKeHoachNamStatusEnum {
     }
 
     public static String getTenById(String id) {
-        for (ChiTieuKeHoachNamStatusEnum status : ChiTieuKeHoachNamStatusEnum.values()) {
+        for (DxDcKeHoachNamStatusEnum status : DxDcKeHoachNamStatusEnum.values()) {
             if (status.getId().equals(id))
                 return status.getTen();
         }
@@ -39,7 +39,7 @@ public enum DxDcKeHoachNamStatusEnum {
     }
 
     public static String getTrangThaiDuyetById(String id) {
-        for (ChiTieuKeHoachNamStatusEnum status : ChiTieuKeHoachNamStatusEnum.values()) {
+        for (DxDcKeHoachNamStatusEnum status : DxDcKeHoachNamStatusEnum.values()) {
             if (status.getId().equals(id))
                 return status.getTrangThaiDuyet();
         }

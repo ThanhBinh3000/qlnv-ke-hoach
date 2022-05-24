@@ -18,7 +18,7 @@ public class DxDcKeHoachNamRes {
     private Integer namKeHoach;
     private String trichYeu;
     private String trangThai;
-    private String tenTrangThai;
+    private String tenTrangThai;// Trang thai cuc
     private String trangThaiDuyet;
     private String lyDoTuChoi;
     private String nguyenNhan;

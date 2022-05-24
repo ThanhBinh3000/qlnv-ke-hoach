@@ -6,7 +6,6 @@ import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcLtVt;
 import com.tcdt.qlnvkhoach.enums.*;
 import com.tcdt.qlnvkhoach.query.dto.DxDcQueryDto;
-import com.tcdt.qlnvkhoach.repository.KeHoachVatTuRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcLtVtRespository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
@@ -84,9 +83,6 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
     private ChiTieuKeHoachNamService chiTieuKeHoachNamService;
 
     @Autowired
-    private KeHoachVatTuRepository keHoachVatTuRepository;
-
-    @Autowired
     private QlnvDmService qlnvDmService;
 
     @Override
@@ -112,7 +108,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                 throw new Exception("Không tìm thấy thông tin đơn vị");
 
             dx.setDonVi(donVi);
-            DxDcKeHoachNamRes dxDcKeHoachNamRes = this.buildResponse(dx, userInfo.getDvql());
+            DxDcKeHoachNamRes dxDcKeHoachNamRes = this.buildResponse(dx, userInfo.getDvql(), userInfo.getCapDvi());
             dxDcKeHoachNamRes.setSoQdKeHoachNam(soQuyetDinh);
             responses.add(dxDcKeHoachNamRes);
         }
@@ -143,6 +139,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         dxDc.setNgayTao(LocalDate.now());
         dxDc.setNguoiTaoId(userInfo.getId());
         dxDc.setTrangThai(DxDcKeHoachNamStatusEnum.DU_THAO.getId());
+        dxDc.setTrangThaiTongCuc(DxDcKeHoachNamStatusTongCucEnum.CHUA_XU_LY.getId());
         dxDc.setMaDvi(userInfo.getDvql());
         dxDc.setCapDvi(userInfo.getCapDvi());
         dxDc.setKeHoachNamId(chiTieuKeHoachNam.getId());
@@ -153,10 +150,10 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), DxDcKeHoachNam.TABLE_NAME);
         dxDc.setFileDinhKems(fileDinhKems);
-        this.retrieveDataChiTieuKeHoachNam(chiTieuKeHoachNam);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(chiTieuKeHoachNam);
         dxDc.setKeHoachNam(chiTieuKeHoachNam);
         dxDc.setDonVi(qlnvDmService.getDonViByMa(dxDc.getMaDvi()));
-        return this.buildResponse(dxDc, userInfo.getDvql());
+        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi());
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -203,10 +200,10 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), DxDcKeHoachNam.TABLE_NAME);
         dxDc.setFileDinhKems(fileDinhKems);
-        this.retrieveDataChiTieuKeHoachNam(ctkhn);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(ctkhn);
         dxDc.setKeHoachNam(ctkhn);
         dxDc.setDonVi(qlnvDmService.getDonViByMa(dxDc.getMaDvi()));
-        return this.buildResponse(dxDc, userInfo.getDvql());
+        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi());
     }
 
     private List<DxDcLtVt> saveListDxDcLtVt(List<DxDcLtVtReq> dxDcLtVtReqList,
@@ -247,25 +244,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     }
 
-    private void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam) {
-        List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = chiTieuKeHoachNamService.retrieveKhltm(chiTieuKeHoachNam);
-
-        List<KeHoachLuongThucMuoi> keHoachLuongThucList = keHoachLuongThucMuois.stream()
-                .filter(k -> Constants.LuongThucMuoiConst.GAO_MA_VT.equals(k.getMaVatTu())
-                        || Constants.LuongThucMuoiConst.THOC_MA_VT.equals(k.getMaVatTu()))
-                .collect(Collectors.toList());
-
-        List<KeHoachLuongThucMuoi> keHoachMuoiList = keHoachLuongThucMuois.stream()
-                .filter(k -> Constants.LuongThucMuoiConst.MUOI_MA_VT.equals(k.getMaVatTu()))
-                .collect(Collectors.toList());
-        chiTieuKeHoachNam.setKhLuongThucList(keHoachLuongThucList);
-        chiTieuKeHoachNam.setKhMuoiList(keHoachMuoiList);
-
-        List<KeHoachVatTu> khvtList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
-        chiTieuKeHoachNam.setKhVatTuList(khvtList);
-    }
-
-    private DxDcKeHoachNamRes buildResponse(DxDcKeHoachNam dxDc, String dvql) throws Exception {
+    private DxDcKeHoachNamRes buildResponse(DxDcKeHoachNam dxDc, String dvql, String cap) throws Exception {
 
         DxDcKeHoachNamRes response = new DxDcKeHoachNamRes();
         BeanUtils.copyProperties(dxDc, response);
@@ -276,8 +255,15 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             response.setDxDcMuoiList(this.buildListDxDcMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql));
             response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, chiTieuKeHoachNamRes, dvql));
         }
-        response.setTenTrangThai(DxDcKeHoachNamStatusEnum.getTenById(dxDc.getTrangThai()));
-        response.setTrangThaiDuyet(DxDcKeHoachNamStatusEnum.getTrangThaiDuyetById(dxDc.getTrangThai()));
+        if (Constants.TONG_CUC.equals(cap)) {
+            response.setTrangThai(dxDc.getTrangThaiTongCuc());
+            response.setTenTrangThai(DxDcKeHoachNamStatusTongCucEnum.getTenById(dxDc.getTrangThaiTongCuc()));
+            response.setTrangThaiDuyet(DxDcKeHoachNamStatusTongCucEnum.getTenById(dxDc.getTrangThaiTongCuc()));
+        } else {
+            response.setTenTrangThai(DxDcKeHoachNamStatusEnum.getTenById(dxDc.getTrangThai()));
+            response.setTrangThaiDuyet(DxDcKeHoachNamStatusEnum.getTrangThaiDuyetById(dxDc.getTrangThai()));
+        }
+
         response.setFileDinhKems(dxDc.getFileDinhKems());
         response.setTenDonVi(dxDc.getDonVi().getTenDvi());
         response.setMaDonVi(dxDc.getDonVi().getMaDvi());
@@ -422,11 +408,11 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
         dxDc.setDxDcLtVtList(dxDcLtVtRespository.findByDxdckhnId(dxDc.getId()));
-        this.retrieveDataChiTieuKeHoachNam(ctkhn);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(ctkhn);
         dxDc.setKeHoachNam(ctkhn);
         dxDc.setFileDinhKems(fileDinhKemService.search(dxDc.getId(), Collections.singleton(DxDcKeHoachNam.TABLE_NAME)));
         dxDc.setDonVi(qlnvDmService.getDonViByMa(dxDc.getMaDvi()));
-        return this.buildResponse(dxDc, userInfo.getDvql());
+        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi());
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -488,7 +474,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         String dvql = userInfo.getDvql();
 
         ChiTieuKeHoachNam ctkhn = chiTieuKeHoachNamService.getChiTieuKeHoachNam(ctkhnId);
-        this.retrieveDataChiTieuKeHoachNam(ctkhn);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(ctkhn);
         ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(ctkhn, ctkhn.getNamKeHoach());
         DxDcKeHoachNamRes dxDcKeHoachNamRes = new DxDcKeHoachNamRes();
 

@@ -2,12 +2,15 @@ package com.tcdt.qlnvkhoach.service.chitieukehoachnam;
 
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.*;
+import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
+import com.tcdt.qlnvkhoach.enums.DxDcKeHoachNamStatusTongCucEnum;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoach.repository.*;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
+import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -75,6 +78,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Autowired
 	private FileDinhKemService fileDinhKemService;
+
+	@Autowired
+	private DxDcKeHoachNamRepository dxDcKeHoachNamRepository;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -689,18 +695,52 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNam dc = optionalChiTieuKeHoachNam.get();
 		this.updateStatus(req, dc, userInfo);
-		if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai()))
-			return false;
+		Integer namKeHoach = null;
+		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai())) {
+			Optional<ChiTieuKeHoachNam> qdGocOptional = chiTieuKeHoachNamRepository.findById(dc.getQdGocId());
+			if (!qdGocOptional.isPresent())
+				throw new Exception("Không tìm thấy dữ liệu.");
 
-		Optional<ChiTieuKeHoachNam> qdGocOptional = chiTieuKeHoachNamRepository.findById(dc.getQdGocId());
-		if (!qdGocOptional.isPresent())
-			throw new Exception("Không tìm thấy dữ liệu.");
+			ChiTieuKeHoachNam qdGoc = qdGocOptional.get();
 
-		ChiTieuKeHoachNam qdGoc = qdGocOptional.get();
+			// Duyệt điều chỉnh -> tạo quyết đinh mới từ quyết định gốc
+			this.mergeQdDcAndQd(dc, qdGoc);
+			namKeHoach = qdGoc.getNamKeHoach();
+		}
 
-		// Duyệt điều chỉnh -> tạo quyết đinh mới từ quyết định gốc
-		this.mergeQdDcAndQd(dc, qdGoc);
+		// Update status de xuat dieu chinh
+		this.updateStatusDxDc(dc, namKeHoach);
 		return true;
+	}
+
+	private void updateStatusDxDc(ChiTieuKeHoachNam dc, Integer namKeHoach) {
+		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai()) ||
+				ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(dc.getTrangThai())) {
+
+			this.retrieveDataChiTieuKeHoachNam(dc);
+			List<KeHoachVatTu> khVts = dc.getKhVatTuList();
+			List<KeHoachLuongThucMuoi> khLts = dc.getKhLuongThucList();
+			List<KeHoachLuongThucMuoi> khMuois = dc.getKhMuoiList();
+			Set<String> maDvis = khVts.stream().map(KeHoachVatTu::getMaDvi).collect(Collectors.toSet());
+			maDvis.addAll(khLts.stream().map(KeHoachLuongThucMuoi::getMaDvi).collect(Collectors.toSet()));
+			maDvis.addAll(khMuois.stream().map(KeHoachLuongThucMuoi::getMaDvi).collect(Collectors.toSet()));
+			if (CollectionUtils.isEmpty(maDvis))
+				return;
+
+			List<DxDcKeHoachNam> dxDcs = dxDcKeHoachNamRepository.findByMaDviInAndNamKeHoachAndTrangThaiTongCuc(maDvis, namKeHoach, DxDcKeHoachNamStatusTongCucEnum.CHUA_XU_LY.getId());
+			if (CollectionUtils.isEmpty(dxDcs))
+				return;
+
+			dxDcs.forEach(dx -> {
+				if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai())) {
+					dx.setTrangThaiTongCuc(DxDcKeHoachNamStatusTongCucEnum.DA_XU_LY.getId());
+				} else {
+					dx.setTrangThaiTongCuc(DxDcKeHoachNamStatusTongCucEnum.TU_CHOI.getId());
+				}
+			});
+
+			dxDcKeHoachNamRepository.saveAll(dxDcs);
+		}
 	}
 
 	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc) throws Exception {
@@ -1668,5 +1708,24 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tồn tại chỉ tiêu kế hoạch năm.");
 
 		return optionalKhn.get();
+	}
+
+	@Override
+	public void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam) {
+		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = this.retrieveKhltm(chiTieuKeHoachNam);
+
+		List<KeHoachLuongThucMuoi> keHoachLuongThucList = keHoachLuongThucMuois.stream()
+				.filter(k -> Constants.LuongThucMuoiConst.GAO_MA_VT.equals(k.getMaVatTu())
+						|| Constants.LuongThucMuoiConst.THOC_MA_VT.equals(k.getMaVatTu()))
+				.collect(Collectors.toList());
+
+		List<KeHoachLuongThucMuoi> keHoachMuoiList = keHoachLuongThucMuois.stream()
+				.filter(k -> Constants.LuongThucMuoiConst.MUOI_MA_VT.equals(k.getMaVatTu()))
+				.collect(Collectors.toList());
+		chiTieuKeHoachNam.setKhLuongThucList(keHoachLuongThucList);
+		chiTieuKeHoachNam.setKhMuoiList(keHoachMuoiList);
+
+		List<KeHoachVatTu> khvtList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
+		chiTieuKeHoachNam.setKhVatTuList(khvtList);
 	}
 }
