@@ -16,4 +16,6 @@ public interface FileDinhKemService {
     void delete(Long dataId, Collection<String> dataTypes);
 
     void saveFileDinhKems(Collection<FileDinhKemChung> fileDinhKemChungs);
+
+    void deleteMultiple(Collection<Long> dataIds, Collection<String> dataTypes);
 }

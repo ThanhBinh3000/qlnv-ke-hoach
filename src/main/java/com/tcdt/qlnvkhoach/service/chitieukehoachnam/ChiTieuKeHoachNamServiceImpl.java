@@ -11,6 +11,7 @@ import com.tcdt.qlnvkhoach.repository.*;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
+import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -1740,5 +1741,27 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndMaDvi(true, loaiQd, userInfo.getDvql());
 		}
 		return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndCapDvi(true, loaiQd, userInfo.getCapDvi());
+	}
+
+	@Override
+	public boolean deleteMultiple(DeleteReq req) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request");
+
+		if (CollectionUtils.isEmpty(req.getIds()))
+			return false;
+
+		List<KeHoachLuongThucMuoi> keHoachLuongThucMuoiList = keHoachLuongThucMuoiRepository.findByCtkhnIdIn(req.getIds());
+		List<KeHoachXuatLuongThucMuoi> keHoachXuatLuongThucMuoiList = keHoachXuatLuongThucMuoiRepository.findByKeHoachIdIn(keHoachLuongThucMuoiList.stream().map(KeHoachLuongThucMuoi::getId).collect(Collectors.toList()));
+		if (!CollectionUtils.isEmpty(keHoachXuatLuongThucMuoiList))
+			keHoachXuatLuongThucMuoiRepository.deleteAll(keHoachXuatLuongThucMuoiList);
+		if (!CollectionUtils.isEmpty(keHoachLuongThucMuoiList))
+			keHoachLuongThucMuoiRepository.deleteAll(keHoachLuongThucMuoiList);
+
+		keHoachVatTuRepository.deleteByCtkhnIdIn(req.getIds());
+		chiTieuKeHoachNamRepository.deleteByIdIn(req.getIds());
+		fileDinhKemService.deleteMultiple(req.getIds(), Lists.newArrayList(ChiTieuKeHoachNam.TABLE_NAME, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU));
+		return true;
 	}
 }

@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.controller.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoach.controller.BaseController;
+import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -375,6 +376,40 @@ public class ChiTieuKeHoachNamController extends BaseController {
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Delete multiple chỉ tiêu kế hoạch năm", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/delete/multiple")
+    public final ResponseEntity<Resp> deleteMultipleQd(DeleteReq req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.deleteMultiple(req));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error("Delete multiple chỉ tiêu kế hoạch năm lỗi ", e);
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Delete multiple quyết định điều chỉnh", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/quyet-dinh-dieu-chinh/delete/multiple")
+    public final ResponseEntity<Resp> deleteMultipleQdDc(DeleteReq req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.deleteMultiple(req));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error("Delete multiple quyết định điều chỉnh lỗi ", e);
         }
         return ResponseEntity.ok(resp);
     }

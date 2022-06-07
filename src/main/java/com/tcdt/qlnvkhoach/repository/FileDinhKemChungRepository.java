@@ -23,4 +23,8 @@ public interface FileDinhKemChungRepository extends CrudRepository<FileDinhKemCh
 	@Transactional
 	@Modifying
 	int deleteByDataIdAndDataTypeIn(Long dataId, Collection<String> dataTypes);
+
+	@Transactional
+	@Modifying
+	int deleteByDataIdInAndDataTypeIn(Collection<Long> dataIds, Collection<String> dataTypes);
 }

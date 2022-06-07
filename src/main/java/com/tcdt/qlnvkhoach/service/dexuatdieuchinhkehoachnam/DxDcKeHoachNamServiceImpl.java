@@ -8,6 +8,7 @@ import com.tcdt.qlnvkhoach.enums.*;
 import com.tcdt.qlnvkhoach.query.dto.DxDcQueryDto;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcLtVtRespository;
+import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
@@ -728,5 +729,20 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         }
 
         return dxDcKeHoachNamRepository.count();
+    }
+
+    @Override
+    public boolean deleteMultiple(DeleteReq req) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (userInfo == null)
+            throw new Exception("Bad request");
+
+        if (CollectionUtils.isEmpty(req.getIds()))
+            return false;
+
+        dxDcLtVtRespository.deleteByDxdckhnIdIn(req.getIds());
+        dxDcKeHoachNamRepository.deleteByIdIn(req.getIds());
+        fileDinhKemService.deleteMultiple(req.getIds(), Lists.newArrayList(DxDcKeHoachNam.TABLE_NAME));
+        return true;
     }
 }

@@ -2,10 +2,12 @@ package com.tcdt.qlnvkhoach.repository;
 
 import com.tcdt.qlnvkhoach.entities.KeHoachVatTu;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,4 +22,8 @@ public interface KeHoachVatTuRepository extends CrudRepository<KeHoachVatTu, Lon
 	List<VatTuNhapQueryDTO> findKeHoachVatTuCacNamTruocByVatTuId(List<Long> vatTuIdList, int tuNam, int denNam, String trangThai, String loaiQd, boolean lastest);
 
 	List<KeHoachVatTu> findByCtkhnIdAndVatTuIdInAndDonViId(Long ctkhnId, Collection<Long> vatTuIds, Long donViId);
+
+	@Transactional
+	@Modifying
+	void deleteByCtkhnIdIn(Collection<Long> ctkhnIds);
 }

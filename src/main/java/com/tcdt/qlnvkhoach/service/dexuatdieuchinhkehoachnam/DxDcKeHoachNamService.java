@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.service.dexuatdieuchinhkehoachnam;
 
+import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.dexuatdieuchinhkehoachnam.SearchDxDcKeHoachNamReq;
@@ -30,4 +31,6 @@ public interface DxDcKeHoachNamService {
     Boolean exportListToExcel(SearchDxDcKeHoachNamReq req, HttpServletResponse response) throws Exception;
 
     Long countDxDc() throws Exception;
+
+    boolean deleteMultiple(DeleteReq req) throws Exception;
 }

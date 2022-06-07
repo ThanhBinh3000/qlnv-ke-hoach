@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -15,4 +16,8 @@ public interface DxDcLtVtRespository extends JpaRepository<DxDcLtVt, Long> {
     @Transactional
     @Modifying
     void deleteByDxdckhnId(Long dxDcId);
+
+    @Transactional
+    @Modifying
+    void deleteByDxdckhnIdIn(Collection<Long> dxDcIds);
 }

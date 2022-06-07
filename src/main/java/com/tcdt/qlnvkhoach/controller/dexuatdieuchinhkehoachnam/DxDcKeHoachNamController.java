@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.controller.dexuatdieuchinhkehoachnam;
 
 import com.tcdt.qlnvkhoach.controller.BaseController;
+import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.dexuatdieuchinhkehoachnam.SearchDxDcKeHoachNamReq;
@@ -166,5 +167,22 @@ public class DxDcKeHoachNamController extends BaseController {
             log.error("Error can not export", e);
         }
 
+    }
+
+    @ApiOperation(value = "Delete multiple đề xuất điều chỉnh", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/delete/multiple")
+    public final ResponseEntity<Resp> deleteMultiple(DeleteReq req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(dxDcKeHoachNamService.deleteMultiple(req));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error("Delete multiple đề xuất điều chỉnh lỗi ", e);
+        }
+        return ResponseEntity.ok(resp);
     }
 }

@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.service.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.KeHoachLuongThucMuoi;
+import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -63,4 +64,6 @@ public interface ChiTieuKeHoachNamService {
     void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam);
 
 	Long countCtkh(String loaiQd) throws Exception;
+
+	boolean deleteMultiple(DeleteReq req) throws Exception;
 }
