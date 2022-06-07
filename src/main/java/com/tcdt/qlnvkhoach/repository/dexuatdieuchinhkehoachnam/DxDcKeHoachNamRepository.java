@@ -16,4 +16,6 @@ public interface DxDcKeHoachNamRepository extends JpaRepository<DxDcKeHoachNam, 
     List<DxDcKeHoachNam> findByMaDvi(String maDvi);
 
     List<DxDcKeHoachNam> findByMaDviInAndNamKeHoachAndTrangThaiTongCuc(Collection<String> maDvis, Integer namKeHoach, String trangThaiTongCuc);
+
+    Long countByMaDvi(String maDvi);
 }

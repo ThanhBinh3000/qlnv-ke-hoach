@@ -716,4 +716,17 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         }
         return null;
     }
+
+    @Override
+    public Long countDxDc() throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (userInfo == null)
+            throw new Exception("Bad request");
+
+        if (Constants.CUC_KHU_VUC.equals(userInfo.getCapDvi())) {
+            return dxDcKeHoachNamRepository.countByMaDvi(userInfo.getDvql());
+        }
+
+        return dxDcKeHoachNamRepository.count();
+    }
 }

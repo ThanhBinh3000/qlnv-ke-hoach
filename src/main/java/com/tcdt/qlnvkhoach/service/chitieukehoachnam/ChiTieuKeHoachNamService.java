@@ -61,4 +61,6 @@ public interface ChiTieuKeHoachNamService {
 	ChiTieuKeHoachNam getChiTieuKeHoachNam(Long id) throws Exception;
 
     void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam);
+
+	Long countCtkh(String loaiQd) throws Exception;
 }

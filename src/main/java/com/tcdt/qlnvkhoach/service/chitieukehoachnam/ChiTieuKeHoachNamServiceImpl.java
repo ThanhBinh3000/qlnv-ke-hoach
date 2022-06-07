@@ -1728,4 +1728,17 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<KeHoachVatTu> khvtList = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		chiTieuKeHoachNam.setKhVatTuList(khvtList);
 	}
+
+	@Override
+	public Long countCtkh(String loaiQd) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request");
+
+		String capDvi = userInfo.getCapDvi();
+		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)) {
+			return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndMaDvi(true, loaiQd, userInfo.getDvql());
+		}
+		return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndCapDvi(true, loaiQd, userInfo.getCapDvi());
+	}
 }

@@ -28,4 +28,6 @@ public interface DxDcKeHoachNamService {
     DxDcKeHoachNamRes getSoLuongTruocDieuChinh(Long ctkhnId) throws Exception;
 
     Boolean exportListToExcel(SearchDxDcKeHoachNamReq req, HttpServletResponse response) throws Exception;
+
+    Long countDxDc() throws Exception;
 }
