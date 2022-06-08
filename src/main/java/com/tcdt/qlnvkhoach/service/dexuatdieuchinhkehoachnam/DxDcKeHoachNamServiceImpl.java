@@ -89,7 +89,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
     @Override
     public Page<DxDcKeHoachNamRes> search(SearchDxDcKeHoachNamReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
-        if (userInfo == null)
+        if (userInfo == null || Constants.CHI_CUC.equals(userInfo.getCapDvi()))
          throw new Exception("Bad request");
 
         Set<String> trangThais = new HashSet<>();

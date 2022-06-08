@@ -1353,10 +1353,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		String capDvi = userInfo.getCapDvi();
-		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)){
-			req.setDvql(userInfo.getDvql());
-		}
 		this.prepareSearchReq(req, userInfo, req.getCapDvi());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req);
