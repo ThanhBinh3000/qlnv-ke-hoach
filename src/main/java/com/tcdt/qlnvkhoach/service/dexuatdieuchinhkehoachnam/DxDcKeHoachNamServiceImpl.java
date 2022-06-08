@@ -92,11 +92,14 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (userInfo == null)
          throw new Exception("Bad request");
 
+        Set<String> trangThais = new HashSet<>();
         if (Constants.CUC_KHU_VUC.equals(userInfo.getCapDvi())) {
             req.setMaDonVi(userInfo.getDvql());
+        } else if (Constants.TONG_CUC.equals(userInfo.getCapDvi())) {
+            trangThais.add(DxDcKeHoachNamStatusEnum.BAN_HANH.getId());
         }
 
-        List<DxDcQueryDto> data = dxDcKeHoachNamRepository.search(req);
+        List<DxDcQueryDto> data = dxDcKeHoachNamRepository.search(req, trangThais);
         Set<String> maDvis = data.stream().map(DxDcQueryDto::getDx).map(DxDcKeHoachNam::getMaDvi).collect(Collectors.toSet());
         Map<String, QlnvDmDonvi> mapDvi = qlnvDmService.getMapDonVi(maDvis);
 
@@ -114,7 +117,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             responses.add(dxDcKeHoachNamRes);
         }
 
-        return new PageImpl<>(responses, PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit()), dxDcKeHoachNamRepository.countDxDcKeHoachNam(req));
+        return new PageImpl<>(responses, PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit()), dxDcKeHoachNamRepository.countDxDcKeHoachNam(req, trangThais));
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -726,9 +729,11 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         if (Constants.CUC_KHU_VUC.equals(userInfo.getCapDvi())) {
             return dxDcKeHoachNamRepository.countByMaDvi(userInfo.getDvql());
+        } else if (Constants.TONG_CUC.equals(userInfo.getCapDvi())){
+            return dxDcKeHoachNamRepository.countDxDcKeHoachNam(new SearchDxDcKeHoachNamReq(), Collections.singleton(DxDcKeHoachNamStatusEnum.BAN_HANH.getId()));
         }
 
-        return dxDcKeHoachNamRepository.count();
+       return 0L;
     }
 
     @Transactional(rollbackOn = Exception.class)

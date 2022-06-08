@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.controller.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoach.controller.BaseController;
+import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
@@ -410,6 +411,38 @@ public class ChiTieuKeHoachNamController extends BaseController {
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error("Delete multiple quyết định điều chỉnh lỗi ", e);
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Count chỉ tiêu kế hoạch năm", response = List.class)
+    @GetMapping("/count")
+    public final ResponseEntity<Resp> countQd(@RequestParam(required = false) String capDvi) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.countCtkh(ChiTieuKeHoachEnum.QD.getValue(), capDvi));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Count điều chỉnh kế hoạch năm", response = List.class)
+    @GetMapping("/quyet-dinh-dieu-chinh/count")
+    public final ResponseEntity<Resp> countQdDc(@RequestParam(required = false) String capDvi) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.countCtkh(ChiTieuKeHoachEnum.QD_DC.getValue(), capDvi));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
         }
         return ResponseEntity.ok(resp);
     }

@@ -6,4 +6,6 @@ import org.springframework.data.domain.Page;
 
 public interface ChiTieuKeHoachNamRepositoryCustom {
 	Page<ChiTieuKeHoachNamRes> search (SearchChiTieuKeHoachNamReq req);
+
+	int countCtkhn(SearchChiTieuKeHoachNamReq req);
 }

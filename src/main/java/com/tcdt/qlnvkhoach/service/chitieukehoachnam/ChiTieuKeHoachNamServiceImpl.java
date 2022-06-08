@@ -1340,13 +1340,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		if (!StringUtils.hasText(req.getCapDvi())) {
-			String capDvi = userInfo.getCapDvi();
-			req.setCapDvi(capDvi);
-			if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)) {
-				req.setDvql(userInfo.getDvql());
-			}
-		}
+		this.prepareSearchReq(req, userInfo, req.getCapDvi());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
 
 		return chiTieuKeHoachNamRepository.search(req);
@@ -1363,8 +1357,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)){
 			req.setDvql(userInfo.getDvql());
 		}
-		req.setCapDvi(capDvi);
-		req.setDvql(userInfo.getDvql());
+		this.prepareSearchReq(req, userInfo, req.getCapDvi());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD_DC.getValue());
 		return chiTieuKeHoachNamRepository.search(req);
 	}
@@ -1731,16 +1724,34 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
-	public Long countCtkh(String loaiQd) throws Exception {
+	public Integer countCtkh(String loaiQd, String capDviReq) throws Exception {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
-		String capDvi = userInfo.getCapDvi();
-		if (Constants.CUC_KHU_VUC.equals(capDvi) || Constants.CHI_CUC.equals(capDvi)) {
-			return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndMaDvi(true, loaiQd, userInfo.getDvql());
+		SearchChiTieuKeHoachNamReq req = new SearchChiTieuKeHoachNamReq();
+		this.prepareSearchReq(req, userInfo, capDviReq);
+		return chiTieuKeHoachNamRepository.countCtkhn(req);
+	}
+
+	@Override
+	public void prepareSearchReq(SearchChiTieuKeHoachNamReq req, UserInfo userInfo, String capDviReq) {
+		String userCapDvi = userInfo.getCapDvi();
+		req.setCapDvi(StringUtils.hasText(capDviReq) ? capDviReq : userCapDvi);
+		boolean cucOrChiCuc = Constants.CUC_KHU_VUC.equals(userCapDvi) || Constants.CHI_CUC.equals(userCapDvi);
+
+		if (StringUtils.hasText(capDviReq) && !capDviReq.equalsIgnoreCase(userCapDvi)) {
+			req.setTrangThai(ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId());
+			if (cucOrChiCuc) {
+				req.setMaDvi(userInfo.getDvql());
+			}
+		} else if (Constants.CUC_KHU_VUC.equals(userCapDvi)) {
+			req.setDvql(userInfo.getDvql());
+		} else if (Constants.CHI_CUC.equals(userCapDvi)) {
+			req.setTrangThai(ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId());
+			req.setMaDvi(userInfo.getDvql());
+			req.setCapDvi(null);
 		}
-		return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndCapDvi(true, loaiQd, userInfo.getCapDvi());
 	}
 
 	@Transactional(rollbackOn = Exception.class)

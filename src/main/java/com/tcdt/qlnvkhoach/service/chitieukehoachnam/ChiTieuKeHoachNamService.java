@@ -12,6 +12,7 @@ import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SoLuongTruoc
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.SoLuongTruocDieuChinhRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
+import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import org.springframework.data.domain.Page;
 
@@ -63,7 +64,9 @@ public interface ChiTieuKeHoachNamService {
 
     void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam);
 
-	Long countCtkh(String loaiQd) throws Exception;
+	Integer countCtkh(String loaiQd, String capDviReq) throws Exception;
 
-	boolean deleteMultiple(DeleteReq req) throws Exception;
+    void prepareSearchReq(SearchChiTieuKeHoachNamReq req, UserInfo userInfo, String capDviReq);
+
+    boolean deleteMultiple(DeleteReq req) throws Exception;
 }

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class SearchChiTieuKeHoachNamReq extends BaseRequest {
 	private String soQD;
 	private String trichYeu;
+	private String maDvi;
 	private Long donViId;
 	private String dvql;
 	private String capDvi;

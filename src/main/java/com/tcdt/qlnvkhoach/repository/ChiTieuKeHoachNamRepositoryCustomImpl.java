@@ -16,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -94,6 +95,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		int page = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getPage).orElse(BaseRequest.DEFAULT_PAGE);
 		int limit = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getLimit).orElse(BaseRequest.DEFAULT_LIMIT);
+		int i = this.countCtkhn(req);
 		return new PageImpl<>(response, PageRequest.of(page, limit), this.countCtkhn(req));
 	}
 
@@ -115,6 +117,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		}
 		if (req.getDonViId() != null) {
 			builder.append("AND ").append("(khltm.DON_VI_ID = :donViId OR khvt.DON_VI_ID = :donViId) ");
+		}
+
+		if (!StringUtils.isEmpty(req.getMaDvi())) {
+			builder.append("AND ").append("(khltm.MA_DVI = :maDvi OR khvt.MA_DVI = :maDvi) ");
 		}
 
 		if (!StringUtils.isEmpty(req.getDvql())) {
@@ -156,10 +162,11 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		}
 	}
 
-	private int countCtkhn(SearchChiTieuKeHoachNamReq req) {
+	@Override
+	public int countCtkhn(SearchChiTieuKeHoachNamReq req) {
 		int total = 0;
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT DISTINCT ct.ID FROM CHI_TIEU_KE_HOACH_NAM ct ");
+		builder.append("SELECT COUNT(DISTINCT ct.ID) AS totalRecord FROM CHI_TIEU_KE_HOACH_NAM ct ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {
 			builder.append("INNER JOIN CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
 		}
@@ -171,13 +178,12 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		Query query = em.createNativeQuery(builder.toString(), Tuple.class);
 
 		this.setParameterSearchCtkhn(req, query);
-
 		List<?> dataCount = query.getResultList();
-
 		if (CollectionUtils.isEmpty(dataCount)) {
 			return total;
 		}
-		return dataCount.size();
+		Tuple result = (Tuple) dataCount.get(0);
+		return result.get("totalRecord", BigDecimal.class).intValue();
 	}
 
 	private void setParameterSearchCtkhn(SearchChiTieuKeHoachNamReq req, Query query) {
@@ -196,6 +202,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		}
 		if (req.getDonViId() != null) {
 			query.setParameter("donViId", req.getDonViId());
+		}
+
+		if (!StringUtils.isEmpty(req.getMaDvi())) {
+			query.setParameter("maDvi", req.getMaDvi());
 		}
 
 		if (!StringUtils.isEmpty(req.getLoaiQuyetDinh())) {

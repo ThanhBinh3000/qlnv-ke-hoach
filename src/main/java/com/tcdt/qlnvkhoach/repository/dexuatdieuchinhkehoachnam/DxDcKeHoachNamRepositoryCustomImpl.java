@@ -1,11 +1,12 @@
 package com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam;
 
-import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.query.dto.DxDcQueryDto;
 import com.tcdt.qlnvkhoach.request.search.catalog.dexuatdieuchinhkehoachnam.SearchDxDcKeHoachNamReq;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 public class DxDcKeHoachNamRepositoryCustomImpl implements DxDcKeHoachNamRepositoryCustom {
@@ -14,22 +15,22 @@ public class DxDcKeHoachNamRepositoryCustomImpl implements DxDcKeHoachNamReposit
     private EntityManager em;
 
     @Override
-    public List<DxDcQueryDto> search(SearchDxDcKeHoachNamReq req) {
+    public List<DxDcQueryDto> search(SearchDxDcKeHoachNamReq req, Collection<String> trangThais) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT new com.tcdt.qlnvkhoach.query.dto.DxDcQueryDto(dx, qd.soQuyetDinh) FROM DxDcKeHoachNam dx ");
         builder.append("INNER JOIN ChiTieuKeHoachNam qd ON dx.keHoachNamId = qd.id ");
-        setConditionFilter(req, builder);
+        setConditionFilter(req, trangThais, builder);
         builder.append("ORDER BY qd.namKeHoach DESC");
 
         TypedQuery<DxDcQueryDto> query = em.createQuery(builder.toString(), DxDcQueryDto.class);
         //Set params
-        this.setParameterFilter(req, query);
+        this.setParameterFilter(req, trangThais, query);
         //Set pageable
         query.setFirstResult(req.getPaggingReq().getPage() * req.getPaggingReq().getLimit()).setMaxResults(req.getPaggingReq().getLimit());
         return query.getResultList();
     }
 
-    private void setConditionFilter(SearchDxDcKeHoachNamReq req, StringBuilder builder) {
+    private void setConditionFilter(SearchDxDcKeHoachNamReq req, Collection<String> trangThais, StringBuilder builder) {
         builder.append("WHERE 1 = 1 ");
 
         if (req.getNamKeHoach() != null) {
@@ -66,24 +67,28 @@ public class DxDcKeHoachNamRepositoryCustomImpl implements DxDcKeHoachNamReposit
         if (StringUtils.hasText(req.getMaDonVi())) {
             builder.append("AND ").append("dx.maDvi = :maDonVi ");
         }
+
+        if (!CollectionUtils.isEmpty(trangThais)) {
+            builder.append("AND ").append("dx.trangThai IN :trangThais ");
+        }
     }
 
     @Override
-    public int countDxDcKeHoachNam(SearchDxDcKeHoachNamReq req) {
+    public Long countDxDcKeHoachNam(SearchDxDcKeHoachNamReq req, Collection<String> trangThais) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT COUNT(dx.id) FROM DxDcKeHoachNam dx ");
         builder.append("INNER JOIN ChiTieuKeHoachNam qd ON dx.keHoachNamId = qd.id ");
 
-        this.setConditionFilter(req, builder);
+        this.setConditionFilter(req, trangThais, builder);
 
         TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
 
-        this.setParameterFilter(req, query);
+        this.setParameterFilter(req, trangThais, query);
 
-        return query.getSingleResult().intValue();
+        return query.getSingleResult();
     }
 
-    private void setParameterFilter(SearchDxDcKeHoachNamReq req, Query query) {
+    private void setParameterFilter(SearchDxDcKeHoachNamReq req, Collection<String> trangThais, Query query) {
         if (req.getMaDonVi() != null) {
             query.setParameter("maDonVi", req.getMaDonVi());
         }
@@ -122,6 +127,10 @@ public class DxDcKeHoachNamRepositoryCustomImpl implements DxDcKeHoachNamReposit
 
         if (StringUtils.hasText(req.getMaDonVi())) {
             query.setParameter("maDonVi", req.getMaDonVi());
+        }
+
+        if (!CollectionUtils.isEmpty(trangThais)) {
+            query.setParameter("trangThais", trangThais);
         }
     }
 }
