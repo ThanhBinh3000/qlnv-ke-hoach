@@ -383,7 +383,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @ApiOperation(value = "Delete multiple chỉ tiêu kế hoạch năm", response = List.class)
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/delete/multiple")
-    public final ResponseEntity<Resp> deleteMultipleQd(DeleteReq req) {
+    public final ResponseEntity<Resp> deleteMultipleQd(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(chiTieuKeHoachNamService.deleteMultiple(req));
@@ -400,7 +400,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @ApiOperation(value = "Delete multiple quyết định điều chỉnh", response = List.class)
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/quyet-dinh-dieu-chinh/delete/multiple")
-    public final ResponseEntity<Resp> deleteMultipleQdDc(DeleteReq req) {
+    public final ResponseEntity<Resp> deleteMultipleQdDc(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(chiTieuKeHoachNamService.deleteMultiple(req));

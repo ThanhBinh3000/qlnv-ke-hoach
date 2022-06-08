@@ -1743,6 +1743,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return chiTieuKeHoachNamRepository.countByLastestAndLoaiQuyetDinhAndCapDvi(true, loaiQd, userInfo.getCapDvi());
 	}
 
+	@Transactional(rollbackOn = Exception.class)
 	@Override
 	public boolean deleteMultiple(DeleteReq req) throws Exception {
 		UserInfo userInfo = SecurityContextService.getUser();

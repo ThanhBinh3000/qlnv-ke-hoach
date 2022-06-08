@@ -172,7 +172,7 @@ public class DxDcKeHoachNamController extends BaseController {
     @ApiOperation(value = "Delete multiple đề xuất điều chỉnh", response = List.class)
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/delete/multiple")
-    public final ResponseEntity<Resp> deleteMultiple(DeleteReq req) {
+    public final ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(dxDcKeHoachNamService.deleteMultiple(req));

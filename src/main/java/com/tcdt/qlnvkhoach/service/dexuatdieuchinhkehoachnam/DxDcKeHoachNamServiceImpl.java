@@ -731,6 +731,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return dxDcKeHoachNamRepository.count();
     }
 
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public boolean deleteMultiple(DeleteReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
