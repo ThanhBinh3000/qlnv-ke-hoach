@@ -30,4 +30,8 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
     @Transactional
     @Modifying
     void deleteByIdIn(Collection<Long> ids);
+
+    @Query(value = "SELECT * FROM CHI_TIEU_KE_HOACH_NAM CT WHERE CT.NAM_KE_HOACH = TO_NUMBER(:namKh) AND CT.MA_DVI = :maDvi AND CT.LASTEST = 1 ", nativeQuery = true)
+    ChiTieuKeHoachNam getChiTieuDxKhLcnt(Long namKh,String maDvi);
+
 }

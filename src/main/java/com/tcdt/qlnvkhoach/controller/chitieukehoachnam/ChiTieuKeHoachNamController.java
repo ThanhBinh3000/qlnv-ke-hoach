@@ -446,4 +446,21 @@ public class ChiTieuKeHoachNamController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
+
+    @ApiOperation(value = "Tra cứu chỉ tiêu kế hoạch năm và theo cục user login", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/dxkh-lcnt/{namKh}")
+    public final ResponseEntity<Resp> searchChiTieuDxKhLcnt(@PathVariable("namKh") Long namKh) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
+        }
+        return ResponseEntity.ok(resp);
+    }
 }

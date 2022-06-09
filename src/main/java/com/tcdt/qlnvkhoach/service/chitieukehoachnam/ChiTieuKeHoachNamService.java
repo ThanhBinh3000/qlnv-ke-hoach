@@ -69,4 +69,7 @@ public interface ChiTieuKeHoachNamService {
     void prepareSearchReq(SearchChiTieuKeHoachNamReq req, UserInfo userInfo, String capDviReq);
 
     boolean deleteMultiple(DeleteReq req) throws Exception;
+
+	ChiTieuKeHoachNam getChiTieuDxKhLcnt(Long namKh) throws Exception;
+
 }

@@ -1772,4 +1772,22 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		fileDinhKemService.deleteMultiple(req.getIds(), Lists.newArrayList(ChiTieuKeHoachNam.TABLE_NAME, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU));
 		return true;
 	}
+
+	@Override
+	public ChiTieuKeHoachNam getChiTieuDxKhLcnt(Long namKh) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null){
+			throw new Exception("Bad request.");
+		}
+		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.getChiTieuDxKhLcnt(namKh,userInfo.getDvql());
+
+		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
+		List<KeHoachVatTu>  vatTu = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
+
+		chiTieuKeHoachNam.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.GAO_ID.equals(kh.getVatTuId()) || Constants.LuongThucMuoiConst.THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
+		chiTieuKeHoachNam.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
+		chiTieuKeHoachNam.setKhVatTuList(vatTu);
+
+		return chiTieuKeHoachNam;
+	}
 }
