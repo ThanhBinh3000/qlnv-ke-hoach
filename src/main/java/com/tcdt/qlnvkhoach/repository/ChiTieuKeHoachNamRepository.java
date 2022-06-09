@@ -14,18 +14,9 @@ import java.util.List;
 public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long>, ChiTieuKeHoachNamRepositoryCustom {
     List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinh(Integer namKh, boolean latest, String loaiQd);
 
-    List<ChiTieuKeHoachNam> findAllByLoaiQuyetDinh(String loaiQuyetDinh);
-
     ChiTieuKeHoachNam findByIdAndLoaiQuyetDinh(Long id, String loaiQuyetDinh);
 
     ChiTieuKeHoachNam findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(String id, String loaiQuyetDinh);
-
-    @Query("SELECT COUNT(ct.id) FROM ChiTieuKeHoachNam ct " +
-            "WHERE ct.latest = ?1 AND ct.loaiQuyetDinh = ?2 " +
-            "AND (ct.capDvi = ?3 OR (ct.capDvi = ?4 AND ct.trangThai = ?5))")
-    Long countByParams(boolean latest, String loaiQd, String capTongCuc, String capCuc, String trangThai);
-
-    Long countByLatestAndLoaiQuyetDinhAndMaDvi(boolean latest, String loaiQd, String maDvi);
 
     @Transactional
     @Modifying

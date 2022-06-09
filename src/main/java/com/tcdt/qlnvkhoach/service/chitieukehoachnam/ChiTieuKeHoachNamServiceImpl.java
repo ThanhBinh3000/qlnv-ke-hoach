@@ -1736,6 +1736,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			count.setChiTieuKeHoachNamTongCuc((long)this.countCtkh(loaiQd, Constants.TONG_CUC, userInfo));
 		} else if (Constants.CHI_CUC.equalsIgnoreCase(capDvi)) {
 			count.setChiTieuKeHoachNamCuc((long) this.countCtkh(loaiQd, null, userInfo));
+			count.setChiTieuKeHoachNamTongCuc(0L);
 		}
 		return count;
 	}
