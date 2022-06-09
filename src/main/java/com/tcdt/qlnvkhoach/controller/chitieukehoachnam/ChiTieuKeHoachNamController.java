@@ -417,10 +417,10 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
     @ApiOperation(value = "Count chỉ tiêu kế hoạch năm", response = List.class)
     @GetMapping("/count")
-    public final ResponseEntity<Resp> countQd(@RequestParam(required = false) String capDvi) {
+    public final ResponseEntity<Resp> countQd() {
         Resp resp = new Resp();
         try {
-            resp.setData(chiTieuKeHoachNamService.countCtkh(ChiTieuKeHoachEnum.QD.getValue(), capDvi));
+            resp.setData(chiTieuKeHoachNamService.countCtkhn(ChiTieuKeHoachEnum.QD.getValue()));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -433,10 +433,10 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
     @ApiOperation(value = "Count điều chỉnh kế hoạch năm", response = List.class)
     @GetMapping("/quyet-dinh-dieu-chinh/count")
-    public final ResponseEntity<Resp> countQdDc(@RequestParam(required = false) String capDvi) {
+    public final ResponseEntity<Resp> countQdDc() {
         Resp resp = new Resp();
         try {
-            resp.setData(chiTieuKeHoachNamService.countCtkh(ChiTieuKeHoachEnum.QD_DC.getValue(), capDvi));
+            resp.setData(chiTieuKeHoachNamService.countCtkhn(ChiTieuKeHoachEnum.QD_DC.getValue()));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

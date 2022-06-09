@@ -22,6 +22,7 @@ import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNa
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.VatTuNhapReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.VatTuThietBiReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
+import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamCount;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.SoLuongTruocDieuChinhRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.VatTuNhapRes;
@@ -1720,13 +1721,29 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	@Override
-	public Integer countCtkh(String loaiQd, String capDviReq) throws Exception {
+	public ChiTieuKeHoachNamCount countCtkhn(String loaiQd) throws Exception {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
+		ChiTieuKeHoachNamCount count = new ChiTieuKeHoachNamCount();
+		String capDvi = userInfo.getCapDvi();
+		if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
+			count.setChiTieuKeHoachNamTongCuc((long) this.countCtkh(loaiQd, null, userInfo));
+			count.setChiTieuKeHoachNamCuc((long)this.countCtkh(loaiQd, Constants.CUC_KHU_VUC, userInfo));
+		} else if (Constants.CUC_KHU_VUC.equalsIgnoreCase(capDvi)) {
+			count.setChiTieuKeHoachNamCuc((long) this.countCtkh(loaiQd, null, userInfo));
+			count.setChiTieuKeHoachNamTongCuc((long)this.countCtkh(loaiQd, Constants.TONG_CUC, userInfo));
+		} else if (Constants.CHI_CUC.equalsIgnoreCase(capDvi)) {
+			count.setChiTieuKeHoachNamCuc((long) this.countCtkh(loaiQd, null, userInfo));
+		}
+		return count;
+	}
+
+	private Integer countCtkh(String loaiQd, String capDviReq, UserInfo userInfo) {
 		SearchChiTieuKeHoachNamReq req = new SearchChiTieuKeHoachNamReq();
 		this.prepareSearchReq(req, userInfo, capDviReq);
+		req.setLoaiQuyetDinh(loaiQd);
 		return chiTieuKeHoachNamRepository.countCtkhn(req);
 	}
 

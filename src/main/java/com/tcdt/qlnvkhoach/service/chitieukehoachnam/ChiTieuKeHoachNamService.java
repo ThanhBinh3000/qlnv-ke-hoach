@@ -9,6 +9,7 @@ import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
+import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamCount;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.SoLuongTruocDieuChinhRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
@@ -64,9 +65,9 @@ public interface ChiTieuKeHoachNamService {
 
     void retrieveDataChiTieuKeHoachNam(ChiTieuKeHoachNam chiTieuKeHoachNam);
 
-	Integer countCtkh(String loaiQd, String capDviReq) throws Exception;
+	ChiTieuKeHoachNamCount countCtkhn(String loaiQd) throws Exception;
 
-    void prepareSearchReq(SearchChiTieuKeHoachNamReq req, UserInfo userInfo, String capDviReq);
+	void prepareSearchReq(SearchChiTieuKeHoachNamReq req, UserInfo userInfo, String capDviReq);
 
     boolean deleteMultiple(DeleteReq req) throws Exception;
 
