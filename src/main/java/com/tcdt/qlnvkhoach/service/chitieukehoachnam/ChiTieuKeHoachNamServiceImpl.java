@@ -87,17 +87,24 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQd(ChiTieuKeHoachNamReq req) throws Exception {
-		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), req.getSoQuyetDinh());
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), req.getSoQuyetDinh(), userInfo);
 		if (exist != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
 		this.validateCreateCtkhnRequest(req, ChiTieuKeHoachEnum.QD.getValue());
-		return this.create(req, ChiTieuKeHoachEnum.QD.getValue(), null, req.getNamKeHoach());
+		return this.create(req, ChiTieuKeHoachEnum.QD.getValue(), null, req.getNamKeHoach(), userInfo);
 	}
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public ChiTieuKeHoachNamRes createQdDc(QdDcChiTieuKeHoachNamReq req) throws Exception {
+		UserInfo userInfo = SecurityContextService.getUser();
+		if (userInfo == null)
+			throw new Exception("Bad request.");
+
 		Long qdGocId = req.getQdGocId();
 		Optional<ChiTieuKeHoachNam> optionalQdGoc = chiTieuKeHoachNamRepository.findById(qdGocId);
 		if (!optionalQdGoc.isPresent())
@@ -109,25 +116,21 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), req.getQdDc().getSoQuyetDinh());
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), req.getQdDc().getSoQuyetDinh(), userInfo);
 		if (exist != null)
 			throw new Exception("Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
 		this.validateCreateCtkhnRequest(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue());
-		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId(), qdGoc.getNamKeHoach());
+		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId(), qdGoc.getNamKeHoach(), userInfo);
 		ChiTieuKeHoachNamRes qd = this.detailQd(qdGocId);
 
 		this.setData(qdDc, qd);
 		return qdDc;
 	}
 
-	private ChiTieuKeHoachNamRes create(ChiTieuKeHoachNamReq req, String loaiQd, Long qdGocId, Integer namKeHoach) throws Exception {
+	private ChiTieuKeHoachNamRes create(ChiTieuKeHoachNamReq req, String loaiQd, Long qdGocId, Integer namKeHoach, UserInfo userInfo) throws Exception {
 		if (req == null)
 			return null;
-
-		UserInfo userInfo = SecurityContextService.getUser();
-		if (userInfo == null)
-			throw new Exception("Bad request.");
 
 		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
@@ -296,7 +299,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		Long ctkhnId = ctkhn.getId();
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh());
+		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh(), userInfo);
 		if (exist != null && !exist.getId().equals(ctkhnId))
 			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm đã tồn tại"
 					: "Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
@@ -706,7 +709,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			ChiTieuKeHoachNam qdGoc = qdGocOptional.get();
 
 			// Duyệt điều chỉnh -> tạo quyết đinh mới từ quyết định gốc
-			this.mergeQdDcAndQd(dc, qdGoc);
+			this.mergeQdDcAndQd(dc, qdGoc, userInfo);
 			namKeHoach = qdGoc.getNamKeHoach();
 		}
 
@@ -745,7 +748,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 	}
 
-	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc) throws Exception {
+	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc, UserInfo userInfo) {
 		// QdDc
 		List<KeHoachLuongThucMuoi> khltmListDc = this.retrieveKhltm(dc);
 		List<KeHoachVatTu> khvtListDc = keHoachVatTuRepository.findByCtkhnId(dc.getId());
@@ -769,7 +772,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		qdGoc.setLatest(false);
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
-		List<ChiTieuKeHoachNam> latestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinh(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue());
+		List<ChiTieuKeHoachNam> latestExists;
+		if (Constants.TONG_CUC.equals(userInfo.getCapDvi())) {
+			latestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue(), userInfo.getCapDvi());
+		} else {
+			latestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue(), userInfo.getDvql());
+		}
 		latestExists.forEach(l -> {
 			l.setLatest(false);
 			chiTieuKeHoachNamRepository.save(l);
@@ -1477,23 +1485,40 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return response;
 	}
 
-	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update, Integer namKeHoach, String loaiQd, String soQd) throws Exception {
+	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update, Integer namKeHoach, String loaiQd, String soQd, UserInfo userInfo) throws Exception {
 		if (update == null || !update.getSoQuyetDinh().equalsIgnoreCase(soQd)) {
 			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
 			if (exist != null)
 				throw new Exception("Số quyết định " + soQd + " đã tồn tại");
 		}
 
+		String capDvi = userInfo.getCapDvi();
+		String dvql = userInfo.getDvql();
 		if (ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd)) {
-			return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
-					.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
-					.findFirst().orElse(null);
+			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
+						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+						.findFirst().orElse(null);
+			} else {
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(namKeHoach, true, loaiQd, dvql)
+						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+						.findFirst().orElse(null);
+			}
 		} else {
-			return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
-					.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
-							|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
-							|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
-					.findFirst().orElse(null);
+
+			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
+						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
+						.findFirst().orElse(null);
+			} else {
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(namKeHoach, true, loaiQd, dvql)
+						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
+						.findFirst().orElse(null);
+			}
 		}
 	}
 

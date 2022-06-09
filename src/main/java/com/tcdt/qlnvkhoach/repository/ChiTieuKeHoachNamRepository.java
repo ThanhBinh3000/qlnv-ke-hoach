@@ -12,7 +12,9 @@ import java.util.List;
 
 @Repository
 public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long>, ChiTieuKeHoachNamRepositoryCustom {
-    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinh(Integer namKh, boolean latest, String loaiQd);
+    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(Integer namKh, boolean latest, String loaiQd, String maDvi);
+
+    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(Integer namKh, boolean latest, String loaiQd, String capDvi);
 
     ChiTieuKeHoachNam findByIdAndLoaiQuyetDinh(Long id, String loaiQuyetDinh);
 
@@ -24,5 +26,4 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
 
     @Query(value = "SELECT * FROM CHI_TIEU_KE_HOACH_NAM CT WHERE CT.NAM_KE_HOACH = TO_NUMBER(:namKh) AND CT.MA_DVI = :maDvi AND CT.LATEST = 1 ", nativeQuery = true)
     ChiTieuKeHoachNam getChiTieuDxKhLcnt(Long namKh,String maDvi);
-
 }
