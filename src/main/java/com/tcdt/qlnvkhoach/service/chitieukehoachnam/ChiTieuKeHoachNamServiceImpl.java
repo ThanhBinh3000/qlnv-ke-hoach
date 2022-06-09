@@ -135,7 +135,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
-		chiTieuKeHoachNam.setLastest(true);
+		chiTieuKeHoachNam.setLatest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
 		chiTieuKeHoachNam.setMaDvi(userInfo.getDvql());
 		chiTieuKeHoachNam.setCapDvi(userInfo.getCapDvi());
@@ -766,16 +766,16 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			khvtListQd.addAll(khvtListDc);
 		}
 
-		qdGoc.setLastest(false);
+		qdGoc.setLatest(false);
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
-		List<ChiTieuKeHoachNam> lastestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue());
-		lastestExists.forEach(l -> {
-			l.setLastest(false);
+		List<ChiTieuKeHoachNam> latestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinh(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue());
+		latestExists.forEach(l -> {
+			l.setLatest(false);
 			chiTieuKeHoachNamRepository.save(l);
 		});
 
-		ChiTieuKeHoachNam lastest = ChiTieuKeHoachNam.builder()
+		ChiTieuKeHoachNam latest = ChiTieuKeHoachNam.builder()
 				.namKeHoach(qdGoc.getNamKeHoach())
 				.maDvi(qdGoc.getMaDvi())
 				.capDvi(qdGoc.getCapDvi())
@@ -785,16 +785,16 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				.trichYeu(qdGoc.getTrichYeu())
 				.ghiChu(qdGoc.getGhiChu())
 				.qdGocId(qdGoc.getId())
-				.lastest(true)
+				.latest(true)
 				.loaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue())
 				.trangThai(qdGoc.getTrangThai())
 				.build();
-		chiTieuKeHoachNamRepository.save(lastest);
+		chiTieuKeHoachNamRepository.save(latest);
 
 		for (KeHoachLuongThucMuoi kh : khltmListQd) {
 			KeHoachLuongThucMuoi cloneKh = new KeHoachLuongThucMuoi();
 			BeanUtils.copyProperties(kh, cloneKh, "id", "ctkhnId");
-			cloneKh.setCtkhnId(lastest.getId());
+			cloneKh.setCtkhnId(latest.getId());
 			keHoachLuongThucMuoiRepository.save(cloneKh);
 
 			List<KeHoachXuatLuongThucMuoi> khxList = new ArrayList<>();
@@ -810,7 +810,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		for (KeHoachVatTu kh : khvtListQd) {
 			KeHoachVatTu cloneKh = new KeHoachVatTu();
 			BeanUtils.copyProperties(kh, cloneKh, "id", "ctkhnId");
-			cloneKh.setCtkhnId(lastest.getId());
+			cloneKh.setCtkhnId(latest.getId());
 			keHoachVatTuRepository.save(cloneKh);
 		}
 
@@ -819,7 +819,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		for (FileDinhKemChung fileDinhKemChung : fileDinhKems) {
 			FileDinhKemChung cloneFdk = new FileDinhKemChung();
 			BeanUtils.copyProperties(fileDinhKemChung, cloneFdk, "id", "dataId");
-			cloneFdk.setDataId(lastest.getId());
+			cloneFdk.setDataId(latest.getId());
 			fileDinhKemService.saveFileDinhKems(Collections.singletonList(cloneFdk));
 		}
 
@@ -1479,17 +1479,17 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update, Integer namKeHoach, String loaiQd, String soQd) throws Exception {
 		if (update == null || !update.getSoQuyetDinh().equalsIgnoreCase(soQd)) {
-			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLastestIsTrue(soQd, loaiQd);
+			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
 			if (exist != null)
 				throw new Exception("Số quyết định " + soQd + " đã tồn tại");
 		}
 
 		if (ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd)) {
-			return chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
+			return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
 					.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 					.findFirst().orElse(null);
 		} else {
-			return chiTieuKeHoachNamRepository.findByNamKeHoachAndLastestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
+			return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinh(namKeHoach, true, loaiQd)
 					.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
 							|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
 							|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))

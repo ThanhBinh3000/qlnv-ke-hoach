@@ -42,7 +42,7 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private Long nguoiPheDuyetId;
 	private String lyDoTuChoi;
 	private String loaiQuyetDinh;
-	private boolean lastest;
+	private boolean latest;
 	private Long qdGocId;
 	private String capDvi;
 	private String maDvi;
