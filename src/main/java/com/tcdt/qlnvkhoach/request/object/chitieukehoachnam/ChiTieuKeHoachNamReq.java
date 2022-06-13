@@ -20,7 +20,6 @@ public class ChiTieuKeHoachNamReq {
 	@ApiModelProperty(notes = "Bắt buộc nhập đối với update")
 	private Long id;
 
-	@NotBlank(message = "Số quyết định Không được để trống")
 	@Size(max = 28, message = "Số quyết định không được vượt quá 28 ký tự.")
 	private String soQuyetDinh; // xxxx/QĐ-TCDT -> /QĐ-TCDT size = 8
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -36,6 +35,7 @@ public class ChiTieuKeHoachNamReq {
 	private String trichYeu;
 
 	private String ghiChu;
+	private Long chiTieuCanCuId;
 
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruReq> khMuoi = new ArrayList<>();

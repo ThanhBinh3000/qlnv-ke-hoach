@@ -90,7 +90,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request.");
-		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), req.getSoQuyetDinh(), userInfo);
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), req.getSoQuyetDinh(), req.getChiTieuCanCuId(), userInfo);
 		if (exist != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -116,7 +116,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), req.getQdDc().getSoQuyetDinh(), userInfo);
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), req.getQdDc().getSoQuyetDinh(), null, userInfo);
 		if (exist != null)
 			throw new Exception("Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -188,6 +188,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
 		chiTieuKeHoachNam.setCanCus(canCus);
+
 		return this.buildDetailResponse(chiTieuKeHoachNam, namKeHoach);
 	}
 
@@ -299,7 +300,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		Long ctkhnId = ctkhn.getId();
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh(), userInfo);
+		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh(), req.getChiTieuCanCuId(), userInfo);
 		if (exist != null && !exist.getId().equals(ctkhnId))
 			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm đã tồn tại"
 					: "Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
@@ -890,6 +891,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Override
 	public ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam, Integer namKeHoachChiTieu) throws Exception {
+
+		if (chiTieuKeHoachNam.getChiTieuCanCuId() != null) {
+			ChiTieuKeHoachNam canCu = this.getChiTieuKeHoachNam(chiTieuKeHoachNam.getChiTieuCanCuId());
+			if (canCu == null) {
+				throw new Exception("Không tìm thấy căn cứ");
+			}
+			chiTieuKeHoachNam.setSoQdChiTieuCanCu(canCu.getSoQuyetDinh());
+		}
+
 		List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAll());
 
 		ChiTieuKeHoachNamRes response = new ChiTieuKeHoachNamRes();
@@ -907,6 +917,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setCanCus(chiTieuKeHoachNam.getCanCus());
 		response.setLyDoTuChoi(chiTieuKeHoachNam.getLyDoTuChoi());
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
+		response.setSoQdChiTieuCanCu(chiTieuKeHoachNam.getSoQdChiTieuCanCu());
+		response.setChiTieuCanCuId(chiTieuKeHoachNam.getChiTieuCanCuId());
 
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();
@@ -1485,7 +1497,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		return response;
 	}
 
-	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update, Integer namKeHoach, String loaiQd, String soQd, UserInfo userInfo) throws Exception {
+	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update,
+										 Integer namKeHoach,
+										 String loaiQd,
+										 String soQd,
+										 Long chiTieuCanCuId,
+										 UserInfo userInfo) throws Exception {
 		if (update == null || !update.getSoQuyetDinh().equalsIgnoreCase(soQd)) {
 			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
 			if (exist != null)
@@ -1500,7 +1517,10 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
-				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(namKeHoach, true, loaiQd, dvql)
+				if (chiTieuCanCuId == null)
+					throw new Exception("Căn cứ không được để trống");
+
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndChiTieuCanCuId(namKeHoach, true, loaiQd, dvql, chiTieuCanCuId)
 						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			}
