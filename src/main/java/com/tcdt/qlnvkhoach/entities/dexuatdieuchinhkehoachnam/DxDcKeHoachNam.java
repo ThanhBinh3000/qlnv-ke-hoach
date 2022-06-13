@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam;
 
 import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.enums.DxDcKeHoachNamLoaiEnum;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -94,6 +96,12 @@ public class DxDcKeHoachNam implements Serializable {
 
     @Column(name = "KE_HOACH_NAM_ID")
     private Long keHoachNamId; // CHI_TIEU_KE_HOACH_NAM
+
+    /**
+     * @see DxDcKeHoachNamLoaiEnum
+     */
+    @Column(name = "LOAI_HANG_HOA")
+    private String loaiHangHoa;
 
     @Transient
     private List<DxDcLtVt> dxDcLtVtList = new ArrayList<>();

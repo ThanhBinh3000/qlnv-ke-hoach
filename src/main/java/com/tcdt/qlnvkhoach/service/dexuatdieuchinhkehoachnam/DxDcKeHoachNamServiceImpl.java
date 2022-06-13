@@ -133,7 +133,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
 
-        DxDcKeHoachNam exist = this.existDxDckhn(null, chiTieuKeHoachNam, req.getSoVanBan(), userInfo.getDvql());
+        DxDcKeHoachNam exist = this.existDxDckhn(null, chiTieuKeHoachNam, req.getSoVanBan(), userInfo.getDvql(), req.getLoaiHangHoa());
         if (exist != null) {
             throw new Exception("Đề xuất điều chỉnh đã tồn tại.");
         }
@@ -184,7 +184,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (!userInfo.getDvql().equals(dxDc.getMaDvi()))
             throw new Exception("Bad request");
 
-        DxDcKeHoachNam exist = this.existDxDckhn(dxDc, ctkhn, req.getSoVanBan(), userInfo.getDvql());
+        DxDcKeHoachNam exist = this.existDxDckhn(dxDc, ctkhn, req.getSoVanBan(), userInfo.getDvql(), req.getLoaiHangHoa());
         if (exist != null && !exist.getId().equals(dxDc.getId()))
             throw new Exception("Đề xuất điều chỉnh kế hoạch năm đã tồn tại");
 
@@ -235,14 +235,14 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return ltVts;
     }
 
-    private DxDcKeHoachNam existDxDckhn(DxDcKeHoachNam update, ChiTieuKeHoachNam chiTieuKeHoachNam, String soVanBan, String dvql) throws Exception {
+    private DxDcKeHoachNam existDxDckhn(DxDcKeHoachNam update, ChiTieuKeHoachNam chiTieuKeHoachNam, String soVanBan, String dvql, String loaiHangHoa) throws Exception {
         if (update == null || !update.getSoVanBan().equalsIgnoreCase(soVanBan)) {
             DxDcKeHoachNam exist = dxDcKeHoachNamRepository.findFirstBySoVanBan(soVanBan);
             if (exist != null)
                 throw new Exception("Số văn bản " + soVanBan + " đã tồn tại");
         }
 
-        return dxDcKeHoachNamRepository.findByKeHoachNamIdAndMaDvi(chiTieuKeHoachNam.getId(), dvql)
+        return dxDcKeHoachNamRepository.findByKeHoachNamIdAndMaDviAndLoaiHangHoa(chiTieuKeHoachNam.getId(), dvql, loaiHangHoa)
                 .stream().filter(c -> !DxDcKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
                 .findFirst().orElse(null);
 

@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam;
 
+import com.tcdt.qlnvkhoach.enums.DxDcKeHoachNamLoaiEnum;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,12 @@ public class DxDcKeHoachNamReq {
 
     @NotNull(message = "Căn cứ không được để trống")
     private Long keHoachNamId;
+
+    /**
+     * @see DxDcKeHoachNamLoaiEnum
+     */
+    @NotNull(message = "Không được để trống")
+    private String loaiHangHoa;
 
     private List<DxDcLtVtReq> dxDcLtVtReqList = new ArrayList<>();
     private List<FileDinhKemReq> fileDinhKemReqs = new ArrayList<>();
