@@ -43,13 +43,23 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private String lyDoTuChoi;
 	private String loaiQuyetDinh;
 	private boolean latest;
-	private Long qdGocId;
+	private Long qdGocId; //ChiTieuKeHoachNam
 	private String capDvi;
 	private String maDvi;
-	private Long chiTieuCanCuId; // Cuc tao chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua tong cuc
+	/**
+	 * 	Cuc tao chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua tong cuc
+	 * 	Tong Cuc tao dieu chinh chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua tong cuc
+	 * 	Cuc tao dieu chinh chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua cuc
+	 */
+	private Long chiTieuCanCuId; //ChiTieuKeHoachNam
+	private Long dxDcKhnId; // DxDcKeHoachNam
+	private String loaiHangHoa;
 
 	@Lob
 	private String ghiChu;
+
+	@Transient
+	private String soVbDxDcKhn;
 
 	@Transient
 	private String soQdChiTieuCanCu;

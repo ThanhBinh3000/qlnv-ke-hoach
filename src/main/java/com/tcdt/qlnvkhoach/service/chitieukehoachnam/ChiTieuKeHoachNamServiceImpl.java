@@ -90,7 +90,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request.");
-		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), req.getSoQuyetDinh(), req.getChiTieuCanCuId(), userInfo);
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req, req.getNamKeHoach(), ChiTieuKeHoachEnum.QD.getValue(), userInfo);
 		if (exist != null)
 			throw new Exception("Chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -116,7 +116,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		chiTieuKeHoachNamRepository.save(qdGoc);
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), req.getQdDc().getSoQuyetDinh(), null, userInfo);
+		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc(), req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), userInfo);
 		if (exist != null)
 			throw new Exception("Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
@@ -300,7 +300,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		Long ctkhnId = ctkhn.getId();
 
-		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req.getNamKeHoach(), loaiQd, req.getSoQuyetDinh(), req.getChiTieuCanCuId(), userInfo);
+		ChiTieuKeHoachNam exist = this.existCtkhn(ctkhn, req, req.getNamKeHoach(), loaiQd, userInfo);
 		if (exist != null && !exist.getId().equals(ctkhnId))
 			throw new Exception(ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) ? "Chỉ tiêu kế hoạch năm đã tồn tại"
 					: "Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
@@ -390,7 +390,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		keHoachLuongThucMuoi.setStt(khltReq.getStt());
 		keHoachLuongThucMuoi.setCtkhnId(ctkhnId);
 		keHoachLuongThucMuoi.setDonViId(khltReq.getDonViId());
-		keHoachLuongThucMuoi.setMaDvi(khltReq.getMaDvi());
+		keHoachLuongThucMuoi.setMaDvi(khltReq.getMaDonVi());
 		keHoachLuongThucMuoi.setVatTuId(vatuId);
 		keHoachLuongThucMuoi.setMaVatTu(maVatTu);
 		Double soLuongNhap = ntnSoLuong == null ? 0 : ntnSoLuong;
@@ -659,19 +659,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 					Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_MUOI);
 
 		}
-
-//		//Vat tu
-//		for (KeHoachVatTuRes keHoachVatTuRes : chiTieuKeHoachNamRes.getKhVatTu()) {
-//			for (NhomVatTuThietBiRes nhomVatTuThietBi : keHoachVatTuRes.getNhomVatTuThietBi()) {
-//				for (VatTuThietBiRes vatTuThietBiRes : nhomVatTuThietBi.getVatTuThietBi()) {
-//					List<Integer> cacNamTruoc = vatTuThietBiRes.getCacNamTruoc()
-//							.stream().map(VatTuNhapRes::getNam).collect(Collectors.toList());
-//					this.addEmptyVatTuNhap(cacNamTruoc, chiTieuKeHoachNamRes.getNamKeHoach(), vatTuThietBiRes.getCacNamTruoc(),
-//							Constants.ChiTieuKeHoachNamExport.SO_NAM_LUU_KHO_VAT_TU);
-//				}
-//			}
-//
-//		}
 	}
 
 	@Override
@@ -708,9 +695,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				throw new Exception("Không tìm thấy dữ liệu.");
 
 			ChiTieuKeHoachNam qdGoc = qdGocOptional.get();
+			ChiTieuKeHoachNam latest = chiTieuKeHoachNamRepository.findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(qdGoc.getId(), ChiTieuKeHoachEnum.QD.getValue());
+			if (latest != null) {
+				// Duyệt điều chỉnh -> update latest quyết đinh
+				this.mergeQdDcAndQd(dc, latest);
+			} else {
+				// Duyệt điều chỉnh -> tạo quyết đinh mới từ quyết định gốc
+				this.createQd(dc, qdGoc, userInfo);
+			}
 
-			// Duyệt điều chỉnh -> tạo quyết đinh mới từ quyết định gốc
-			this.mergeQdDcAndQd(dc, qdGoc, userInfo);
 			namKeHoach = qdGoc.getNamKeHoach();
 		}
 
@@ -749,7 +742,67 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 	}
 
-	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc, UserInfo userInfo) {
+	private void mergeQdDcAndQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam latest) {
+		// QdDc
+		List<KeHoachLuongThucMuoi> khltmListDc = this.retrieveKhltm(dc);
+		List<KeHoachVatTu> khvtListDc = keHoachVatTuRepository.findByCtkhnId(dc.getId());
+
+		// Qd
+		List<KeHoachLuongThucMuoi> khltmListQd = this.retrieveKhltm(latest);
+		List<KeHoachVatTu> khvtListQd = keHoachVatTuRepository.findByCtkhnId(latest.getId());
+
+		List<KeHoachLuongThucMuoi> deleteLtmList = new ArrayList<>();
+		List<KeHoachVatTu> deleteVtList = new ArrayList<>();
+
+		if (!CollectionUtils.isEmpty(khltmListDc)) {
+			Set<String> groupDviAndVatTu = khltmListDc.stream().map(KeHoachLuongThucMuoi::groupByDonViIdAndVatTuId).collect(Collectors.toSet());
+			deleteLtmList = khltmListQd.stream().filter(kh -> groupDviAndVatTu.contains(kh.groupByDonViIdAndVatTuId())).collect(Collectors.toList());
+			khltmListQd.addAll(khltmListDc);
+		}
+
+		if (!CollectionUtils.isEmpty(khvtListDc)) {
+			Set<String> groupDviAndVatTu = khvtListDc.stream().map(KeHoachVatTu::groupByDonViIdAndVatTuId).collect(Collectors.toSet());
+			deleteVtList = khvtListQd.stream().filter(kh -> groupDviAndVatTu.contains(kh.groupByDonViIdAndVatTuId())).collect(Collectors.toList());
+			khvtListQd.addAll(khvtListDc);
+		}
+
+		if (!CollectionUtils.isEmpty(deleteLtmList)) {
+			List<KeHoachXuatLuongThucMuoi> khxltms = deleteLtmList.stream().flatMap(d -> d.getKhxltms().stream()).collect(Collectors.toList());
+			if (!CollectionUtils.isEmpty(khxltms)) {
+				keHoachXuatLuongThucMuoiRepository.deleteAll(khxltms);
+			}
+			keHoachLuongThucMuoiRepository.deleteAll(deleteLtmList);
+		}
+
+		if (!CollectionUtils.isEmpty(deleteVtList)) {
+			keHoachVatTuRepository.deleteAll(deleteVtList);
+		}
+
+		for (KeHoachLuongThucMuoi kh : khltmListDc) {
+			KeHoachLuongThucMuoi cloneKh = new KeHoachLuongThucMuoi();
+			BeanUtils.copyProperties(kh, cloneKh, "id", "ctkhnId");
+			cloneKh.setCtkhnId(latest.getId());
+			keHoachLuongThucMuoiRepository.save(cloneKh);
+
+			List<KeHoachXuatLuongThucMuoi> khxList = new ArrayList<>();
+			for (KeHoachXuatLuongThucMuoi khx : kh.getKhxltms()) {
+				KeHoachXuatLuongThucMuoi cloneKhx = new KeHoachXuatLuongThucMuoi();
+				BeanUtils.copyProperties(khx, cloneKhx, "id", "keHoachId");
+				cloneKhx.setKeHoachId(cloneKh.getId());
+				khxList.add(cloneKhx);
+			}
+			keHoachXuatLuongThucMuoiRepository.saveAll(khxList);
+		}
+
+		for (KeHoachVatTu kh : khvtListDc) {
+			KeHoachVatTu cloneKh = new KeHoachVatTu();
+			BeanUtils.copyProperties(kh, cloneKh, "id", "ctkhnId");
+			cloneKh.setCtkhnId(latest.getId());
+			keHoachVatTuRepository.save(cloneKh);
+		}
+	}
+
+	private void createQd(ChiTieuKeHoachNam dc, ChiTieuKeHoachNam qdGoc, UserInfo userInfo) {
 		// QdDc
 		List<KeHoachLuongThucMuoi> khltmListDc = this.retrieveKhltm(dc);
 		List<KeHoachVatTu> khvtListDc = keHoachVatTuRepository.findByCtkhnId(dc.getId());
@@ -769,20 +822,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			khvtListQd.removeIf(kh -> groupDviAndVatTu.contains(kh.groupByDonViIdAndVatTuId()));
 			khvtListQd.addAll(khvtListDc);
 		}
-
 		qdGoc.setLatest(false);
 		chiTieuKeHoachNamRepository.save(qdGoc);
-
-		List<ChiTieuKeHoachNam> latestExists;
-		if (Constants.TONG_CUC.equals(userInfo.getCapDvi())) {
-			latestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue(), userInfo.getCapDvi());
-		} else {
-			latestExists = chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(qdGoc.getNamKeHoach(), true, ChiTieuKeHoachEnum.QD.getValue(), userInfo.getDvql());
-		}
-		latestExists.forEach(l -> {
-			l.setLatest(false);
-			chiTieuKeHoachNamRepository.save(l);
-		});
 
 		ChiTieuKeHoachNam latest = ChiTieuKeHoachNam.builder()
 				.namKeHoach(qdGoc.getNamKeHoach())
@@ -898,6 +939,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				throw new Exception("Không tìm thấy căn cứ");
 			}
 			chiTieuKeHoachNam.setSoQdChiTieuCanCu(canCu.getSoQuyetDinh());
+		}
+
+
+		if (chiTieuKeHoachNam.getDxDcKhnId() != null) {
+			Optional<DxDcKeHoachNam> optionalDxDc = dxDcKeHoachNamRepository.findById(chiTieuKeHoachNam.getDxDcKhnId());
+			if (!optionalDxDc.isPresent()) {
+				throw new Exception("Không tìm thấy đề xuất");
+			}
+			chiTieuKeHoachNam.setSoVbDxDcKhn(optionalDxDc.get().getSoVanBan());
 		}
 
 		List<QlnvDmVattu> vattuList = Lists.newArrayList(qlnvDmVattuRepository.findAll());
@@ -1498,12 +1548,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	private ChiTieuKeHoachNam existCtkhn(ChiTieuKeHoachNam update,
+										 ChiTieuKeHoachNamReq req,
 										 Integer namKeHoach,
 										 String loaiQd,
-										 String soQd,
-										 Long chiTieuCanCuId,
 										 UserInfo userInfo) throws Exception {
-		if (update == null || !update.getSoQuyetDinh().equalsIgnoreCase(soQd)) {
+		String soQd = req.getSoQuyetDinh();
+		Long chiTieuCanCuId = req.getChiTieuCanCuId();
+		String loaiHangHoa = req.getLoaiHangHoa();
+
+		if (update == null || (StringUtils.hasText(update.getSoQuyetDinh()) && !update.getSoQuyetDinh().equalsIgnoreCase(soQd))) {
 			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
 			if (exist != null)
 				throw new Exception("Số quyết định " + soQd + " đã tồn tại");
@@ -1526,14 +1579,17 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			}
 		} else {
 
+			if (!StringUtils.hasText(loaiHangHoa))
+				throw new Exception("Loại hàng hóa không được để trống");
+
 			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
-				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDviAndLoaiHangHoa(namKeHoach, true, loaiQd, capDvi, loaiHangHoa)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
-				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(namKeHoach, true, loaiQd, dvql)
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndLoaiHangHoa(namKeHoach, true, loaiQd, dvql, loaiHangHoa)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))

@@ -18,7 +18,7 @@ public class  KeHoachLuongThucDuTruReq {
 	private Long khGaoId;
 	private Long khThocId;
 	private Long donViId;
-	private String maDvi;
+	private String maDonVi;
 
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;

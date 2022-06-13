@@ -16,7 +16,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +41,17 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID as qdGocId, ");
-			builder.append("qdGoc.SO_QUYET_DINH as soQDGoc ");
+			builder.append("qdGoc.SO_QUYET_DINH as soQDGoc, ");
+			builder.append("dxDc.ID as dxDcId, ");
+			builder.append("dxDc.SO_VAN_BAN as dxDcSoVanBan ");
 		}
 
 		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append("INNER JOIN CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
+			// LEFT JOIN: data cũ chưa có dxdcId
+			builder.append("LEFT JOIN DX_DC_KE_HOACH_NAM dxDc ON ct.DX_DC_KHN_ID = dxDc.ID ");
 		}
 		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
@@ -56,7 +59,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
-			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
+			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH, dxDc.ID, dxDc.SO_VAN_BAN ");
 		}
 		builder.append("ORDER BY ct.NAM_KE_HOACH DESC");
 
@@ -89,6 +92,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 					if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 						chiTieuKeHoachNamRes.setQdGocId(item.get("qdGocId", BigDecimal.class).longValue());
 						chiTieuKeHoachNamRes.setSoQdGoc(item.get("soQDGoc", String.class));
+						Long dxDcId = item.get("dxDcId") != null ? item.get("dxDcId", BigDecimal.class).longValue() : null;
+						String dxDcSoVanBan = item.get("dxDcSoVanBan") != null ? item.get("dxDcSoVanBan", String.class) : null;
+						chiTieuKeHoachNamRes.setDxDcKhnId(dxDcId);
+						chiTieuKeHoachNamRes.setSoVbDxDcKhn(dxDcSoVanBan);
 					}
 					return chiTieuKeHoachNamRes;
 				}).collect(Collectors.toList());
