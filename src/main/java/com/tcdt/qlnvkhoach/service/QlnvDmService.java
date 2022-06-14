@@ -8,7 +8,6 @@ import com.google.gson.reflect.TypeToken;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
-import com.tcdt.qlnvkhoach.util.Request;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
