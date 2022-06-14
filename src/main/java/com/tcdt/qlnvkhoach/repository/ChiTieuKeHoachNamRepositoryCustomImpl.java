@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
+import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.DataUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.*;
@@ -27,7 +28,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 	private EntityManager em;
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req) {
+	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, String userCapDvi) {
 		String loaiQd = req.getLoaiQuyetDinh();
 
 		StringBuilder builder = new StringBuilder();
@@ -41,17 +42,22 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID as qdGocId, ");
-			builder.append("qdGoc.SO_QUYET_DINH as soQDGoc, ");
-			builder.append("dxDc.ID as dxDcId, ");
-			builder.append("dxDc.SO_VAN_BAN as dxDcSoVanBan ");
+			builder.append("qdGoc.SO_QUYET_DINH as soQDGoc ");
+
+			if (Constants.CUC_KHU_VUC.equalsIgnoreCase(userCapDvi)) {
+				builder.append(", dcTongCuc.ID as dcTongCucId, ");
+				builder.append("dcTongCuc.SO_QUYET_DINH as soQdDcTongCuc ");
+			}
 		}
 
 		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append("INNER JOIN CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
-			// LEFT JOIN: data cũ chưa có dxdcId
-			builder.append("LEFT JOIN DX_DC_KE_HOACH_NAM dxDc ON ct.DX_DC_KHN_ID = dxDc.ID ");
+			if (Constants.CUC_KHU_VUC.equalsIgnoreCase(userCapDvi)) {
+				builder.append("LEFT JOIN CHI_TIEU_KE_HOACH_NAM dcTongCuc ON ct.DC_CHI_TIEU_ID = dcTongCuc.ID ");
+			}
+
 		}
 		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
@@ -59,7 +65,11 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
-			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH, dxDc.ID, dxDc.SO_VAN_BAN ");
+			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
+
+			if (Constants.CUC_KHU_VUC.equalsIgnoreCase(userCapDvi)) {
+				builder.append(", dcTongCuc.ID, dcTongCuc.SO_QUYET_DINH ");
+			}
 		}
 		builder.append("ORDER BY ct.NAM_KE_HOACH DESC");
 
@@ -92,10 +102,13 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 					if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 						chiTieuKeHoachNamRes.setQdGocId(item.get("qdGocId", BigDecimal.class).longValue());
 						chiTieuKeHoachNamRes.setSoQdGoc(item.get("soQDGoc", String.class));
-						Long dxDcId = item.get("dxDcId") != null ? item.get("dxDcId", BigDecimal.class).longValue() : null;
-						String dxDcSoVanBan = item.get("dxDcSoVanBan") != null ? item.get("dxDcSoVanBan", String.class) : null;
-						chiTieuKeHoachNamRes.setDxDcKhnId(dxDcId);
-						chiTieuKeHoachNamRes.setSoVbDxDcKhn(dxDcSoVanBan);
+
+						if (Constants.CUC_KHU_VUC.equalsIgnoreCase(userCapDvi)) {
+							Long dcChiTieuTongCucId = item.get("dcTongCucId") != null ? item.get("dcTongCucId", BigDecimal.class).longValue() : null;
+							String soQdDcTongCuc = item.get("soQdDcTongCuc") != null ? item.get("soQdDcTongCuc", String.class) : null;
+							chiTieuKeHoachNamRes.setDcChiTieuId(dcChiTieuTongCucId);
+							chiTieuKeHoachNamRes.setSoQdDcChiTieu(soQdDcTongCuc);
+						}
 					}
 					return chiTieuKeHoachNamRes;
 				}).collect(Collectors.toList());

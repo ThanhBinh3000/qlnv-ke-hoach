@@ -33,9 +33,10 @@ public class ChiTieuKeHoachNamReq {
 	private String trichYeu;
 
 	private String ghiChu;
-	private Long chiTieuCanCuId;
+	private Long chiTieuId;
 	private String loaiHangHoa;
-	private Long dxDcKhnId;
+	private List<Long> dxDcKhnIds = new ArrayList<>();
+	private Long dcChiTieuId;
 
 	private List<KeHoachLuongThucDuTruReq> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruReq> khMuoi = new ArrayList<>();

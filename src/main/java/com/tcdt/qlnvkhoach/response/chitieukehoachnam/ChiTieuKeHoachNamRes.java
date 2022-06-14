@@ -40,13 +40,14 @@ public class ChiTieuKeHoachNamRes {
 	private Long qdGocId;
 	private String soQdGoc;
 	private String ghiChu;
-	private Long chiTieuCanCuId;
-	private String soQdChiTieuCanCu;
+	private Long chiTieuId;
+	private String soQdChiTieu;
 	private String loaiHangHoa;
 	private String tenLoaiHangHoa;
-	private Long dxDcKhnId;
-	private String soVbDxDcKhn;
+	private Long dcChiTieuId;
+	private String soQdDcChiTieu;
 
+	private List<ChiTieuDeXuatResponse> deXuats = new ArrayList<>();
 	private List<KeHoachLuongThucDuTruRes> khLuongThuc = new ArrayList<>();
 	private List<KeHoachMuoiDuTruRes> khMuoiDuTru = new ArrayList<>();
 	private List<KeHoachVatTuRes> khVatTu = new ArrayList<>();

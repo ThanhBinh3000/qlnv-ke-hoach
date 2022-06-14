@@ -24,4 +24,6 @@ public interface DxDcKeHoachNamRepository extends JpaRepository<DxDcKeHoachNam, 
     @Transactional
     @Modifying
     void deleteByIdIn(Collection<Long> ids);
+
+    List<DxDcKeHoachNam> findByIdIn(Collection<Long> ids);
 }

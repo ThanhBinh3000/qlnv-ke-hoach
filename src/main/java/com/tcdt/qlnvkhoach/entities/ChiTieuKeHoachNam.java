@@ -47,22 +47,26 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private String capDvi;
 	private String maDvi;
 	/**
-	 * 	Cuc tao chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua tong cuc
-	 * 	Tong Cuc tao dieu chinh chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua tong cuc
-	 * 	Cuc tao dieu chinh chi tieu ke hoach nam, can cu = chi tieu ke hoach nam cua cuc
+	 * 	Cuc tao chi tieu ke hoach nam -> chi tieu ke hoach nam cua tong cuc
+	 * 	Tong Cuc tao dieu chinh chi tieu ke hoach nam -> chi tieu ke hoach nam cua tong cuc
+	 * 	Cuc tao dieu chinh chi tieu ke hoach nam -> chi tieu ke hoach nam cua cuc
 	 */
-	private Long chiTieuCanCuId; //ChiTieuKeHoachNam
-	private Long dxDcKhnId; // DxDcKeHoachNam
+	private Long chiTieuId; //ChiTieuKeHoachNam
+
+	/**
+	 * Cục tạo điều chỉnh -> điều chỉnh của tổng cục
+	 */
+	private Long dcChiTieuId;
 	private String loaiHangHoa;
 
 	@Lob
 	private String ghiChu;
 
 	@Transient
-	private String soVbDxDcKhn;
+	private String soQdChiTieu;
 
 	@Transient
-	private String soQdChiTieuCanCu;
+	private String soQdDcChiTieu;
 
 	@Transient
 	private List<KeHoachLuongThucMuoi> khLuongThucList = new ArrayList<>();
