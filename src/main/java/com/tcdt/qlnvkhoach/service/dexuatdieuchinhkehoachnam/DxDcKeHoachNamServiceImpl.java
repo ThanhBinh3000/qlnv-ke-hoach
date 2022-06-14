@@ -252,6 +252,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         DxDcKeHoachNamRes response = new DxDcKeHoachNamRes();
         BeanUtils.copyProperties(dxDc, response);
+        response.setTenLoaiHangHoa(LoaiHangHoaEnum.getTenById(dxDc.getLoaiHangHoa()));
         if (dxDc.getKeHoachNam() != null) {
             ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam(), dxDc.getKeHoachNam().getNamKeHoach());
             response.setSoQdKeHoachNam(dxDc.getKeHoachNam().getSoQuyetDinh());
@@ -277,7 +278,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
     private List<DxDcVtRes> buildListDxDcVatTuRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) throws Exception {
 
         List<DxDcLtVt> vtList = dxDc.getDxDcLtVtList().stream()
-                .filter(ltVt -> DxDcKeHoachNamLoaiEnum.VAT_TU.getValue().equals(ltVt.getLoai()))
+                .filter(ltVt -> LoaiHangHoaEnum.VAT_TU.getValue().equals(ltVt.getLoai()))
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(vtList))
@@ -317,7 +318,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     private List<DxDcMuoiRes> buildListDxDcMuoiRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) {
         List<DxDcLtVt> muoiList = dxDc.getDxDcLtVtList().stream()
-                .filter(ltVt -> DxDcKeHoachNamLoaiEnum.MUOI.getValue().equals(ltVt.getLoai()))
+                .filter(ltVt -> LoaiHangHoaEnum.MUOI.getValue().equals(ltVt.getLoai()))
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(muoiList))
@@ -337,7 +338,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     private List<DxDcLtRes> buildListDxDcLtRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) {
         List<DxDcLtVt> ltList = dxDc.getDxDcLtVtList().stream()
-                .filter(ltVt -> DxDcKeHoachNamLoaiEnum.LUONG_THUC.getValue().equals(ltVt.getLoai()))
+                .filter(ltVt -> LoaiHangHoaEnum.LUONG_THUC.getValue().equals(ltVt.getLoai()))
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(ltList))

@@ -43,6 +43,7 @@ public class ChiTieuKeHoachNamRes {
 	private Long chiTieuCanCuId;
 	private String soQdChiTieuCanCu;
 	private String loaiHangHoa;
+	private String tenLoaiHangHoa;
 	private Long dxDcKhnId;
 	private String soVbDxDcKhn;
 

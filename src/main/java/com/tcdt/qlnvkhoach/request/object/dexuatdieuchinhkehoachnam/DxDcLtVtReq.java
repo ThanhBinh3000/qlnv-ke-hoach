@@ -1,6 +1,5 @@
 package com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam;
 
-import com.tcdt.qlnvkhoach.enums.DxDcKeHoachNamLoaiEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +29,7 @@ public class DxDcLtVtReq {
     private String chiTieu;
 
     /**
-     * @see DxDcKeHoachNamLoaiEnum
+     * @see com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum
      */
     @NotNull(message = "Không được để trống")
     private String loai;

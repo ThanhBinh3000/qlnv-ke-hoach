@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
 import com.tcdt.qlnvkhoach.enums.DxDcKeHoachNamStatusTongCucEnum;
+import com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoach.repository.*;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
@@ -45,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
@@ -974,7 +974,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 		response.setSoQdChiTieuCanCu(chiTieuKeHoachNam.getSoQdChiTieuCanCu());
 		response.setChiTieuCanCuId(chiTieuKeHoachNam.getChiTieuCanCuId());
-
+		response.setTenLoaiHangHoa(LoaiHangHoaEnum.getTenById(chiTieuKeHoachNam.getLoaiHangHoa()));
 		List<KeHoachLuongThucMuoi> keHoachLuongThucList = chiTieuKeHoachNam.getKhLuongThucList();
 		List<KeHoachLuongThucMuoi> keHoachMuoiList = chiTieuKeHoachNam.getKhMuoiList();
 		List<KeHoachVatTu> keHoachVatTuList = chiTieuKeHoachNam.getKhVatTuList();
@@ -1334,9 +1334,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	private void validateCreateCtkhnRequest(ChiTieuKeHoachNamReq req, String loaiQd) throws Exception {
 
-		if (ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd) && CollectionUtils.isEmpty(req.getCanCus())) {
-			throw new Exception("Căn cứ không được để trống");
-		}
 		Set<Long> donViIdSet = new HashSet<>();
 		List<String> maVatTuLtm = new ArrayList<>();
 

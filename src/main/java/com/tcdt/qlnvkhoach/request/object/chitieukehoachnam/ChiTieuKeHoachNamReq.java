@@ -29,7 +29,6 @@ public class ChiTieuKeHoachNamReq {
 	@NotNull(message = "Năm kế hoạch không được để trống")
 	private Integer namKeHoach;
 
-	@NotBlank(message = "Trích yếu Không được để trống")
 	@Size(max = 500, message = "Trích yếu không được vượt quá 500 ký tự.")
 	private String trichYeu;
 
