@@ -236,7 +236,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
     }
 
     private DxDcKeHoachNam existDxDckhn(DxDcKeHoachNam update, ChiTieuKeHoachNam chiTieuKeHoachNam, String soVanBan, String dvql, String loaiHangHoa) throws Exception {
-        if (update == null || !update.getSoVanBan().equalsIgnoreCase(soVanBan)) {
+        if (update == null || (!StringUtils.hasText(update.getSoVanBan()) && !update.getSoVanBan().equalsIgnoreCase(soVanBan))) {
             DxDcKeHoachNam exist = dxDcKeHoachNamRepository.findFirstBySoVanBan(soVanBan);
             if (exist != null)
                 throw new Exception("Số văn bản " + soVanBan + " đã tồn tại");

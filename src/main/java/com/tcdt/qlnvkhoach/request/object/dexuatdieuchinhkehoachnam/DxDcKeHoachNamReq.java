@@ -21,14 +21,11 @@ import java.util.List;
 public class DxDcKeHoachNamReq {
     private Long id;
 
-    @NotBlank(message = "Số văn bản không được để trống")
     private String soVanBan;
 
-    @NotNull(message = "Ngày ký không được để trống")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngayKy;
 
-    @NotNull(message = "Ngày hiệu lực không được để trống")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngayHieuLuc;
 
