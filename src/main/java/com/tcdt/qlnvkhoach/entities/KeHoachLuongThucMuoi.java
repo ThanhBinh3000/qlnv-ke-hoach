@@ -25,6 +25,8 @@ public class KeHoachLuongThucMuoi implements Serializable {
 	private Long ctkhnId;
 	private Long donViId;
 	private String maDvi;
+	@Transient
+	private String tenDonVi;
 	private String trichYeu;
 	private Long vatTuId;
 	private String maVatTu;

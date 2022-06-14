@@ -31,6 +31,7 @@ import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMu
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachmuoidutru.TonKhoDauNamRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
@@ -83,6 +85,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Autowired
 	private DxDcKeHoachNamRepository dxDcKeHoachNamRepository;
+
+	@Autowired
+	private QlnvDmService qlnvDmService;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -1900,9 +1905,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.getChiTieuDxKhLcnt(namKh,userInfo.getDvql());
 
+		Map<String, String> dataMap = qlnvDmService.getListDanhMucDonVi("3");
 		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		List<KeHoachVatTu>  vatTu = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
-
+		keHoachLuongThucMuois.forEach( f -> {
+			f.setTenDonVi( StringUtils.isEmpty(f.getMaDvi()) ? null : dataMap.get(f.getMaDvi()));
+		});
 		chiTieuKeHoachNam.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.GAO_ID.equals(kh.getVatTuId()) || Constants.LuongThucMuoiConst.THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		chiTieuKeHoachNam.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		chiTieuKeHoachNam.setKhVatTuList(vatTu);

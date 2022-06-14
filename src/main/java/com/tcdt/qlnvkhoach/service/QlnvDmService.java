@@ -1,17 +1,18 @@
 package com.tcdt.qlnvkhoach.service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.gson.reflect.TypeToken;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
+import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
+import com.tcdt.qlnvkhoach.util.Request;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -26,6 +27,8 @@ import com.tcdt.qlnvkhoach.util.Constants;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Service
@@ -112,6 +115,17 @@ public class QlnvDmService {
 
 		return qlnvDmDonviRepository.findByMaDviIn(maDvis).stream()
 				.collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
+	}
+
+	public Map<String, String> getListDanhMucDonVi(String capDvi){
+		ResponseEntity<String> response = qlnvDmClient.getAllDanhMucDonVi(capDvi);
+		String str = Request.getAttrFromJson(response.getBody(), "data");
+		HashMap<String, String> data = new HashMap<String, String>();
+		List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {}.getType());
+		for (Map<String, Object> map : retMap){
+			data.put(String.valueOf(map.get("maDvi")), String.valueOf(map.get("tenDvi")));
+		}
+		return data;
 	}
 
 	public QlnvDmDonvi getDonViByMa(String maDvi) {

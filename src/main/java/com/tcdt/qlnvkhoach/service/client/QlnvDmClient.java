@@ -1,8 +1,8 @@
 package com.tcdt.qlnvkhoach.service.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.tcdt.qlnvkhoach.config.FeignConfig;
 import com.tcdt.qlnvkhoach.response.Resp;
@@ -25,5 +25,9 @@ public interface QlnvDmClient {
 	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/json" })
 	public Resp getAllByLoaiDmAndLevelDm(@PathVariable("loaiDm") String loaiDm,
 			@PathVariable("levelDm") Integer levelDm);
+
+	@GetMapping( PathClientConstants.URL_DM_DON_VI_GET_ALL)
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getAllDanhMucDonVi(@PathVariable("capDvi") String capDvi);
 
 }
