@@ -115,13 +115,16 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		int page = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getPage).orElse(BaseRequest.DEFAULT_PAGE);
 		int limit = Optional.ofNullable(req.getPaggingReq()).map(PaggingReq::getLimit).orElse(BaseRequest.DEFAULT_LIMIT);
-		int i = this.countCtkhn(req);
 		return new PageImpl<>(response, PageRequest.of(page, limit), this.countCtkhn(req));
 	}
 
 
 	private void setConditionSearchCtkhn(SearchChiTieuKeHoachNamReq req, StringBuilder builder) {
-		builder.append("WHERE ct.LATEST = 1 ");
+		if (ChiTieuKeHoachEnum.QD.getValue().equals(req.getLoaiQuyetDinh())) {
+			builder.append("WHERE ((ct.LATEST = 1 AND ct.QD_GOC_ID IS NULL) OR ct.LATEST = 0) ");
+		} else {
+			builder.append("WHERE ct.LATEST = 1 ");
+		}
 
 		if (!StringUtils.isEmpty(req.getSoQD())) {
 			builder.append("AND ").append("LOWER(ct.SO_QUYET_DINH) LIKE :soQD ");
@@ -161,6 +164,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (!StringUtils.isEmpty(req.getCapDvi())) {
 			builder.append("AND ").append("ct.CAP_DVI = :capDvi ");
+		}
+
+		if (!StringUtils.isEmpty(req.getLoaiHangHoa())) {
+			builder.append("AND ").append("ct.LOAI_HANG_HOA = :loaiHangHoa ");
 		}
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {
@@ -246,6 +253,10 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (!StringUtils.isEmpty(req.getCapDvi())) {
 			query.setParameter("capDvi", req.getCapDvi());
+		}
+
+		if (!StringUtils.isEmpty(req.getLoaiHangHoa())) {
+			query.setParameter("loaiHangHoa", req.getLoaiHangHoa());
 		}
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {

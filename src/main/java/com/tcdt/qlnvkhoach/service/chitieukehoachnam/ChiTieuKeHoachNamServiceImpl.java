@@ -996,7 +996,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setSoQdChiTieu(chiTieuKeHoachNam.getSoQdChiTieu());
 		response.setChiTieuId(chiTieuKeHoachNam.getChiTieuId());
 		response.setTenLoaiHangHoa(LoaiHangHoaEnum.getTenById(chiTieuKeHoachNam.getLoaiHangHoa()));
-
+		response.setLoaiHangHoa(chiTieuKeHoachNam.getLoaiHangHoa());
 		List<ChiTieuDeXuat> chiTieuDeXuats = chiTieuDeXuatRepository.findByChiTieuId(chiTieuKeHoachNam.getId());
 		if (!CollectionUtils.isEmpty(chiTieuDeXuats)) {
 			List<Long> dxIds = chiTieuDeXuats.stream().map(ChiTieuDeXuat::getDxDcKhnId).collect(Collectors.toList());
