@@ -4,14 +4,17 @@ import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.*;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcLtVt;
+import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcLtVtCt;
 import com.tcdt.qlnvkhoach.enums.*;
 import com.tcdt.qlnvkhoach.query.dto.DxDcQueryDto;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRepository;
+import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcLtVtCtRepository;
 import com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam.DxDcLtVtRespository;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
+import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcLtVtCtReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcLtVtReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.dexuatdieuchinhkehoachnam.SearchDxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
@@ -21,8 +24,8 @@ import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMu
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
 import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRes;
-import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcLtRes;
-import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcMuoiRes;
+import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcLtMuoiRes;
+import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcLtVtCtRes;
 import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcVtRes;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
@@ -85,6 +88,9 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private DxDcLtVtCtRepository dxDcLtVtCtRepository;
 
     @Override
     public Page<DxDcKeHoachNamRes> search(SearchDxDcKeHoachNamReq req) throws Exception {
@@ -215,11 +221,19 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                                                   Map<Long, DxDcLtVt> mapDxDcLtVt) throws Exception {
 
         List<DxDcLtVt> ltVts = new ArrayList<>();
+        Set<Long> dxDcLtVtIds = mapDxDcLtVt.keySet();
+
+        Map<Long, DxDcLtVtCt> mapDxDcLtVtCt = new HashMap<>();
+        if (!CollectionUtils.isEmpty(dxDcLtVtIds)) {
+            mapDxDcLtVtCt = dxDcLtVtCtRepository.findByDxDcLtVtIdIn(dxDcLtVtIds)
+                    .stream().collect(Collectors.toMap(DxDcLtVtCt::getId, Function.identity()));
+        }
+
         for (DxDcLtVtReq ltVtReq : dxDcLtVtReqList) {
             DxDcLtVt ltVt = new DxDcLtVt();
-            Long id = ltVtReq.getId();
-            if (id != null && id > 0) {
-                ltVt = mapDxDcLtVt.get(id);
+            Long ltVtId = ltVtReq.getId();
+            if (ltVtId != null && ltVtId > 0) {
+                ltVt = mapDxDcLtVt.get(ltVtId);
                 if (ltVt == null)
                     throw new Exception("Đề xuất điều chỉnh lương thực vật tư không tồn tại.");
             }
@@ -227,10 +241,41 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             BeanUtils.copyProperties(ltVtReq, ltVt, "id");
             ltVt.setDxdckhnId(dxDcId);
             ltVts.add(ltVt);
-            mapDxDcLtVt.remove(id);
+            mapDxDcLtVt.remove(ltVtId);
+            dxDcLtVtRespository.save(ltVt);
+
+            List<DxDcLtVtCt> dxDcLtVtCtList = new ArrayList<>();
+            for (DxDcLtVtCtReq dxDcLtVtCtReq : ltVtReq.getDxDcLtVtCtList()) {
+                Long ltVtCtId = dxDcLtVtCtReq.getId();
+                if (ltVtCtId != null && ltVtCtId > 0) {
+                    DxDcLtVtCt dxDcLtVtCt = mapDxDcLtVtCt.get(ltVtCtId);
+                    if (dxDcLtVtCt == null)
+                        throw new Exception("Đề xuất điều chỉnh lương thực vật tư chi tiết không tồn tại.");
+
+                    BeanUtils.copyProperties(dxDcLtVtCtReq, dxDcLtVtCt, "id");
+                    dxDcLtVtCt.setDxDcLtVtId(ltVt.getId());
+
+                    dxDcLtVtCtList.add(dxDcLtVtCt);
+                    mapDxDcLtVtCt.remove(ltVtCtId);
+                } else {
+                    DxDcLtVtCt dxDcLtVtCt = new DxDcLtVtCt();
+                    BeanUtils.copyProperties(dxDcLtVtCtReq, dxDcLtVtCt, "id");
+                    dxDcLtVtCt.setDxDcLtVtId(ltVt.getId());
+                    dxDcLtVtCtList.add(dxDcLtVtCt);
+                }
+            }
+            if (!CollectionUtils.isEmpty(dxDcLtVtCtList)) {
+                dxDcLtVtCtRepository.saveAll(dxDcLtVtCtList);
+            }
+
+            ltVt.setDxDcLtVtCtList(dxDcLtVtCtList);
         }
-        if (!CollectionUtils.isEmpty(ltVts))
-            dxDcLtVtRespository.saveAll(ltVts);
+
+        if (!CollectionUtils.isEmpty(mapDxDcLtVt.values()))
+            dxDcLtVtRespository.deleteAll(mapDxDcLtVt.values());
+
+        if (!CollectionUtils.isEmpty(mapDxDcLtVtCt.values()))
+            dxDcLtVtCtRepository.deleteAll(mapDxDcLtVtCt.values());
 
         return ltVts;
     }
@@ -256,8 +301,8 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (dxDc.getKeHoachNam() != null) {
             ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam(), dxDc.getKeHoachNam().getNamKeHoach());
             response.setSoQdKeHoachNam(dxDc.getKeHoachNam().getSoQuyetDinh());
-            response.setDxDcltList(this.buildListDxDcLtRes(dxDc, chiTieuKeHoachNamRes, dvql));
-            response.setDxDcMuoiList(this.buildListDxDcMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql));
+            response.setDxDcltList(this.buildListDxDcLtMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql, LoaiHangHoaEnum.LUONG_THUC.getValue()));
+            response.setDxDcMuoiList(this.buildListDxDcLtMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql, LoaiHangHoaEnum.MUOI.getValue()));
             response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, chiTieuKeHoachNamRes, dvql));
         }
         if (Constants.TONG_CUC.equals(cap)) {
@@ -316,54 +361,32 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return dxDcVtResList;
     }
 
-    private List<DxDcMuoiRes> buildListDxDcMuoiRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) {
-        List<DxDcLtVt> muoiList = dxDc.getDxDcLtVtList().stream()
-                .filter(ltVt -> LoaiHangHoaEnum.MUOI.getValue().equals(ltVt.getLoai()))
-                .collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(muoiList))
-            return Collections.emptyList();
-
-        List<DxDcMuoiRes> muoiResponseList = this.buildListDxDcMuoiResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, false);
-        muoiList.forEach(muoi -> {
-            DxDcMuoiRes dxDcMuoiRes = muoiResponseList.stream().filter(res -> res.getChiTieu().equals(muoi.getChiTieu())).findFirst().orElse(null);
-            if (dxDcMuoiRes == null)
-                return;
-            dxDcMuoiRes.setSdc(muoi.getSoLuong());
-            dxDcMuoiRes.setDc(muoi.getSoLuong() - dxDcMuoiRes.getTdc());
-            dxDcMuoiRes.setId(muoi.getId());
-        });
-        return muoiResponseList;
-    }
-
-    private List<DxDcLtRes> buildListDxDcLtRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) {
+    private List<DxDcLtMuoiRes> buildListDxDcLtMuoiRes(DxDcKeHoachNam dxDc, ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql, String loaiHangHoa) {
         List<DxDcLtVt> ltList = dxDc.getDxDcLtVtList().stream()
-                .filter(ltVt -> LoaiHangHoaEnum.LUONG_THUC.getValue().equals(ltVt.getLoai()))
+                .filter(ltVt -> loaiHangHoa.equals(ltVt.getLoai()))
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(ltList))
             return Collections.emptyList();
 
-        List<DxDcLtRes> ltResponseList = this.buildListDxDcLtResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, false);
+        List<DxDcLtMuoiRes> ltResponseList = this.buildListDxDcLtResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, false);
         ltList.forEach(lt -> {
-            DxDcLtRes dxDcLtRes = ltResponseList.stream().filter(res -> res.getChiTieu().equals(lt.getChiTieu())).findFirst().orElse(null);
+            DxDcLtMuoiRes dxDcLtRes = ltResponseList.stream().filter(res -> res.getChiTieu().equals(lt.getChiTieu())).findFirst().orElse(null);
             if (dxDcLtRes == null)
                 return;
 
-            if (Constants.LuongThucMuoiConst.GAO_MA_VT.equals(lt.getMaVatTu())) {
-                dxDcLtRes.setSdcGao(lt.getSoLuong());
-                dxDcLtRes.setGaoId(lt.getId());
-            } else {
-                dxDcLtRes.setSdcThoc(lt.getSoLuong());
-                dxDcLtRes.setThocId(lt.getId());
-            }
+            List<DxDcLtVtCt> dxDcLtVtCtList = lt.getDxDcLtVtCtList();
+            dxDcLtVtCtList.forEach(ct -> {
+                DxDcLtVtCtRes dxDcLtVtCtRes = new DxDcLtVtCtRes();
+                BeanUtils.copyProperties(ct, dxDcLtVtCtRes);
+                dxDcLtRes.getDxDcLtVtCtList().add(dxDcLtVtCtRes);
+            });
+            dxDcLtRes.setSdc(dxDcLtVtCtList.stream().mapToDouble(DxDcLtVtCt::getSoLuong).sum());
+            dxDcLtRes.setId(lt.getId());
         });
 
         ltResponseList.forEach(lt -> {
-            lt.setSdcTongSoQuyThoc(lt.getSdcGao() * 2 + lt.getSdcThoc());
-            lt.setDcTongSoQuyThoc(lt.getSdcTongSoQuyThoc() - lt.getTdcTongSoQuyThoc());
-            lt.setDcGao(lt.getSdcGao() - lt.getTdcGao());
-            lt.setDcThoc(lt.getSdcThoc() - lt.getTdcGao());
+            lt.setDc(lt.getSdc() - lt.getTdc());
         });
         return ltResponseList;
     }
@@ -412,7 +435,19 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (!ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(ctkhn.getTrangThai())) {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
-        dxDc.setDxDcLtVtList(dxDcLtVtRespository.findByDxdckhnId(dxDc.getId()));
+
+        List<DxDcLtVt> dxDcLtVtList = dxDcLtVtRespository.findByDxdckhnId(dxDc.getId());
+        List<Long> dxDcLtVtIds = dxDcLtVtList.stream().map(DxDcLtVt::getId).collect(Collectors.toList());
+        Map<Long, List<DxDcLtVtCt>> mapDxDcLtVtCt = new HashMap<>();
+        if (!CollectionUtils.isEmpty(dxDcLtVtIds)) {
+            mapDxDcLtVtCt = dxDcLtVtCtRepository.findByDxDcLtVtIdIn(dxDcLtVtIds)
+                    .stream().collect(Collectors.groupingBy(DxDcLtVtCt::getDxDcLtVtId));
+        }
+        for (DxDcLtVt dxDcLtVt : dxDcLtVtList ) {
+            dxDcLtVt.setDxDcLtVtCtList(mapDxDcLtVtCt.get(dxDcLtVt.getId()));
+        }
+
+        dxDc.setDxDcLtVtList(dxDcLtVtList);
         chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(ctkhn);
         dxDc.setKeHoachNam(ctkhn);
         dxDc.setFileDinhKems(fileDinhKemService.search(dxDc.getId(), Collections.singleton(DxDcKeHoachNam.TABLE_NAME)));
@@ -569,8 +604,8 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return dxDcVtRes;
     }
 
-    private List<DxDcMuoiRes> buildListDxDcMuoiResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
-                                                                 boolean apiSoLuongTdc) {
+    private List<DxDcLtMuoiRes> buildListDxDcMuoiResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
+                                                                   boolean apiSoLuongTdc) {
         List<KeHoachMuoiDuTruRes> khMuoi = chiTieuKeHoachNamRes.getKhMuoiDuTru().stream()
                 .filter(k -> k.getMaDonVi().equals(dvql))
                 .collect(Collectors.toList());
@@ -584,15 +619,15 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             return Collections.emptyList();
         }
 
-        List<DxDcMuoiRes> muoiResponseList = new ArrayList<>();
-        DxDcMuoiRes muoiXuatRes = new DxDcMuoiRes();
+        List<DxDcLtMuoiRes> muoiResponseList = new ArrayList<>();
+        DxDcLtMuoiRes muoiXuatRes = new DxDcLtMuoiRes();
         muoiXuatRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.XUAT_TRONG_NAM.getValue());
         muoiXuatRes.setMaVatTu(Constants.LuongThucMuoiConst.MUOI_MA_VT);
         muoiXuatRes.setTdc(tdcXtn);
         muoiXuatRes.setSdc(0D);
         muoiXuatRes.setDc(0D);
 
-        DxDcMuoiRes muoiNhapRes = new DxDcMuoiRes();
+        DxDcLtMuoiRes muoiNhapRes = new DxDcLtMuoiRes();
         muoiNhapRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.NHAP_TRONG_NAM.getValue());
         muoiNhapRes.setMaVatTu(Constants.LuongThucMuoiConst.MUOI_MA_VT);
         muoiNhapRes.setTdc(tdcNtn);
@@ -604,7 +639,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return muoiResponseList;
     }
 
-    private List<DxDcLtRes> buildListDxDcLtResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
+    private List<DxDcLtMuoiRes> buildListDxDcLtResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
                                                              boolean apiSoLuongTdc) {
         // Luong Thuc
         List<KeHoachLuongThucDuTruRes> khLuongThuc = chiTieuKeHoachNamRes.getKhLuongThuc().stream()
@@ -629,34 +664,14 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             return Collections.emptyList();
         }
 
-        List<DxDcLtRes> ltResponseList = new ArrayList<>();
-        DxDcLtRes ltXuatRes = new DxDcLtRes();
+        List<DxDcLtMuoiRes> ltResponseList = new ArrayList<>();
+        DxDcLtMuoiRes ltXuatRes = new DxDcLtMuoiRes();
         ltXuatRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.XUAT_TRONG_NAM.getValue());
-        ltXuatRes.setMaVatTuGao(Constants.LuongThucMuoiConst.GAO_MA_VT);
-        ltXuatRes.setMaVatTuThoc(Constants.LuongThucMuoiConst.THOC_MA_VT);
-        ltXuatRes.setTdcGao(tdcXtnTongGao);
-        ltXuatRes.setTdcThoc(tdcXtnTongThoc);
-        ltXuatRes.setTdcTongSoQuyThoc(tdcXtnTongSoQuyThoc);
-        ltXuatRes.setDcTongSoQuyThoc(0D);
-        ltXuatRes.setSdcTongSoQuyThoc(0D);
-        ltXuatRes.setDcThoc(0D);
-        ltXuatRes.setDcGao(0D);
-        ltXuatRes.setSdcThoc(0D);
-        ltXuatRes.setSdcGao(0D);
+        ltXuatRes.setTdc(tdcXtnTongSoQuyThoc);
 
-        DxDcLtRes ltNhapRes = new DxDcLtRes();
+        DxDcLtMuoiRes ltNhapRes = new DxDcLtMuoiRes();
         ltNhapRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.NHAP_TRONG_NAM.getValue());
-        ltNhapRes.setMaVatTuGao(Constants.LuongThucMuoiConst.GAO_MA_VT);
-        ltNhapRes.setMaVatTuThoc(Constants.LuongThucMuoiConst.THOC_MA_VT);
-        ltNhapRes.setTdcGao(tdcNtnTongGao);
-        ltNhapRes.setTdcThoc(tdcNtnTongThoc);
-        ltNhapRes.setTdcTongSoQuyThoc(tdcNtnTongSoQuyThoc);
-        ltNhapRes.setDcTongSoQuyThoc(0D);
-        ltNhapRes.setSdcTongSoQuyThoc(0D);
-        ltNhapRes.setDcThoc(0D);
-        ltNhapRes.setDcGao(0D);
-        ltNhapRes.setSdcThoc(0D);
-        ltNhapRes.setSdcGao(0D);
+        ltNhapRes.setTdc(tdcNtnTongSoQuyThoc);
 
         ltResponseList.add(ltXuatRes);
         ltResponseList.add(ltNhapRes);

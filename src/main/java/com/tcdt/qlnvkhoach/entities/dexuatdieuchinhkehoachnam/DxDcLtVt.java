@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -45,4 +47,7 @@ public class DxDcLtVt implements Serializable {
 
     @Column(name = "LOAI")
     private String loai;
+
+    @Transient
+    private List<DxDcLtVtCt> dxDcLtVtCtList = new ArrayList<>();
 }

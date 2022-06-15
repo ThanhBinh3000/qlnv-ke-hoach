@@ -71,6 +71,10 @@ public class DxDcKeHoachNamRepositoryCustomImpl implements DxDcKeHoachNamReposit
         if (!CollectionUtils.isEmpty(trangThais)) {
             builder.append("AND ").append("dx.trangThai IN :trangThais ");
         }
+
+        if (StringUtils.hasText(req.getLoaiHangHoa())) {
+            builder.append("AND ").append("dx.LOAI_HANG_HOA = :loaiHangHoa ");
+        }
     }
 
     @Override
@@ -131,6 +135,10 @@ public class DxDcKeHoachNamRepositoryCustomImpl implements DxDcKeHoachNamReposit
 
         if (!CollectionUtils.isEmpty(trangThais)) {
             query.setParameter("trangThais", trangThais);
+        }
+
+        if (StringUtils.hasText(req.getLoaiHangHoa())) {
+            query.setParameter("loaiHangHoa", req.getLoaiHangHoa());
         }
     }
 }

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,13 +16,10 @@ import javax.validation.constraints.NotNull;
 public class DxDcLtVtReq {
     private Long id;
 
-    @NotNull(message = "Không được để trống")
     private String maVatTu;
-
     private String maVatTuCha;
 
-    @NotNull(message = "Không được để trống")
-    private Double soLuong;
+    private List<DxDcLtVtCtReq> dxDcLtVtCtList = new ArrayList<>();
 
     @NotNull(message = "Không được để trống")
     private String donViTinh;
