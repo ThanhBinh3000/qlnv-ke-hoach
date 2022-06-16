@@ -991,9 +991,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setCanCus(chiTieuKeHoachNam.getCanCus());
 		response.setLyDoTuChoi(chiTieuKeHoachNam.getLyDoTuChoi());
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
-
+		response.setDcChiTieuId(chiTieuKeHoachNam.getDcChiTieuId());
+		response.setSoQdDcChiTieu(chiTieuKeHoachNam.getSoQdDcChiTieu());
 		response.setTenLoaiHangHoa(LoaiHangHoaEnum.getTenById(chiTieuKeHoachNam.getLoaiHangHoa()));
 		response.setLoaiHangHoa(chiTieuKeHoachNam.getLoaiHangHoa());
+
 		List<ChiTieuDeXuat> chiTieuDeXuats = chiTieuDeXuatRepository.findByChiTieuId(chiTieuKeHoachNam.getId());
 		if (!CollectionUtils.isEmpty(chiTieuDeXuats)) {
 			List<Long> dxIds = chiTieuDeXuats.stream().map(ChiTieuDeXuat::getDxDcKhnId).collect(Collectors.toList());
