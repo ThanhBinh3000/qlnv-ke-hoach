@@ -123,18 +123,11 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không thể điều chỉnh quyết định chưa duyệt");
 		}
 
-		ChiTieuKeHoachNam chiTieuLatest = null;
-		if (!qdGoc.isLatest()) {
-			chiTieuLatest = chiTieuKeHoachNamRepository.findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(qdGoc.getId(), ChiTieuKeHoachEnum.QD.getValue());
-		}
-
-		if (chiTieuLatest == null)
-			throw new Exception("Không tìm thấy quyết định giao chỉ tiêu");
-
 		ChiTieuKeHoachNam exist = this.existCtkhn(null, req.getQdDc(), req.getQdDc().getNamKeHoach(), ChiTieuKeHoachEnum.QD_DC.getValue(), userInfo);
 		if (exist != null)
 			throw new Exception("Quyết định diều chỉnh chỉ tiêu kế hoạch năm đã tồn tại");
 
+		ChiTieuKeHoachNam chiTieuLatest = this.getChiTieuKeHoachNamLatest(qdGoc);
 		this.validateCreateCtkhnRequest(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue());
 		ChiTieuKeHoachNamRes qdDc = this.create(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue(), qdGoc.getId(), qdGoc.getNamKeHoach(), userInfo);
 		ChiTieuKeHoachNamRes qdLatest = this.detailQd(chiTieuLatest.getId());
@@ -308,16 +301,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ChiTieuKeHoachNamRes qdDc = this.update(req.getQdDc(), ChiTieuKeHoachEnum.QD_DC.getValue());
 
 		ChiTieuKeHoachNam qdGoc = this.getChiTieuKeHoachNam(qdDc.getQdGocId());
-		ChiTieuKeHoachNam chiTieuLatest = null;
-		if (!qdGoc.isLatest()) {
-			chiTieuLatest = chiTieuKeHoachNamRepository.findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(qdGoc.getId(), ChiTieuKeHoachEnum.QD.getValue());
-		}
-
-		if (chiTieuLatest == null)
-			throw new Exception("Không tìm thấy quyết định giao chỉ tiêu");
-
+		ChiTieuKeHoachNam chiTieuLatest = this.getChiTieuKeHoachNamLatest(qdGoc);
 		ChiTieuKeHoachNamRes qdLatest = this.detailQd(chiTieuLatest.getId());
-
 		this.setData(qdDc, qdLatest, qdGoc);
 		return qdDc;
 	}
@@ -612,13 +597,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ChiTieuKeHoachNamRes qdDc = this.detail(id);
 
 		ChiTieuKeHoachNam qdGoc = this.getChiTieuKeHoachNam(qdDc.getQdGocId());
-		ChiTieuKeHoachNam chiTieuLatest = null;
-		if (!qdGoc.isLatest()) {
-			chiTieuLatest = chiTieuKeHoachNamRepository.findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(qdGoc.getId(), ChiTieuKeHoachEnum.QD.getValue());
-		}
+		ChiTieuKeHoachNam chiTieuLatest = this.getChiTieuKeHoachNamLatest(qdGoc);
 
-		if (chiTieuLatest == null)
-			throw new Exception("Không tìm thấy quyết định giao chỉ tiêu");
 
 		ChiTieuKeHoachNamRes qdLatest = this.detail(chiTieuLatest.getId());
 		this.setData(qdDc, qdLatest, qdGoc);
@@ -1530,9 +1510,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (optional.get().isLatest()) {
 			qdLatestId = ctkhnId;
 		} else {
-			ChiTieuKeHoachNam chiTieuLatest = chiTieuKeHoachNamRepository.findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(ctkhnId, ChiTieuKeHoachEnum.QD.getValue());
-			if (chiTieuLatest == null)
-				throw new Exception("Không tìm thấy quyết định giao chỉ tiêu");
+			ChiTieuKeHoachNam chiTieuLatest = this.getChiTieuKeHoachNamLatest(optional.get());
 			qdLatestId = chiTieuLatest.getId();
 		}
 
@@ -1884,6 +1862,17 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Không tồn tại chỉ tiêu kế hoạch năm.");
 
 		return optionalKhn.get();
+	}
+
+	@Override
+	public ChiTieuKeHoachNam getChiTieuKeHoachNamLatest(ChiTieuKeHoachNam qdGoc) throws Exception {
+		if (qdGoc.isLatest())
+			return qdGoc;
+
+		ChiTieuKeHoachNam latest = chiTieuKeHoachNamRepository.findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(qdGoc.getId(), ChiTieuKeHoachEnum.QD.getValue());
+		if (latest == null)
+			throw new Exception("Không tìm thấy quyết định giao chỉ tiêu");
+		return latest;
 	}
 
 	@Override

@@ -108,8 +108,5 @@ public class DxDcKeHoachNam implements Serializable {
     private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
 
     @Transient
-    private ChiTieuKeHoachNam keHoachNam;
-
-    @Transient
     private QlnvDmDonvi donVi;
 }

@@ -118,7 +118,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                 throw new Exception("Không tìm thấy thông tin đơn vị");
 
             dx.setDonVi(donVi);
-            DxDcKeHoachNamRes dxDcKeHoachNamRes = this.buildResponse(dx, userInfo.getDvql(), userInfo.getCapDvi());
+            DxDcKeHoachNamRes dxDcKeHoachNamRes = this.buildResponse(dx, userInfo.getDvql(), userInfo.getCapDvi(), null, null);
             dxDcKeHoachNamRes.setSoQdKeHoachNam(soQuyetDinh);
             responses.add(dxDcKeHoachNamRes);
         }
@@ -144,6 +144,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             throw new Exception("Đề xuất điều chỉnh đã tồn tại.");
         }
 
+        ChiTieuKeHoachNam latest = chiTieuKeHoachNamService.getChiTieuKeHoachNamLatest(chiTieuKeHoachNam);
         DxDcKeHoachNam dxDc = new DxDcKeHoachNam();
         BeanUtils.copyProperties(req, dxDc, "id");
         dxDc.setNgayTao(LocalDate.now());
@@ -160,10 +161,9 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), DxDcKeHoachNam.TABLE_NAME);
         dxDc.setFileDinhKems(fileDinhKems);
-        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(chiTieuKeHoachNam);
-        dxDc.setKeHoachNam(chiTieuKeHoachNam);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(latest);
         dxDc.setDonVi(qlnvDmService.getDonViByMa(dxDc.getMaDvi()));
-        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi());
+        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi(), chiTieuKeHoachNam, latest);
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -194,6 +194,8 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (exist != null && !exist.getId().equals(dxDc.getId()))
             throw new Exception("Đề xuất điều chỉnh kế hoạch năm đã tồn tại");
 
+        ChiTieuKeHoachNam latest = chiTieuKeHoachNamService.getChiTieuKeHoachNamLatest(ctkhn);
+
         BeanUtils.copyProperties(req, dxDc, "id");
         dxDc.setNgayTao(LocalDate.now());
         dxDc.setNguoiTaoId(userInfo.getId());
@@ -210,10 +212,9 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), dxDc.getId(), DxDcKeHoachNam.TABLE_NAME);
         dxDc.setFileDinhKems(fileDinhKems);
-        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(ctkhn);
-        dxDc.setKeHoachNam(ctkhn);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(latest);
         dxDc.setDonVi(qlnvDmService.getDonViByMa(dxDc.getMaDvi()));
-        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi());
+        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi(), ctkhn, latest);
     }
 
     private List<DxDcLtVt> saveListDxDcLtVt(List<DxDcLtVtReq> dxDcLtVtReqList,
@@ -293,17 +294,17 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
     }
 
-    private DxDcKeHoachNamRes buildResponse(DxDcKeHoachNam dxDc, String dvql, String cap) throws Exception {
+    private DxDcKeHoachNamRes buildResponse(DxDcKeHoachNam dxDc, String dvql, String cap, ChiTieuKeHoachNam qdGoc, ChiTieuKeHoachNam qdLatest) throws Exception {
 
         DxDcKeHoachNamRes response = new DxDcKeHoachNamRes();
         BeanUtils.copyProperties(dxDc, response);
         response.setTenLoaiHangHoa(LoaiHangHoaEnum.getTenById(dxDc.getLoaiHangHoa()));
-        if (dxDc.getKeHoachNam() != null) {
-            ChiTieuKeHoachNamRes chiTieuKeHoachNamRes = chiTieuKeHoachNamService.buildDetailResponse(dxDc.getKeHoachNam(), dxDc.getKeHoachNam().getNamKeHoach());
-            response.setSoQdKeHoachNam(dxDc.getKeHoachNam().getSoQuyetDinh());
-            response.setDxDcltList(this.buildListDxDcLtMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql, LoaiHangHoaEnum.LUONG_THUC.getValue()));
-            response.setDxDcMuoiList(this.buildListDxDcLtMuoiRes(dxDc, chiTieuKeHoachNamRes, dvql, LoaiHangHoaEnum.MUOI.getValue()));
-            response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, chiTieuKeHoachNamRes, dvql));
+        if (qdLatest != null) {
+            ChiTieuKeHoachNamRes latest = chiTieuKeHoachNamService.buildDetailResponse(qdLatest, qdLatest.getNamKeHoach());
+            response.setSoQdKeHoachNam(qdGoc.getSoQuyetDinh());
+            response.setDxDcltList(this.buildListDxDcLtMuoiRes(dxDc, latest, dvql, LoaiHangHoaEnum.LUONG_THUC.getValue()));
+            response.setDxDcMuoiList(this.buildListDxDcLtMuoiRes(dxDc, latest, dvql, LoaiHangHoaEnum.MUOI.getValue()));
+            response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, latest, dvql));
         }
         if (Constants.TONG_CUC.equals(cap)) {
             response.setTrangThai(dxDc.getTrangThaiTongCuc());
@@ -313,6 +314,9 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             response.setTenTrangThai(DxDcKeHoachNamStatusEnum.getTenById(dxDc.getTrangThai()));
             response.setTrangThaiDuyet(DxDcKeHoachNamStatusEnum.getTrangThaiDuyetById(dxDc.getTrangThai()));
         }
+
+        response.setKeHoachNamId(qdGoc != null ? qdGoc.getId() : null);
+        response.setSoQdKeHoachNam(qdGoc != null ? qdGoc.getSoQuyetDinh() : null);
 
         response.setFileDinhKems(dxDc.getFileDinhKems());
         response.setTenDonVi(dxDc.getDonVi().getTenDvi());
@@ -381,7 +385,16 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                 BeanUtils.copyProperties(ct, dxDcLtVtCtRes);
                 dxDcLtRes.getDxDcLtVtCtList().add(dxDcLtVtCtRes);
             });
-            dxDcLtRes.setSdc(dxDcLtVtCtList.stream().mapToDouble(DxDcLtVtCt::getSoLuong).sum());
+            Double tongSoLuongTang = dxDcLtVtCtList.stream()
+                    .filter(t -> t.getSoLuongTang() != null)
+                    .mapToDouble(DxDcLtVtCt::getSoLuongTang).sum();
+
+            Double tongSoLuongGiam = dxDcLtVtCtList.stream()
+                    .filter(t -> t.getSoLuongGiam() != null)
+                    .mapToDouble(DxDcLtVtCt::getSoLuongGiam).sum();
+
+            Double sDc = Math.abs(tongSoLuongTang - tongSoLuongGiam);
+            dxDcLtRes.setSdc(sDc);
             dxDcLtRes.setId(lt.getId());
         });
 
@@ -436,6 +449,8 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             throw new Exception("Không thể tạo đề xuất cho chỉ tiêu chưa ban hành.");
         }
 
+        ChiTieuKeHoachNam latest = chiTieuKeHoachNamService.getChiTieuKeHoachNamLatest(ctkhn);
+
         List<DxDcLtVt> dxDcLtVtList = dxDcLtVtRespository.findByDxdckhnId(dxDc.getId());
         List<Long> dxDcLtVtIds = dxDcLtVtList.stream().map(DxDcLtVt::getId).collect(Collectors.toList());
         Map<Long, List<DxDcLtVtCt>> mapDxDcLtVtCt = new HashMap<>();
@@ -448,11 +463,10 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         }
 
         dxDc.setDxDcLtVtList(dxDcLtVtList);
-        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(ctkhn);
-        dxDc.setKeHoachNam(ctkhn);
+        chiTieuKeHoachNamService.retrieveDataChiTieuKeHoachNam(latest);
         dxDc.setFileDinhKems(fileDinhKemService.search(dxDc.getId(), Collections.singleton(DxDcKeHoachNam.TABLE_NAME)));
         dxDc.setDonVi(qlnvDmService.getDonViByMa(dxDc.getMaDvi()));
-        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi());
+        return this.buildResponse(dxDc, userInfo.getDvql(), userInfo.getCapDvi(), ctkhn, latest);
     }
 
     @Transactional(rollbackOn = Exception.class)

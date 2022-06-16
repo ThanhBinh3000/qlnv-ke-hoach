@@ -31,5 +31,6 @@ public class DxDcLtVtCt implements Serializable {
     private String maNhaKho;
     private String maNganKho;
     private String maLoKho;
-    private Double soLuong;
+    private Double soLuongTang;
+    private Double soLuongGiam;
 }
