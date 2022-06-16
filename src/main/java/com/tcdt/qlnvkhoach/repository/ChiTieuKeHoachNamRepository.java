@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoachNam, Long>, ChiTieuKeHoachNamRepositoryCustom {
-    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndChiTieuId(Integer namKh, boolean latest, String loaiQd, String maDvi, Long chiTieuCanCuId);
+    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndQdGocId(Integer namKh, boolean latest, String loaiQd, String maDvi, Long qdGocId);
 
     List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(Integer namKh, boolean latest, String loaiQd, String capDvi);
 

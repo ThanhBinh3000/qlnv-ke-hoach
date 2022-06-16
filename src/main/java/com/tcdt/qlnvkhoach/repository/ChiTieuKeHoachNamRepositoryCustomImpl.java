@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.repository;
 
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
+import com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
@@ -38,7 +39,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.TRICH_YEU as trichYeu, ");
 		builder.append("ct.ID as id, ");
 		builder.append("ct.TRANG_THAI as trangThai, ");
-		builder.append("ct.LY_DO_TU_CHOI as lyDoTuChoi ");
+		builder.append("ct.LY_DO_TU_CHOI as lyDoTuChoi, ");
+		builder.append("ct.LOAI_HANG_HOA as loaiHangHoa ");
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID as qdGocId, ");
@@ -63,7 +65,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
-		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI ");
+		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI, ct.LOAI_HANG_HOA ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
 
@@ -98,6 +100,11 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.trangThaiDuyet(ChiTieuKeHoachNamStatusEnum.getTrangThaiDuyetById(item.get("trangThai", String.class)))
 							.lyDoTuChoi(item.get("lyDoTuChoi", String.class))
 							.build();
+
+					String loaiHangHoa = item.get("loaiHangHoa") != null ? item.get("loaiHangHoa", String.class) : null;
+					String tenLoaiHangHoa = LoaiHangHoaEnum.getTenById(loaiHangHoa);
+					chiTieuKeHoachNamRes.setLoaiHangHoa(loaiHangHoa);
+					chiTieuKeHoachNamRes.setTenLoaiHangHoa(tenLoaiHangHoa);
 
 					if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 						chiTieuKeHoachNamRes.setQdGocId(item.get("qdGocId", BigDecimal.class).longValue());
