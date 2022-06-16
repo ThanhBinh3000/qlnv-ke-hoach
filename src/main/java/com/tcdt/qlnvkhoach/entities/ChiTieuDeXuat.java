@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ChiTieuDeXuat implements Serializable {
     private static final long serialVersionUID = 8195707546894058286L;
-    public static final String TABLE_NAME = "CHI_TIEU_DE_XUAT";
+    public static final String TABLE_NAME = "KH_CHI_TIEU_DE_XUAT";
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHI_TIEU_DE_XUAT_SEQ")
     @SequenceGenerator(sequenceName = "CHI_TIEU_DE_XUAT_SEQ", allocationSize = 1, name = "CHI_TIEU_DE_XUAT_SEQ")

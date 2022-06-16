@@ -52,17 +52,17 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			}
 		}
 
-		builder.append("FROM CHI_TIEU_KE_HOACH_NAM ct ");
+		builder.append("FROM KH_CHI_TIEU_KE_HOACH_NAM ct ");
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
-			builder.append("INNER JOIN CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
+			builder.append("INNER JOIN KH_CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
 			if (Constants.CUC_KHU_VUC.equalsIgnoreCase(userCapDvi)) {
-				builder.append("LEFT JOIN CHI_TIEU_KE_HOACH_NAM dcTongCuc ON ct.DC_CHI_TIEU_ID = dcTongCuc.ID ");
+				builder.append("LEFT JOIN KH_CHI_TIEU_KE_HOACH_NAM dcTongCuc ON ct.DC_CHI_TIEU_ID = dcTongCuc.ID ");
 			}
 
 		}
-		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
-		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KH_CHI_TIEU_LT_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KH_CHI_TIEU_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
 		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI, ct.LOAI_HANG_HOA ");
@@ -200,12 +200,12 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 	public int countCtkhn(SearchChiTieuKeHoachNamReq req) {
 		int total = 0;
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT COUNT(DISTINCT ct.ID) AS totalRecord FROM CHI_TIEU_KE_HOACH_NAM ct ");
+		builder.append("SELECT COUNT(DISTINCT ct.ID) AS totalRecord FROM KH_CHI_TIEU_KE_HOACH_NAM ct ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {
-			builder.append("INNER JOIN CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
+			builder.append("INNER JOIN KH_CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
 		}
-		builder.append("LEFT JOIN KE_HOACH_LUONG_THUC_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
-		builder.append("LEFT JOIN KE_HOACH_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KH_CHI_TIEU_LT_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KH_CHI_TIEU_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 
 		this.setConditionSearchCtkhn(req, builder);
 

@@ -1,6 +1,5 @@
 package com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam;
 
-import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class DxDcKeHoachNam implements Serializable {
 
     private static final long serialVersionUID = 2408090111932694415L;
 
-    public static final String TABLE_NAME = "DX_DC_KE_HOACH_NAM";
+    public static final String TABLE_NAME = "KH_DX_DC_KE_HOACH_NAM";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DX_DC_KE_HOACH_NAM_SEQ")
@@ -93,7 +92,7 @@ public class DxDcKeHoachNam implements Serializable {
     private String capDvi;
 
     @Column(name = "KE_HOACH_NAM_ID")
-    private Long keHoachNamId; // CHI_TIEU_KE_HOACH_NAM
+    private Long keHoachNamId; // KH_CHI_TIEU_KE_HOACH_NAM
 
     /**
      * @see com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum

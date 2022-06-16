@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class DxDcLtVtCt implements Serializable {
 
-    public static final String TABLE_NAME = "DX_DC_LT_VT_CT";
+    public static final String TABLE_NAME = "KH_DX_DC_LT_VT_CT";
     private static final long serialVersionUID = 1834736356743949473L;
 
     @Id

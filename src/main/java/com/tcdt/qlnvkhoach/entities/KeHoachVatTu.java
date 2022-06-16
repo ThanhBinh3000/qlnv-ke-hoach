@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "KE_HOACH_VAT_TU")
+@Table(name = "KH_CHI_TIEU_VAT_TU")
 @Data
 @Builder
 @NoArgsConstructor

@@ -348,7 +348,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     public void downloadTemplateImportCtkhn(HttpServletResponse response) throws IOException {
 
         String folder = "excel";
-        String filename = "chi_tieu_ke_hoach_nam_import.xlsx";
+        String filename = "CHI_TIEU_KE_HOACH_NAM_import.xlsx";
         InputStream inputStream = new ClassPathResource(folder + "/" + filename).getInputStream();
 
         try {

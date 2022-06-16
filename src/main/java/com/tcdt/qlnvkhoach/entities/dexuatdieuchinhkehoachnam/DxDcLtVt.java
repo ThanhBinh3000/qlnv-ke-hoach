@@ -20,7 +20,7 @@ import java.util.List;
 public class DxDcLtVt implements Serializable {
     private static final long serialVersionUID = 8879872838648310353L;
 
-    public static final String TABLE_NAME = "DX_DC_LT_VT";
+    public static final String TABLE_NAME = "KH_DX_DC_LT_VT";
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DX_DC_LT_VT_SEQ")
     @SequenceGenerator(sequenceName = "DX_DC_LT_VT_SEQ", allocationSize = 1, name = "DX_DC_LT_VT_SEQ")
@@ -28,7 +28,7 @@ public class DxDcLtVt implements Serializable {
     private Long id;
 
     @Column(name = "DXDCKHN_ID")
-    private Long dxdckhnId; // DX_DC_KE_HOACH_NAM
+    private Long dxdckhnId; // KH_DX_DC_KE_HOACH_NAM
 
     @Column(name = "MA_VAT_TU")
     private String maVatTu; // DM_VATTU
