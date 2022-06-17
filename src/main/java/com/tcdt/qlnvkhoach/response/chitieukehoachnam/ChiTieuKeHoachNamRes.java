@@ -44,6 +44,8 @@ public class ChiTieuKeHoachNamRes {
 	private String tenLoaiHangHoa;
 	private Long dcChiTieuId;
 	private String soQdDcChiTieu;
+	private String maDvi;
+	private String tenDvi;
 
 	private List<ChiTieuDeXuatResponse> deXuats = new ArrayList<>();
 	private List<KeHoachLuongThucDuTruRes> khLuongThuc = new ArrayList<>();

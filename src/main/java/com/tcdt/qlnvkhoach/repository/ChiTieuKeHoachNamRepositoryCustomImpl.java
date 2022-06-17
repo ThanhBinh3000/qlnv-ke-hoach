@@ -40,7 +40,9 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.ID as id, ");
 		builder.append("ct.TRANG_THAI as trangThai, ");
 		builder.append("ct.LY_DO_TU_CHOI as lyDoTuChoi, ");
-		builder.append("ct.LOAI_HANG_HOA as loaiHangHoa ");
+		builder.append("ct.LOAI_HANG_HOA as loaiHangHoa, ");
+		builder.append("dv.MA_DVI as maDvi, ");
+		builder.append("dv.TEN_DVI as tenDvi ");
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID as qdGocId, ");
@@ -53,7 +55,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		}
 
 		builder.append("FROM KH_CHI_TIEU_KE_HOACH_NAM ct ");
-
+		builder.append("INNER JOIN DM_DONVI dv ON ct.MA_DVI = dv.MA_DVI ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append("INNER JOIN KH_CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
 			if (Constants.CUC_KHU_VUC.equalsIgnoreCase(userCapDvi)) {
@@ -65,7 +67,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("LEFT JOIN KH_CHI_TIEU_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
-		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI, ct.LOAI_HANG_HOA ");
+		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI, ct.LOAI_HANG_HOA, dv.MA_DVI, dv.TEN_DVI ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
 
@@ -99,6 +101,8 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.tenTrangThai(ChiTieuKeHoachNamStatusEnum.getTenById(item.get("trangThai", String.class)))
 							.trangThaiDuyet(ChiTieuKeHoachNamStatusEnum.getTrangThaiDuyetById(item.get("trangThai", String.class)))
 							.lyDoTuChoi(item.get("lyDoTuChoi", String.class))
+							.maDvi(item.get("maDvi", String.class))
+							.tenDvi(item.get("tenDvi", String.class))
 							.build();
 
 					String loaiHangHoa = item.get("loaiHangHoa") != null ? item.get("loaiHangHoa", String.class) : null;
