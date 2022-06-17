@@ -30,7 +30,7 @@ public class DxDcKeHoachNamRes {
     private String loaiHangHoa;
     private String tenLoaiHangHoa;
     private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
-    private List<DxDcLtMuoiRes> dxDcltList = new ArrayList<>();
-    private List<DxDcLtMuoiRes> dxDcMuoiList = new ArrayList<>();
+    private List<DxDcLtRes> dxDcltList = new ArrayList<>();
+    private List<DxDcMuoiRes> dxDcMuoiList = new ArrayList<>();
     private List<DxDcVtRes> dxDcVtList = new ArrayList<>();
 }

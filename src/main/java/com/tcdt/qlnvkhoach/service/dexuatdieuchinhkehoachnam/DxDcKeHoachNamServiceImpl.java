@@ -23,10 +23,7 @@ import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachluongthucdutru.KeHo
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachmuoidutru.KeHoachMuoiDuTruRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.KeHoachVatTuRes;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.kehoachnhapvattuthietbi.VatTuThietBiRes;
-import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcKeHoachNamRes;
-import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcLtMuoiRes;
-import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcLtVtCtRes;
-import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.DxDcVtRes;
+import com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam.*;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamService;
@@ -302,8 +299,8 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         if (qdLatest != null) {
             ChiTieuKeHoachNamRes latest = chiTieuKeHoachNamService.buildDetailResponse(qdLatest, qdLatest.getNamKeHoach());
             response.setSoQdKeHoachNam(qdGoc.getSoQuyetDinh());
-            response.setDxDcltList(this.buildListDxDcLtMuoiRes(dxDc, latest, dvql, LoaiHangHoaEnum.LUONG_THUC.getValue()));
-            response.setDxDcMuoiList(this.buildListDxDcLtMuoiRes(dxDc, latest, dvql, LoaiHangHoaEnum.MUOI.getValue()));
+            response.setDxDcltList(this.buildListDxDcLtRes(dxDc, latest, dvql));
+            response.setDxDcMuoiList(this.buildListDxDcMuoiRes(dxDc, latest, dvql));
             response.setDxDcVtList(this.buildListDxDcVatTuRes(dxDc, latest, dvql));
         }
         if (Constants.TONG_CUC.equals(cap)) {
@@ -365,17 +362,18 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return dxDcVtResList;
     }
 
-    private List<DxDcLtMuoiRes> buildListDxDcLtMuoiRes(DxDcKeHoachNam dxDc, ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql, String loaiHangHoa) {
+    private List<DxDcLtRes> buildListDxDcLtRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) {
         List<DxDcLtVt> ltList = dxDc.getDxDcLtVtList().stream()
-                .filter(ltVt -> loaiHangHoa.equals(ltVt.getLoai()))
+                .filter(ltVt -> LoaiHangHoaEnum.LUONG_THUC.getValue().equals(ltVt.getLoai()))
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(ltList))
             return Collections.emptyList();
 
-        List<DxDcLtMuoiRes> ltResponseList = this.buildListDxDcLtResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, false);
+        List<DxDcLtRes> ltResponseList = this.buildListDxDcLtResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, false);
+
         ltList.forEach(lt -> {
-            DxDcLtMuoiRes dxDcLtRes = ltResponseList.stream().filter(res -> res.getChiTieu().equals(lt.getChiTieu())).findFirst().orElse(null);
+            DxDcLtRes dxDcLtRes = ltResponseList.stream().filter(res -> res.getChiTieu().equals(lt.getChiTieu())).findFirst().orElse(null);
             if (dxDcLtRes == null)
                 return;
 
@@ -385,6 +383,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                 BeanUtils.copyProperties(ct, dxDcLtVtCtRes);
                 dxDcLtRes.getDxDcLtVtCtList().add(dxDcLtVtCtRes);
             });
+
             Double tongSoLuongTang = dxDcLtVtCtList.stream()
                     .filter(t -> t.getSoLuongTang() != null)
                     .mapToDouble(DxDcLtVtCt::getSoLuongTang).sum();
@@ -394,14 +393,42 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
                     .mapToDouble(DxDcLtVtCt::getSoLuongGiam).sum();
 
             Double sDc = Math.abs(tongSoLuongTang - tongSoLuongGiam);
-            dxDcLtRes.setSdc(sDc);
-            dxDcLtRes.setId(lt.getId());
+            if (Constants.LuongThucMuoiConst.GAO_MA_VT.equals(lt.getMaVatTu())) {
+                dxDcLtRes.setSdcGao(sDc);
+                dxDcLtRes.setGaoId(lt.getId());
+            } else {
+                dxDcLtRes.setSdcThoc(sDc);
+                dxDcLtRes.setThocId(lt.getId());
+            }
         });
 
         ltResponseList.forEach(lt -> {
-            lt.setDc(lt.getSdc() - lt.getTdc());
+            lt.setSdcTongSoQuyThoc(lt.getSdcGao() * 2 + lt.getSdcThoc());
+            lt.setDcTongSoQuyThoc(lt.getSdcTongSoQuyThoc() - lt.getTdcTongSoQuyThoc());
+            lt.setDcGao(lt.getSdcGao() - lt.getTdcGao());
+            lt.setDcThoc(lt.getSdcThoc() - lt.getTdcGao());
         });
         return ltResponseList;
+    }
+
+    private List<DxDcMuoiRes> buildListDxDcMuoiRes(DxDcKeHoachNam dxDc,  ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql) {
+        List<DxDcLtVt> muoiList = dxDc.getDxDcLtVtList().stream()
+                .filter(ltVt -> LoaiHangHoaEnum.MUOI.getValue().equals(ltVt.getLoai()))
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(muoiList))
+            return Collections.emptyList();
+
+        List<DxDcMuoiRes> muoiResponseList = this.buildListDxDcMuoiResTruocDieuChinh(chiTieuKeHoachNamRes, dvql, false);
+        muoiList.forEach(muoi -> {
+            DxDcMuoiRes dxDcMuoiRes = muoiResponseList.stream().filter(res -> res.getChiTieu().equals(muoi.getChiTieu())).findFirst().orElse(null);
+            if (dxDcMuoiRes == null)
+                return;
+            dxDcMuoiRes.setSdc(muoi.getSoLuong());
+            dxDcMuoiRes.setDc(muoi.getSoLuong() - dxDcMuoiRes.getTdc());
+            dxDcMuoiRes.setId(muoi.getId());
+        });
+        return muoiResponseList;
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -618,8 +645,8 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return dxDcVtRes;
     }
 
-    private List<DxDcLtMuoiRes> buildListDxDcMuoiResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
-                                                                   boolean apiSoLuongTdc) {
+    private List<DxDcMuoiRes> buildListDxDcMuoiResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
+                                                                 boolean apiSoLuongTdc) {
         List<KeHoachMuoiDuTruRes> khMuoi = chiTieuKeHoachNamRes.getKhMuoiDuTru().stream()
                 .filter(k -> k.getMaDonVi().equals(dvql))
                 .collect(Collectors.toList());
@@ -633,15 +660,15 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             return Collections.emptyList();
         }
 
-        List<DxDcLtMuoiRes> muoiResponseList = new ArrayList<>();
-        DxDcLtMuoiRes muoiXuatRes = new DxDcLtMuoiRes();
+        List<DxDcMuoiRes> muoiResponseList = new ArrayList<>();
+        DxDcMuoiRes muoiXuatRes = new DxDcMuoiRes();
         muoiXuatRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.XUAT_TRONG_NAM.getValue());
         muoiXuatRes.setMaVatTu(Constants.LuongThucMuoiConst.MUOI_MA_VT);
         muoiXuatRes.setTdc(tdcXtn);
         muoiXuatRes.setSdc(0D);
         muoiXuatRes.setDc(0D);
 
-        DxDcLtMuoiRes muoiNhapRes = new DxDcLtMuoiRes();
+        DxDcMuoiRes muoiNhapRes = new DxDcMuoiRes();
         muoiNhapRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.NHAP_TRONG_NAM.getValue());
         muoiNhapRes.setMaVatTu(Constants.LuongThucMuoiConst.MUOI_MA_VT);
         muoiNhapRes.setTdc(tdcNtn);
@@ -653,7 +680,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
         return muoiResponseList;
     }
 
-    private List<DxDcLtMuoiRes> buildListDxDcLtResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
+    private List<DxDcLtRes> buildListDxDcLtResTruocDieuChinh(ChiTieuKeHoachNamRes chiTieuKeHoachNamRes, String dvql,
                                                              boolean apiSoLuongTdc) {
         // Luong Thuc
         List<KeHoachLuongThucDuTruRes> khLuongThuc = chiTieuKeHoachNamRes.getKhLuongThuc().stream()
@@ -678,20 +705,39 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             return Collections.emptyList();
         }
 
-        List<DxDcLtMuoiRes> ltResponseList = new ArrayList<>();
-        DxDcLtMuoiRes ltXuatRes = new DxDcLtMuoiRes();
+        List<DxDcLtRes> ltResponseList = new ArrayList<>();
+        DxDcLtRes ltXuatRes = new DxDcLtRes();
         ltXuatRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.XUAT_TRONG_NAM.getValue());
-        ltXuatRes.setTdc(tdcXtnTongSoQuyThoc);
+        ltXuatRes.setMaVatTuGao(Constants.LuongThucMuoiConst.GAO_MA_VT);
+        ltXuatRes.setMaVatTuThoc(Constants.LuongThucMuoiConst.THOC_MA_VT);
+        ltXuatRes.setTdcGao(tdcXtnTongGao);
+        ltXuatRes.setTdcThoc(tdcXtnTongThoc);
+        ltXuatRes.setTdcTongSoQuyThoc(tdcXtnTongSoQuyThoc);
+        ltXuatRes.setDcTongSoQuyThoc(0D);
+        ltXuatRes.setSdcTongSoQuyThoc(0D);
+        ltXuatRes.setDcThoc(0D);
+        ltXuatRes.setDcGao(0D);
+        ltXuatRes.setSdcThoc(0D);
+        ltXuatRes.setSdcGao(0D);
 
-        DxDcLtMuoiRes ltNhapRes = new DxDcLtMuoiRes();
+        DxDcLtRes ltNhapRes = new DxDcLtRes();
         ltNhapRes.setChiTieu(DxDcKeHoachNamChiTieuEnum.NHAP_TRONG_NAM.getValue());
-        ltNhapRes.setTdc(tdcNtnTongSoQuyThoc);
+        ltNhapRes.setMaVatTuGao(Constants.LuongThucMuoiConst.GAO_MA_VT);
+        ltNhapRes.setMaVatTuThoc(Constants.LuongThucMuoiConst.THOC_MA_VT);
+        ltNhapRes.setTdcGao(tdcNtnTongGao);
+        ltNhapRes.setTdcThoc(tdcNtnTongThoc);
+        ltNhapRes.setTdcTongSoQuyThoc(tdcNtnTongSoQuyThoc);
+        ltNhapRes.setDcTongSoQuyThoc(0D);
+        ltNhapRes.setSdcTongSoQuyThoc(0D);
+        ltNhapRes.setDcThoc(0D);
+        ltNhapRes.setDcGao(0D);
+        ltNhapRes.setSdcThoc(0D);
+        ltNhapRes.setSdcGao(0D);
 
         ltResponseList.add(ltXuatRes);
         ltResponseList.add(ltNhapRes);
         return ltResponseList;
     }
-
     @Override
     public Boolean exportListToExcel(SearchDxDcKeHoachNamReq req, HttpServletResponse response) throws Exception {
         req.setPaggingReq(new PaggingReq(Integer.MAX_VALUE, 0));
