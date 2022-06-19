@@ -6,7 +6,6 @@ import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcKeHoachNam;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
 import com.tcdt.qlnvkhoach.enums.DxDcKeHoachNamStatusTongCucEnum;
-import com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
 import com.tcdt.qlnvkhoach.repository.*;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
@@ -993,8 +992,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 		response.setDcChiTieuId(chiTieuKeHoachNam.getDcChiTieuId());
 		response.setSoQdDcChiTieu(chiTieuKeHoachNam.getSoQdDcChiTieu());
-		response.setTenLoaiHangHoa(LoaiHangHoaEnum.getTenById(chiTieuKeHoachNam.getLoaiHangHoa()));
-		response.setLoaiHangHoa(chiTieuKeHoachNam.getLoaiHangHoa());
 
 		List<ChiTieuDeXuat> chiTieuDeXuats = chiTieuDeXuatRepository.findByChiTieuId(chiTieuKeHoachNam.getId());
 		if (!CollectionUtils.isEmpty(chiTieuDeXuats)) {
@@ -1618,7 +1615,6 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 										 UserInfo userInfo) throws Exception {
 		String soQd = req.getSoQuyetDinh();
 		Long chiTieuId = req.getChiTieuId();
-		String loaiHangHoa = req.getLoaiHangHoa();
 
 		if (update == null || (StringUtils.hasText(update.getSoQuyetDinh()) && !update.getSoQuyetDinh().equalsIgnoreCase(soQd))) {
 			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
@@ -1643,17 +1639,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			}
 		} else {
 
-			if (!StringUtils.hasText(loaiHangHoa))
-				throw new Exception("Loại hàng hóa không được để trống");
-
 			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
-				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDviAndLoaiHangHoa(namKeHoach, true, loaiQd, capDvi, loaiHangHoa)
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
-				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndLoaiHangHoa(namKeHoach, true, loaiQd, dvql, loaiHangHoa)
+				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(namKeHoach, true, loaiQd, dvql)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
 								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))

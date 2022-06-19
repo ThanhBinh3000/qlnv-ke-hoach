@@ -57,7 +57,6 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	 * Cục tạo điều chỉnh -> điều chỉnh của tổng cục
 	 */
 	private Long dcChiTieuId;
-	private String loaiHangHoa;
 
 	@Lob
 	private String ghiChu;

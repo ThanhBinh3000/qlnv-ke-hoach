@@ -48,6 +48,9 @@ public class DxDcLtVt implements Serializable {
     @Column(name = "LOAI")
     private String loai;
 
+    @Column(name = "DIA_DIEM_KHO")
+    private String diaDiemKho;
+
     @Transient
     private List<DxDcLtVtCt> dxDcLtVtCtList = new ArrayList<>();
 }

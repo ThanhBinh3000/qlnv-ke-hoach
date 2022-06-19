@@ -3,6 +3,9 @@ package com.tcdt.qlnvkhoach.response.dexuatdieuchinhkehoachnam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 public class DxDcVtRes {
@@ -21,4 +24,6 @@ public class DxDcVtRes {
     private Double sdcTongSo;
     private Double sdcCacNamTruoc;
     private Double sdcKeHoachNam;
+    private String diaDiemKho;
+    private List<DxDcLtVtCtRes> dxDcLtVtCtList = new ArrayList<>();
 }

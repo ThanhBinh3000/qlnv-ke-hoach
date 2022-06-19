@@ -18,7 +18,6 @@ public class SearchDxDcKeHoachNamReq extends BaseRequest {
 	private String trichYeuDx;
 	private Integer namKeHoach;
 	private String maDonVi;
-	private String loaiHangHoa;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyTuNgayQd;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

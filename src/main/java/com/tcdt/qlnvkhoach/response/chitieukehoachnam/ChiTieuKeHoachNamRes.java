@@ -40,8 +40,6 @@ public class ChiTieuKeHoachNamRes {
 	private Long qdGocId;
 	private String soQdGoc;
 	private String ghiChu;
-	private String loaiHangHoa;
-	private String tenLoaiHangHoa;
 	private Long dcChiTieuId;
 	private String soQdDcChiTieu;
 	private String maDvi;

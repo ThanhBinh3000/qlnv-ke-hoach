@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DxDcLtVtCtReq {
     private Long id;
-    private Long chiCucId;
+    private String maDvi;
     private String maDiemKho;
     private String maNhaKho;
     private String maNganKho;

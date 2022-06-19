@@ -27,9 +27,7 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
     @Query(value = "SELECT * FROM KH_CHI_TIEU_KE_HOACH_NAM CT WHERE CT.NAM_KE_HOACH = TO_NUMBER(:namKh) AND CT.MA_DVI = :maDvi AND CT.LATEST = 1 ", nativeQuery = true)
     ChiTieuKeHoachNam getChiTieuDxKhLcnt(Long namKh,String maDvi);
 
-    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndLoaiHangHoa(Integer namKh, boolean latest, String loaiQd, String maDvi, String loaiHangHoa);
-
-    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDviAndLoaiHangHoa(Integer namKh, boolean latest, String loaiQd, String capDvi, String loaiHangHoa);
+    List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(Integer namKh, boolean latest, String loaiQd, String maDvi);
 
     ChiTieuKeHoachNam findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(Long qdGocId, String loaiQd);
 }

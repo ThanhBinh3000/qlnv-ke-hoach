@@ -2,7 +2,6 @@ package com.tcdt.qlnvkhoach.repository;
 
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
-import com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
@@ -40,7 +39,6 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.ID as id, ");
 		builder.append("ct.TRANG_THAI as trangThai, ");
 		builder.append("ct.LY_DO_TU_CHOI as lyDoTuChoi, ");
-		builder.append("ct.LOAI_HANG_HOA as loaiHangHoa, ");
 		builder.append("dv.MA_DVI as maDvi, ");
 		builder.append("dv.TEN_DVI as tenDvi ");
 
@@ -67,7 +65,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("LEFT JOIN KH_CHI_TIEU_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
-		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI, ct.LOAI_HANG_HOA, dv.MA_DVI, dv.TEN_DVI ");
+		builder.append("GROUP BY ct.SO_QUYET_DINH, ct.NGAY_KY, ct.NAM_KE_HOACH, ct.TRICH_YEU, ct.ID, ct.TRANG_THAI, ct.LY_DO_TU_CHOI, dv.MA_DVI, dv.TEN_DVI ");
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID, qdGoc.SO_QUYET_DINH ");
 
@@ -104,11 +102,6 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 							.maDvi(item.get("maDvi", String.class))
 							.tenDvi(item.get("tenDvi", String.class))
 							.build();
-
-					String loaiHangHoa = item.get("loaiHangHoa") != null ? item.get("loaiHangHoa", String.class) : null;
-					String tenLoaiHangHoa = LoaiHangHoaEnum.getTenById(loaiHangHoa);
-					chiTieuKeHoachNamRes.setLoaiHangHoa(loaiHangHoa);
-					chiTieuKeHoachNamRes.setTenLoaiHangHoa(tenLoaiHangHoa);
 
 					if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 						chiTieuKeHoachNamRes.setQdGocId(item.get("qdGocId", BigDecimal.class).longValue());
@@ -175,10 +168,6 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		if (!StringUtils.isEmpty(req.getCapDvi())) {
 			builder.append("AND ").append("ct.CAP_DVI = :capDvi ");
-		}
-
-		if (!StringUtils.isEmpty(req.getLoaiHangHoa())) {
-			builder.append("AND ").append("ct.LOAI_HANG_HOA = :loaiHangHoa ");
 		}
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {
@@ -266,9 +255,6 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			query.setParameter("capDvi", req.getCapDvi());
 		}
 
-		if (!StringUtils.isEmpty(req.getLoaiHangHoa())) {
-			query.setParameter("loaiHangHoa", req.getLoaiHangHoa());
-		}
 
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {
 			if (!StringUtils.isEmpty(req.getSoCt())) {

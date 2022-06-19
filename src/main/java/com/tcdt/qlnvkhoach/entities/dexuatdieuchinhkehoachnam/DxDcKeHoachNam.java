@@ -94,12 +94,6 @@ public class DxDcKeHoachNam implements Serializable {
     @Column(name = "KE_HOACH_NAM_ID")
     private Long keHoachNamId; // KH_CHI_TIEU_KE_HOACH_NAM
 
-    /**
-     * @see com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum
-     */
-    @Column(name = "LOAI_HANG_HOA")
-    private String loaiHangHoa;
-
     @Transient
     private List<DxDcLtVt> dxDcLtVtList = new ArrayList<>();
 

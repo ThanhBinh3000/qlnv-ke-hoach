@@ -27,6 +27,7 @@ public class DxDcLtRes {
     private Double tdcGao;
     private Double dcGao;
     private Double sdcGao;
+    private String diaDiemKho;
 
     private List<DxDcLtVtCtRes> dxDcLtVtCtList = new ArrayList<>();
 }

@@ -15,6 +15,6 @@ public class DxDcMuoiRes {
     private Double tdc;
     private Double dc;
     private Double sdc;
-
+    private String diaDiemKho;
     private List<DxDcLtVtCtRes> dxDcLtVtCtList = new ArrayList<>();
 }

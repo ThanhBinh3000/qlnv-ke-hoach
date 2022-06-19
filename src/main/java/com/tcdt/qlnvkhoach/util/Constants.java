@@ -46,6 +46,13 @@ public class Constants {
 	public static final String CUC_KHU_VUC = "2";
 	public static final String TONG_CUC = "1";
 
+	// Loai vat tu hang hoa
+	public static final String LOAI_VTHH_LUONG_THUC = "00";
+	public static final String LOAI_VTHH_GAO = "0102";
+	public static final String LOAI_VTHH_THOC = "0101";
+	public static final String LOAI_VTHH_MUOI = "04";
+	public static final String LOAI_VTHH_VATTU = "02";
+
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static final class ActLapThamDinhDuToan {
 		public static String START = "startLapThamDinh";

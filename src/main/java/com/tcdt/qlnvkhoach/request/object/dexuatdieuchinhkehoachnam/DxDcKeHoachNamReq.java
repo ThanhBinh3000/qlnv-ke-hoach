@@ -39,12 +39,6 @@ public class DxDcKeHoachNamReq {
     @NotNull(message = "Căn cứ không được để trống")
     private Long keHoachNamId;
 
-    /**
-     * @see com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum
-     */
-    @NotNull(message = "Không được để trống")
-    private String loaiHangHoa;
-
     private List<DxDcLtVtReq> dxDcLtVtReqList = new ArrayList<>();
     private List<FileDinhKemReq> fileDinhKemReqs = new ArrayList<>();
 }

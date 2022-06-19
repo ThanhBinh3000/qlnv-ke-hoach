@@ -27,9 +27,8 @@ public class DxDcLtVtReq {
     @NotNull(message = "Không được để trống")
     private String chiTieu;
 
-    /**
-     * @see com.tcdt.qlnvkhoach.enums.LoaiHangHoaEnum
-     */
     @NotNull(message = "Không được để trống")
     private String loai;
+
+    private String diaDiemKho;
 }

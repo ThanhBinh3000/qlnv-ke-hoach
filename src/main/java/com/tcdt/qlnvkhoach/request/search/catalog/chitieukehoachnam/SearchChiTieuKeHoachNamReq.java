@@ -25,7 +25,6 @@ public class SearchChiTieuKeHoachNamReq extends BaseRequest {
 	private String tenDonVi;
 	private String loaiQuyetDinh;
 	private Integer namKeHoach;
-	private String loaiHangHoa;
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyTuNgayCt;

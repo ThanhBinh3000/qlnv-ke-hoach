@@ -27,8 +27,6 @@ public class DxDcKeHoachNamRes {
     private String soQdKeHoachNam;// can cu
     private String tenDonVi;
     private String maDonVi;
-    private String loaiHangHoa;
-    private String tenLoaiHangHoa;
     private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
     private List<DxDcLtRes> dxDcltList = new ArrayList<>();
     private List<DxDcMuoiRes> dxDcMuoiList = new ArrayList<>();
