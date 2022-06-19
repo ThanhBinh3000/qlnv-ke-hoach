@@ -269,17 +269,16 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             ltVt.setDxDcLtVtCtList(dxDcLtVtCtList);
         }
 
-        if (!CollectionUtils.isEmpty(mapDxDcLtVt.values()))
-            dxDcLtVtRespository.deleteAll(mapDxDcLtVt.values());
-
         if (!CollectionUtils.isEmpty(mapDxDcLtVtCt.values()))
             dxDcLtVtCtRepository.deleteAll(mapDxDcLtVtCt.values());
+        if (!CollectionUtils.isEmpty(mapDxDcLtVt.values()))
+            dxDcLtVtRespository.deleteAll(mapDxDcLtVt.values());
 
         return ltVts;
     }
 
     private DxDcKeHoachNam existDxDckhn(DxDcKeHoachNam update, ChiTieuKeHoachNam chiTieuKeHoachNam, String soVanBan, String dvql) throws Exception {
-        if (update == null || (!StringUtils.hasText(update.getSoVanBan()) && !update.getSoVanBan().equalsIgnoreCase(soVanBan))) {
+        if (update == null || (StringUtils.hasText(update.getSoVanBan()) && !update.getSoVanBan().equalsIgnoreCase(soVanBan))) {
             DxDcKeHoachNam exist = dxDcKeHoachNamRepository.findFirstBySoVanBan(soVanBan);
             if (exist != null)
                 throw new Exception("Số văn bản " + soVanBan + " đã tồn tại");
