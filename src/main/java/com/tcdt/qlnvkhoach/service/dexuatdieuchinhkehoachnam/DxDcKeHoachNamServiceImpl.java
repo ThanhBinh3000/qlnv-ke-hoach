@@ -491,6 +491,10 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             throw new Exception("Không thể xóa đề xuất điều chỉnh trình duyệt");
         }
 
+        List<Long> dxDcLtVtIds = dxDcLtVtRespository.findIdByDxdckhnIdIn(Collections.singletonList(dxDc.getId()));
+        if (!CollectionUtils.isEmpty(dxDcLtVtIds))
+            dxDcLtVtCtRepository.deleteByDxDcLtVtIdIn(dxDcLtVtIds);
+
         dxDcLtVtRespository.deleteByDxdckhnId(dxDc.getId());
         dxDcKeHoachNamRepository.delete(dxDc);
         fileDinhKemService.delete(dxDc.getId(), Lists.newArrayList(DxDcKeHoachNam.TABLE_NAME));
@@ -859,6 +863,10 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
 
         if (CollectionUtils.isEmpty(req.getIds()))
             return false;
+
+        List<Long> dxDcLtVtIds = dxDcLtVtRespository.findIdByDxdckhnIdIn(req.getIds());
+        if (!CollectionUtils.isEmpty(dxDcLtVtIds))
+            dxDcLtVtCtRepository.deleteByDxDcLtVtIdIn(dxDcLtVtIds);
 
         dxDcLtVtRespository.deleteByDxdckhnIdIn(req.getIds());
         dxDcKeHoachNamRepository.deleteByIdIn(req.getIds());

@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.repository.dexuatdieuchinhkehoachnam;
 import com.tcdt.qlnvkhoach.entities.dexuatdieuchinhkehoachnam.DxDcLtVt;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -20,4 +21,7 @@ public interface DxDcLtVtRespository extends JpaRepository<DxDcLtVt, Long> {
     @Transactional
     @Modifying
     void deleteByDxdckhnIdIn(Collection<Long> dxDcIds);
+
+    @Query("SELECT ltVt.id FROM DxDcLtVt ltVt WHERE ltVt.dxdckhnId IN ?1")
+    List<Long> findIdByDxdckhnIdIn(Collection<Long> dxDcIds);
 }
