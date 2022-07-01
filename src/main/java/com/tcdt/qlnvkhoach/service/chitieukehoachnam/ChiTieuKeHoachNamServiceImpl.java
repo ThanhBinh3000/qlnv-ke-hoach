@@ -1970,10 +1970,18 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.getChiTieuDxKhLcnt(namKh,userInfo.getDvql());
 
 		Map<String, String> dataMap = qlnvDmService.getListDanhMucDonVi("3");
+		Map<String,String> hashMapDmHh = qlnvDmService.getListDanhMucHangHoa();
+
 		List<KeHoachLuongThucMuoi> keHoachLuongThucMuois = keHoachLuongThucMuoiRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		List<KeHoachVatTu>  vatTu = keHoachVatTuRepository.findByCtkhnId(chiTieuKeHoachNam.getId());
 		keHoachLuongThucMuois.forEach( f -> {
 			f.setTenDonVi( StringUtils.isEmpty(f.getMaDvi()) ? null : dataMap.get(f.getMaDvi()));
+		});
+		vatTu.forEach( f -> {
+			f.setTenDonVi( StringUtils.isEmpty(f.getMaDvi()) ? null : dataMap.get(f.getMaDvi()));
+			f.setTenVatTu(StringUtils.isEmpty(f.getMaVatTu()) ? null : hashMapDmHh.get(f.getMaVatTu()));
+			f.setTenVatTuCha(StringUtils.isEmpty(f.getMaVatTuCha()) ? null : hashMapDmHh.get(f.getMaVatTuCha()));
+
 		});
 		chiTieuKeHoachNam.setKhLuongThucList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.GAO_ID.equals(kh.getVatTuId()) || Constants.LuongThucMuoiConst.THOC_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));
 		chiTieuKeHoachNam.setKhMuoiList(keHoachLuongThucMuois.stream().filter(kh -> Constants.LuongThucMuoiConst.MUOI_ID.equals(kh.getVatTuId())).collect(Collectors.toList()));

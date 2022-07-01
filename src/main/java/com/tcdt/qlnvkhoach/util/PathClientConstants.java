@@ -10,4 +10,6 @@ public class PathClientConstants {
 
 	public static final String URL_DM_DON_VI_GET_ALL = "/dmuc-donvi/tat-ca/{capDvi}";
 
+	public static final String URL_DM_HANG_HOA_GET_ALL = "/dm-hang/danh-sach/dvql";
+
 }

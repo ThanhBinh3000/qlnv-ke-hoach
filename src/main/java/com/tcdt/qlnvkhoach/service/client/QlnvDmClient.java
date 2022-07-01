@@ -30,4 +30,8 @@ public interface QlnvDmClient {
 	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
 	public ResponseEntity<String> getAllDanhMucDonVi(@PathVariable("capDvi") String capDvi);
 
+	@GetMapping(PathClientConstants.URL_DM_HANG_HOA_GET_ALL)
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getDanhMucHangHoa();
+
 }

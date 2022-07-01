@@ -5,12 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -29,10 +24,16 @@ public class KeHoachVatTu implements Serializable {
 	private Long ctkhnId;
 	private Long donViId;
 	private String maDvi;
+	@Transient
+	private String tenDonVi;
 	private Long vatTuId;
 	private String maVatTu;
+	@Transient
+	private String tenVatTu;
 	private Long vatTuChaId;
 	private String maVatTuCha;
+	@Transient
+	private String tenVatTuCha;
 	private Double soLuongNhap;
 	private String donViTinh;
 	private String trangThai;
