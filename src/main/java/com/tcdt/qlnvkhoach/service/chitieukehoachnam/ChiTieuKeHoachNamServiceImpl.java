@@ -1616,10 +1616,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		String soQd = req.getSoQuyetDinh();
 		Long chiTieuId = req.getChiTieuId();
 
-		if (update == null || (StringUtils.hasText(update.getSoQuyetDinh()) && !update.getSoQuyetDinh().equalsIgnoreCase(soQd))) {
-			ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
-			if (exist != null)
-				throw new Exception("Số quyết định " + soQd + " đã tồn tại");
+		if (StringUtils.hasText(soQd)) {
+			if (update == null || (StringUtils.hasText(update.getSoQuyetDinh()) && !update.getSoQuyetDinh().equalsIgnoreCase(soQd))) {
+				ChiTieuKeHoachNam exist = chiTieuKeHoachNamRepository.findFirstBySoQuyetDinhAndLoaiQuyetDinhAndLatestIsTrue(soQd, loaiQd);
+				if (exist != null)
+					throw new Exception("Số quyết định " + soQd + " đã tồn tại");
+			}
 		}
 
 		String capDvi = userInfo.getCapDvi();
