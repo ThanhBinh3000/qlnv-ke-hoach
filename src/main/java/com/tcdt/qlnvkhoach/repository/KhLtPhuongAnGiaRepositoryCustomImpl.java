@@ -4,8 +4,10 @@ import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachNamStatusEnum;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.SearchKhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
+import com.tcdt.qlnvkhoach.response.phuongangia.KhLtPhuongAnGiaRes;
 import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.DataUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,14 +26,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//Ctkhn: Chỉ tiêu kế hoạch năm
 public class KhLtPhuongAnGiaRepositoryCustomImpl implements KhLtPhuongAnGiaRepositoryCustom {
 	@PersistenceContext
 	private EntityManager em;
 
 	@Override
-	public Page<ChiTieuKeHoachNamRes> search(SearchChiTieuKeHoachNamReq req, String userCapDvi) {
-		String loaiQd = req.getLoaiQuyetDinh();
+	public Page<KhLtPhuongAnGiaRes> search(SearchKhLtPhuongAnGiaReq req, String userCapDvi) {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ct.SO_QUYET_DINH as soQD, ");

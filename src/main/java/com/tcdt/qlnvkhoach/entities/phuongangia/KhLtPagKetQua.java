@@ -55,4 +55,8 @@ public class KhLtPagKetQua implements Serializable {
 	 */
 	@Column(name = "PAG_ID")
 	private Long phuongAnGiaId;
+
+	static final public String getFileDinhKemDataType(String type) {
+		return String.format("%s_%s", KhLtPagKetQua.TABLE_NAME, type);
+	}
 }

@@ -12,24 +12,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchKhLtPhuongAnGiaReq extends BaseRequest {
-	private String soQD;
+	private Long namKeHoach;
+	private String loaiHangHoa;
+	private Long soDeXuat;
 	private String trichYeu;
-	private String maDvi;
-	private Long donViId;
-	private String dvql;
-	private String capDvi;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyTuNgay;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyDenNgay;
-	private String tenDonVi;
-	private String loaiQuyetDinh;
-	private Integer namKeHoach;
-
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private LocalDate ngayKyTuNgayCt;
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private LocalDate ngayKyDenNgayCt;
-	private String trichYeuCt;
-	private String soCt;
+	private String capDvi;
 }
