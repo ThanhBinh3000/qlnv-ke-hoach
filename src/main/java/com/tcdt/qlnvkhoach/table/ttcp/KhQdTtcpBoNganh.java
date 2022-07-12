@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "KH_QD_TTCP_BO_NGANH")
@@ -26,4 +27,7 @@ public class KhQdTtcpBoNganh implements Serializable {
     Long ttMuaTang;
     Long ttXuatGiam;
     Long ttXuatBan;
+
+    @Transient
+    List<KhQdTtcpBoNganhCTiet> listCtiet;
 }
