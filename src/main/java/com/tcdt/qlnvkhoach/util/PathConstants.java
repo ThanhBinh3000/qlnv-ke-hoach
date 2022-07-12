@@ -50,8 +50,15 @@ public class PathConstants {
 	public static final String URL_DCHINH_SAU_QTOAN_DTQG = "/dieu-chinh-sau-quyet-toan";
 	public static final String URL_QTOAN_DTQG = "/quyet-toan";
 
+	public static final String URL_GIAO_CHI_TIEU_VA_VON_DAU_NAN = "/giao-chi-tieu-von-dau-nam";
 
+	public static final String URL_QUYET_DINH = "/quyet-dinh";
 
+	public static final String URL_TTCP = "/ttcp";
+
+	public static final String URL_BTC_BO_NGANH = "/btc-nganh";
+
+	public static final String URL_BTC_TCDT = "/btc-tcdt";
 
 }
 
