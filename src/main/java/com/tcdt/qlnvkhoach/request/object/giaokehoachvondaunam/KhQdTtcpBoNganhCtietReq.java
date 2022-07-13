@@ -1,12 +1,11 @@
-package com.tcdt.qlnvkhoach.response.giaokehoachvondaunam;
+package com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 
-public class KhQdTtcpBoNganhCtietRes {
+
+public class KhQdTtcpBoNganhCtietReq {
 
     private Long id;
 

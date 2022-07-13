@@ -1,15 +1,13 @@
-package com.tcdt.qlnvkhoach.response.giaokehoachvondaunam;
+package com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 
-public class KhQdTtcpBoNganhRes {
+
+public class KhQdTtcpBoNganhReq {
 
     private Long id;
 
@@ -37,7 +35,7 @@ public class KhQdTtcpBoNganhRes {
 
     private Long ttXuatBan;
 
-//    private List<KhQdTtcpBoNganhCtietRes> listCtiet;
+    private List<KhQdTtcpBoNganhCtietReq> listCtiet;
 
 }
 

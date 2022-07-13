@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpRepository;
+import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhCtietReq;
+import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
-import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdTtcpBoNganhCtietRes;
-import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdTtcpBoNganhRes;
-import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdTtcpRes;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
@@ -25,11 +24,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -43,13 +41,15 @@ public class KhQdTtcpService {
     @Autowired
     private KhQdTtcpBoNganhRepository khQdTtcpBoNganhRepository;
 
+    @Autowired
     private KhQdTtcpBoNganhCtietRepository khQdTtcpBoNganhCtietRepository;
 
     public Iterable<KhQdTtcp> findAll() {
         return khQdTtcpRepository.findAll();
     }
     public Page<KhQdTtcp> searchPage(KhQdTtcpSearchReq objReq) throws Exception{
-        Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
+        Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),
+                objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhQdTtcp> data=khQdTtcpRepository.selectPage(
                 objReq.getNamQd(),
                 objReq.getSoQd(),
@@ -61,7 +61,7 @@ public class KhQdTtcpService {
     }
 
     @Transactional
-    public KhQdTtcp save(KhQdTtcpRes objReq, HttpServletRequest req) throws Exception{
+    public KhQdTtcp save(KhQdTtcpReq objReq) throws Exception{
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
@@ -70,14 +70,14 @@ public class KhQdTtcpService {
         data.setNguoiTao(userInfo.getUsername());
         KhQdTtcp createCheck = khQdTtcpRepository.save(data);
 
-        for(KhQdTtcpBoNganhRes bNganhReq : objReq.getListBoNganh()){
+        for(KhQdTtcpBoNganhReq bNganhReq : objReq.getListBoNganh()){
             KhQdTtcpBoNganh bNganh = new ModelMapper().map(bNganhReq,KhQdTtcpBoNganh.class);
             bNganh.setIdQdTtcp(data.getId());
             // call save của thằng BO Ngành
             khQdTtcpBoNganhRepository.save(bNganh);
 
-            for(KhQdTtcpBoNganhCtietRes ctietRes : bNganhReq.getListCtiet()){
-                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(bNganhReq,KhQdTtcpBoNganhCTiet.class);
+            for(KhQdTtcpBoNganhCtietReq ctietReq : bNganhReq.getListCtiet()){
+                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
                 cTiet.setIdBoNganh(bNganh.getId());
                 khQdTtcpBoNganhCtietRepository.save(cTiet);
             }
@@ -93,7 +93,8 @@ public class KhQdTtcpService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.updateValue(source, objectEdit);
     }
-    public KhQdTtcp update(@Valid KhQdTtcpReq objReq, HttpServletRequest req)throws Exception{
+    @Transactional
+    public KhQdTtcp update(@Valid KhQdTtcpReq objReq)throws Exception{
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
@@ -106,11 +107,29 @@ public class KhQdTtcpService {
         data.setNguoiSua(userInfo.getUsername());
         data.setNgaySua(new Date());
         KhQdTtcp createCheck=khQdTtcpRepository.save(data);
+
+        //xoa tất cả
+        khQdTtcpBoNganhRepository.deleteAllByIdQdTtcp(data.getId());
+        for (KhQdTtcpBoNganhReq bn:objReq.getListBoNganh()){
+            KhQdTtcpBoNganh bNganh = new ModelMapper().map(bn,KhQdTtcpBoNganh.class);
+            bNganh.setId(null);
+            bNganh.setIdQdTtcp(data.getId());
+            khQdTtcpBoNganhRepository.save(bNganh);
+            khQdTtcpBoNganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
+            for (KhQdTtcpBoNganhCtietReq bnCtiet:bn.getListCtiet()){
+                KhQdTtcpBoNganhCTiet cTiet=new ModelMapper().map(bnCtiet,KhQdTtcpBoNganhCTiet.class);
+                cTiet.setId(null);
+                cTiet.setIdBoNganh(bn.getId());
+                khQdTtcpBoNganhCtietRepository.save(cTiet);
+
+            }
+        }
+
         return createCheck;
 
 
     }
-
+    @Transactional
     public KhQdTtcp detailTtcp(String id) throws Exception{
         Optional<KhQdTtcp> qOptional=khQdTtcpRepository.findById(Long.parseLong(id));
         if (!qOptional.isPresent()){
@@ -128,11 +147,19 @@ public class KhQdTtcpService {
         return data;
 
     }
-    public void delete(Long ids){
+
+    @Transactional
+    public void deleteTtcp(Long ids){
         Optional<KhQdTtcp> qOptional=khQdTtcpRepository.findById(ids);
         if (!qOptional.isPresent()){
             throw new UnsupportedOperationException("Id không tồn tại");
         }
+
+        for (KhQdTtcpBoNganh bNganh : khQdTtcpBoNganhRepository.findAllByIdQdTtcp(ids)){
+            khQdTtcpBoNganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
+        }
+        khQdTtcpBoNganhRepository.deleteAllByIdQdTtcp(ids);
+
         khQdTtcpRepository.delete(qOptional.get());
     }
 

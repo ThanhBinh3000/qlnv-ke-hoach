@@ -21,7 +21,7 @@ public class KhQdTtcpRes {
 
     private String trichYeu;
 
-    private List<KhQdTtcpBoNganhRes> listBoNganh;
+//    private List<KhQdTtcpBoNganhRes> listBoNganh;
 
 }
 

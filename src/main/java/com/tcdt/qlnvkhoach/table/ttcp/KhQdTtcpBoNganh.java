@@ -15,7 +15,7 @@ public class KhQdTtcpBoNganh implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_QD_TTCP_BO_NGANH_SEQ")
     @SequenceGenerator(sequenceName = "KH_QD_TTCP_BO_NGANH_SEQ",allocationSize = 1,name = "KH_QD_TTCP_BO_NGANH_SEQ")
     private Long id;
-    String maBoNghanh;
+    String maBoNganh;
     Long soLuong;
     Integer namKhoach;
     Long idQdTtcp;

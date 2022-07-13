@@ -1,10 +1,11 @@
-package com.tcdt.qlnvkhoach.table.btcgiaocacbonganh;
+package com.tcdt.qlnvkhoach.table.btcgiaotcdt;
 
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "KH_QD_BTC_TCDT")
@@ -23,4 +24,6 @@ public class KhQdBtcTcdt implements Serializable {
     String nguoiTao;
     Date ngaySua;
     String nguoiSua;
+    @Transient
+    List<KhQdBtcTcdtCtiet> listCtiet;
 }

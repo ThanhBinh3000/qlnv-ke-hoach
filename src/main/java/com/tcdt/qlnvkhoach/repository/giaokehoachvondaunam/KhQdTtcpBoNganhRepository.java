@@ -15,4 +15,6 @@ public interface KhQdTtcpBoNganhRepository extends CrudRepository<KhQdTtcpBoNgan
 
     List<KhQdTtcpBoNganh> findAllByIdQdTtcp(Long idQdTtcp);
 
+    void deleteAllByIdQdTtcp(Long idQdTtcp);
+
 }
