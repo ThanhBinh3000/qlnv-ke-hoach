@@ -128,5 +128,10 @@ public class KhQdBtcBoNganhService {
         }
         khQdBtcBoNganhRepository.delete(qOptional.get());
     }
+    @Transactional
+    public  void deleteListId(List<Long> listId){
+        khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganhIn(listId);
+        khQdBtcBoNganhRepository.deleteAllByIdIn(listId);
+    }
 
 }
