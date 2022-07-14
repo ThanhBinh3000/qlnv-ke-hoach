@@ -109,4 +109,10 @@ public class KhQdBtcTcdtService {
         return data;
     }
 
+
+    public void deleteListId(List<Long> listId){
+        khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdtIn(listId);
+        khQdBtcTcdtRepository.deleteAllByIdIn(listId);
+    }
+
 }

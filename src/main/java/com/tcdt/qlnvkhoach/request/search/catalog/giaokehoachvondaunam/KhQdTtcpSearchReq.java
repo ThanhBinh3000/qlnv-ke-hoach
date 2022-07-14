@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -25,6 +26,8 @@ public class KhQdTtcpSearchReq extends BaseRequest {
     Date ngayQdDen;
 
     String trichYeu;
+
+    List<Long> idList;
 
 
 }
