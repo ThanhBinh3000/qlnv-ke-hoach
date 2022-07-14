@@ -34,14 +34,14 @@
 		</resources>
 	</cache-template>
 
-<!--	<cache alias="dmDonviCache" uses-template="default">-->
-<!--		<key-type>java.lang.String</key-type>-->
-<!--		<value-type>com.tcdt.qlnvkhoach.entities.catalog.QlnvDmDonvi</value-type>-->
-<!--	</cache>-->
+	<cache alias="dmDonviCache" uses-template="default">
+		<key-type>java.lang.String</key-type>
+		<value-type>com.tcdt.qlnvkhoach.entities.catalog.QlnvDmDonvi</value-type>
+	</cache>
 
-<!--	<cache alias="dmKhoachVonPhiCache" uses-template="default">-->
-<!--		<key-type>java.lang.String</key-type>-->
-<!--		<value-type>com.tcdt.qlnvkhoach.entities.catalog.QlnvDmKhoachVonPhi</value-type>-->
-<!--	</cache>-->
+	<cache alias="dmKhoachVonPhiCache" uses-template="default">
+		<key-type>java.lang.String</key-type>
+		<value-type>com.tcdt.qlnvkhoach.entities.catalog.QlnvDmKhoachVonPhi</value-type>
+	</cache>
 
 </config>
