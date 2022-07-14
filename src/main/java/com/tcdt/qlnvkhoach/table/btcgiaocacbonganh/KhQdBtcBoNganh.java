@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "KH_QD_BTC_BO_NGANH")
@@ -18,11 +19,14 @@ public class KhQdBtcBoNganh implements Serializable {
     String soQd;
     Date ngayQd;
     Long idTtcpBoNganh;
-    Long namKhoach;
+    Integer namKhoach;
     String trichYeu;
     Date ngayTao;
     String nguoiTao;
     Date ngaySua;
     String nguoiSua;
+
+    @Transient
+   private List<KhQdBtcBoNganhCtiet> listBoNganh;
 
 }

@@ -1,11 +1,17 @@
 package com.tcdt.qlnvkhoach.controller.giaokehoachvondaunam;
 
+import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
+import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
 
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdBtcTcdtSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
+import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdBtcBoNganhRes;
+import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdBtcBoNganhService;
+import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdTtcpRes;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdBtcTcdtService;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdTtcpService;
@@ -22,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -34,7 +42,11 @@ import java.util.List;
 public class QuyetDinhController {
 
     @Autowired
+    KhQdBtcBoNganhService khQdBtcBoNganhService;
+
+    @Autowired
     private KhQdTtcpService khQdTtcpService;
+
     @Autowired
     private KhQdBtcTcdtService khQdBtcTcdtService;
 
@@ -234,4 +246,91 @@ public class QuyetDinhController {
         return ResponseEntity.ok(resp);
     }
 
+
+    @ApiOperation(value = "Tra cứu kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> searchBTC(@Valid @RequestBody KhQdBtBoNganhSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khQdBtcBoNganhService.searchPage(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Tạo mới kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> createBtc(@Valid @RequestBody KhQdBtcBoNganhRes objReq, HttpServletRequest req) {
+        Resp resp = new Resp();
+        try {
+            KhQdBtcBoNganh createCheck=khQdBtcBoNganhService.save(objReq,req);
+            resp.setData(createCheck);
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+
+    @ApiOperation(value = "Cập nhật kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> updateBtc(@Valid @RequestBody KhQdBtcBoNganhReq objReq, HttpServletRequest req) {
+        Resp resp = new Resp();
+        try {
+            KhQdBtcBoNganh createCheck = khQdBtcBoNganhService.update(objReq);
+            resp.setData(createCheck);
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Chi tiết kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
+    @GetMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> detailBtc(@ApiParam(value = "ID quyết định kế hoạch quyết định bộ tài chính giao bộ ngành", example = "1", required = true) @PathVariable("ids") String ids) {
+        Resp resp = new Resp();
+        try {
+            KhQdBtcBoNganh khQdBtcBoNganh=khQdBtcBoNganhService.detailBtc(ids);
+            resp.setData(khQdBtcBoNganh);
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Xóa kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
+    @GetMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteBtc(@ApiParam(value = "ID quyết định của thủ tướng chính phủ", example = "1", required = true) @PathVariable("ids") Long ids) {
+        Resp resp = new Resp();
+        try {
+            khQdBtcBoNganhService.delete(ids);
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
 }
+
+
