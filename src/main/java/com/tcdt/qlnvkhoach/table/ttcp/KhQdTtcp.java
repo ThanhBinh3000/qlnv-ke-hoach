@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "KH_QD_TTCP")
@@ -18,11 +19,15 @@ public class KhQdTtcp implements Serializable {
     private Long id;
     Integer nam;
     String soQd;
-    String ngayQd;
+    @Temporal(TemporalType.DATE)
+    Date ngayQd;
     String trichYeu;
     Date ngayTao;
     String nguoiTao;
     Date ngaySua;
     String nguoiSua;
+
+    @Transient
+    private List<KhQdTtcpBoNganh> listBoNganh;
 
 }

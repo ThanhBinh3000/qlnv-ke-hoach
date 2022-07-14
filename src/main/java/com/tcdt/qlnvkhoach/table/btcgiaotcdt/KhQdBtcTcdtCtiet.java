@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.table.btcgiaocacbonganh;
+package com.tcdt.qlnvkhoach.table.btcgiaotcdt;
 
 import lombok.Data;
 
@@ -16,9 +16,10 @@ public class KhQdBtcTcdtCtiet implements Serializable {
     private Long id;
     Long idDanhMuc;
     String loaiVthh;
-    String sluongDtoan;
-    String idQdBtcNganh;
+    Long soLuong;
+    Long sluongDtoan;
     String type;
     Long idQdBtcTcdt;
+
 
 }
