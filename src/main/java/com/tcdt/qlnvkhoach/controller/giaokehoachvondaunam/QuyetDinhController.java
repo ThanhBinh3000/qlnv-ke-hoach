@@ -120,6 +120,22 @@ public class QuyetDinhController {
         return ResponseEntity.ok(resp);
     }
 
+    @ApiOperation(value = "Xóa danh sách quyết định của TTCP", response = List.class)
+    @PostMapping(value=PathConstants.URL_TTCP + PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteMulti(@Valid @RequestBody KhQdTtcpSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            khQdTtcpService.deleteListId(objReq.getIdList());
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
 
     //Bộ tài chính giao Tồng cục dự trữ
 
@@ -186,7 +202,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
-    @ApiOperation(value = "Xóa quyết định của BTC giao TCDT", response = List.class)
+    @ApiOperation(value = "Tra cứu quyết định của BTC giao TCDT", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> selectPage(@Valid @RequestBody KhQdBtcTcdtSearchReq objReq) {
         Resp resp = new Resp();
@@ -202,6 +218,20 @@ public class QuyetDinhController {
         return ResponseEntity.ok(resp);
     }
 
-
+    @ApiOperation(value = "Xóa danh sách quyết định của BTC giao TCDT", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteMulti(@Valid @RequestBody KhQdBtcTcdtSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            khQdBtcTcdtService.deleteListId(objReq.getIdList());
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
 
 }

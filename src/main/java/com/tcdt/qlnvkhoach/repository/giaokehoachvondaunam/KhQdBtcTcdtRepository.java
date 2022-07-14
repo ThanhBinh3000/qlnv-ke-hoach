@@ -3,9 +3,13 @@ package com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface KhQdBtcTcdtRepository extends CrudRepository<KhQdBtcTcdt,Long> {
@@ -18,4 +22,7 @@ public interface KhQdBtcTcdtRepository extends CrudRepository<KhQdBtcTcdt,Long> 
     Page<KhQdBtcTcdt> selectPage(Integer namQd, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, Pageable pageable);
 
 
+    @Transactional
+    @Modifying
+    void deleteAllByIdIn(List<Long> ids);
 }

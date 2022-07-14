@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class KhQdTtcpService {
@@ -161,6 +162,16 @@ public class KhQdTtcpService {
         khQdTtcpBoNganhRepository.deleteAllByIdQdTtcp(ids);
 
         khQdTtcpRepository.delete(qOptional.get());
+    }
+    @Transactional
+    public void deleteListId(List<Long> listId){
+        for(Long idDel : listId){
+            List<KhQdTtcpBoNganh> boNganh = khQdTtcpBoNganhRepository.findAllByIdQdTtcp(idDel);
+            List<Long> listIdBnganh = boNganh.stream().map(KhQdTtcpBoNganh::getId).collect(Collectors.toList());
+            khQdTtcpBoNganhCtietRepository.deleteAllByIdBoNganhIn(listIdBnganh);
+        }
+        khQdTtcpBoNganhRepository.deleteAllByIdQdTtcpIn(listId);
+        khQdTtcpRepository.deleteAllByIdIn(listId);
     }
 
 }

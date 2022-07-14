@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface KhQdTtcpRepository extends CrudRepository<KhQdTtcp ,Long> {
@@ -22,5 +23,8 @@ public interface KhQdTtcpRepository extends CrudRepository<KhQdTtcp ,Long> {
             , nativeQuery = true)
     Page<KhQdTtcp>selectPage(Integer namQd, String soQd,String ngayQdTu,String ngayQdDen, String trichYeu, Pageable pageable);
 
+    @Transactional
+    @Modifying
+    void deleteAllByIdIn(List<Long> ids);
 
 }

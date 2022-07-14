@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -16,6 +17,10 @@ public interface KhQdTtcpBoNganhCtietRepository extends CrudRepository<KhQdTtcpB
     List<KhQdTtcpBoNganhCTiet> findAllByIdBoNganh(Long idBoNganh);
 
     void deleteAllByIdBoNganh(Long idBoNganh);
+
+    @Transactional
+    void deleteAllByIdBoNganhIn(List<Long> idBoNganhList);
+
 
 
 }

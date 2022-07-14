@@ -6,6 +6,7 @@ public class PathConstants {
 	public static final String URL_TAO_MOI = "/them-moi";
 	public static final String URL_CAP_NHAT = "/cap-nhat";
 	public static final String URL_XOA = "/xoa/{ids}";
+	public static final String URL_XOA_MULTI = "/xoa/multi";
 	public static final String URL_TRA_CUU = "/tra-cuu";
 	public static final String URL_CHI_TIET = "/chi-tiet/{ids}";
 	public static final String URL_PHE_DUYET = "/phe-duyet";
