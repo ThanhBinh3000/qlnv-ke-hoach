@@ -330,6 +330,22 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+    @ApiOperation(value = "Xóa danh sách kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteMuti(@Valid @RequestBody KhQdBtBoNganhSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            khQdBtcBoNganhService.deleteListId(objReq.getIdList());
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
 
 }
 

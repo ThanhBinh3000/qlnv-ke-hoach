@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
-
+import java.util.List;
 
 
 @Getter
@@ -24,4 +24,6 @@ public class KhQdBtBoNganhSearchReq extends BaseRequest {
     Date ngayQdDen;
 
     String trichYeu;
+
+    List<Long> idList;
 }
