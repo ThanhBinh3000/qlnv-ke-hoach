@@ -73,6 +73,8 @@ public class KhQdTtcpService {
         KhQdTtcp data = new ModelMapper().map(objReq,KhQdTtcp.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
+        // Dự thảo
+        data.setTrangThai("00");
         KhQdTtcp createCheck = khQdTtcpRepository.save(data);
 
         for(KhQdTtcpBoNganhReq bNganhReq : objReq.getListBoNganh()){

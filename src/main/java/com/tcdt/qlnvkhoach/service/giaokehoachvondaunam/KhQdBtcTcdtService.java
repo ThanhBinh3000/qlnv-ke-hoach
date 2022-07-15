@@ -49,6 +49,7 @@ public class KhQdBtcTcdtService {
         KhQdBtcTcdt data=new ModelMapper().map(objReq,KhQdBtcTcdt.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
+        data.setTrangThai("00");
         KhQdBtcTcdt createCheck=khQdBtcTcdtRepository.save(data);
          for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
              KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);

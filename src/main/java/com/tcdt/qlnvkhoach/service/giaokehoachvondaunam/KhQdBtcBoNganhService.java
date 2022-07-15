@@ -70,6 +70,7 @@ public class KhQdBtcBoNganhService {
         KhQdBtcBoNganh data = new ModelMapper().map(objReq,KhQdBtcBoNganh.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
+        data.setTrangThai("00");
         KhQdBtcBoNganh createCheck = khQdBtcBoNganhRepository.save(data);
         for(KhQdBtcBoNganhCtietRes bNganhReq : objReq.getListBoNganh()){
             KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bNganhReq,KhQdBtcBoNganhCtiet.class);
