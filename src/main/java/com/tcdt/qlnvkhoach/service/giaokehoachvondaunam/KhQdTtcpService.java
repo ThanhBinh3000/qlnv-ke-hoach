@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpRepository;
+import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpReq;
@@ -17,6 +18,7 @@ import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcpBoNganh;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcpBoNganhCTiet;
 import com.tcdt.qlnvkhoach.util.Contains;
+import com.tcdt.qlnvkhoach.util.ExportExcel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,9 +27,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +73,8 @@ public class KhQdTtcpService {
         KhQdTtcp data = new ModelMapper().map(objReq,KhQdTtcp.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
+        // Dự thảo
+        data.setTrangThai("00");
         KhQdTtcp createCheck = khQdTtcpRepository.save(data);
 
         for(KhQdTtcpBoNganhReq bNganhReq : objReq.getListBoNganh()){
@@ -172,6 +178,36 @@ public class KhQdTtcpService {
         }
         khQdTtcpBoNganhRepository.deleteAllByIdQdTtcpIn(listId);
         khQdTtcpRepository.deleteAllByIdIn(listId);
+    }
+
+
+    public  void exportDsQdTtcp(KhQdTtcpSearchReq objReq, HttpServletResponse response) throws Exception{
+        PaggingReq paggingReq = new PaggingReq();
+        paggingReq.setPage(0);
+        paggingReq.setLimit(Integer.MAX_VALUE);
+        objReq.setPaggingReq(paggingReq);
+        Page<KhQdTtcp> page=this.searchPage(objReq);
+        List<KhQdTtcp> data=page.getContent();
+
+        String title="Danh sách quyết định Thủ tướng";
+        String[] rowsName=new String[]{"STT","Số quyết định","Năm QĐ","Ngày QĐ","Trích yếu","Trạng thái"};
+        String fileName="danh-sach-quyet-dinh-thu-tuong.xlsx";
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs=null;
+        for (int i=0;i<data.size();i++){
+            KhQdTtcp dx=data.get(i);
+            objs=new Object[rowsName.length];
+            objs[0]=i;
+            objs[1]=dx.getSoQd();
+            objs[2]=dx.getNam();
+            objs[3]=dx.getNgayQd();
+            objs[4]=dx.getTrichYeu();
+            objs[5]=dx.getTrangThai();
+            dataList.add(objs);
+
+        }
+        ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
+        ex.export();
     }
 
 }

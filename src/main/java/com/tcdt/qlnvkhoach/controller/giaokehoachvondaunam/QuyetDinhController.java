@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.controller.giaokehoachvondaunam;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
@@ -25,14 +26,21 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = PathConstants.URL_GIAO_CHI_TIEU_VA_VON_DAU_NAN+PathConstants.URL_QUYET_DINH)
@@ -147,6 +155,28 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+    @ApiOperation(value = "Kết xuất danh sách kế hoạch quyết định của Thủ Tướng", response = List.class)
+    @PostMapping(value=PathConstants.URL_TTCP + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void exportListQdTtcpToExcel(@Valid @RequestBody KhQdTtcpSearchReq objReq,HttpServletResponse response) throws Exception{
+
+        try {
+            khQdTtcpService.exportDsQdTtcp(objReq,response);
+        } catch (Exception e) {
+
+            log.error("Kết xuất danh sách đề xuất xuất danh sách quyết định của Thủ Tướng trace: {}", e);
+            final Map<String, Object> body = new HashMap<>();
+            body.put("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            body.put("msg", e.getMessage());
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getOutputStream(), body);
+        }
+
+    }
 
 
     //Bộ tài chính giao Tồng cục dự trữ
@@ -244,6 +274,28 @@ public class QuyetDinhController {
             log.error(e.getMessage());
         }
         return ResponseEntity.ok(resp);
+    }
+    @ApiOperation(value = "Kết xuất danh sách Kế hoạch quyết định BTC giao TCDT", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void exportListQdBtcTcdtToExcel(@Valid @RequestBody KhQdBtcTcdtSearchReq objReq,HttpServletResponse response) throws Exception{
+
+        try {
+            khQdBtcTcdtService.exportDsQdBtcTcdt(objReq,response);
+        } catch (Exception e) {
+
+            log.error("Kết xuất danh sách đề xuất xuất danh sách quyết BTC TCDT trace: {}", e);
+            final Map<String, Object> body = new HashMap<>();
+            body.put("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            body.put("msg", e.getMessage());
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getOutputStream(), body);
+        }
+
     }
 
 
@@ -344,6 +396,28 @@ public class QuyetDinhController {
             log.error(e.getMessage());
         }
         return ResponseEntity.ok(resp);
+    }
+    @ApiOperation(value = "Kết xuất danh sách Kế hoạch quyết định BTC Bộ ngành", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void exportListQdBtcBnToExcel(@Valid @RequestBody KhQdBtBoNganhSearchReq objReq,HttpServletResponse response) throws Exception{
+
+        try {
+            khQdBtcBoNganhService.exportDsQdBtc(objReq,response);
+        } catch (Exception e) {
+
+            log.error("Kết xuất danh sách đề xuất xuất danh sách quyết định của BTC trace: {}", e);
+            final Map<String, Object> body = new HashMap<>();
+            body.put("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            body.put("msg", e.getMessage());
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getOutputStream(), body);
+        }
+
     }
 
 

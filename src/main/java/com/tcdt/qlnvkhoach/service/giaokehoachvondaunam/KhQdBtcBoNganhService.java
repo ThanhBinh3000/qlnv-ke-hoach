@@ -6,16 +6,20 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhRepository;
+import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdBtcBoNganhCtietRes;
 import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdBtcBoNganhRes;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganhCtiet;
+import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
+import com.tcdt.qlnvkhoach.util.ExportExcel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,9 +29,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +70,7 @@ public class KhQdBtcBoNganhService {
         KhQdBtcBoNganh data = new ModelMapper().map(objReq,KhQdBtcBoNganh.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
+        data.setTrangThai("00");
         KhQdBtcBoNganh createCheck = khQdBtcBoNganhRepository.save(data);
         for(KhQdBtcBoNganhCtietRes bNganhReq : objReq.getListBoNganh()){
             KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bNganhReq,KhQdBtcBoNganhCtiet.class);
@@ -133,5 +140,35 @@ public class KhQdBtcBoNganhService {
         khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganhIn(listId);
         khQdBtcBoNganhRepository.deleteAllByIdIn(listId);
     }
+
+    public  void exportDsQdBtc(KhQdBtBoNganhSearchReq objReq, HttpServletResponse response) throws Exception{
+        PaggingReq paggingReq = new PaggingReq();
+        paggingReq.setPage(0);
+        paggingReq.setLimit(Integer.MAX_VALUE);
+        objReq.setPaggingReq(paggingReq);
+        Page<KhQdBtcBoNganh> page=this.searchPage(objReq);
+        List<KhQdBtcBoNganh> data=page.getContent();
+
+        String title="Danh sách quyết định bộ tài chính giao các bộ ngành";
+        String[] rowsName=new String[]{"STT","Số quyết định","Năm QĐ","Ngày QĐ","Trích yếu","Trạng thái"};
+        String fileName="danh-sach-ke-hoach-thu-tuong.xlsx";
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs=null;
+        for (int i=0;i<data.size();i++){
+            KhQdBtcBoNganh dx=data.get(i);
+            objs=new Object[rowsName.length];
+            objs[0]=i;
+            objs[1]=dx.getSoQd();
+            objs[2]=dx.getNamKhoach();
+            objs[3]=dx.getNgayQd();
+            objs[4]=dx.getTrichYeu();
+            objs[5]=dx.getTrangThai();
+            dataList.add(objs);
+
+        }
+        ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
+        ex.export();
+    }
+
 
 }

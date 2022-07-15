@@ -17,6 +17,7 @@ public class KhQdBtcBoNganh implements Serializable {
     @SequenceGenerator(sequenceName = "KH_QD_BTC_BO_NGANH_SEQ",allocationSize = 1,name = "KH_QD_BTC_BO_NGANH_SEQ")
     private Long id;
     String soQd;
+    @Temporal(TemporalType.DATE)
     Date ngayQd;
     Long idTtcpBoNganh;
     Integer namKhoach;
@@ -25,6 +26,7 @@ public class KhQdBtcBoNganh implements Serializable {
     String nguoiTao;
     Date ngaySua;
     String nguoiSua;
+    String trangThai;
 
     @Transient
    private List<KhQdBtcBoNganhCtiet> listBoNganh;

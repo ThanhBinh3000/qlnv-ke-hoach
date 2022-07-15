@@ -18,12 +18,15 @@ public class KhQdBtcTcdt implements Serializable {
     private Long id;
     Integer namKhoach;
     String soQd;
+    @Temporal(TemporalType.DATE)
     Date ngayQd;
     String trichYeu;
     Date ngayTao;
     String nguoiTao;
     Date ngaySua;
     String nguoiSua;
+    String trangThai;
+
     @Transient
     List<KhQdBtcTcdtCtiet> listCtiet;
 }
