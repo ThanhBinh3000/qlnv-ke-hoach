@@ -7,4 +7,6 @@ public class DeleteRecordReq {
 
 	String ids;
 
+	Long id;
+
 }
