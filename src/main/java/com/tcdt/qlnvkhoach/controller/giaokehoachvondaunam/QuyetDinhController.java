@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.controller.giaokehoachvondaunam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
@@ -124,12 +125,13 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Xóa quyết định của thủ tướng chính phủ", response = List.class)
-    @GetMapping(value=PathConstants.URL_TTCP + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> deleteTtcp(@ApiParam(value = "ID quyết định của thủ tướng chính phủ", example = "1", required = true) @PathVariable("ids") Long ids) {
+    @PostMapping(value=PathConstants.URL_TTCP + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteTtcp(@RequestBody DeleteRecordReq idSearchReq) {
         Resp resp = new Resp();
         try {
-            khQdTtcpService.deleteTtcp(ids);
+            khQdTtcpService.deleteTtcp(idSearchReq.getId());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -155,6 +157,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Kết xuất danh sách kế hoạch quyết định của Thủ Tướng", response = List.class)
     @PostMapping(value=PathConstants.URL_TTCP + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -177,10 +180,7 @@ public class QuyetDinhController {
         }
 
     }
-
-
     //Bộ tài chính giao Tồng cục dự trữ
-
     @ApiOperation(value = "Tạo mới quyết định của BTC giao TCDT", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> createBtcTcdt(@Valid @RequestBody KhQdBtcTcdtReq objReq, HttpServletRequest req) {
@@ -197,6 +197,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Cập nhật quyết định của BTC giao TCDT", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> updateBtcTcdt(@Valid @RequestBody KhQdBtcTcdtReq objReq, HttpServletRequest req) {
@@ -213,6 +214,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Chi tiết quyết định của BTC giao TCDT", response = List.class)
     @GetMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> detailBtcTcdt(@ApiParam(value = "ID quyết định của BTC giao TCDT", example = "1", required = true) @PathVariable("ids") Long ids) {
@@ -229,12 +231,13 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Xóa quyết định của BTC giao TCDT", response = List.class)
-    @GetMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> deleteBtcTcdt(@ApiParam(value = "ID quyết định của BTC giao TCDT", example = "1", required = true) @PathVariable("ids") Long ids) {
+    @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteBtcTcdt(@RequestBody DeleteRecordReq idSearchReq) {
         Resp resp = new Resp();
         try {
-            khQdBtcTcdtService.delete(ids);
+            khQdBtcTcdtService.delete(idSearchReq.getId());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -244,6 +247,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Tra cứu quyết định của BTC giao TCDT", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> selectPage(@Valid @RequestBody KhQdBtcTcdtSearchReq objReq) {
@@ -275,6 +279,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Kết xuất danh sách Kế hoạch quyết định BTC giao TCDT", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -297,7 +302,6 @@ public class QuyetDinhController {
         }
 
     }
-
 
     @ApiOperation(value = "Tra cứu kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -331,7 +335,6 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
-
 
     @ApiOperation(value = "Cập nhật kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -368,11 +371,11 @@ public class QuyetDinhController {
     }
 
     @ApiOperation(value = "Xóa kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
-    @GetMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> deleteBtc(@ApiParam(value = "ID quyết định của thủ tướng chính phủ", example = "1", required = true) @PathVariable("ids") Long ids) {
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deleteBtc(@RequestBody DeleteRecordReq idSearchReq) {
         Resp resp = new Resp();
         try {
-            khQdBtcBoNganhService.delete(ids);
+            khQdBtcBoNganhService.delete(idSearchReq.getId());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -382,6 +385,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Xóa danh sách kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> deleteMuti(@Valid @RequestBody KhQdBtBoNganhSearchReq objReq) {
@@ -397,6 +401,7 @@ public class QuyetDinhController {
         }
         return ResponseEntity.ok(resp);
     }
+
     @ApiOperation(value = "Kết xuất danh sách Kế hoạch quyết định BTC Bộ ngành", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -419,7 +424,6 @@ public class QuyetDinhController {
         }
 
     }
-
 
 }
 
