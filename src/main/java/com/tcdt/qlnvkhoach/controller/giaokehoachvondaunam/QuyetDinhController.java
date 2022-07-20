@@ -460,7 +460,7 @@ public class QuyetDinhController {
     }
 
     @ApiOperation(value = "Tạo mới-00/Ban hành-11 Quyết định phê duyệt TTCP ", response = List.class)
-    @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> updateStatusBn(@Valid @RequestBody StatusReq statusReq, HttpServletRequest req) {
         Resp resp = new Resp();
         try {
