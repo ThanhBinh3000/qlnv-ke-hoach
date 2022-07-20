@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
@@ -17,6 +18,7 @@ import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganhCtiet;
+import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
@@ -27,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -168,6 +171,34 @@ public class KhQdBtcBoNganhService {
         }
         ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
         ex.export();
+    }
+
+    public KhQdBtcBoNganh approve(StatusReq stReq) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (StringUtils.isEmpty(stReq.getId())){
+            throw new Exception("Không tìm thấy dữ liệu");
+        }
+
+        Optional<KhQdBtcBoNganh> optional = khQdBtcBoNganhRepository.findById(Long.valueOf(stReq.getId()));
+        if (!optional.isPresent()){
+            throw new Exception("Không tìm thấy dữ liệu");
+        }
+
+        String status = stReq.getTrangThai() + optional.get().getTrangThai();
+        switch (status) {
+            case Contains.BAN_HANH + Contains.MOI_TAO:
+                optional.get().setNguoiPduyet(userInfo.getUsername());
+                optional.get().setNgayPduyet(new Date());
+                break;
+            default:
+                throw new Exception("Phê duyệt không thành công");
+        }
+
+        optional.get().setTrangThai(stReq.getTrangThai());
+
+        KhQdBtcBoNganh createCheck = khQdBtcBoNganhRepository.save(optional.get());
+
+        return createCheck;
     }
 
 

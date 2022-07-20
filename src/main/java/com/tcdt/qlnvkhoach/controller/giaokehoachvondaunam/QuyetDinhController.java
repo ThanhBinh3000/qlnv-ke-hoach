@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.controller.giaokehoachvondaunam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
+import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
@@ -180,6 +181,23 @@ public class QuyetDinhController {
         }
 
     }
+
+    @ApiOperation(value = "Tạo mới-00/Ban hành-11 Quyết định phê duyệt TTCP ", response = List.class)
+    @PostMapping(value=PathConstants.URL_TTCP + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> updateStatusTtcp(@Valid @RequestBody StatusReq statusReq, HttpServletRequest req) {
+        Resp resp = new Resp();
+        try {
+           resp.setData(khQdTtcpService.approve(statusReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
     //Bộ tài chính giao Tồng cục dự trữ
     @ApiOperation(value = "Tạo mới quyết định của BTC giao TCDT", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -303,6 +321,22 @@ public class QuyetDinhController {
 
     }
 
+    @ApiOperation(value = "Tạo mới-00/Ban hành-11 Quyết định phê duyệt TTCP ", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> updateStatusBtcTcdt(@Valid @RequestBody StatusReq statusReq, HttpServletRequest req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khQdBtcTcdtService.approve(statusReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
     @ApiOperation(value = "Tra cứu kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> searchBTC(@Valid @RequestBody KhQdBtBoNganhSearchReq objReq) {
@@ -423,6 +457,22 @@ public class QuyetDinhController {
             mapper.writeValue(response.getOutputStream(), body);
         }
 
+    }
+
+    @ApiOperation(value = "Tạo mới-00/Ban hành-11 Quyết định phê duyệt TTCP ", response = List.class)
+    @PostMapping(value=PathConstants.URL_BTC_TCDT + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> updateStatusBn(@Valid @RequestBody StatusReq statusReq, HttpServletRequest req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khQdBtcBoNganhService.approve(statusReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
     }
 
 }

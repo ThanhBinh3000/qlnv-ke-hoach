@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.service.giaokehoachvondaunam;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtCtietReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhCtietReq;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -147,6 +149,33 @@ public class KhQdBtcTcdtService {
         }
         ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
         ex.export();
+    }
+    public KhQdBtcTcdt approve(StatusReq stReq) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (StringUtils.isEmpty(stReq.getId())){
+            throw new Exception("Không tìm thấy dữ liệu");
+        }
+
+        Optional<KhQdBtcTcdt> optional = khQdBtcTcdtRepository.findById(Long.valueOf(stReq.getId()));
+        if (!optional.isPresent()){
+            throw new Exception("Không tìm thấy dữ liệu");
+        }
+
+        String status = stReq.getTrangThai() + optional.get().getTrangThai();
+        switch (status) {
+            case Contains.BAN_HANH + Contains.MOI_TAO:
+                optional.get().setNguoiPduyet(userInfo.getUsername());
+                optional.get().setNgayPduyet(new Date());
+                break;
+            default:
+                throw new Exception("Phê duyệt không thành công");
+        }
+
+        optional.get().setTrangThai(stReq.getTrangThai());
+
+        KhQdBtcTcdt createCheck = khQdBtcTcdtRepository.save(optional.get());
+
+        return createCheck;
     }
 
 }
