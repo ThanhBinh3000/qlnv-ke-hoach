@@ -139,6 +139,18 @@ public class QlnvDmService {
 		return data;
 	}
 
+	public Map<String, String> getListDanhMucChung(String loai) {
+		ResponseEntity<String> response = qlnvDmClient.getDanhMucChung(loai);
+		String str = Request.getAttrFromJson(response.getBody(), "data");
+		HashMap<String, String> data = new HashMap<String, String>();
+		List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {
+		}.getType());
+		for (Map<String, Object> map : retMap) {
+			data.put(String.valueOf(map.get("ma")), String.valueOf(map.get("giaTri")));
+		}
+		return data;
+	}
+
 	public QlnvDmDonvi getDonViByMa(String maDvi) {
 		return qlnvDmDonviRepository.findByMaDvi(maDvi);
 	}
