@@ -9,6 +9,7 @@ public class PathConstants {
 	public static final String URL_XOA_MULTI = "/xoa/multi";
 	public static final String URL_TRA_CUU = "/tra-cuu";
 	public static final String URL_CHI_TIET = "/chi-tiet/{ids}";
+
 	public static final String URL_PHE_DUYET = "/phe-duyet";
 	public static final String URL_KIET_XUAT = "/ket-xuat";
 	public static final String URL_DIEU_CHINH = "/cap-nhat";

@@ -15,8 +15,6 @@ public class KhQdTtcpBoNganhReq {
 
     private Long soLuong;
 
-    private Integer namKhoach;
-
     private Long idQdTtcp;
 
     private Long tongTien;
@@ -35,7 +33,13 @@ public class KhQdTtcpBoNganhReq {
 
     private Long ttXuatBan;
 
-    private List<KhQdTtcpBoNganhCtietReq> listCtiet;
+    private List<KhQdTtcpBoNganhCtietReq> muaTangList;
+
+    private List<KhQdTtcpBoNganhCtietReq> xuatGiamList;
+
+    private List<KhQdTtcpBoNganhCtietReq> xuatBanList;
+
+    private List<KhQdTtcpBoNganhCtietReq> luanPhienList;
 
 }
 

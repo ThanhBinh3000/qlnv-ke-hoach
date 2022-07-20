@@ -29,5 +29,18 @@ public class KhQdTtcpBoNganh implements Serializable {
     Long ttXuatBan;
 
     @Transient
-    List<KhQdTtcpBoNganhCTiet> listCtiet;
+    String tenBoNganh;
+
+    @Transient
+    List<KhQdTtcpBoNganhCTiet> muaTangList;
+
+    @Transient
+    List<KhQdTtcpBoNganhCTiet> xuatGiamList;
+
+    @Transient
+    List<KhQdTtcpBoNganhCTiet> xuatBanList;
+
+    @Transient
+    List<KhQdTtcpBoNganhCTiet> luanPhienList;
+
 }

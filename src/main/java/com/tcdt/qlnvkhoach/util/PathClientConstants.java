@@ -12,4 +12,6 @@ public class PathClientConstants {
 
 	public static final String URL_DM_HANG_HOA_GET_ALL = "/dm-hang/danh-sach/dvql";
 
+	public static final String URL_DM_DUNG_CHUNG = "/dmuc-chung/danh-sach/{loai}";
+
 }

@@ -11,15 +11,20 @@ import java.util.List;
 
 @Data
 public class KhQdTtcpReq {
+
     @ApiModelProperty(notes = "Bắt buộc set đối với update")
     Long id;
+
     @NotNull(message = "Không được để trống")
-    Integer nam;
+    Integer namQd;
+
     @NotNull(message = "Không được để trống")
     @Size(max = 50,message = "Số quyết định không được vượt quá 50 ký tự")
     String soQd;
+
     @NotNull(message = "Không được để trống")
     Date ngayQd;
+
     @Size(max = 500,message = "Trích Yếu không được vượt quá 500 ký tự")
     String trichYeu;
 

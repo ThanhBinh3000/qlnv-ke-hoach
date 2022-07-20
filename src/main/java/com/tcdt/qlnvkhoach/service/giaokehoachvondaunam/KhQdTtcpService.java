@@ -12,6 +12,7 @@ import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhCt
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
@@ -31,10 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +46,9 @@ public class KhQdTtcpService {
 
     @Autowired
     private KhQdTtcpBoNganhCtietRepository khQdTtcpBoNganhCtietRepository;
+
+    @Autowired
+    private QlnvDmService qlnvDmService;
 
     public Iterable<KhQdTtcp> findAll() {
         return khQdTtcpRepository.findAll();
@@ -70,27 +71,60 @@ public class KhQdTtcpService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
+
+        Optional<KhQdTtcp> optional = khQdTtcpRepository.findBySoQd(objReq.getSoQd());
+        if(optional.isPresent()){
+            throw new Exception("Số quyết định đã tồn tại");
+        }
+        Optional<KhQdTtcp> optional2 = khQdTtcpRepository.findByNamQd(objReq.getNamQd());
+        if(optional2.isPresent()){
+            throw new Exception("Năm "+objReq.getNamQd()+" đã tồn tại quyết định");
+        }
         KhQdTtcp data = new ModelMapper().map(objReq,KhQdTtcp.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
         // Dự thảo
         data.setTrangThai("00");
         KhQdTtcp createCheck = khQdTtcpRepository.save(data);
-
         for(KhQdTtcpBoNganhReq bNganhReq : objReq.getListBoNganh()){
             KhQdTtcpBoNganh bNganh = new ModelMapper().map(bNganhReq,KhQdTtcpBoNganh.class);
             bNganh.setIdQdTtcp(data.getId());
             // call save của thằng BO Ngành
             khQdTtcpBoNganhRepository.save(bNganh);
-
-            for(KhQdTtcpBoNganhCtietReq ctietReq : bNganhReq.getListCtiet()){
-                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-                cTiet.setIdBoNganh(bNganh.getId());
-                khQdTtcpBoNganhCtietRepository.save(cTiet);
-            }
+            this.saveBoNgayCtiet(bNganhReq,bNganh);
         }
         return createCheck;
+    }
 
+    public void saveBoNgayCtiet(KhQdTtcpBoNganhReq boNganhReq,KhQdTtcpBoNganh bNganhSaved) {
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getMuaTangList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_MUA_TANG);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        }
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatGiamList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_XUAT_GIAM);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        }
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatBanList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_XUAT_BAN);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        }
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getLuanPhienList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        }
     }
 
     public <T> void updateObjectToObject(T source, T objectEdit) throws JsonMappingException {
@@ -101,7 +135,7 @@ public class KhQdTtcpService {
         mapper.updateValue(source, objectEdit);
     }
     @Transactional
-    public KhQdTtcp update(@Valid KhQdTtcpReq objReq)throws Exception{
+    public KhQdTtcp update(KhQdTtcpReq objReq)throws Exception{
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
@@ -123,18 +157,9 @@ public class KhQdTtcpService {
             bNganh.setIdQdTtcp(data.getId());
             khQdTtcpBoNganhRepository.save(bNganh);
             khQdTtcpBoNganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
-            for (KhQdTtcpBoNganhCtietReq bnCtiet:bn.getListCtiet()){
-                KhQdTtcpBoNganhCTiet cTiet=new ModelMapper().map(bnCtiet,KhQdTtcpBoNganhCTiet.class);
-                cTiet.setId(null);
-                cTiet.setIdBoNganh(bn.getId());
-                khQdTtcpBoNganhCtietRepository.save(cTiet);
-
-            }
+            this.saveBoNgayCtiet(bn,bNganh);
         }
-
         return createCheck;
-
-
     }
     @Transactional
     public KhQdTtcp detailTtcp(String id) throws Exception{
@@ -143,16 +168,25 @@ public class KhQdTtcpService {
             throw new Exception("Kế hoạch quyết định Thủ tướng Chính phủ không tồn tại");
         }
         KhQdTtcp data = qOptional.get();
-        // Call repository get all bo nganh by id by id KhQdTTcpt
+        Map<String,String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhQdTtcpBoNganh> listBoNganh = khQdTtcpBoNganhRepository.findAllByIdQdTtcp(data.getId());
         for(KhQdTtcpBoNganh boNganh : listBoNganh){
-            // Call repository get all C tiet by id Bo nganh boNganh.getId()
+            boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
             List<KhQdTtcpBoNganhCTiet> listCtiet = khQdTtcpBoNganhCtietRepository.findAllByIdBoNganh(boNganh.getId());
-            boNganh.setListCtiet(listCtiet);
+            listCtiet.forEach( item -> {
+                item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
+                item.setTenVthh(hashMapHh.get(item.getLoaiVthh()));
+            });
+            if(listCtiet.size() > 0){
+                boNganh.setMuaTangList(listCtiet.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
+                boNganh.setXuatBanList(listCtiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_BAN)).collect(Collectors.toList()));
+                boNganh.setXuatGiamList(listCtiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
+                boNganh.setLuanPhienList(listCtiet.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
+            }
         }
         data.setListBoNganh(listBoNganh);
         return data;
-
     }
 
     @Transactional
@@ -199,7 +233,7 @@ public class KhQdTtcpService {
             objs=new Object[rowsName.length];
             objs[0]=i;
             objs[1]=dx.getSoQd();
-            objs[2]=dx.getNam();
+            objs[2]=dx.getNamQd();
             objs[3]=dx.getNgayQd();
             objs[4]=dx.getTrichYeu();
             objs[5]=dx.getTrangThai();

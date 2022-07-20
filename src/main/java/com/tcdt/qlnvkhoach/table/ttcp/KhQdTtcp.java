@@ -17,7 +17,7 @@ public class KhQdTtcp implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_QD_TTCP_SEQ")
     @SequenceGenerator(sequenceName = "KH_QD_TTCP_SEQ",allocationSize = 1,name = "KH_QD_TTCP_SEQ")
     private Long id;
-    Integer nam;
+    Integer namQd;
     String soQd;
     @Temporal(TemporalType.DATE)
     Date ngayQd;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhQdTtcpRepository extends CrudRepository<KhQdTtcp ,Long> {
@@ -26,5 +27,9 @@ public interface KhQdTtcpRepository extends CrudRepository<KhQdTtcp ,Long> {
     @Transactional
     @Modifying
     void deleteAllByIdIn(List<Long> ids);
+
+    Optional<KhQdTtcp> findBySoQd(String soQd);
+
+    Optional<KhQdTtcp> findByNamQd(Integer namQd);
 
 }

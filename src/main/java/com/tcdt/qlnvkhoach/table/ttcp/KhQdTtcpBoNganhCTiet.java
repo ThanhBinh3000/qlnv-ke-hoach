@@ -19,4 +19,11 @@ public class KhQdTtcpBoNganhCTiet implements Serializable {
     String dviTinh;
     String soLuong;
     private Long idBoNganh;
+    String type;
+
+    @Transient
+    String tenVthh;
+
+    @Transient
+    String tenCloaiVthh;
 }
