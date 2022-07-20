@@ -27,6 +27,8 @@ public class KhQdTtcp implements Serializable {
     Date ngaySua;
     String nguoiSua;
     String trangThai;
+    String nguoiPduyet;
+    Date ngayPduyet;
 
     @Transient
     private List<KhQdTtcpBoNganh> listBoNganh;
