@@ -31,4 +31,16 @@ public class KhQdBtcTcdt implements Serializable {
 
     @Transient
     List<KhQdBtcTcdtCtiet> listCtiet;
+
+    @Transient
+    List<KhQdBtcTcdtCtiet> muaTangList;
+
+    @Transient
+    List<KhQdBtcTcdtCtiet> xuatGiamList;
+
+    @Transient
+    List<KhQdBtcTcdtCtiet> xuatBanList;
+
+    @Transient
+    List<KhQdBtcTcdtCtiet> luanPhienList;
 }

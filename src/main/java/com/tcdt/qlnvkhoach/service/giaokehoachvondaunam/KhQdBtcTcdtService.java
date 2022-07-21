@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class KhQdBtcTcdtService {
@@ -53,14 +54,50 @@ public class KhQdBtcTcdtService {
         data.setNguoiTao(userInfo.getUsername());
         data.setTrangThai("00");
         KhQdBtcTcdt createCheck=khQdBtcTcdtRepository.save(data);
-         for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
-             KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
-             cTiet.setIdQdBtcTcdt(data.getId());
-             khQdBtcTcdtCtietRepository.save(cTiet);
-         }
+        this.savaCtiet(objReq,data);
+
+//         for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
+//             KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
+//             cTiet.setIdQdBtcTcdt(data.getId());
+//             khQdBtcTcdtCtietRepository.save(cTiet);
+//         }
 
         return createCheck;
     }
+    public void savaCtiet (KhQdBtcTcdtReq btcTcdtReq ,KhQdBtcTcdt btcTcdtSave) {
+        for (KhQdBtcTcdtCtietReq cTietreq :btcTcdtReq.getMuaTangList() ){
+             KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
+             cTiet.setId(null);
+             cTiet.setIdQdBtcTcdt(btcTcdtSave.getId());
+             cTiet.setType(Contains.KH_MUA_TANG);
+             khQdBtcTcdtCtietRepository.save(cTiet);
+         }
+
+        for (KhQdBtcTcdtCtietReq cTietreq: btcTcdtReq.getXuatGiamList()){
+            KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
+            cTiet.setId(null);
+            cTiet.setIdQdBtcTcdt(btcTcdtSave.getId());
+            cTiet.setType(Contains.KH_XUAT_GIAM);
+            khQdBtcTcdtCtietRepository.save(cTiet);
+        }
+
+        for (KhQdBtcTcdtCtietReq cTietreq: btcTcdtReq.getXuatBanList()){
+            KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
+            cTiet.setId(null);
+            cTiet.setIdQdBtcTcdt(btcTcdtSave.getId());
+            cTiet.setType(Contains.KH_XUAT_BAN);
+            khQdBtcTcdtCtietRepository.save(cTiet);
+        }
+
+        for (KhQdBtcTcdtCtietReq cTietreq: btcTcdtReq.getLuanPhienList()){
+            KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
+            cTiet.setId(null);
+            cTiet.setIdQdBtcTcdt(btcTcdtSave.getId());
+            cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
+            khQdBtcTcdtCtietRepository.save(cTiet);
+        }
+    }
+
     @Transactional
     public KhQdBtcTcdt update(@Valid KhQdBtcTcdtReq objReq)throws Exception{
     UserInfo userInfo = SecurityContextService.getUser();
@@ -76,22 +113,29 @@ public class KhQdBtcTcdtService {
         data.setNgaySua(new Date());
         KhQdBtcTcdt createCheck=khQdBtcTcdtRepository.save(data);
         khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdt(data.getId());
-        for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
-            KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
-            cTiet.setId(null);
-            cTiet.setIdQdBtcTcdt(data.getId());
-            khQdBtcTcdtCtietRepository.save(cTiet);
-        }
+        this.savaCtiet(objReq,data);
+//        for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
+//            KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
+//            cTiet.setId(null);
+//            cTiet.setIdQdBtcTcdt(data.getId());
+//            khQdBtcTcdtCtietRepository.save(cTiet);
+//        }
         return createCheck;
     }
     @Transactional
     public KhQdBtcTcdt detail(Long id)throws Exception{
         Optional<KhQdBtcTcdt> qOptional =khQdBtcTcdtRepository.findById(id);
         if (!qOptional.isPresent()){
-            throw new Exception("Kế hoạch quyết định Thủ tướng Chính phủ không tồn tại");
+            throw new Exception("Kế hoạch quyết định Btc TCdt không tồn tại");
         }
         KhQdBtcTcdt data= qOptional.get();
         List<KhQdBtcTcdtCtiet> listChiTiet=khQdBtcTcdtCtietRepository.findAllByIdQdBtcTcdt(data.getId());
+        if(listChiTiet.size() > 0){
+            data.setMuaTangList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
+            data.setXuatBanList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_BAN)).collect(Collectors.toList()));
+            data.setXuatGiamList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
+            data.setLuanPhienList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
+        }
         data.setListCtiet(listChiTiet);
        return data;
     }
