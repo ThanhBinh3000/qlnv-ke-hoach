@@ -17,7 +17,6 @@ public class KhQdTtcpBoNganh implements Serializable {
     private Long id;
     String maBoNganh;
     Long soLuong;
-    Integer namKhoach;
     Long idQdTtcp;
     Long tongTien;
     Long ltThocXuat;

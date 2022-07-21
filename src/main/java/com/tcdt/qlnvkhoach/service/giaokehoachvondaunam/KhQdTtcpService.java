@@ -141,9 +141,18 @@ public class KhQdTtcpService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
+
         Optional<KhQdTtcp> qOptional=khQdTtcpRepository.findById(objReq.getId());
         if (!qOptional.isPresent())
             throw new UnsupportedOperationException("Id không tồn tại");
+
+        Optional<KhQdTtcp> optional = khQdTtcpRepository.findBySoQd(objReq.getSoQd());
+        if (optional.isPresent()){
+            if(!optional.get().getId().equals(objReq.getId())){
+                throw new Exception("Số quyết định " + objReq.getSoQd() + " đã tồn tại");
+            }
+        }
+
         KhQdTtcp data=qOptional.get();
         KhQdTtcp dataMap=new ModelMapper().map(objReq,KhQdTtcp.class);
         updateObjectToObject(data,dataMap);
