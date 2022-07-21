@@ -18,7 +18,7 @@ public interface KhQdBtcBoNganhRepository extends CrudRepository<KhQdBtcBoNganh,
             +"AND (:ngayQdTu IS NULL OR QD.NGAY_QD >=  TO_DATE(:ngayQdTu,'yyyy-MM-dd'))"
             +"AND (:ngayQdDen IS NULL OR QD.NGAY_QD <= TO_DATE(:ngayQdDen,'yyyy-MM-dd'))"
             +"AND (:trichYeu IS NULL  OR LOWER(QD.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
-            +"AND (:trangThai IS NULL  OR LOWER(QD.TRANG_THAI) LIKE LOWER(CONCAT(CONCAT('%',:trangThai),'%' ) ) )"
+            +"AND (:trangThai IS NULL OR QD.TRANG_THAI = :trangThai )"
             , nativeQuery = true)
     Page<KhQdBtcBoNganh> selectPage(Integer namKhoach, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, String trangThai,  Pageable pageable);
 
