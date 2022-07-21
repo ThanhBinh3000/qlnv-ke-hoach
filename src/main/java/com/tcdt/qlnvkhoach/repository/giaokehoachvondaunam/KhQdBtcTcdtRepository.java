@@ -18,8 +18,9 @@ public interface KhQdBtcTcdtRepository extends CrudRepository<KhQdBtcTcdt,Long> 
             +"AND (:ngayQdTu IS NULL OR QD.NGAY_QD >=  TO_DATE(:ngayQdTu,'yyyy-MM-dd'))"
             +"AND (:ngayQdDen IS NULL OR QD.NGAY_QD <= TO_DATE(:ngayQdDen,'yyyy-MM-dd'))"
             +"AND (:trichYeu IS NULL  OR LOWER(QD.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
+            +"AND (:trangThai IS NULL  OR LOWER(QD.TRANG_THAI) LIKE LOWER(CONCAT(CONCAT('%',:trangThai),'%' ) ) )"
             , nativeQuery = true)
-    Page<KhQdBtcTcdt> selectPage(Integer namQd, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, Pageable pageable);
+    Page<KhQdBtcTcdt> selectPage(Integer namQd, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, String trangThai,  Pageable pageable);
 
 
     @Transactional
