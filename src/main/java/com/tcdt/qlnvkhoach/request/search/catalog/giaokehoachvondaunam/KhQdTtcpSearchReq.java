@@ -27,6 +27,8 @@ public class KhQdTtcpSearchReq extends BaseRequest {
 
     String trichYeu;
 
+    String trangThai;
+
     List<Long> idList;
 
 

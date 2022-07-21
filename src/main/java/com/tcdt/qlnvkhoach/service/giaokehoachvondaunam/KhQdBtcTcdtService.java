@@ -113,6 +113,7 @@ public class KhQdBtcTcdtService {
                 Contains.convertDateToString(objReq.getNgayQdTu()),
                 Contains.convertDateToString(objReq.getNgayQdDen()),
                 objReq.getTrichYeu(),
+                objReq.getTrangThai(),
                 pageable);
         return data;
     }
