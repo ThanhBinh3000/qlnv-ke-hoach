@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface KhQdBtcTcdtRepository extends CrudRepository<KhQdBtcTcdt,Long> {
-    @Query(value ="SELECT * FROM KH_QD_BTC_TCDT QD WHERE (:namQd IS NULL OR QD.NAM_KHOACH = TO_NUMBER(:namQd))"
+    @Query(value ="SELECT * FROM KH_QD_BTC_TCDT QD WHERE (:namQd IS NULL OR QD.NAM_QD = TO_NUMBER(:namQd))"
             +"AND (:soQd IS NULL OR LOWER(QD.SO_QD) LIKE LOWER(CONCAT(CONCAT('%',:soQd),'%' ) ) )"
             +"AND (:ngayQdTu IS NULL OR QD.NGAY_QD >=  TO_DATE(:ngayQdTu,'yyyy-MM-dd'))"
             +"AND (:ngayQdDen IS NULL OR QD.NGAY_QD <= TO_DATE(:ngayQdDen,'yyyy-MM-dd'))"

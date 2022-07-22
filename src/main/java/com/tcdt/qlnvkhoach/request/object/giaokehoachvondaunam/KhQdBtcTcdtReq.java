@@ -17,14 +17,14 @@ public class KhQdBtcTcdtReq {
     @ApiModelProperty(notes = "Bắt buộc set đối với update")
     Long id;
     @NotNull(message = "Không được để trống")
-    Integer namKhoach;
+    Integer namQd;
     @NotNull(message = "Không được để trống")
     @Size(max = 20,message = "Số quyết định không được vượt quá 50 ký tự")
     String soQd;
     @NotNull(message = "Không được để trống")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
     Date ngayQd;
-    @NotNull(message = "Không được để trống")
+
     @Size(max = 255,message = "Trích Yếu không được vượt quá 255 ký tự")
     String trichYeu;
 

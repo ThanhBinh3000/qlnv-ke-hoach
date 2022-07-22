@@ -17,7 +17,7 @@ public class KhQdBtcBoNganhReq {
     Long id;
 
     @NotNull(message = "Không được để trống")
-    Integer namKhoach;
+    Integer namQd;
 
     @NotNull(message = "Không được để trống")
     String soQd;
@@ -26,7 +26,6 @@ public class KhQdBtcBoNganhReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
     Date ngayQd;
 
-    @NotNull(message = "Không được để trống")
     String trichYeu;
 
     private List<KhQdBtcBoNganhCtietReq> ListBoNganh;
