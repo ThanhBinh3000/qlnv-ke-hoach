@@ -355,7 +355,7 @@ public class QuyetDinhController {
 
     @ApiOperation(value = "Tạo mới kế hoạch quyết định bộ tài chính giao bộ ngành", response = List.class)
     @PostMapping(value=PathConstants.URL_BTC_BO_NGANH + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> createBtc(@Valid @RequestBody KhQdBtcBoNganhRes objReq, HttpServletRequest req) {
+    public final ResponseEntity<Resp> createBtc(@Valid @RequestBody KhQdBtcBoNganhReq objReq, HttpServletRequest req) {
         Resp resp = new Resp();
         try {
             KhQdBtcBoNganh createCheck=khQdBtcBoNganhService.save(objReq,req);
