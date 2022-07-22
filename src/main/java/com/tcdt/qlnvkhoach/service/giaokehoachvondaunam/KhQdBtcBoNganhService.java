@@ -57,7 +57,7 @@ public class KhQdBtcBoNganhService {
     public Page<KhQdBtcBoNganh> searchPage(KhQdBtBoNganhSearchReq objReq) throws Exception{
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhQdBtcBoNganh> data=khQdBtcBoNganhRepository.selectPage(
-                objReq.getNamKhoach(),
+                objReq.getNamQd(),
                 objReq.getSoQd(),
                 Contains.convertDateToString(objReq.getNgayQdTu()),
                 Contains.convertDateToString(objReq.getNgayQdDen()),
@@ -206,7 +206,7 @@ public class KhQdBtcBoNganhService {
             objs=new Object[rowsName.length];
             objs[0]=i;
             objs[1]=dx.getSoQd();
-            objs[2]=dx.getNamKhoach();
+            objs[2]=dx.getNamQd();
             objs[3]=dx.getNgayQd();
             objs[4]=dx.getTrichYeu();
             objs[5]=dx.getTrangThai();
