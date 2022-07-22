@@ -16,7 +16,7 @@ public class KhQdBtcTcdt implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_QD_BTC_TCDT_SEQ")
     @SequenceGenerator(sequenceName = "KH_QD_BTC_TCDT_SEQ",allocationSize = 1,name = "KH_QD_BTC_TCDT_SEQ")
     private Long id;
-    Integer namKhoach;
+    Integer namQd;
     String soQd;
     @Temporal(TemporalType.DATE)
     Date ngayQd;
