@@ -1,6 +1,8 @@
 package com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdTtcpBoNganhRes;
+import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -23,6 +25,7 @@ public class KhQdTtcpReq {
     String soQd;
 
     @NotNull(message = "Không được để trống")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
     Date ngayQd;
 
     @Size(max = 500,message = "Trích Yếu không được vượt quá 500 ký tự")

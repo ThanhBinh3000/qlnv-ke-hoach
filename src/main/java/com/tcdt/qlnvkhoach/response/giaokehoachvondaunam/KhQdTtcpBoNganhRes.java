@@ -17,8 +17,6 @@ public class KhQdTtcpBoNganhRes {
 
     private Long soLuong;
 
-    private Integer namKhoach;
-
     private Long idQdTtcp;
 
     private Long tongTien;

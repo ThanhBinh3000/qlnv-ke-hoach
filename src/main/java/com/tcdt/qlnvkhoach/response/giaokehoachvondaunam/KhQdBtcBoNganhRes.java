@@ -11,7 +11,7 @@ import java.util.List;
 public class KhQdBtcBoNganhRes {
     private Long id;
 
-    private Integer namKhoach;
+    private Integer namQd;
 
     private  String soQd;
 

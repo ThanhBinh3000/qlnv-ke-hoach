@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class KhQdBtcBoNganhService {
@@ -56,17 +57,18 @@ public class KhQdBtcBoNganhService {
     public Page<KhQdBtcBoNganh> searchPage(KhQdBtBoNganhSearchReq objReq) throws Exception{
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhQdBtcBoNganh> data=khQdBtcBoNganhRepository.selectPage(
-                objReq.getNamKhoach(),
+                objReq.getNamQd(),
                 objReq.getSoQd(),
                 Contains.convertDateToString(objReq.getNgayQdTu()),
                 Contains.convertDateToString(objReq.getNgayQdDen()),
                 objReq.getTrichYeu(),
+                objReq.getTrangThai(),
                 pageable);
         return data;
     }
 
     @Transactional
-    public KhQdBtcBoNganh save (KhQdBtcBoNganhRes objReq, HttpServletRequest req) throws Exception{
+    public KhQdBtcBoNganh save (KhQdBtcBoNganhReq objReq, HttpServletRequest req) throws Exception{
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw  new Exception("Bad request.");
@@ -75,12 +77,47 @@ public class KhQdBtcBoNganhService {
         data.setNguoiTao(userInfo.getUsername());
         data.setTrangThai("00");
         KhQdBtcBoNganh createCheck = khQdBtcBoNganhRepository.save(data);
-        for(KhQdBtcBoNganhCtietRes bNganhReq : objReq.getListBoNganh()){
-            KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bNganhReq,KhQdBtcBoNganhCtiet.class);
-            cTiet.setIdQdBtcNganh(data.getId());
+        this.saveCtiet(objReq,data);
+//        for(KhQdBtcBoNganhCtietRes bNganhReq : objReq.getListBoNganh()){
+//            KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bNganhReq,KhQdBtcBoNganhCtiet.class);
+//            cTiet.setIdQdBtcNganh(data.getId());
+//            khQdBtcBoNganhCtietRepository.save(cTiet);
+//        }
+        return createCheck;
+    }
+
+    public void saveCtiet(KhQdBtcBoNganhReq btcBoNganhReq,KhQdBtcBoNganh boNganhSave){
+        for (KhQdBtcBoNganhCtietReq ctietReq :btcBoNganhReq.getMuaTangList()){
+          KhQdBtcBoNganhCtiet cTiet=new ModelMapper().map(ctietReq,KhQdBtcBoNganhCtiet.class);
+          cTiet.setId(null);
+          cTiet.setIdQdBtcNganh(boNganhSave.getId());
+          cTiet.setType(Contains.KH_MUA_TANG);
+          khQdBtcBoNganhCtietRepository.save(cTiet);
+        }
+
+        for (KhQdBtcBoNganhCtietReq ctietReq :btcBoNganhReq.getXuatGiamList()){
+            KhQdBtcBoNganhCtiet cTiet=new ModelMapper().map(ctietReq,KhQdBtcBoNganhCtiet.class);
+            cTiet.setId(null);
+            cTiet.setIdQdBtcNganh(boNganhSave.getId());
+            cTiet.setType(Contains.KH_XUAT_GIAM);
             khQdBtcBoNganhCtietRepository.save(cTiet);
         }
-        return createCheck;
+
+        for (KhQdBtcBoNganhCtietReq ctietReq :btcBoNganhReq.getXuatBanList()){
+            KhQdBtcBoNganhCtiet cTiet=new ModelMapper().map(ctietReq,KhQdBtcBoNganhCtiet.class);
+            cTiet.setId(null);
+            cTiet.setIdQdBtcNganh(boNganhSave.getId());
+            cTiet.setType(Contains.KH_XUAT_BAN);
+            khQdBtcBoNganhCtietRepository.save(cTiet);
+        }
+
+        for (KhQdBtcBoNganhCtietReq ctietReq :btcBoNganhReq.getLuanPhienList()){
+            KhQdBtcBoNganhCtiet cTiet=new ModelMapper().map(ctietReq,KhQdBtcBoNganhCtiet.class);
+            cTiet.setId(null);
+            cTiet.setIdQdBtcNganh(boNganhSave.getId());
+            cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
+            khQdBtcBoNganhCtietRepository.save(cTiet);
+        }
     }
 
     public <T> void updateObjectToObject(T source, T objectEdit) throws JsonMappingException {
@@ -105,12 +142,13 @@ public class KhQdBtcBoNganhService {
         data.setNgaySua(new Date());
         KhQdBtcBoNganh createCheck=khQdBtcBoNganhRepository.save(data);
         khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganh(data.getId());
-        for (KhQdBtcBoNganhCtietReq bnCtiet : objReq.getListBoNganh()){
-            KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bnCtiet,KhQdBtcBoNganhCtiet.class);
-            cTiet.setId(null);
-            cTiet.setIdQdBtcNganh(data.getId());
-            khQdBtcBoNganhCtietRepository.save(cTiet);
-        }
+        this.saveCtiet(objReq,data);
+//        for (KhQdBtcBoNganhCtietReq bnCtiet : objReq.getListBoNganh()){
+//            KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bnCtiet,KhQdBtcBoNganhCtiet.class);
+//            cTiet.setId(null);
+//            cTiet.setIdQdBtcNganh(data.getId());
+//            khQdBtcBoNganhCtietRepository.save(cTiet);
+//        }
         return createCheck;
     }
 
@@ -122,6 +160,12 @@ public class KhQdBtcBoNganhService {
         }
         KhQdBtcBoNganh data = qOptional.get();
         List<KhQdBtcBoNganhCtiet> listBoNganh = khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(data.getId());
+        if(listBoNganh.size() > 0){
+            data.setMuaTangList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
+            data.setXuatBanList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_BAN)).collect(Collectors.toList()));
+            data.setXuatGiamList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
+            data.setLuanPhienList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
+        }
         data.setListBoNganh(listBoNganh);
         return data;
 
@@ -162,7 +206,7 @@ public class KhQdBtcBoNganhService {
             objs=new Object[rowsName.length];
             objs[0]=i;
             objs[1]=dx.getSoQd();
-            objs[2]=dx.getNamKhoach();
+            objs[2]=dx.getNamQd();
             objs[3]=dx.getNgayQd();
             objs[4]=dx.getTrichYeu();
             objs[5]=dx.getTrangThai();
