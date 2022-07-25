@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.controller.giaokehoachvondaunam;
+package com.tcdt.qlnvkhoach.controller.giaokehoachdutoan.giaokehoachvondaunam;
 
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.GiaoKeHoachVonDauNamService;

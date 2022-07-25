@@ -1,10 +1,9 @@
-package com.tcdt.qlnvkhoach.controller.giaokehoachvondaunam;
+package com.tcdt.qlnvkhoach.controller.giaokehoachdutoan.giaokehoachvondaunam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
-import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.DxDcKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
 
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtReq;
@@ -15,7 +14,6 @@ import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdBtcBoNganhRes;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdBtcBoNganhService;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
-import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdTtcpRes;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdBtcTcdtService;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdTtcpService;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
@@ -34,12 +32,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,9 +41,9 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = PathConstants.URL_GIAO_CHI_TIEU_VA_VON_DAU_NAN+PathConstants.URL_QUYET_DINH)
 @Slf4j
-@Api(tags = "Giao kế hoạch vốn đầu năm, quyết định")
+@Api(tags = "Giao kế hoạch vốn đầu năm, quyết định (/giao-chi-tieu-von-dau-nam/quyet-dinh)")
 @RequiredArgsConstructor
-public class QuyetDinhController {
+public class KeHoachVonDauNamController {
 
     @Autowired
     KhQdBtcBoNganhService khQdBtcBoNganhService;
