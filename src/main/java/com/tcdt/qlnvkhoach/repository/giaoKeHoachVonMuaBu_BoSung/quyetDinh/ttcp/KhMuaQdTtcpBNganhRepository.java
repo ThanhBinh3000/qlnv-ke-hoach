@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.repository.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp;
 
+import com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.btc.KhMuaQdBtcBNganh;
 import com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp.KhMuaQdTtcpBNganh;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,4 @@ public interface KhMuaQdTtcpBNganhRepository extends CrudRepository<KhMuaQdTtcpB
     @Transactional
     void deleteAllByIdMuaQdTtcpIn(List<Long> idMuaQdTtcpList );
 
-    @Transactional
-    void findAllByIdMuaQdTtcpIn(List<Long> idMuaQdTtcpList );
 }

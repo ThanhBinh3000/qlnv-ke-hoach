@@ -1,6 +1,5 @@
 package com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp;
 
-import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcpBoNganh;
 import lombok.Data;
 
 import javax.persistence.*;

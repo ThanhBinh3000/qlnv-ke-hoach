@@ -17,7 +17,7 @@ public class KhQdTtcpBoNganhCTiet implements Serializable {
     String loaiVthh;
     String cloaiVthh;
     String dviTinh;
-    String soLuong;
+    Long soLuong;
     private Long idBoNganh;
     String type;
 
