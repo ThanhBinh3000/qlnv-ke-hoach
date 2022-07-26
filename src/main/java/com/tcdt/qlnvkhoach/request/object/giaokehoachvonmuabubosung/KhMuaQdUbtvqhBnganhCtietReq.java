@@ -1,17 +1,12 @@
-package com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam;
+package com.tcdt.qlnvkhoach.request.object.giaokehoachvonmuabubosung;
 
 import lombok.Data;
 
 @Data
-
-
-public class KhQdTtcpBoNganhCtietReq {
-
+public class KhMuaQdUbtvqhBnganhCtietReq {
     private Long id;
 
     private String loaiVthh;
-
-    private String cloaiVthh;
 
     private String dviTinh;
 
@@ -19,6 +14,6 @@ public class KhQdTtcpBoNganhCtietReq {
 
     private Long idBoNganh;
 
+    private String type;
 
-    }
-
+}

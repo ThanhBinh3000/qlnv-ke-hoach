@@ -204,6 +204,10 @@ public class Contains {
     public static final String KH_XUAT_BAN = "XB";
     public static final String KH_LUAN_PHIEN_DOI_HANG = "LP_DH";
 
+    public static final String KH_MUA_BU= "MB";
+
+    public static final String KH_MUA_BO_SUNG= "MBS";
+
     public static final Map<String, String> mappingLoaiDx;
     static {
         mappingLoaiDx = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DX_THANH_LY, "Thanh lý")
