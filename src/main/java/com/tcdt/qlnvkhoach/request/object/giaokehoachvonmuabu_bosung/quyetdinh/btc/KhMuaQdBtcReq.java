@@ -26,7 +26,7 @@ public class KhMuaQdBtcReq {
 
     @NotNull(message = "Không được để trống")
     @Size(max = 50, message = "Số quyết định không được vượt quá 50 ký tự")
-    String soQdUbtvqh;
+    String soQdTtcp;
 
     @NotNull(message = "Không được để trống")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
