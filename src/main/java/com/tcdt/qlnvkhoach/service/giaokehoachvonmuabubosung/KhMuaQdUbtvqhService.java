@@ -1,4 +1,6 @@
 package com.tcdt.qlnvkhoach.service.giaokehoachvonmuabubosung;
+
+import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvonmuabubosung.KhMuaQdUbtvqhBnganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvonmuabubosung.KhMuaQdUbtvqhBnganhRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvonmuabubosung.KhMuaQdUbtvqhRepository;
@@ -54,6 +56,9 @@ public class KhMuaQdUbtvqhService {
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
                 pageable);
+        data.getContent().forEach( f -> {
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+        });
         return data;
     }
 
@@ -204,7 +209,7 @@ public class KhMuaQdUbtvqhService {
 
         String title="Danh sách nghị quyết của Ủy ban thường vụ Quốc hội";
         String[] rowsName=new String[]{"STT","Số nghị quyết","Năm nghị quyết","Ngày nghị quyết","Trích yếu","Trạng thái"};
-        String fileName="danh-sach-nghi-quyet-ủy-ban-thường-vu-quốc-hội.xlsx";
+        String fileName="danh-sach-nghi-quyet-uy-ban-thuong-vu-quoc-hoi.xlsx";
         List<Object[]> dataList = new ArrayList<Object[]>();
         Object[] objs=null;
         for (int i=0;i<data.size();i++){
@@ -215,7 +220,7 @@ public class KhMuaQdUbtvqhService {
             objs[2]=dx.getNamQd();
             objs[3]=dx.getNgayQd();
             objs[4]=dx.getTrichYeu();
-            objs[5]=dx.getTrangThai();
+            objs[5]=dx.getTenTrangThai();
             dataList.add(objs);
 
         }

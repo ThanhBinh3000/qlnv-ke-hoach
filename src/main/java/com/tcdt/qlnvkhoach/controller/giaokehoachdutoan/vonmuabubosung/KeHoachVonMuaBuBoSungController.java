@@ -156,7 +156,7 @@ public class KeHoachVonMuaBuBoSungController {
     @ApiOperation(value = "Kết xuất danh sách nghị quyết của Ủy ban thường vụ Quốc hội", response = List.class)
     @PostMapping(value=PathConstants.URL_UB_TV_QH + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void exportListQdTtcpToExcel(@Valid @RequestBody KhMuaQdUbtvqhSearchReq objReq,HttpServletResponse response) throws Exception{
+    public void exportListToExcel(@Valid @RequestBody KhMuaQdUbtvqhSearchReq objReq,HttpServletResponse response) throws Exception{
 
         try {
             khMuaQdUbtvqhService.export(objReq,response);
@@ -178,7 +178,7 @@ public class KeHoachVonMuaBuBoSungController {
 
     @ApiOperation(value = "Tạo mới-00/Ban hành-11 nghị quyết của Ủy ban thường vụ Quốc hội ", response = List.class)
     @PostMapping(value=PathConstants.URL_UB_TV_QH + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> updateStatusUbTvQh(@Valid @RequestBody StatusReq statusReq, HttpServletRequest req) {
+    public final ResponseEntity<Resp> updateStatusUbtvqh(@Valid @RequestBody StatusReq statusReq, HttpServletRequest req) {
         Resp resp = new Resp();
         try {
            resp.setData(khMuaQdUbtvqhService.approve(statusReq));

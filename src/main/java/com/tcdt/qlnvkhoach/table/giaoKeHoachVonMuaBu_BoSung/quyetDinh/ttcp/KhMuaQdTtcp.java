@@ -37,6 +37,9 @@ public class KhMuaQdTtcp implements Serializable {
 
     String trangThai;
 
+    @Transient
+    String tenTrangThai;
+
     String nguoiPduyet;
 
     Date ngayPduyet;
