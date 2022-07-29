@@ -31,8 +31,6 @@ public class KhQdBtcTcdt implements Serializable {
     String nguoiPduyet;
     Date ngayPduyet;
 
-    @Transient
-    List<KhQdBtcTcdtCtiet> listCtiet;
 
     @Transient
     List<KhQdBtcTcdtCtiet> muaTangList;

@@ -164,7 +164,7 @@ public class KhQdBtcBoNganhService {
             data.setXuatGiamList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
             data.setLuanPhienList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
         }
-        data.setListBoNganh(listBoNganh);
+
         return data;
 
     }

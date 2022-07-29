@@ -20,6 +20,4 @@ public class KhQdBtcBoNganhRes {
     private String trichYeu;
 
 
-   private List<KhQdBtcBoNganhCtietRes> ListBoNganh;
-
 }
