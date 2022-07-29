@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
@@ -11,15 +12,10 @@ import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
-import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
-import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdBtcBoNganhCtietRes;
-import com.tcdt.qlnvkhoach.response.giaokehoachvondaunam.KhQdBtcBoNganhRes;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganhCtiet;
-import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
-import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import org.modelmapper.ModelMapper;
@@ -30,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -64,6 +59,9 @@ public class KhQdBtcBoNganhService {
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
                 pageable);
+        data.getContent().forEach( f -> {
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+        });
         return data;
     }
 
@@ -209,7 +207,7 @@ public class KhQdBtcBoNganhService {
             objs[2]=dx.getNamQd();
             objs[3]=dx.getNgayQd();
             objs[4]=dx.getTrichYeu();
-            objs[5]=dx.getTrangThai();
+            objs[5]=dx.getTenTrangThai();
             dataList.add(objs);
 
         }

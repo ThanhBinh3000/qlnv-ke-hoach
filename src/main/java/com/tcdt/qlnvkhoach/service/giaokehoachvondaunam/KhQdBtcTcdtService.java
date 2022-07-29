@@ -1,19 +1,17 @@
 package com.tcdt.qlnvkhoach.service.giaokehoachvondaunam;
 
+import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtCtietReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtReq;
-import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdBtcTcdtSearchReq;
-import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdtCtiet;
-import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import org.modelmapper.ModelMapper;
@@ -24,11 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.nio.file.Path;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -159,6 +155,9 @@ public class KhQdBtcTcdtService {
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
                 pageable);
+        data.getContent().forEach( f -> {
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+        });
         return data;
     }
 
@@ -188,7 +187,7 @@ public class KhQdBtcTcdtService {
             objs[1]=dx.getSoQd();
             objs[2]=dx.getNgayQd();
             objs[3]=dx.getTrichYeu();
-            objs[4]=dx.getTrangThai();
+            objs[4]=dx.getTenTrangThai();
             dataList.add(objs);
 
         }
