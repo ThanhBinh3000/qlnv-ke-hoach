@@ -32,8 +32,7 @@ public class KhQdBtcBoNganh implements Serializable {
     String nguoiPduyet;
     Date ngayPduyet;
 
-    @Transient
-    List<KhQdBtcBoNganhCtiet> listBoNganh;
+
 
     @Transient
     List<KhQdBtcBoNganhCtiet> muaTangList;

@@ -31,7 +31,7 @@ public class KhQdBtcBoNganhReq {
 
     String trichYeu;
 
-    private List<KhQdBtcBoNganhCtietReq> ListBoNganh;
+
 
     private List<KhQdBtcBoNganhCtietReq> muaTangList;
 

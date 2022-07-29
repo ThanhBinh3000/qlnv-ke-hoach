@@ -132,7 +132,7 @@ public class KhQdBtcTcdtService {
             data.setXuatGiamList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
             data.setLuanPhienList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
         }
-        data.setListCtiet(listChiTiet);
+
        return data;
     }
     @Transactional
