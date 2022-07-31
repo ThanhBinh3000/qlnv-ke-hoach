@@ -29,7 +29,7 @@ public class KhQdBtcTcdtReq {
     @ApiModelProperty(example = "00")
     String trangThai;
 
-    private List<KhQdBtcTcdtCtietReq> listCtiet;
+    private KhQdBtcTcdtCtietReq keHoachNhapXuat;
 
     private List<KhQdBtcTcdtCtietReq> muaTangList;
 
