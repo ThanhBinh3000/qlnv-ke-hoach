@@ -280,12 +280,7 @@ public class KeHoachVonMuaBuBoSungController {
     public final ResponseEntity<Resp> deleteMulti(@Valid @RequestBody KhMuaQdTtcpSearchReq objReq) {
         Resp resp = new Resp();
         try {
-            List<Long> ids = new ArrayList<>();
-            List<KhMuaQdTtcp> khMuaQdTtcps = khMuaQdTtcpService.searchPage(objReq).getContent();
-            for (KhMuaQdTtcp khMuaQdTtcp : khMuaQdTtcps) {
-                ids.add(khMuaQdTtcp.getId());
-            }
-            khMuaQdTtcpService.deleteListId(ids);
+            khMuaQdTtcpService.deleteListId(objReq.getIdList());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -423,11 +418,7 @@ public class KeHoachVonMuaBuBoSungController {
     public final ResponseEntity<Resp> deleteMuti(@Valid @RequestBody KhMuaQdBtcSearchReq objReq) {
         Resp resp = new Resp();
         try {
-            List<Long> listId = new ArrayList<>();
-            for (KhMuaQdBtc khMuaQdBtc : khMuaQdBtcService.searchPage(objReq)) {
-                listId.add(khMuaQdBtc.getId());
-            }
-            khMuaQdBtcService.deleteListId(listId);
+            khMuaQdBtcService.deleteListId(objReq.getIdList());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
