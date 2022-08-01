@@ -1,12 +1,9 @@
 package com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdtCtiet;
 import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -28,7 +25,11 @@ public class KhQdBtcTcdtReq {
     @Size(max = 255,message = "Trích Yếu không được vượt quá 255 ký tự")
     String trichYeu;
 
-    private List<KhQdBtcTcdtCtietReq> listCtiet;
+    @Size(max = 2, message = "Trạng thái không được vượt quá 2 ký tự")
+    @ApiModelProperty(example = "00")
+    String trangThai;
+
+    private KhQdBtcTcdtCtietReq keHoachNhapXuat;
 
     private List<KhQdBtcTcdtCtietReq> muaTangList;
 

@@ -27,11 +27,12 @@ public class KhQdBtcBoNganh implements Serializable {
     Date ngaySua;
     String nguoiSua;
     String trangThai;
+    @Transient
+    String tenTrangThai;
     String nguoiPduyet;
     Date ngayPduyet;
 
-    @Transient
-    List<KhQdBtcBoNganhCtiet> listBoNganh;
+
 
     @Transient
     List<KhQdBtcBoNganhCtiet> muaTangList;

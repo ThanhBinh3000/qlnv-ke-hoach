@@ -1,19 +1,18 @@
 package com.tcdt.qlnvkhoach.service.giaokehoachvondaunam;
 
+import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtCtietReq;
 import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtReq;
-import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdBtcTcdtSearchReq;
-import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdtCtiet;
-import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import org.modelmapper.ModelMapper;
@@ -24,16 +23,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.nio.file.Path;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +37,9 @@ public class KhQdBtcTcdtService {
 
     @Autowired
     KhQdBtcTcdtCtietRepository khQdBtcTcdtCtietRepository;
+
+    @Autowired
+    private QlnvDmService qlnvDmService;
 
     @Transactional
     public KhQdBtcTcdt save(KhQdBtcTcdtReq objReq) throws Exception{
@@ -65,6 +62,13 @@ public class KhQdBtcTcdtService {
         return createCheck;
     }
     public void savaCtiet (KhQdBtcTcdtReq btcTcdtReq ,KhQdBtcTcdt btcTcdtSave) {
+
+        KhQdBtcTcdtCtiet cTietNx =new ModelMapper().map(btcTcdtReq.getKeHoachNhapXuat(),KhQdBtcTcdtCtiet.class);
+        cTietNx.setId(null);
+        cTietNx.setIdQdBtcTcdt(btcTcdtSave.getId());
+        cTietNx.setType(Contains.KH_NHAP_XUAT_LT);
+        khQdBtcTcdtCtietRepository.save(cTietNx);
+
         for (KhQdBtcTcdtCtietReq cTietreq :btcTcdtReq.getMuaTangList() ){
              KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
              cTiet.setId(null);
@@ -114,12 +118,6 @@ public class KhQdBtcTcdtService {
         KhQdBtcTcdt createCheck=khQdBtcTcdtRepository.save(data);
         khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdt(data.getId());
         this.savaCtiet(objReq,data);
-//        for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
-//            KhQdBtcTcdtCtiet cTiet=new ModelMapper().map(cTietreq,KhQdBtcTcdtCtiet.class);
-//            cTiet.setId(null);
-//            cTiet.setIdQdBtcTcdt(data.getId());
-//            khQdBtcTcdtCtietRepository.save(cTiet);
-//        }
         return createCheck;
     }
     @Transactional
@@ -128,15 +126,22 @@ public class KhQdBtcTcdtService {
         if (!qOptional.isPresent()){
             throw new Exception("Kế hoạch quyết định Btc TCdt không tồn tại");
         }
+        Map<String,String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         KhQdBtcTcdt data= qOptional.get();
-        List<KhQdBtcTcdtCtiet> listChiTiet=khQdBtcTcdtCtietRepository.findAllByIdQdBtcTcdt(data.getId());
+        List<KhQdBtcTcdtCtiet> listChiTiet = khQdBtcTcdtCtietRepository.findAllByIdQdBtcTcdt(data.getId());
+        listChiTiet.forEach( item -> {
+            item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
+            item.setTenVthh(hashMapHh.get(item.getLoaiVthh()));
+        });
         if(listChiTiet.size() > 0){
+            data.setKeHoachNhapXuat(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_NHAP_XUAT_LT)).collect(Collectors.toList()).get(0));
             data.setMuaTangList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
             data.setXuatBanList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_BAN)).collect(Collectors.toList()));
             data.setXuatGiamList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
             data.setLuanPhienList(listChiTiet.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
         }
-        data.setListCtiet(listChiTiet);
+
        return data;
     }
     @Transactional
@@ -159,6 +164,9 @@ public class KhQdBtcTcdtService {
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
                 pageable);
+        data.getContent().forEach( f -> {
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+        });
         return data;
     }
 
@@ -188,7 +196,7 @@ public class KhQdBtcTcdtService {
             objs[1]=dx.getSoQd();
             objs[2]=dx.getNgayQd();
             objs[3]=dx.getTrichYeu();
-            objs[4]=dx.getTrangThai();
+            objs[4]=dx.getTenTrangThai();
             dataList.add(objs);
 
         }

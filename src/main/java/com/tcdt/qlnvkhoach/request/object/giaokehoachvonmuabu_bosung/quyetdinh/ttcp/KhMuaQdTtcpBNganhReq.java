@@ -15,6 +15,8 @@ public class KhMuaQdTtcpBNganhReq {
 
     Long ttMuaBu;
 
+    long soQdUbtvqh;
+
     Long ttMuaBsung;
 
     List<KhMuaQdTtcpBNganhCtietReq> muaBuList;

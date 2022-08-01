@@ -1,12 +1,11 @@
 package com.tcdt.qlnvkhoach.request.object.chitieukehoachnam;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtCtietReq;
 import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -22,13 +21,19 @@ public class KhQdBtcBoNganhReq {
     @NotNull(message = "Không được để trống")
     String soQd;
 
+    Long idTtcpBoNganh;
+
     @NotNull(message = "Không được để trống")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
     Date ngayQd;
 
+    @Size(max = 2, message = "Trạng thái không được vượt quá 2 ký tự")
+    @ApiModelProperty(example = "00")
+    String trangThai;
+
     String trichYeu;
 
-    private List<KhQdBtcBoNganhCtietReq> ListBoNganh;
+
 
     private List<KhQdBtcBoNganhCtietReq> muaTangList;
 

@@ -199,6 +199,7 @@ public class Contains {
     public static final String DISABLE = "N";
 
     //Ke hoach
+    public static final String KH_NHAP_XUAT_LT = "NX_LT";
     public static final String KH_MUA_TANG = "MT";
     public static final String KH_XUAT_GIAM = "XG";
     public static final String KH_XUAT_BAN = "XB";

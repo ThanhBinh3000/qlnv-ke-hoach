@@ -4,25 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class KhQdBtcTcdtCtietReq {
-
-    Long id;
-
-    Long idDanhMuc;
-
-    String loaiVthh;
-
-    String cloaiVthh;
-
-    Long soLuong;
-
-    Long donGia;
-
-    Long tongTien;
-
-    String type;
-
-    Long idQdBtcTcdt;
+public class KhQdBtcTcdtNhapXuatCtietReq {
 
     Long soLuongMuaThoc ;
 

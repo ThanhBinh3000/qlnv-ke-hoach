@@ -1,4 +1,5 @@
 package com.tcdt.qlnvkhoach.request.object.giaokehoachvonmuabubosung;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,5 +28,8 @@ public class KhMuaQdUbtvqhReq {
     @Size(max = 500,message = "Trích Yếu không được vượt quá 500 ký tự")
     String trichYeu;
 
+    @Size(max = 2, message = "Trạng thái không được vượt quá 2 ký tự")
+    @ApiModelProperty(example = "00")
+    String trangThai;
     private List<KhMuaQdUbtvqhBnganhReq> listBoNganh;
 }
