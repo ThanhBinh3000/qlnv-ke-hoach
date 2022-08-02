@@ -123,7 +123,7 @@ public class KhMuaQdTtcpService {
             cTiet.setType(Contains.KH_MUA_BU);
             khMuaQdTtcpBNganhCtietRepository.save(cTiet);
         }
-        for (KhMuaQdTtcpBNganhCtietReq khMuaQdTtcpBNganhCtietReq : muaQdTtcpBNganhReq.getMuaBSungList()) {
+        for (KhMuaQdTtcpBNganhCtietReq khMuaQdTtcpBNganhCtietReq : muaQdTtcpBNganhReq.getMuaBsungList()) {
             KhMuaQdTtcpBNganhCTiet cTiet = new ModelMapper().map(khMuaQdTtcpBNganhCtietReq, KhMuaQdTtcpBNganhCTiet.class);
             cTiet.setIdBoNganh(khMuaQdTtcp.getId());
             cTiet.setType(Contains.KH_MUA_BO_SUNG);
