@@ -1,9 +1,11 @@
 package com.tcdt.qlnvkhoach.table.btcgiaotcdt;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,4 +47,7 @@ public class KhQdBtcTcdt implements Serializable {
 
     @Transient
     List<KhQdBtcTcdtCtiet> luanPhienList;
+
+    @Transient
+    private List<FileDinhKemChung> fileDinhkems =new ArrayList<>();
 }

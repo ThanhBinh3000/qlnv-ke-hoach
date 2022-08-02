@@ -1,11 +1,13 @@
 package com.tcdt.qlnvkhoach.request.object.giaokehoachvonmuabubosung;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,5 +33,8 @@ public class KhMuaQdUbtvqhReq {
     @Size(max = 2, message = "Trạng thái không được vượt quá 2 ký tự")
     @ApiModelProperty(example = "00")
     String trangThai;
+
     private List<KhMuaQdUbtvqhBnganhReq> listBoNganh;
+
+    private List<FileDinhKemReq> fileDinhKems = new ArrayList<>();
 }

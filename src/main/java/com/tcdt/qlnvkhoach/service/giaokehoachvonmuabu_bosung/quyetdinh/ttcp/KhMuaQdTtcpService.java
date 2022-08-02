@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp.KhMuaQdTtcpBNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp.KhMuaQdTtcpBNganhRepository;
@@ -16,6 +18,7 @@ import com.tcdt.qlnvkhoach.request.object.giaokehoachvonmuabu_bosung.quyetdinh.t
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvonmuabu_bosung.quyetdinh.ttcp.KhMuaQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp.KhMuaQdTtcp;
 import com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp.KhMuaQdTtcpBNganh;
@@ -49,6 +52,10 @@ public class KhMuaQdTtcpService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private FileDinhKemService fileDinhKemService;
+
 
     public Iterable<KhMuaQdTtcp> findAll() {
         return khMuaQdTtcpRepository.findAll();
@@ -94,6 +101,10 @@ public class KhMuaQdTtcpService {
         // Dự thảo
         data.setTrangThai("00");
         KhMuaQdTtcp createCheck = khMuaQdTtcpRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_MUA_QD_TTCP");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         for (KhMuaQdTtcpBNganhReq khMuaQdTtcpBNganhReq : objReq.getListBoNganh()) {
             KhMuaQdTtcpBNganh khMuaQdTtcpBNganh = new ModelMapper().map(khMuaQdTtcpBNganhReq, KhMuaQdTtcpBNganh.class);
             khMuaQdTtcpBNganh.setId(null);
@@ -153,6 +164,9 @@ public class KhMuaQdTtcpService {
         data.setNgaySua(new Date());
         KhMuaQdTtcp createCheck = khMuaQdTtcpRepository.save(data);
 
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_MUA_QD_TTCP");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         //xoa tất cả
         khMuaQdTtcpBNganhRepository.deleteAllByIdMuaQdTtcp(data.getId());
         for (KhMuaQdTtcpBNganhReq bn : objReq.getListBoNganh()) {
@@ -176,6 +190,8 @@ public class KhMuaQdTtcpService {
         Map<String, String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
         Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhMuaQdTtcpBNganh> listBoNganh = khMuaQdTtcpBNganhRepository.findAllByIdMuaQdTtcp(data.getId());
+        data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_MUA_QD_TTCP")));
+
         for (KhMuaQdTtcpBNganh boNganh : listBoNganh) {
             boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
             List<KhMuaQdTtcpBNganhCTiet> listCtiet = khMuaQdTtcpBNganhCtietRepository.findAllByIdBoNganh(boNganh.getId());
@@ -203,7 +219,7 @@ public class KhMuaQdTtcpService {
             khMuaQdTtcpBNganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
         }
         khMuaQdTtcpBNganhRepository.deleteAllByIdMuaQdTtcp(ids);
-
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_MUA_QD_TTCP"));
         khMuaQdTtcpRepository.delete(qOptional.get());
 
     }
@@ -216,6 +232,7 @@ public class KhMuaQdTtcpService {
             khMuaQdTtcpBNganhCtietRepository.deleteAllByIdBoNganhIn(listIdBnganh);
         }
         khMuaQdTtcpBNganhRepository.deleteAllByIdMuaQdTtcpIn(listId);
+        fileDinhKemService.deleteMultiple(listId,Lists.newArrayList("KH_MUA_QD_TTCP"));
         khMuaQdTtcpRepository.deleteAllByIdIn(listId);
     }
 

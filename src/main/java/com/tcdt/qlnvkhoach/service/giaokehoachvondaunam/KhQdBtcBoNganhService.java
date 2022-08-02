@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh.KhQdBtcBoNganhRepository;
@@ -13,6 +15,7 @@ import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhCtietR
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganhCtiet;
@@ -31,10 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +44,9 @@ public class KhQdBtcBoNganhService {
 
     @Autowired
     private KhQdBtcBoNganhCtietRepository khQdBtcBoNganhCtietRepository;
+
+    @Autowired
+    private FileDinhKemService fileDinhKemService;
 
     public Iterable<KhQdBtcBoNganh> findAll() {
         return khQdBtcBoNganhRepository.findAll();
@@ -75,6 +78,10 @@ public class KhQdBtcBoNganhService {
         data.setNguoiTao(userInfo.getUsername());
         data.setTrangThai("00");
         KhQdBtcBoNganh createCheck = khQdBtcBoNganhRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_QD_BTC_BO_NGANH");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         this.saveCtiet(objReq,data);
 //        for(KhQdBtcBoNganhCtietRes bNganhReq : objReq.getListBoNganh()){
 //            KhQdBtcBoNganhCtiet cTiet = new ModelMapper().map(bNganhReq,KhQdBtcBoNganhCtiet.class);
@@ -139,6 +146,10 @@ public class KhQdBtcBoNganhService {
         data.setNguoiSua(userInfo.getUsername());
         data.setNgaySua(new Date());
         KhQdBtcBoNganh createCheck=khQdBtcBoNganhRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_QD_BTC_BO_NGANH");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganh(data.getId());
         this.saveCtiet(objReq,data);
 //        for (KhQdBtcBoNganhCtietReq bnCtiet : objReq.getListBoNganh()){
@@ -158,6 +169,8 @@ public class KhQdBtcBoNganhService {
         }
         KhQdBtcBoNganh data = qOptional.get();
         List<KhQdBtcBoNganhCtiet> listBoNganh = khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(data.getId());
+        data.setFileDinhkems(fileDinhKemService.search(data.getId(), Collections.singleton("KH_QD_BTC_BO_NGANH")));
+
         if(listBoNganh.size() > 0){
             data.setMuaTangList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
             data.setXuatBanList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_BAN)).collect(Collectors.toList()));
@@ -178,11 +191,15 @@ public class KhQdBtcBoNganhService {
         for (KhQdBtcBoNganhCtiet bNganh : khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(ids)){
             khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganh(bNganh.getId());
         }
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_BO_NGANH"));
+
         khQdBtcBoNganhRepository.delete(qOptional.get());
     }
     @Transactional
     public  void deleteListId(List<Long> listId){
         khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganhIn(listId);
+        fileDinhKemService.deleteMultiple(listId,Lists.newArrayList("KH_QD_BTC_BO_NGANH"));
+
         khQdBtcBoNganhRepository.deleteAllByIdIn(listId);
     }
 
