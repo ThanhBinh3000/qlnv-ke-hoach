@@ -1,10 +1,12 @@
 package com.tcdt.qlnvkhoach.table.ttcp;
 
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,5 +36,8 @@ public class KhQdTtcp implements Serializable {
 
     @Transient
     private List<KhQdTtcpBoNganh> listBoNganh;
+
+    @Transient
+    private List<FileDinhKemChung> fileDinhkems =new ArrayList<>();
 
 }

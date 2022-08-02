@@ -1,11 +1,13 @@
 package com.tcdt.qlnvkhoach.request.object.chitieukehoachnam;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,5 +44,7 @@ public class KhQdBtcBoNganhReq {
     private List<KhQdBtcBoNganhCtietReq> xuatBanList;
 
     private List<KhQdBtcBoNganhCtietReq> luanPhienList;
+
+    private List<FileDinhKemReq> fileDinhKems = new ArrayList<>();
 
 }

@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoach.service.giaokehoachvondaunam;
 
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdBtcTcdtRepository;
@@ -10,6 +12,7 @@ import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdBtcTcdtReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdBtcTcdtSearchReq;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdtCtiet;
@@ -41,6 +44,9 @@ public class KhQdBtcTcdtService {
     @Autowired
     private QlnvDmService qlnvDmService;
 
+    @Autowired
+    private FileDinhKemService fileDinhKemService;
+
     @Transactional
     public KhQdBtcTcdt save(KhQdBtcTcdtReq objReq) throws Exception{
         UserInfo userInfo = SecurityContextService.getUser();
@@ -51,6 +57,11 @@ public class KhQdBtcTcdtService {
         data.setNguoiTao(userInfo.getUsername());
         data.setTrangThai("00");
         KhQdBtcTcdt createCheck=khQdBtcTcdtRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_QD_BTC_TCDT");
+
+        createCheck.setFileDinhkems(fileDinhKems);
+
         this.savaCtiet(objReq,data);
 
 //         for (KhQdBtcTcdtCtietReq cTietreq: objReq.getListCtiet()){
@@ -116,6 +127,10 @@ public class KhQdBtcTcdtService {
         data.setNguoiSua(userInfo.getUsername());
         data.setNgaySua(new Date());
         KhQdBtcTcdt createCheck=khQdBtcTcdtRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_QD_BTC_TCDT");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdt(data.getId());
         this.savaCtiet(objReq,data);
         return createCheck;
@@ -130,6 +145,8 @@ public class KhQdBtcTcdtService {
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         KhQdBtcTcdt data= qOptional.get();
         List<KhQdBtcTcdtCtiet> listChiTiet = khQdBtcTcdtCtietRepository.findAllByIdQdBtcTcdt(data.getId());
+
+        data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_QD_BTC_TCDT")));
         listChiTiet.forEach( item -> {
             item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
             item.setTenVthh(hashMapHh.get(item.getLoaiVthh()));
@@ -151,6 +168,7 @@ public class KhQdBtcTcdtService {
             throw new UserPrincipalNotFoundException("Id không tồn tại");
         }
         khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdt(ids);
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
         khQdBtcTcdtRepository.delete(qOptional.get());
     }
     public Page<KhQdBtcTcdt> searchPage(KhQdBtcTcdtSearchReq objReq) throws Exception{
@@ -173,6 +191,7 @@ public class KhQdBtcTcdtService {
 
     public void deleteListId(List<Long> listId){
         khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdtIn(listId);
+        fileDinhKemService.deleteMultiple(listId,Lists.newArrayList("KH_QD_BTC_TCDT"));
         khQdBtcTcdtRepository.deleteAllByIdIn(listId);
     }
 
