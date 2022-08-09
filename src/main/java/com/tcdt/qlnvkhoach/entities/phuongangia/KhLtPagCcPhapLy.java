@@ -1,0 +1,47 @@
+package com.tcdt.qlnvkhoach.entities.phuongangia;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = KhLtPagCcPhapLy.TABLE_NAME)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class KhLtPagCcPhapLy implements Serializable {
+	private static final long serialVersionUID = -9158383107212840699L;
+	public static final String TABLE_NAME = "KH_LT_PAG_CC_PHAP_LY";
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+	@SequenceGenerator(sequenceName = "KH_LT_PHUONG_AN_GIA_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+	@Id
+	@Column(name = "ID")
+	private Long id;
+
+	@Column(name = "STT")
+	private Long stt;
+
+	@Column(name = "MO_TA")
+	private String moTa;
+
+	@Transient
+	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+
+	/**
+	 * {@link KhLtPhuongAnGia}
+	 */
+	@Column(name = "PAG_ID")
+	private Long phuongAnGiaId;
+}
