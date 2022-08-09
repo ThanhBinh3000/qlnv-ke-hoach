@@ -11,7 +11,6 @@ import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
-import com.tcdt.qlnvkhoach.request.phuongangia.SearchKhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.response.phuongangia.KhLtPhuongAnGiaRes;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
@@ -19,7 +18,6 @@ import com.tcdt.qlnvkhoach.table.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -165,8 +163,8 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void delete(List<Long> ids) throws Exception {
-		if (CollectionUtils.isEmpty(ids)) return;
+	public boolean deleteMultiple(List<Long> ids) throws Exception {
+		if (CollectionUtils.isEmpty(ids)) throw new Exception("Bad request.");
 
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null) throw new Exception("Bad request.");
@@ -175,7 +173,7 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 
 		List<Long> phuongAnGiaIds = phuongAnGiaList.stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
 
-		if (CollectionUtils.isEmpty(phuongAnGiaList)) return;
+		if (CollectionUtils.isEmpty(phuongAnGiaList)) throw new Exception("Bad request.");
 
 		log.info("Xóa căn cứ pháp lý và file đính kèm");
 		List<KhLtPagCcPhapLy> khLtPagCcPhapLyList = khLtPagCcPhapLyRepository.findByPhuongAnGiaIdIn(phuongAnGiaIds);
@@ -191,6 +189,8 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 		this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGiaIds);
 
 		phuongAnGiaRepository.deleteAll(phuongAnGiaList);
+
+		return true;
 	}
 
 	private void deleteKetQua(String type, List<Long> phuongAnGiaIds) {
@@ -199,13 +199,5 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 		List<Long> ketQuaIds = ketQuaList.stream().map(KhLtPagKetQua::getId).collect(Collectors.toList());
 		fileDinhKemService.deleteMultiple(ketQuaIds, Collections.singleton(KhLtPagKetQua.getFileDinhKemDataType(type)));
 		khLtPagKetQuaRepository.deleteAll(ketQuaList);
-	}
-
-	@Override
-	public Page<KhLtPhuongAnGiaRes> search(SearchKhLtPhuongAnGiaReq req) throws Exception {
-		UserInfo userInfo = SecurityContextService.getUser();
-		if (userInfo == null)
-			throw new Exception("Bad request");
-		return null;
 	}
 }
