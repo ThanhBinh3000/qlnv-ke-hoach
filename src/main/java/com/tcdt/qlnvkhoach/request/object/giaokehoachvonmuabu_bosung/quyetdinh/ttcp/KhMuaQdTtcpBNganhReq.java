@@ -21,6 +21,6 @@ public class KhMuaQdTtcpBNganhReq {
 
     List<KhMuaQdTtcpBNganhCtietReq> muaBuList;
 
-    List<KhMuaQdTtcpBNganhCtietReq> muaBSungList;
+    List<KhMuaQdTtcpBNganhCtietReq> muaBsungList;
 
 }
