@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaoKeHoachVonMuaBu_BoSung.quyetDinh.btc.KhMuaQdBtcBNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaoKeHoachVonMuaBu_BoSung.quyetDinh.btc.KhMuaQdBtcBNganhRepository;
@@ -16,6 +18,7 @@ import com.tcdt.qlnvkhoach.request.object.giaokehoachvonmuabu_bosung.quyetdinh.b
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvonmuabu_bosung.quyetdinh.ttcp.KhMuaQdBtcSearchReq;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.btc.KhMuaQdBtc;
 import com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.btc.KhMuaQdBtcBNganh;
@@ -49,6 +52,9 @@ public class KhMuaQdBtcService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private FileDinhKemService fileDinhKemService;
 
     public Iterable<KhMuaQdBtc> findAll() {
         return khMuaQdBtcRepository.findAll();
@@ -94,6 +100,10 @@ public class KhMuaQdBtcService {
         // Dự thảo
         data.setTrangThai("00");
         KhMuaQdBtc createCheck = khMuaQdBtcRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_MUA_QD_BTC");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         for (KhMuaQdBtcBNganhReq khMuaQdTtcpBNganhReq : objReq.getListBoNganh()) {
             KhMuaQdBtcBNganh khMuaQdTtcpBNganh = new ModelMapper().map(khMuaQdTtcpBNganhReq, KhMuaQdBtcBNganh.class);
             khMuaQdTtcpBNganh.setId(null);
@@ -152,6 +162,9 @@ public class KhMuaQdBtcService {
         data.setNgaySua(new Date());
         KhMuaQdBtc createCheck = khMuaQdBtcRepository.save(data);
 
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_MUA_QD_BTC");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         //xoa tất cả
         khMuaQdBtcBNganhRepository.deleteAllByIdMuaQdBtc(data.getId());
         for (KhMuaQdBtcBNganhReq bn : objReq.getListBoNganh()) {
@@ -175,6 +188,8 @@ public class KhMuaQdBtcService {
         Map<String, String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
         Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhMuaQdBtcBNganh> listBoNganh = khMuaQdBtcBNganhRepository.findAllByIdMuaQdBtc(data.getId());
+        data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_MUA_QD_BTC")));
+
         for (KhMuaQdBtcBNganh boNganh : listBoNganh) {
             boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
             List<KhMuaQdBtcBNganhCTiet> listCtiet = khMuaQdBtcBNganhCtietRepository.findAllByIdBoNganh(boNganh.getId());
@@ -202,7 +217,7 @@ public class KhMuaQdBtcService {
             khMuaQdBtcBNganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
         }
         khMuaQdBtcBNganhRepository.deleteAllByIdMuaQdBtc(ids);
-
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_MUA_QD_BTC"));
         khMuaQdBtcRepository.delete(qOptional.get());
 
     }
@@ -215,6 +230,7 @@ public class KhMuaQdBtcService {
             khMuaQdBtcBNganhCtietRepository.deleteAllByIdBoNganhIn(listIdBnganh);
         }
         khMuaQdBtcBNganhRepository.deleteAllByIdMuaQdBtcIn(listId);
+        fileDinhKemService.deleteMultiple(listId,Lists.newArrayList("KH_MUA_QD_BTC"));
         khMuaQdBtcRepository.deleteAllByIdIn(listId);
     }
 

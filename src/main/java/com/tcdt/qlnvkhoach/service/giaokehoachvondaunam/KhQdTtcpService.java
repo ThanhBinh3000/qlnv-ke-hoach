@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhRepository;
@@ -16,6 +18,7 @@ import com.tcdt.qlnvkhoach.request.object.giaokehoachvondaunam.KhQdTtcpReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcpBoNganh;
@@ -50,6 +53,9 @@ public class KhQdTtcpService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private FileDinhKemService fileDinhKemService;
 
     public Iterable<KhQdTtcp> findAll() {
         return khQdTtcpRepository.findAll();
@@ -91,6 +97,10 @@ public class KhQdTtcpService {
         // Dự thảo
         data.setTrangThai("00");
         KhQdTtcp createCheck = khQdTtcpRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_QD_TTCP");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         for(KhQdTtcpBoNganhReq bNganhReq : objReq.getListBoNganh()){
             KhQdTtcpBoNganh bNganh = new ModelMapper().map(bNganhReq,KhQdTtcpBoNganh.class);
             bNganh.setIdQdTtcp(data.getId());
@@ -163,7 +173,11 @@ public class KhQdTtcpService {
         data.setNgaySua(new Date());
         KhQdTtcp createCheck=khQdTtcpRepository.save(data);
 
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_QD_TTCP");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         //xoa tất cả
+
         khQdTtcpBoNganhRepository.deleteAllByIdQdTtcp(data.getId());
         for (KhQdTtcpBoNganhReq bn:objReq.getListBoNganh()){
             KhQdTtcpBoNganh bNganh = new ModelMapper().map(bn,KhQdTtcpBoNganh.class);
@@ -185,6 +199,8 @@ public class KhQdTtcpService {
         Map<String,String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhQdTtcpBoNganh> listBoNganh = khQdTtcpBoNganhRepository.findAllByIdQdTtcp(data.getId());
+        data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_QD_TTCP")));
+
         for(KhQdTtcpBoNganh boNganh : listBoNganh){
             boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
             List<KhQdTtcpBoNganhCTiet> listCtiet = khQdTtcpBoNganhCtietRepository.findAllByIdBoNganh(boNganh.getId());
@@ -214,7 +230,7 @@ public class KhQdTtcpService {
             khQdTtcpBoNganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
         }
         khQdTtcpBoNganhRepository.deleteAllByIdQdTtcp(ids);
-
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_TTCP"));
         khQdTtcpRepository.delete(qOptional.get());
     }
     @Transactional
@@ -225,6 +241,7 @@ public class KhQdTtcpService {
             khQdTtcpBoNganhCtietRepository.deleteAllByIdBoNganhIn(listIdBnganh);
         }
         khQdTtcpBoNganhRepository.deleteAllByIdQdTtcpIn(listId);
+        fileDinhKemService.deleteMultiple(listId,Lists.newArrayList("KH_QD_TTCP"));
         khQdTtcpRepository.deleteAllByIdIn(listId);
     }
 

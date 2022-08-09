@@ -1,9 +1,11 @@
 package com.tcdt.qlnvkhoach.table.giaoKeHoachVonMuaBu_BoSung.quyetDinh.ttcp;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,9 +49,7 @@ public class KhMuaQdTtcp implements Serializable {
     @Transient
     private List<KhMuaQdTtcpBNganh> listBoNganh;
 
-
-
-
-
+    @Transient
+    private List<FileDinhKemChung> fileDinhkems =new ArrayList<>();
 
 }

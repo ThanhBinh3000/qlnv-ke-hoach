@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoach.service.giaokehoachvonmuabubosung;
 
+import com.google.common.collect.Lists;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvonmuabubosung.KhMuaQdUbtvqhBnganhCtietRepository;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvonmuabubosung.KhMuaQdUbtvqhBnganhRepository;
@@ -12,6 +14,7 @@ import com.tcdt.qlnvkhoach.request.object.giaokehoachvonmuabubosung.KhMuaQdUbtvq
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvonmuabubosung.KhMuaQdUbtvqhSearchReq;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.giaokehoachvonmuabubosung.KhMuaQdUbtvqh;
 import com.tcdt.qlnvkhoach.table.giaokehoachvonmuabubosung.KhMuaQdUbtvqhBnganh;
@@ -44,6 +47,9 @@ public class KhMuaQdUbtvqhService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private FileDinhKemService fileDinhKemService;
 
     public Page<KhMuaQdUbtvqh> searchPage(KhMuaQdUbtvqhSearchReq objReq) throws Exception {
         Pageable pageable = PageRequest.of(objReq.getPaggingReq().getPage(),
@@ -82,6 +88,10 @@ public class KhMuaQdUbtvqhService {
         // Dự thảo
         data.setTrangThai("00");
         KhMuaQdUbtvqh createCheck = khMuaQdUbtvqhRepository.save(data);
+
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_MUA_QD_UBTVQH");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         for(KhMuaQdUbtvqhBnganhReq bNganhReq : objReq.getListBoNganh()){
             KhMuaQdUbtvqhBnganh bNganh = new ModelMapper().map(bNganhReq, com.tcdt.qlnvkhoach.table.giaokehoachvonmuabubosung.KhMuaQdUbtvqhBnganh.class);
             bNganh.setIdMuaQdUbtvqh(data.getId());
@@ -134,6 +144,9 @@ public class KhMuaQdUbtvqhService {
         data.setNgaySua(new Date());
         KhMuaQdUbtvqh createCheck=khMuaQdUbtvqhRepository.save(data);
 
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(objReq.getFileDinhKems(),data.getId(),"KH_MUA_QD_UBTVQH");
+        createCheck.setFileDinhkems(fileDinhKems);
+
         //xoa tất cả
         khMuaQdUbtvqhBnganhRepository.deleteAllByIdMuaQdUbtvqh(data.getId());
         for (KhMuaQdUbtvqhBnganhReq bnganhReq : objReq.getListBoNganh()){
@@ -157,6 +170,8 @@ public class KhMuaQdUbtvqhService {
         Map<String,String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhMuaQdUbtvqhBnganh> listBoNganh = khMuaQdUbtvqhBnganhRepository.findAllByIdMuaQdUbtvqh(data.getId());
+        data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_MUA_QD_UBTVQH")));
+
         for(KhMuaQdUbtvqhBnganh boNganh : listBoNganh){
             boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
             List<KhMuaQdUbtvqhBnganhCtiet> listCtiet = khMuaQdUbtvqhBnganhCtietRepository.findAllByIdBoNganh(boNganh.getId());
@@ -184,7 +199,7 @@ public class KhMuaQdUbtvqhService {
             khMuaQdUbtvqhBnganhCtietRepository.deleteAllByIdBoNganh(bNganh.getId());
         }
         khMuaQdUbtvqhBnganhRepository.deleteAllByIdMuaQdUbtvqh(ids);
-
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_MUA_QD_UBTVQH"));
         khMuaQdUbtvqhRepository.delete(qOptional.get());
     }
 
@@ -196,6 +211,7 @@ public class KhMuaQdUbtvqhService {
             khMuaQdUbtvqhBnganhCtietRepository.deleteAllByIdBoNganhIn(listIdBnganh);
         }
         khMuaQdUbtvqhBnganhRepository.deleteAllByIdMuaQdUbtvqhIn(listId);
+        fileDinhKemService.deleteMultiple(listId,Lists.newArrayList("KH_MUA_QD_UBTVQH"));
         khMuaQdUbtvqhRepository.deleteAllByIdIn(listId);
     }
 
