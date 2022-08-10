@@ -137,4 +137,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Column(name = "BDG_GHI_CHU")
 	private String bdgGhiChu; //Ghi chú: Biến động giá
+
+	@Transient
+	String tenTrangThai;
 }

@@ -1,10 +1,18 @@
 package com.tcdt.qlnvkhoach.enums;
 
-public enum GiaoKeHoachVonDauNamEnum {
+public enum PAGTrangThaiEnum {
 
     DU_THAO("00", "Dự Thảo", "Dự Thảo"),
 
-    BAN_HANH("01", "Ban Hành", "Ban Hành"),
+    CHO_DUYET_TP("01", "Chờ duyệt – TP", "Chờ duyệt – TP"),
+
+    CHO_DUYET_LĐC("02", "Chờ duyệt – LĐC", "Chờ duyệt – LĐC"),
+
+    DA_DUYET("03", "Đã duyệt", "Đã duyệt"),
+
+    TU_CHOI_TP("04", "Từ chối - TP", "Từ chối - TP"),
+
+    TU_CHOI_LĐC("05", "Từ chối - LĐC", "Từ chối - LĐC"),
     ;
 
     private final String id;
@@ -14,7 +22,7 @@ public enum GiaoKeHoachVonDauNamEnum {
     private final String trangThaiDuyet;
 
 
-    GiaoKeHoachVonDauNamEnum(String id, String ten, String trangThaiDuyet) {
+    PAGTrangThaiEnum(String id, String ten, String trangThaiDuyet) {
         this.id = id;
         this.ten = ten;
         this.trangThaiDuyet = trangThaiDuyet;
@@ -33,7 +41,7 @@ public enum GiaoKeHoachVonDauNamEnum {
     }
 
     public static String getTrangThaiDuyetById(String id){
-        for (GiaoKeHoachVonDauNamEnum status : GiaoKeHoachVonDauNamEnum.values()) {
+        for (PAGTrangThaiEnum status : PAGTrangThaiEnum.values()) {
             if (status.getId().equals(id))
                 return status.getTrangThaiDuyet();
         }
