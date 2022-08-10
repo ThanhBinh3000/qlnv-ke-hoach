@@ -67,7 +67,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     public final ResponseEntity<Resp> create(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
-            resp.setData(phuongAnGiaService.create(req));
+            resp.setData(khLtPagService.create(req));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     public final ResponseEntity<Resp> updateQd(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
-            resp.setData(phuongAnGiaService.update(req));
+            resp.setData(khLtPagService.update(req));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
         try {
-            resp.setData(phuongAnGiaService.deleteMultiple(req.getIds()));
+            resp.setData(khLtPagService.deleteMultiple(req.getIds()));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
