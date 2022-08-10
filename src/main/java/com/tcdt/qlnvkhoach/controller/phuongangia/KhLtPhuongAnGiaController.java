@@ -11,6 +11,7 @@ import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
+import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPagService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPhuongAnGiaService;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Constants;
@@ -34,7 +35,7 @@ import javax.xml.xpath.XPathConstants;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/kt-lt-pag")
+@RequestMapping(value = "/kh-lt-pag")
 @Slf4j
 @Api(tags = "Kế hoạch, đề xuất phương án giá")
 public class KhLtPhuongAnGiaController extends BaseController {
@@ -42,7 +43,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     private KhLtPhuongAnGiaService phuongAnGiaService;
 
     @Autowired
-    private KhLtPhuongAnGiaRepository khLtPhuongAnGiaRepository;
+    private KhLtPagService khLtPagService;
 
 
     @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
@@ -50,20 +51,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     public final ResponseEntity<Resp> searchKhLtPAG(@Valid @RequestBody KhLtPhuongAnGiaSearchReq objReq) {
         Resp resp = new Resp();
         try {
-            Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),
-                    objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
-            Page<KhLtPhuongAnGia> data=khLtPhuongAnGiaRepository.selectPage(
-                    objReq.getNamKh(),
-                    objReq.getSoDx(),
-                    objReq.getLoaiHh(),
-                    Contains.convertDateToString(objReq.getNgayKyTu()),
-                    Contains.convertDateToString(objReq.getNgayKyDen()),
-                    objReq.getTrichYeu(),
-                    pageable);
-            data.getContent().forEach( f -> {
-                f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
-            });
-            resp.setData(data);
+            resp.setData(khLtPagService.searchPage(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

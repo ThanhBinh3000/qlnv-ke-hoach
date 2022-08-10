@@ -4,7 +4,7 @@ public enum GiaoKeHoachVonDauNamEnum {
 
     DU_THAO("00", "Dự Thảo", "Dự Thảo"),
 
-    BAN_HANH("01", "Ban Hành", "Ban Hành"),
+    BAN_HANH("11", "Ban Hành", "Ban Hành"),
     ;
 
     private final String id;
