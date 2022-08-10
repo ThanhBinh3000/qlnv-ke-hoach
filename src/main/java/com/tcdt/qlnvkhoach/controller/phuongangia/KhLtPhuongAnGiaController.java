@@ -30,10 +30,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.xpath.XPathConstants;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/kh-lt-phuong-an-gia")
+@RequestMapping(value = "/kt-lt-pag")
 @Slf4j
 @Api(tags = "Kế hoạch, đề xuất phương án giá")
 public class KhLtPhuongAnGiaController extends BaseController {
@@ -45,7 +46,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
-    @PostMapping(value= "/thoc-gao-muoi/gmtd-gbtt/dxpag" + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> searchKhLtPAG(@Valid @RequestBody KhLtPhuongAnGiaSearchReq objReq) {
         Resp resp = new Resp();
         try {

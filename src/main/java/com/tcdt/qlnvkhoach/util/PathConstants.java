@@ -68,5 +68,12 @@ public class PathConstants {
 
 	public static final String URL_BTC_TCDT = "/btc-tcdt";
 
+	public static final String URL_LUONG_THUC = "/luong-thuc";
+
+	public static final String URL_VAT_TU = "/vat-tu";
+
+	public static final String URL_GIA_LH = "/gia-lh";
+	public static final String URL_DX_PAG = "/dx-pag";
+
 }
 
