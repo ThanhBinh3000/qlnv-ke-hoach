@@ -45,7 +45,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value= "/thoc-gao-muoi/gmtd-gbtt/dxpag" + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> searchKhLtPAG(@Valid @RequestBody KhLtPhuongAnGiaSearchReq objReq) {
         Resp resp = new Resp();
         try {
