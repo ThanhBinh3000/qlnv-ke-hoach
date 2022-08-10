@@ -50,6 +50,10 @@ public class KhLtPagService {
     private KhLtPagKetQuaRepository khLtPagKetQuaRepository;
 
 
+    public Iterable<KhLtPhuongAnGia> findAll() {
+        return khLtPhuongAnGiaRepository.findAll();
+    }
+
     public Page<KhLtPhuongAnGia> searchPage(KhLtPhuongAnGiaSearchReq objReq) throws Exception{
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),
                 objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
