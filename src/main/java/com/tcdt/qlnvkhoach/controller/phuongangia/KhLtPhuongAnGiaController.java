@@ -63,7 +63,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "Tạo mới đề xuất phương án giá", response = List.class)
-    @PostMapping
+    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> create(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
@@ -81,7 +81,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Sửa đề xuất phương án giá", response = List.class)
-    @PutMapping()
+    @PutMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> updateQd(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
@@ -98,7 +98,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
