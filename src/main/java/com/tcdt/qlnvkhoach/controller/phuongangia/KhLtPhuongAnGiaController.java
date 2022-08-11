@@ -16,12 +16,14 @@ import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSea
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPagService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPhuongAnGiaService;
+import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.PathConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -126,6 +128,23 @@ public class KhLtPhuongAnGiaController extends BaseController {
         Resp resp = new Resp();
         try {
             khLtPagService.delete(idSearchReq.getId());
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Chi tiết đề xuất phương án giá", response = List.class)
+    @GetMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> detailDxPag(@ApiParam(value = "ID đề xuất phương án giá", example = "1", required = true) @PathVariable("ids") String ids) {
+        Resp resp = new Resp();
+        try {
+            KhLtPhuongAnGia khQdBtcBoNganh=khLtPagService.detailDxPag(ids);
+            resp.setData(khQdBtcBoNganh);
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

@@ -24,6 +24,7 @@ import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
+import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganhCtiet;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
@@ -292,6 +293,35 @@ public class KhLtPagService {
         this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), pagIds);
         fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
         khLtPhuongAnGiaRepository.delete(qOptional.get());
+    }
+
+    @javax.transaction.Transactional
+    public KhLtPhuongAnGia detailDxPag(String id) throws  Exception {
+        Optional<KhLtPhuongAnGia> qOptional = khLtPhuongAnGiaRepository.findById(Long.parseLong(id));
+        if (!qOptional.isPresent()) {
+            throw new Exception("Đề xuất phương án giá không tồn tại");
+        }
+        KhLtPhuongAnGia data = qOptional.get();
+        List<Long> ids = new ArrayList<>();
+        ids.add(data.getId());
+        List<KhLtPagCcPhapLy> listPagCCPhapLy = khLtPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
+        List<KhLtPagKetQua> listPagKetQuaTD = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),ids);
+        List<KhLtPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),ids);
+        List<KhLtPagKetQua> listPagKetQuaTTHHTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(),ids);
+        if(listPagCCPhapLy.size() > 0){
+            data.setCanCuPhapLy(listPagCCPhapLy);
+        }
+        if(listPagKetQuaTD.size() > 0){
+            data.setKetQuaThamDinhGia(listPagKetQuaTD);
+        }
+        if(listPagKetQuaKSTT.size() > 0){
+            data.setKetQuaKhaoSatGiaThiTruong(listPagKetQuaKSTT);
+        }
+        if(listPagKetQuaTTHHTT.size() > 0){
+            data.setThongTinGiaHangHoaTuongTu(listPagKetQuaTTHHTT);
+        }
+        return data;
+
     }
 
     public  void exportDxPag(KhLtPhuongAnGiaSearchReq objReq, HttpServletResponse response) throws Exception{
