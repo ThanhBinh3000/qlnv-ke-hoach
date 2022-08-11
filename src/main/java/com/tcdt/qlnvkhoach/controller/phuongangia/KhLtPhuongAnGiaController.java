@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
@@ -81,7 +82,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Sửa đề xuất phương án giá", response = List.class)
-    @PutMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> updateQd(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
@@ -98,12 +99,28 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-    @DeleteMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG +PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(khLtPagService.deleteMultiple(req.getIds()));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
+    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deletePag(@RequestBody DeleteRecordReq idSearchReq) {
+        Resp resp = new Resp();
+        try {
+            khLtPagService.delete(idSearchReq.getId());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
