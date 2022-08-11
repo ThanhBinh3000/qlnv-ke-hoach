@@ -13,6 +13,8 @@ import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
+import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuDeXuatResponse;
+import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
 import com.tcdt.qlnvkhoach.response.phuongangia.KhLtPhuongAnGiaRes;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,6 +71,40 @@ public class KhLtPagService {
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
         });
+        List<Long> khLtPagIds = data.getContent().stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
+//        get ketqua tham dinh gia va khao sat gia
+        Map<Long, List<Object[]>> khLtKetquaThamDinhs = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),khLtPagIds)
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
+        Map<Long, List<Object[]>> khLtKetquaKhaoSats = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),khLtPagIds)
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
+        Map<Long, List<Object[]>> khLtCCPhapLys = khLtPagCcPhapLyRepository.findByPhuongAnGiaIdsIn(khLtPagIds)
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[3]));
+        for (KhLtPhuongAnGia khLtPhuongAnGia : data.getContent()) {
+            List<Object[]> ketquaTDs = khLtKetquaThamDinhs.get(khLtPhuongAnGia.getId());
+            List<Object[]> ketquaKSs = khLtKetquaKhaoSats.get(khLtPhuongAnGia.getId());
+            List<Object[]> ccPhapLys = khLtCCPhapLys.get(khLtPhuongAnGia.getId());
+            List<KhLtPagKetQua> khLtPagKetQuaThamDinhs = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(ketquaTDs)) {
+                ketquaTDs.forEach(c -> {
+                    khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3], null, (String) c[5], (Long) c[4]));
+                });
+            }
+            List<KhLtPagKetQua> khLtPagKetQuaKhaoSats = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(ketquaKSs)) {
+                ketquaKSs.forEach(c -> {
+                    khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
+                });
+            }
+            List<KhLtPagCcPhapLy> khLtPagCcPhapLys = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(ccPhapLys)) {
+                ccPhapLys.forEach(c -> {
+                    khLtPagCcPhapLys.add(new KhLtPagCcPhapLy((Long)c[0], (Long) c[1],(String) c[2],null,(Long) c[3]));
+                });
+            }
+            khLtPhuongAnGia.setKetQuaThamDinhGia(khLtPagKetQuaThamDinhs);
+            khLtPhuongAnGia.setKetQuaKhaoSatGiaThiTruong(khLtPagKetQuaKhaoSats);
+            khLtPhuongAnGia.setCanCuPhapLy(khLtPagCcPhapLys);
+        }
         return data;
     }
 
