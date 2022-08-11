@@ -72,14 +72,17 @@ public class KhLtPagService {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
-//        get ketqua tham dinh gia
+//        get ketqua tham dinh gia va khao sat gia
         Map<Long, List<Object[]>> khLtKetquaThamDinhs = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
         Map<Long, List<Object[]>> khLtKetquaKhaoSats = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
+        Map<Long, List<Object[]>> khLtCCPhapLys = khLtPagCcPhapLyRepository.findByPhuongAnGiaIdsIn(khLtPagIds)
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[3]));
         for (KhLtPhuongAnGia khLtPhuongAnGia : data.getContent()) {
             List<Object[]> ketquaTDs = khLtKetquaThamDinhs.get(khLtPhuongAnGia.getId());
             List<Object[]> ketquaKSs = khLtKetquaKhaoSats.get(khLtPhuongAnGia.getId());
+            List<Object[]> ccPhapLys = khLtCCPhapLys.get(khLtPhuongAnGia.getId());
             List<KhLtPagKetQua> khLtPagKetQuaThamDinhs = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaTDs)) {
                 ketquaTDs.forEach(c -> {
@@ -92,8 +95,15 @@ public class KhLtPagService {
                     khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
                 });
             }
+            List<KhLtPagCcPhapLy> khLtPagCcPhapLys = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(ccPhapLys)) {
+                ccPhapLys.forEach(c -> {
+                    khLtPagCcPhapLys.add(new KhLtPagCcPhapLy((Long)c[0], (Long) c[1],(String) c[2],null,(Long) c[3]));
+                });
+            }
             khLtPhuongAnGia.setKetQuaThamDinhGia(khLtPagKetQuaThamDinhs);
             khLtPhuongAnGia.setKetQuaKhaoSatGiaThiTruong(khLtPagKetQuaKhaoSats);
+            khLtPhuongAnGia.setCanCuPhapLy(khLtPagCcPhapLys);
         }
         return data;
     }
