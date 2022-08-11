@@ -75,27 +75,24 @@ public class KhLtPagService {
 //        get ketqua tham dinh gia
         Map<Long, List<Object[]>> khLtKetquaThamDinhs = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
-        for (KhLtPhuongAnGia khLtPhuongAnGia : data.getContent()) {
-            List<Object[]> ketquas = khLtKetquaThamDinhs.get(khLtPhuongAnGia.getId());
-            List<KhLtPagKetQua> khLtPagKetQuaThamDinhs = new ArrayList<>();
-            if (CollectionUtils.isEmpty(ketquas))
-                continue;
-            ketquas.forEach(c -> {
-                khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
-            });
-            khLtPhuongAnGia.setKetQuaThamDinhGia(khLtPagKetQuaThamDinhs);
-        }
-        //get ketqua khảo sát thị trường
         Map<Long, List<Object[]>> khLtKetquaKhaoSats = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
         for (KhLtPhuongAnGia khLtPhuongAnGia : data.getContent()) {
-            List<Object[]> ketquas = khLtKetquaKhaoSats.get(khLtPhuongAnGia.getId());
+            List<Object[]> ketquaTDs = khLtKetquaThamDinhs.get(khLtPhuongAnGia.getId());
+            List<Object[]> ketquaKSs = khLtKetquaKhaoSats.get(khLtPhuongAnGia.getId());
+            List<KhLtPagKetQua> khLtPagKetQuaThamDinhs = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(ketquaTDs)) {
+                ketquaTDs.forEach(c -> {
+                    khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3], null, (String) c[5], (Long) c[4]));
+                });
+            }
             List<KhLtPagKetQua> khLtPagKetQuaKhaoSats = new ArrayList<>();
-            if (CollectionUtils.isEmpty(ketquas))
-                continue;
-            ketquas.forEach(c -> {
-                khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
-            });
+            if (!CollectionUtils.isEmpty(ketquaKSs)) {
+                ketquaKSs.forEach(c -> {
+                    khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
+                });
+            }
+            khLtPhuongAnGia.setKetQuaThamDinhGia(khLtPagKetQuaThamDinhs);
             khLtPhuongAnGia.setKetQuaKhaoSatGiaThiTruong(khLtPagKetQuaKhaoSats);
         }
         return data;
