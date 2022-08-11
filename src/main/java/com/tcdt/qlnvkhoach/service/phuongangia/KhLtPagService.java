@@ -11,8 +11,10 @@ import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagCcPhapLyRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuDeXuatResponse;
 import com.tcdt.qlnvkhoach.response.chitieukehoachnam.ChiTieuKeHoachNamRes;
@@ -21,9 +23,11 @@ import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
+import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
+import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
@@ -289,4 +294,34 @@ public class KhLtPagService {
         khLtPhuongAnGiaRepository.delete(qOptional.get());
     }
 
+    public  void exportDxPag(KhLtPhuongAnGiaSearchReq objReq, HttpServletResponse response) throws Exception{
+        PaggingReq paggingReq = new PaggingReq();
+        paggingReq.setPage(0);
+        paggingReq.setLimit(Integer.MAX_VALUE);
+        objReq.setPaggingReq(paggingReq);
+        Page<KhLtPhuongAnGia> page=this.searchPage(objReq);
+        List<KhLtPhuongAnGia> data=page.getContent();
+
+        String title="Danh sách đề xuất phương án giá";
+        String[] rowsName=new String[]{"STT","Số đề xuất","Ngày ký","Trích yếu","Năm kế hoạch","Loại hàng hóa","Loại giá","Trạng thái"};
+        String fileName="danh-sach-de-xuat-phuong-an-gia.xlsx";
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs=null;
+        for (int i=0;i<data.size();i++){
+            KhLtPhuongAnGia dx=data.get(i);
+            objs=new Object[rowsName.length];
+            objs[0]=i;
+            objs[1]=dx.getSoDeXuat();
+            objs[2]=dx.getNgayKy();
+            objs[3]=dx.getTrichYeu();
+            objs[4]=dx.getNamKeHoach();
+            objs[5]=dx.getLoaiHangHoa();
+            objs[6]=dx.getLoaiGia();
+            objs[7]=dx.getTenTrangThai();
+            dataList.add(objs);
+
+        }
+        ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
+        ex.export();
+    }
 }
