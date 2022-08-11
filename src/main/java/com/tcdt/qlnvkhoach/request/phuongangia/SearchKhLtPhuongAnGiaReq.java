@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class SearchKhLtPhuongAnGiaReq extends BaseRequest {
 	private Long namKeHoach;
 	private String loaiHangHoa;
-	private Long soDeXuat;
+	private String soDeXuat;
 	private String trichYeu;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayKyTuNgay;
