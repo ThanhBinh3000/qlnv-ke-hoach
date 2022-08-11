@@ -50,7 +50,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	private String loaiHangHoa;
 
 	@Column(name = "SO_DE_XUAT")
-	private Long soDeXuat;
+	private String soDeXuat;
 
 	@Column(name = "NGAY_KY")
 	private LocalDate ngayKy;
