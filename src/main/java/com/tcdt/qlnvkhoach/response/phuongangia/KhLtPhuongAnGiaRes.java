@@ -25,7 +25,7 @@ public class KhLtPhuongAnGiaRes {
 
 	private String loaiHangHoa;
 
-	private Long soDeXuat;
+	private String soDeXuat;
 
 	private LocalDate ngayKy;
 
