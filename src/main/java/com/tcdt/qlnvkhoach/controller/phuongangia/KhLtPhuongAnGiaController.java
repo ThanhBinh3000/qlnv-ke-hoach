@@ -99,7 +99,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG +PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
@@ -116,8 +116,9 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> deletePag(@RequestBody DeleteRecordReq idSearchReq) {
+        System.out.println("haha: " +idSearchReq.getId());
         Resp resp = new Resp();
         try {
             khLtPagService.delete(idSearchReq.getId());
