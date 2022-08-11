@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
+import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagKetQua;
@@ -20,6 +21,7 @@ import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
+import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -261,6 +264,29 @@ public class KhLtPagService {
         List<Long> ketQuaIds = ketQuaList.stream().map(KhLtPagKetQua::getId).collect(Collectors.toList());
         fileDinhKemService.deleteMultiple(ketQuaIds, Collections.singleton(KhLtPagKetQua.getFileDinhKemDataType(type)));
         khLtPagKetQuaRepository.deleteAll(ketQuaList);
+    }
+
+
+    @javax.transaction.Transactional
+    public void delete(Long ids) throws Exception{
+        Optional<KhLtPhuongAnGia> qOptional=khLtPhuongAnGiaRepository.findById(ids);
+        if(!qOptional.isPresent()){
+            throw new UserPrincipalNotFoundException("Id không tồn tại");
+        }
+        List<Long> pagIds = new ArrayList<>();
+        pagIds.add(ids);
+        List<KhLtPagCcPhapLy> khLtPagCcPhapLyList = khLtPagCcPhapLyRepository.findByPhuongAnGiaIdIn(pagIds);
+        if (!CollectionUtils.isEmpty(khLtPagCcPhapLyList)) {
+            List<Long> canCuPhapLyIds = khLtPagCcPhapLyList.stream().map(KhLtPagCcPhapLy::getId).collect(Collectors.toList());
+            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhLtPagCcPhapLy.TABLE_NAME));
+            khLtPagCcPhapLyRepository.deleteAll(khLtPagCcPhapLyList);
+        }
+        log.info("Xóa kết quả");
+        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), pagIds);
+        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), pagIds);
+        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), pagIds);
+        fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
+        khLtPhuongAnGiaRepository.delete(qOptional.get());
     }
 
 }

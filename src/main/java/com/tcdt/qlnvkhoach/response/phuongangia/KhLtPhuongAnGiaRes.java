@@ -83,7 +83,6 @@ public class KhLtPhuongAnGiaRes {
 	 * Phân tích, dự báo biến động giá
 	 * BDG: Biến động giá
 	 */
-
 	private String bdgNoiDung; //Nội dung: Biến động giá
 
 	private String bdgGhiChu; //Ghi chú: Biến động giá
