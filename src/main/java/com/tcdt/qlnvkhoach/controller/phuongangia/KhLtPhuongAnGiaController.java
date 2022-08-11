@@ -155,7 +155,6 @@ public class KhLtPhuongAnGiaController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-
     @ApiOperation(value = "Kết xuất danh sách đề xuất phương án giá", response = List.class)
     @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
