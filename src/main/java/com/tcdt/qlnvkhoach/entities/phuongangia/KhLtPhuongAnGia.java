@@ -84,6 +84,9 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Column(name = "GIA_DE_NGHI")
 	private BigDecimal giaDeNghi;
+
+	@Column(name = "GIA_DE_NGHI_VAT")
+	private BigDecimal giaDeNghiVat;
 	/**
 	 * Căn cứ phương pháp xác định giá
 	 */
@@ -140,4 +143,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Transient
 	String tenTrangThai;
+
+	@Transient
+	String tenLoaiHh;
 }

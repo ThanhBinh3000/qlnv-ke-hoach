@@ -45,6 +45,8 @@ public class KhLtPhuongAnGiaReq {
 	private String diaDiemDeHang;
 
 	private BigDecimal giaDeNghi;
+
+	private BigDecimal giaDeNghiVat;
 	/**
 	 * Căn cứ phương pháp xác định giá
 	 */

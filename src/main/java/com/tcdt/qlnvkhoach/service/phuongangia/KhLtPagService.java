@@ -95,13 +95,13 @@ public class KhLtPagService {
             List<KhLtPagKetQua> khLtPagKetQuaThamDinhs = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaTDs)) {
                 ketquaTDs.forEach(c -> {
-                    khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3], null, (String) c[5], (Long) c[4]));
+                    khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                 });
             }
             List<KhLtPagKetQua> khLtPagKetQuaKhaoSats = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaKSs)) {
                 ketquaKSs.forEach(c -> {
-                    khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
+                    khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                 });
             }
             List<KhLtPagCcPhapLy> khLtPagCcPhapLys = new ArrayList<>();
@@ -160,7 +160,6 @@ public class KhLtPagService {
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
 
         log.info("Build phương án giá response");
-
 
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
 
