@@ -50,7 +50,7 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 		log.info("Save: thông tin phương án giá");
 		KhLtPhuongAnGia phuongAnGia = mapper.map(req, KhLtPhuongAnGia.class);
 		phuongAnGia.setTrangThai(TrangThaiEnum.DU_THAO.getId());
-		phuongAnGia.setMaDonVi(userInfo.getDvql());
+		phuongAnGia.setMaDvi(userInfo.getDvql());
 		phuongAnGia.setCapDvi(userInfo.getCapDvi());
 		phuongAnGia.setNguoiTaoId(userInfo.getId());
 		phuongAnGia.setNgayTao(LocalDate.now());

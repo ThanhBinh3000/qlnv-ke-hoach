@@ -132,7 +132,7 @@ public class KhLtTongHopPagService extends BaseService {
             KhLtPagTongHopCTiet cTiet = new KhLtPagTongHopCTiet();
             cTiet.setSoDx(pag.getSoDeXuat());
             cTiet.setSoLuong(pag.getSoLuong());
-            cTiet.setMaDvi(pag.getMaDonVi());
+            cTiet.setMaDvi(pag.getMaDvi());
             cTiet.setGiaDn(pag.getGiaDeNghi());
             cTiet.setGiaDnVat(pag.getGiaDeNghiVat());
             lChitiet.add(cTiet);

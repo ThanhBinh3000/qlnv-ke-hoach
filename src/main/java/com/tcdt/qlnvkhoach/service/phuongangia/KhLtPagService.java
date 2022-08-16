@@ -125,7 +125,7 @@ public class KhLtPagService {
         log.info("Save: thông tin phương án giá");
         KhLtPhuongAnGia phuongAnGia =  mapper.map(req, KhLtPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
-        phuongAnGia.setMaDonVi(userInfo.getDvql());
+        phuongAnGia.setMaDvi(userInfo.getDvql());
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());
         phuongAnGia.setNgayTao(LocalDate.now());
@@ -345,7 +345,7 @@ public class KhLtPagService {
             objs[2]=dx.getNgayKy();
             objs[3]=dx.getTrichYeu();
             objs[4]=dx.getNamKeHoach();
-            objs[5]=dx.getLoaiHangHoa();
+            objs[5]=dx.getLoaiVthh();
             objs[6]=dx.getLoaiGia();
             objs[7]=dx.getTenTrangThai();
             dataList.add(objs);

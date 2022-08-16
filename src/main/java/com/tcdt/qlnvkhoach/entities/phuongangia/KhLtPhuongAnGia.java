@@ -34,8 +34,8 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	@Column(name = "ID")
 	private Long id;
 
-	@Column(name = "MA_DON_VI")
-	private String maDonVi;
+	@Column(name = "MA_DVI")
+	private String maDvi;
 
 	@Column(name = "CAP_DVI")
 	private String capDvi;
@@ -47,8 +47,8 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	@Column(name = "NAM_KE_HOACH")
 	private Long namKeHoach;
 
-	@Column(name = "LOAI_HANG_HOA")
-	private String loaiHangHoa;
+	@Column(name = "LOAI_VTHH")
+	private String loaiVthh;
 
 	@Column(name = "SO_DE_XUAT")
 	private String soDeXuat;
@@ -71,8 +71,8 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	/**
 	 * Thông tin chung
 	 */
-	@Column(name = "TTC_CHUNG_LOAI_HH")
-	private String ttcChungLoaiHh;
+	@Column(name = "CLOAI_VTHH")
+	private String cloaiVthh;
 
 	@Column(name = "TIEU_CHUAN_CL")
 	private String tieuChuanCl;
