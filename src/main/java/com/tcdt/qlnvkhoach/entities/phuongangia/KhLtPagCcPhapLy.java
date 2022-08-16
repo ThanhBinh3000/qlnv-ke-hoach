@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,26 +23,31 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class KhLtPagCcPhapLy implements Serializable {
-	private static final long serialVersionUID = -9158383107212840699L;
-	public static final String TABLE_NAME = "KH_LT_PAG_CC_PHAP_LY";
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
-	@SequenceGenerator(sequenceName = "KH_LT_PAG_CC_PHAP_LY_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
-	@Id
-	@Column(name = "ID")
-	private Long id;
 
-	@Column(name = "STT")
-	private Long stt;
+    private static final long serialVersionUID = -9158383107212840699L;
+    public static final String TABLE_NAME = "KH_LT_PAG_CC_PHAP_LY";
 
-	@Column(name = "MO_TA")
-	private String moTa;
+    //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+//	@SequenceGenerator(sequenceName = "KH_LT_PAG_CC_PHAP_LY_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+    @Basic(optional = false)
+    @Id
+    @Column(name = "ID", nullable = false)
+    @GenericGenerator(name = "KH_LT_PAG_CC_PHAP_LY_SEQ", strategy = "com.tcdt.qlnvkhoach.entities.CustomGenerator")
+    @GeneratedValue(generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+    private Long id;
 
-	@Transient
-	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+    @Column(name = "STT")
+    private Long stt;
 
-	/**
-	 * {@link KhLtPhuongAnGia}
-	 */
-	@Column(name = "PAG_ID")
-	private Long phuongAnGiaId;
+    @Column(name = "MO_TA")
+    private String moTa;
+
+    @Transient
+    private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+
+    /**
+     * {@link KhLtPhuongAnGia}
+     */
+    @Column(name = "PAG_ID")
+    private Long phuongAnGiaId;
 }
