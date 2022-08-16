@@ -2,28 +2,33 @@ package com.tcdt.qlnvkhoach.service.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
-import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
-import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
+import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.util.Contains;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,7 +45,8 @@ public class KhLtTongHopPagService extends BaseService {
 
     @Autowired
     private QlnvDmDonviRepository qlnvDmDonviRepository;
-
+    @Autowired
+    private ModelMapper mapper;
 
     public Page<KhLtPagTongHop> searchPage(KhLtPagTongHopSearchReq objReq) throws Exception {
         Pageable pageable = PageRequest.of(objReq.getPaggingReq().getPage(),
@@ -55,7 +61,7 @@ public class KhLtTongHopPagService extends BaseService {
         return data;
     }
 
-    public KhLtPagTongHop tongHopData(KhLtPagTongHopReq objReq, HttpServletRequest req) throws Exception {
+    public KhLtPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq, HttpServletRequest req) throws Exception {
         List<KhLtPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen());
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
@@ -118,11 +124,25 @@ public class KhLtTongHopPagService extends BaseService {
         List<QlnvDmDonvi> dvis = qlnvDmDonviRepository.findByMaDviIn(maDvis);
         Map<String, QlnvDmDonvi> listDvi = dvis.stream()
                 .collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
-        listPagTH.forEach( f -> {
+        listPagTH.forEach(f -> {
             f.setTenDvi(listDvi.get(f.getMaDonVi()).getTenDvi());
         });
         pagTH.setPhuongAnGias(listPagTH);
         return pagTH;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public KhLtPagTongHop create(KhLtPagTongHopReq req) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (userInfo == null) throw new Exception("Bad request.");
+        KhLtPagTongHop pagTH = mapper.map(req, KhLtPagTongHop.class);
+        pagTH.setTrangThai(TrangThaiEnum.DU_THAO.getId());
+        pagTH.setNguoiTaoId(userInfo.getId());
+        pagTH.setNgayTao(LocalDate.now());
+        pagTH.setNgayTongHop(LocalDate.now());
+        pagTH.setTrangThaiTH(TrangThaiEnum.DU_THAO.getId());
+        return khLtPagTongHopRepository.save(pagTH);
+    }
+
 
 }

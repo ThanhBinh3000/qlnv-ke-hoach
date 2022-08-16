@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.entities.phuongangia;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tcdt.qlnvkhoach.entities.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,15 +16,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop.TABLE_NAME;
+
 @Entity
-@Table(name = KhLtPagKetQua.TABLE_NAME)
+@Table(name = KhLtPagTongHop.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KhLtPagTongHop implements Serializable {
+public class KhLtPagTongHop extends BaseEntity implements Serializable {
     public static final String TABLE_NAME = "KH_LT_PAG_TONG_HOP";
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_TONG_HOP_SEQ")

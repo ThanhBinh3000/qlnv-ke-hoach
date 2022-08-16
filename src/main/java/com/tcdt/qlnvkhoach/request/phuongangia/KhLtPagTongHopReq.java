@@ -1,40 +1,42 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.tcdt.qlnvkhoach.util.Contains;
-import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.Column;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class KhLtPagTongHopReq {
 
-    @NotNull(message = "Không được để trống")
-    @ApiModelProperty(example = "2022")
-    String namKhoach;
+    private Long id;
+    private String soTT;
+    private LocalDate ngayTongHop;
+    private String noiDung;
+    private Long namTongHop;
+    private String loaiHangHoa;
+    private String loaiGia;
+    private String trangThai;
+    private BigDecimal giaKsTtTu;
+    private BigDecimal giaKsTtDen;
+    private BigDecimal giaKsTtVatTu;
+    private BigDecimal giaKsTtVatDen;
+    private BigDecimal giaTdTu;
+    private BigDecimal giaTdDen;
 
-    @NotNull(message = "Không được để trống")
-    @ApiModelProperty(example = Contains.LOAI_VTHH_GAO)
-    String loaiVthh;
+    private BigDecimal giaTdVatTu;
 
-    @NotNull(message = "Không được để trống")
-    @ApiModelProperty(example = Contains.LOAI_VTHH_GAO)
-    String chungloaiVthh;
+    private BigDecimal giaTdVatDen;
 
+    private BigDecimal giaDnTu;
 
-    @NotNull(message = "Không được để trống")
-    @ApiModelProperty(example = Contains.LOAI_VTHH_GAO)
-    String loaiGia;
+    private BigDecimal giaDnDen;
 
-    @NotNull(message = "Không được để trống")
-    @ApiModelProperty
-    String ngayDxuatTu;
+    private BigDecimal giaDnVatTu;
 
-    @ApiModelProperty
-    String ngayDxuatDen;
+    private BigDecimal giaDnVatDen;
+
+    private String ghiChu;
 }
