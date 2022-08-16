@@ -95,13 +95,13 @@ public class KhLtPagService {
             List<KhLtPagKetQua> khLtPagKetQuaThamDinhs = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaTDs)) {
                 ketquaTDs.forEach(c -> {
-                    khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3], null, (String) c[5], (Long) c[4]));
+                    khLtPagKetQuaThamDinhs.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                 });
             }
             List<KhLtPagKetQua> khLtPagKetQuaKhaoSats = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaKSs)) {
                 ketquaKSs.forEach(c -> {
-                    khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long)c[0], (Long) c[1],(String) c[2],(BigDecimal) c[3],null,(String) c[5], (Long) c[4]));
+                    khLtPagKetQuaKhaoSats.add(new KhLtPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                 });
             }
             List<KhLtPagCcPhapLy> khLtPagCcPhapLys = new ArrayList<>();
@@ -120,7 +120,6 @@ public class KhLtPagService {
     @Transactional(rollbackFor = Exception.class)
     public KhLtPhuongAnGiaRes create(KhLtPhuongAnGiaReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
-
         if (userInfo == null) throw new Exception("Bad request.");
 
         log.info("Save: thông tin phương án giá");
@@ -132,10 +131,10 @@ public class KhLtPagService {
         phuongAnGia.setNgayTao(LocalDate.now());
 
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
-
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhLtPhuongAnGia finalPhuongAnGia = phuongAnGia;
-
+        List<FileDinhKemChung> fileCcPags = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), finalPhuongAnGia.getId(), KhLtPhuongAnGia.TABLE_NAME);
+        phuongAnGia.setListFileCCs(fileCcPags);
         List<KhLtPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
             KhLtPagCcPhapLy canCuPhapLy = mapper.map(item, KhLtPagCcPhapLy.class);
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
@@ -146,7 +145,6 @@ public class KhLtPagService {
         }).collect(Collectors.toList());
 
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
-
 
         log.info("Save thông tin khảo sát giá");
         log.info("Save kết quả khảo sát giá thị trường");
@@ -160,7 +158,6 @@ public class KhLtPagService {
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
 
         log.info("Build phương án giá response");
-
 
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
 

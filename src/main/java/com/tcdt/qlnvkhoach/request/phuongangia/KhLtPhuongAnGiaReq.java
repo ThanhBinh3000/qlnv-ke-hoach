@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,6 +47,10 @@ public class KhLtPhuongAnGiaReq {
 	private String diaDiemDeHang;
 
 	private BigDecimal giaDeNghi;
+
+	private BigDecimal giaDeNghiVat;
+
+	private List<FileDinhKemReq> fileDinhKems;
 	/**
 	 * Căn cứ phương pháp xác định giá
 	 */

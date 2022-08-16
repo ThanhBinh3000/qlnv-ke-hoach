@@ -13,7 +13,7 @@ public interface KhLtPagKetQuaRepository extends JpaRepository<KhLtPagKetQua, Lo
 	List<KhLtPagKetQua> findByTypeAndIdIn(String type, List<Long> ids);
 	List<KhLtPagKetQua> findByTypeAndPhuongAnGiaIdIn(String type, List<Long> ids);
 
-	@Query("SELECT kq.id,kq.stt,kq.tenDonVi,kq.donGia,kq.phuongAnGiaId,kq.type FROM KhLtPagKetQua kq " +
+	@Query("SELECT kq.id,kq.stt,kq.tenDonVi,kq.donGia,kq.donGiaVat,kq.chungLoaiHh,kq.ghiChu,kq.thoiHanBaoGia,kq.phuongAnGiaId,kq.type FROM KhLtPagKetQua kq " +
 			"INNER JOIN KhLtPhuongAnGia pag ON kq.phuongAnGiaId = pag.id " +
 			"WHERE kq.type = ?1 and kq.phuongAnGiaId IN ?2")
 	List<Object[]> findByTypeAndPhuongAnGiaIdsIn(String type,Collection<Long> pagIds);

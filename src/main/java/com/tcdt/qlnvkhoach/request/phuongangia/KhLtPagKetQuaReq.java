@@ -23,9 +23,18 @@ public class KhLtPagKetQuaReq {
 
 	private BigDecimal donGia;
 
+	private BigDecimal donGiaVat;
+
+	private String ghiChu;
+
+	private String chungLoaiHh;
+
+	private String thoiHanBaoGia;
+
 	private List<FileDinhKemReq> fileDinhKems = new ArrayList<>();
 
 	private String type;
 
 	private Long phuongAnGiaId;
+
 }

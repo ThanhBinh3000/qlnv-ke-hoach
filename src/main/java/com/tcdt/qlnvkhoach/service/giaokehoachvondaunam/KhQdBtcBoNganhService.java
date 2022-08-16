@@ -254,9 +254,7 @@ public class KhQdBtcBoNganhService {
         }
 
         optional.get().setTrangThai(stReq.getTrangThai());
-
         KhQdBtcBoNganh createCheck = khQdBtcBoNganhRepository.save(optional.get());
-
         return createCheck;
     }
 

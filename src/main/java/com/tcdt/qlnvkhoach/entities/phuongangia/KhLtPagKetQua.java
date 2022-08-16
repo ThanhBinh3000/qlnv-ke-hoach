@@ -41,6 +41,18 @@ public class KhLtPagKetQua implements Serializable {
 	@Column(name = "DON_GIA")
 	private BigDecimal donGia;
 
+	@Column(name = "DON_GIA_VAT")
+	private BigDecimal donGiaVat;
+
+	@Column(name = "CHUNG_LOAI_HH")
+	private String chungLoaiHh;
+
+	@Column(name = "THOI_HAN_BAO_GIA")
+	private String thoiHanBaoGia;
+
+	@Column(name = "GHI_CHU")
+	private String ghiChu;
+
 	@Transient
 	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
 

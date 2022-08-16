@@ -16,11 +16,13 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "SYS_PERMISSION")
-@Data
+@Getter
+@Setter
 public class RolesPermission {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

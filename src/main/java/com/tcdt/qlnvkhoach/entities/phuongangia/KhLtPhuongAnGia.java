@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.entities.phuongangia;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tcdt.qlnvkhoach.entities.BaseEntity;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import lombok.*;
 
 import javax.persistence.*;
@@ -84,6 +85,9 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Column(name = "GIA_DE_NGHI")
 	private BigDecimal giaDeNghi;
+
+	@Column(name = "GIA_DE_NGHI_VAT")
+	private BigDecimal giaDeNghiVat;
 	/**
 	 * Căn cứ phương pháp xác định giá
 	 */
@@ -140,4 +144,13 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Transient
 	String tenTrangThai;
+
+	@Transient
+	String tenLoaiHh;
+
+	@Transient
+	String tenDvi;
+
+	@Transient
+	List<FileDinhKemChung> listFileCCs;
 }
