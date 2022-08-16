@@ -25,7 +25,7 @@ public class KhLtPagCcPhapLy implements Serializable {
 	private static final long serialVersionUID = -9158383107212840699L;
 	public static final String TABLE_NAME = "KH_LT_PAG_CC_PHAP_LY";
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
-	@SequenceGenerator(sequenceName = "KH_LT_PHUONG_AN_GIA_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+	@SequenceGenerator(sequenceName = "KH_LT_PAG_CC_PHAP_LY_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
 	@Id
 	@Column(name = "ID")
 	private Long id;

@@ -143,7 +143,7 @@ public class KhLtPagService {
             canCuPhapLy.setFileDinhKems(fileDinhKems);
             return canCuPhapLy;
         }).collect(Collectors.toList());
-
+        khLtPagCcPhapLyRepository.saveAll(canCuPhapLyList);
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
 
         log.info("Save thông tin khảo sát giá");

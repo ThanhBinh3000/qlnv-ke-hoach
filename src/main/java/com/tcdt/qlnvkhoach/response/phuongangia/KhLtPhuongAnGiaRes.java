@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.response.phuongangia;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,6 +52,8 @@ public class KhLtPhuongAnGiaRes {
 	 */
 
 	private List<KhLtPagCcPhapLyRes> canCuPhapLy = new ArrayList<>();
+
+	private List<FileDinhKemChung> listFileCCs = new ArrayList<>();
 
 	private Long phuongPhapId;
 
