@@ -29,11 +29,9 @@ public class KhLtPagCcPhapLy implements Serializable {
 
     //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
 //	@SequenceGenerator(sequenceName = "KH_LT_PAG_CC_PHAP_LY_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
-    @Basic(optional = false)
     @Id
     @Column(name = "ID", nullable = false)
-    @GenericGenerator(name = "KH_LT_PAG_CC_PHAP_LY_SEQ", strategy = "com.tcdt.qlnvkhoach.entities.CustomGenerator")
-    @GeneratedValue(generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "STT")

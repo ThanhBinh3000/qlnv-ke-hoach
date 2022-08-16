@@ -3,6 +3,8 @@ package com.tcdt.qlnvkhoach.controller.phuongangia;
 import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPagService;
@@ -63,6 +65,22 @@ public class KhLtTongHopPagController extends BaseController {
         Resp resp = new Resp();
         try {
             resp.setData(khLtTongHopPagService.create(req));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
+    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> searchKhLtPAGTh(@Valid @RequestBody KhLtPagTongHopSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khLtTongHopPagService.searchPage(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

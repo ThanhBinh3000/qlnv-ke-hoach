@@ -55,7 +55,7 @@ public class KhLtPagService {
     @Autowired
     private FileDinhKemService fileDinhKemService;
     @Autowired
-    private  ModelMapper mapper;
+    private ModelMapper mapper;
     @Autowired
     private  KhLtPagCcPhapLyRepository khLtPagCcPhapLyRepository;
     @Autowired
