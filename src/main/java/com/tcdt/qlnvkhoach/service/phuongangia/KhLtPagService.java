@@ -132,7 +132,6 @@ public class KhLtPagService {
         phuongAnGia.setNgayTao(LocalDate.now());
 
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
-
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhLtPhuongAnGia finalPhuongAnGia = phuongAnGia;
 
@@ -146,7 +145,6 @@ public class KhLtPagService {
         }).collect(Collectors.toList());
 
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
-
 
         log.info("Save thông tin khảo sát giá");
         log.info("Save kết quả khảo sát giá thị trường");
