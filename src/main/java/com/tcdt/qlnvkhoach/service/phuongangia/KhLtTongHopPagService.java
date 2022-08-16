@@ -145,7 +145,6 @@ public class KhLtTongHopPagService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public KhLtPagTongHop create(KhLtPagTongHopReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
-        userInfo.getCapDvi();
         if (userInfo == null) throw new Exception("Bad request.");
         KhLtPagTongHop pagTH = mapper.map(req, KhLtPagTongHop.class);
         pagTH.setTrangThai(TrangThaiEnum.DU_THAO.getId());
