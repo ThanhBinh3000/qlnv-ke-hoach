@@ -1,10 +1,14 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHopCTiet;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
@@ -29,6 +33,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -47,6 +52,8 @@ public class KhLtTongHopPagService extends BaseService {
     private QlnvDmDonviRepository qlnvDmDonviRepository;
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private KhLtPagTongHopCTietRepository khLtPagTongHopCTietRepository;
 
     public Page<KhLtPagTongHop> searchPage(KhLtPagTongHopSearchReq objReq) throws Exception {
         Pageable pageable = PageRequest.of(objReq.getPaggingReq().getPage(),
@@ -75,59 +82,63 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setChungLoaiHh(objReq.getChungloaiVthh());
         pagTH.setLoaiGia(objReq.getLoaiGia());
         pagTH.setLoaiHangHoa(objReq.getLoaiVthh());
-        try {
-            Map<Long, List<Object[]>> khLtMinMaxKQThamDinhs = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), khLtPagIds)
-                    .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
-            Map<Long, List<Object[]>> khLtMinMaxKQKhaoSats = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), khLtPagIds)
-                    .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
-            for (KhLtPhuongAnGia pag : listPagTH) {
-                List<Object[]> ketquaTDs = khLtMinMaxKQThamDinhs.get(pag.getId());
-                List<Object[]> ketquaKSs = khLtMinMaxKQKhaoSats.get(pag.getId());
+        Map<Long, List<Object[]>> khLtMinMaxKQThamDinhs = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), khLtPagIds)
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
+        Map<Long, List<Object[]>> khLtMinMaxKQKhaoSats = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), khLtPagIds)
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
+        List<KhLtPagTongHopCTiet> lChitiet = new ArrayList<>();
+        for (KhLtPhuongAnGia pag : listPagTH) {
+            List<Object[]> ketquaTDs = khLtMinMaxKQThamDinhs.get(pag.getId());
+            List<Object[]> ketquaKSs = khLtMinMaxKQKhaoSats.get(pag.getId());
 //            set min max gia khao sat
-                if (StringUtils.isEmpty(pagTH.getGiaKsTtTu()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtTu().compareTo((BigDecimal) ketquaKSs.get(0)[1]) > 0)) {
-                    pagTH.setGiaKsTtTu((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[1] : null);
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaKsTtDen()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtDen().compareTo((BigDecimal) ketquaKSs.get(0)[2]) > 0)) {
-                    pagTH.setGiaKsTtDen((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[2] : null);
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaKsTtVatTu()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtVatTu().compareTo((BigDecimal) ketquaKSs.get(0)[3]) > 0)) {
-                    pagTH.setGiaKsTtVatTu((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[3] : null);
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaKsTtVatDen()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtVatDen().compareTo((BigDecimal) ketquaKSs.get(0)[4]) > 0)) {
-                    pagTH.setGiaKsTtVatDen((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[4] : null);
-                }
-//            set min max gia tham dinh
-                if (StringUtils.isEmpty(pagTH.getGiaTdTu()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdTu().compareTo((BigDecimal) ketquaTDs.get(0)[1]) > 0)) {
-                    pagTH.setGiaTdTu((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[1] : null);
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaTdDen()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdDen().compareTo((BigDecimal) ketquaTDs.get(0)[2]) > 0)) {
-                    pagTH.setGiaTdDen((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[2] : null);
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaTdVatTu()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdVatTu().compareTo((BigDecimal) ketquaTDs.get(0)[3]) > 0)) {
-                    pagTH.setGiaTdVatTu((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[3] : null);
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaTdVatDen()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdVatDen().compareTo((BigDecimal) ketquaTDs.get(0)[4]) > 0)) {
-                    pagTH.setGiaTdVatTu((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[4] : null);
-                }
-                //set min max gia de nghi
-                if (StringUtils.isEmpty(pagTH.getGiaDnTu()) || pagTH.getGiaDnTu().compareTo(pag.getGiaDeNghi()) > 0) {
-                    pagTH.setGiaDnTu(pag.getGiaDeNghi());
-                }
-                if (StringUtils.isEmpty(pagTH.getGiaDnDen()) || pagTH.getGiaDnDen().compareTo(pag.getGiaDeNghi()) < 0) {
-                    pagTH.setGiaDnDen(pag.getGiaDeNghi());
-                }
+            if (StringUtils.isEmpty(pagTH.getGiaKsTtTu()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtTu().compareTo((BigDecimal) ketquaKSs.get(0)[1]) > 0)) {
+                pagTH.setGiaKsTtTu((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[1] : null);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (StringUtils.isEmpty(pagTH.getGiaKsTtDen()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtDen().compareTo((BigDecimal) ketquaKSs.get(0)[2]) > 0)) {
+                pagTH.setGiaKsTtDen((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[2] : null);
+            }
+            if (StringUtils.isEmpty(pagTH.getGiaKsTtVatTu()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtVatTu().compareTo((BigDecimal) ketquaKSs.get(0)[3]) > 0)) {
+                pagTH.setGiaKsTtVatTu((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[3] : null);
+            }
+            if (StringUtils.isEmpty(pagTH.getGiaKsTtVatDen()) || (ketquaKSs != null && !ketquaKSs.isEmpty() && pagTH.getGiaKsTtVatDen().compareTo((BigDecimal) ketquaKSs.get(0)[4]) > 0)) {
+                pagTH.setGiaKsTtVatDen((ketquaKSs != null && !ketquaKSs.isEmpty()) ? (BigDecimal) ketquaKSs.get(0)[4] : null);
+            }
+//            set min max gia tham dinh
+            if (StringUtils.isEmpty(pagTH.getGiaTdTu()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdTu().compareTo((BigDecimal) ketquaTDs.get(0)[1]) > 0)) {
+                pagTH.setGiaTdTu((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[1] : null);
+            }
+            if (StringUtils.isEmpty(pagTH.getGiaTdDen()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdDen().compareTo((BigDecimal) ketquaTDs.get(0)[2]) > 0)) {
+                pagTH.setGiaTdDen((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[2] : null);
+            }
+            if (StringUtils.isEmpty(pagTH.getGiaTdVatTu()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdVatTu().compareTo((BigDecimal) ketquaTDs.get(0)[3]) > 0)) {
+                pagTH.setGiaTdVatTu((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[3] : null);
+            }
+            if (StringUtils.isEmpty(pagTH.getGiaTdVatDen()) || (ketquaTDs != null && !ketquaTDs.isEmpty() && pagTH.getGiaTdVatDen().compareTo((BigDecimal) ketquaTDs.get(0)[4]) > 0)) {
+                pagTH.setGiaTdVatTu((ketquaTDs != null && !ketquaTDs.isEmpty()) ? (BigDecimal) ketquaTDs.get(0)[4] : null);
+            }
+            //set min max gia de nghi
+            if (StringUtils.isEmpty(pagTH.getGiaDnTu()) || pagTH.getGiaDnTu().compareTo(pag.getGiaDeNghi()) > 0) {
+                pagTH.setGiaDnTu(pag.getGiaDeNghi());
+            }
+            if (StringUtils.isEmpty(pagTH.getGiaDnDen()) || pagTH.getGiaDnDen().compareTo(pag.getGiaDeNghi()) < 0) {
+                pagTH.setGiaDnDen(pag.getGiaDeNghi());
+            }
+            KhLtPagTongHopCTiet cTiet = new KhLtPagTongHopCTiet();
+            cTiet.setSoDx(pag.getSoDeXuat());
+            cTiet.setSoLuong(pag.getSoLuong());
+            cTiet.setMaDvi(pag.getMaDonVi());
+            cTiet.setGiaDn(pag.getGiaDeNghi());
+            cTiet.setGiaDnVat(pag.getGiaDeNghiVat());
+            lChitiet.add(cTiet);
         }
-        List<String> maDvis = listPagTH.stream().map(KhLtPhuongAnGia::getMaDonVi).collect(Collectors.toList());
+        List<String> maDvis = lChitiet.stream().map(KhLtPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
         List<QlnvDmDonvi> dvis = qlnvDmDonviRepository.findByMaDviIn(maDvis);
         Map<String, QlnvDmDonvi> listDvi = dvis.stream()
                 .collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
-        listPagTH.forEach(f -> {
-            f.setTenDvi(listDvi.get(f.getMaDonVi()).getTenDvi());
+        lChitiet.forEach(f -> {
+            f.setTenDvi(listDvi.get(f.getMaDvi()).getTenDvi());
         });
-        pagTH.setPhuongAnGias(listPagTH);
+        pagTH.setPagChitiets(lChitiet);
         return pagTH;
     }
 
@@ -141,7 +152,15 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setNgayTao(LocalDate.now());
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setTrangThaiTH(TrangThaiEnum.DU_THAO.getId());
-        return khLtPagTongHopRepository.save(pagTH);
+        KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
+        List<KhLtPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
+            KhLtPagTongHopCTiet pagThChiTiet = mapper.map(item, KhLtPagTongHopCTiet.class);
+            pagThChiTiet.setPagThId(pagThSave.getId());
+            return pagThChiTiet;
+        }).collect(Collectors.toList());
+        khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
+        pagThSave.setPagChitiets(pagTGChiTiets);
+        return pagThSave;
     }
 
 

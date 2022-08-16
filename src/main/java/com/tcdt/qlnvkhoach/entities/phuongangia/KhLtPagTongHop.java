@@ -102,5 +102,6 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
     private String ghiChu;
 
     @Transient
-    private List<KhLtPhuongAnGia> phuongAnGias = new ArrayList<>();
+    private List<KhLtPagTongHopCTiet> pagChitiets = new ArrayList<>();
+
 }

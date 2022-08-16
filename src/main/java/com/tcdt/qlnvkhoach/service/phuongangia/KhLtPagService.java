@@ -134,7 +134,8 @@ public class KhLtPagService {
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhLtPhuongAnGia finalPhuongAnGia = phuongAnGia;
-
+        List<FileDinhKemChung> fileCcPags = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), finalPhuongAnGia.getId(), KhLtPhuongAnGia.TABLE_NAME);
+        phuongAnGia.setListFileCCs(fileCcPags);
         List<KhLtPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
             KhLtPagCcPhapLy canCuPhapLy = mapper.map(item, KhLtPagCcPhapLy.class);
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());

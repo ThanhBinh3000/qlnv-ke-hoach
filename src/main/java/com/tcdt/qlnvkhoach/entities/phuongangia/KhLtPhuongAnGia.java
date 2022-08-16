@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.entities.phuongangia;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tcdt.qlnvkhoach.entities.BaseEntity;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import lombok.*;
 
 import javax.persistence.*;
@@ -149,4 +150,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Transient
 	String tenDvi;
+
+	@Transient
+	List<FileDinhKemChung> listFileCCs;
 }
