@@ -83,9 +83,9 @@ public class KhLtPagService {
         List<Long> khLtPagIds = data.getContent().stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
 //        get ketqua tham dinh gia va khao sat gia
         Map<Long, List<Object[]>> khLtKetquaThamDinhs = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),khLtPagIds)
-                .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[8]));
         Map<Long, List<Object[]>> khLtKetquaKhaoSats = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdsIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),khLtPagIds)
-                .stream().collect(Collectors.groupingBy(o -> (Long) o[4]));
+                .stream().collect(Collectors.groupingBy(o -> (Long) o[8]));
         Map<Long, List<Object[]>> khLtCCPhapLys = khLtPagCcPhapLyRepository.findByPhuongAnGiaIdsIn(khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[3]));
         for (KhLtPhuongAnGia khLtPhuongAnGia : data.getContent()) {
@@ -213,6 +213,9 @@ public class KhLtPagService {
 
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
+
+        List<FileDinhKemChung> fileCcPags = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), finalPhuongAnGia.getId(), KhLtPhuongAnGia.TABLE_NAME);
+        phuongAnGia.setListFileCCs(fileCcPags);
 
         log.info("Update kết quả khảo sát giá thị trường");
         List<KhLtPagKetQua> ketQuaKhaoSatGiaThiTruong = this.saveKetQua(req.getKetQuaKhaoSatGiaThiTruong(), PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), phuongAnGia.getId());
