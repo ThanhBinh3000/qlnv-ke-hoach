@@ -120,7 +120,6 @@ public class KhLtPagService {
     @Transactional(rollbackFor = Exception.class)
     public KhLtPhuongAnGiaRes create(KhLtPhuongAnGiaReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
-
         if (userInfo == null) throw new Exception("Bad request.");
 
         log.info("Save: thông tin phương án giá");
