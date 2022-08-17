@@ -69,6 +69,7 @@ public class KhLtTongHopPagService extends BaseService {
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getNoiDung(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
+                objReq.getTrangThai(),
                 pageable);
         List<Long> khLtPagTHIds = data.getContent().stream().map(KhLtPagTongHop::getId).collect(Collectors.toList());
         List<KhLtPagTongHopCTiet> lChitiet = khLtPagTongHopCTietRepository.findByPagThIdIn(khLtPagTHIds);

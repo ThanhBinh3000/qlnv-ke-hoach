@@ -22,4 +22,6 @@ public class KhLtPagTongHopSearchReq extends BaseRequest {
 
     String noiDung;
 
+    String trangThai;
+
 }
