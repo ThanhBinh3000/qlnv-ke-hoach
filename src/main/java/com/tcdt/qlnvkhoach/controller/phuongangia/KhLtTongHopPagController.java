@@ -1,6 +1,10 @@
 package com.tcdt.qlnvkhoach.controller.phuongangia;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.controller.BaseController;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
+import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
@@ -15,6 +19,7 @@ import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.PathConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +28,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/kh-lt-pag")
@@ -37,8 +45,6 @@ public class KhLtTongHopPagController extends BaseController {
     private KhLtTongHopPagService khLtTongHopPagService;
     @Autowired
     private KhLtPagService khLtPagService;
-
-
 
     @ApiOperation(value = "Tổng hợp đề xuất phương án giá", response = List.class)
     @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,6 +87,56 @@ public class KhLtTongHopPagController extends BaseController {
         Resp resp = new Resp();
         try {
             resp.setData(khLtTongHopPagService.searchPage(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Kết xuất danh sách đề xuất phương án giá", response = List.class)
+    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void exportListPagTHToExcel(@Valid @RequestBody KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception{
+        try {
+            khLtTongHopPagService.exportPagTH(objReq,response);
+        } catch (Exception e) {
+            log.error("Kết xuất danh sách tổng hợp phương án giá: {}", e);
+            final Map<String, Object> body = new HashMap<>();
+            body.put("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            body.put("msg", e.getMessage());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getOutputStream(), body);
+        }
+    }
+
+    @ApiOperation(value = "Chi tiết tổng hợp phương án giá", response = List.class)
+    @GetMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> detailPagTH(@ApiParam(value = "ID tổng hợp phương án giá", example = "1", required = true) @PathVariable("ids") String ids) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khLtTongHopPagService.detailPagTH(ids));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Xóa tổng hợp phương án giá", response = List.class)
+    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_TONG_HOP + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> deletePagTH(@RequestBody DeleteRecordReq idSearchReq) {
+        Resp resp = new Resp();
+        try {
+            khLtTongHopPagService.delete(idSearchReq.getId());
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

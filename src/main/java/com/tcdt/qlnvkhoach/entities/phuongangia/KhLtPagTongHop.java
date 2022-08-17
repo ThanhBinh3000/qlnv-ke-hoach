@@ -109,4 +109,7 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
 
     @Column(name = "CAP_DVI")
     private String capDvi;
+
+    @Column(name = "MA_TO_TRINH")
+    private String maToTrinh;
 }

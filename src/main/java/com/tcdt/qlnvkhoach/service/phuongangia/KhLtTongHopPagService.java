@@ -1,10 +1,8 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
+import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHopCTiet;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.*;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
@@ -12,14 +10,17 @@ import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.util.Contains;
+import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -157,13 +159,13 @@ public class KhLtTongHopPagService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         KhLtPagTongHop pagTH = mapper.map(req, KhLtPagTongHop.class);
-        pagTH.setTrangThai(TrangThaiEnum.DU_THAO.getId());
         pagTH.setNguoiTaoId(userInfo.getId());
         pagTH.setNgayTao(LocalDate.now());
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
-        pagTH.setTrangThaiTH(TrangThaiEnum.DU_THAO.getId());
+        pagTH.setTrangThai(Contains.MOI_TAO);
+        pagTH.setTrangThaiTH(Contains.CHUA_QUYET_DINH);
         KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
         List<KhLtPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
             KhLtPagTongHopCTiet pagThChiTiet = mapper.map(item, KhLtPagTongHopCTiet.class);
@@ -178,11 +180,78 @@ public class KhLtTongHopPagService extends BaseService {
         List<Long> pagIds = req.getPagChitiets().stream().map(KhLtPagTongHopCTiet::getPagId).collect(Collectors.toList());
         List<KhLtPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
         List<KhLtPhuongAnGia> pagDetails = lPags.stream().map(item -> {
-            item.setTrangThaiTh(PAGTrangThaiTHEnum.DA_TH.getId());
+            item.setTrangThaiTh(Contains.DA_TH);
             return item;
         }).collect(Collectors.toList());
         khLtPhuongAnGiaRepository.saveAll(pagDetails);
         return pagThSave;
+    }
+
+    public  void exportPagTH(KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception{
+        PaggingReq paggingReq = new PaggingReq();
+        paggingReq.setPage(0);
+        paggingReq.setLimit(Integer.MAX_VALUE);
+        objReq.setPaggingReq(paggingReq);
+        Page<KhLtPagTongHop> page=this.searchPage(objReq);
+        List<KhLtPagTongHop> data=page.getContent();
+
+        String title="Danh sách tổng hợp phương án giá";
+        String[] rowsName=new String[]{"STT","Mã tổng hợp","Ngày tổng hợp","Nội dung tổng hợp","Năm kế hoạch","Loại hàng hóa","Chủng loại hàng hóa","Loại giá","Trạng thái tổng hợp","Mã tờ trình","Trạng thái"};
+        String fileName="danh-sach-tong-hop-phuong-an-gia.xlsx";
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs=null;
+        for (int i=0;i<data.size();i++){
+            KhLtPagTongHop dx=data.get(i);
+            objs=new Object[rowsName.length];
+            objs[0]=i;
+            objs[1]=dx.getId();
+            objs[2]=dx.getNgayTongHop();
+            objs[3]=dx.getNoiDung();
+            objs[4]=dx.getNamTongHop();
+            objs[5]=Contains.getLoaiVthh(dx.getLoaiVthh());
+            objs[6]=dx.getCloaiVthh();
+            objs[7]=dx.getLoaiGia();
+            objs[8]=Contains.getThTongHop(dx.getTrangThaiTH());
+            objs[9]=dx.getMaToTrinh();
+            objs[10]=Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());
+            dataList.add(objs);
+        }
+        ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
+        ex.export();
+    }
+
+    @Transactional
+    public KhLtPagTongHop detailPagTH(String id) throws  Exception {
+        Optional<KhLtPagTongHop> qOptional = khLtPagTongHopRepository.findById(Long.parseLong(id));
+        if (!qOptional.isPresent()) {
+            throw new Exception("Tổng hợp phương án giá không tồn tại");
+        }
+        KhLtPagTongHop data = qOptional.get();
+        List<Long> ids = new ArrayList<>();
+        ids.add(data.getId());
+        List<KhLtPagTongHopCTiet> listPagTHChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
+        if(listPagTHChiTiets.size() > 0){
+            data.setPagChitiets(listPagTHChiTiets);
+        }
+        return data;
+    }
+
+    @Transactional
+    public void delete(Long ids) throws Exception{
+        Optional<KhLtPagTongHop> qOptional=khLtPagTongHopRepository.findById(ids);
+        if(!qOptional.isPresent()){
+            throw new UserPrincipalNotFoundException("Id không tồn tại");
+        }
+        if(qOptional.get().getTrangThai().equals(Contains.DUYET)){
+            throw new Exception("Bản ghi có trạng thái đã duyệt,không được xóa.");
+        }
+        List<Long> pagTHIds = new ArrayList<>();
+        pagTHIds.add(ids);
+        List<KhLtPagTongHopCTiet> khLtPagTongHopCTiet = khLtPagTongHopCTietRepository.findByPagThIdIn(pagTHIds);
+        if (!CollectionUtils.isEmpty(khLtPagTongHopCTiet)) {
+            khLtPagTongHopCTietRepository.deleteAll(khLtPagTongHopCTiet);
+        }
+        khLtPagTongHopRepository.delete(qOptional.get());
     }
 
 
