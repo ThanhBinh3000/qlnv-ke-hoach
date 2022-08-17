@@ -137,6 +137,7 @@ public class KhLtTongHopPagService extends BaseService {
             cTiet.setMaDvi(pag.getMaDvi());
             cTiet.setGiaDn(pag.getGiaDeNghi());
             cTiet.setGiaDnVat(pag.getGiaDeNghiVat());
+            cTiet.setPagId(pag.getId());
             lChitiet.add(cTiet);
         }
         List<String> maDvis = lChitiet.stream().map(KhLtPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
@@ -170,6 +171,16 @@ public class KhLtTongHopPagService extends BaseService {
         }).collect(Collectors.toList());
         khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
         pagThSave.setPagChitiets(pagTGChiTiets);
+        /**
+         * update lại stt của dx pag
+         */
+//        List<Long> pagIds = req.getPagChitiets().stream().map(KhLtPagTongHopCTiet::getPagId).collect(Collectors.toList());
+//        List<KhLtPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
+//        List<KhLtPhuongAnGia> pagDetails = lPags.stream().map(item -> {
+//            item.setTrangThai(TrangThaiEnum.BAN_HANH.getId());
+//            return item;
+//        }).collect(Collectors.toList());
+//        khLtPhuongAnGiaRepository.saveAll(pagDetails);
         return pagThSave;
     }
 
