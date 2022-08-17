@@ -72,6 +72,7 @@ public class KhLtPagService {
     }
 
     public Page<KhLtPhuongAnGia> searchPage(KhLtPhuongAnGiaSearchReq objReq) throws Exception{
+        UserInfo userInfo = SecurityContextService.getUser();
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),
                 objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhLtPhuongAnGia> data =khLtPhuongAnGiaRepository.selectPage(
@@ -81,6 +82,7 @@ public class KhLtPagService {
                 Contains.convertDateToString(objReq.getNgayKyTu()),
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getTrichYeu(),
+                userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
                 pageable);
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));

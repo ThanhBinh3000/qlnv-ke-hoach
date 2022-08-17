@@ -47,11 +47,11 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
     @Column(name="NAM_TONG_HOP")
     private Long namTongHop;
 
-    @Column(name = "LOAI_HANG_HOA")
-    private String loaiHangHoa;
+    @Column(name = "LOAI_VTHH")
+    private String loaiVthh;
 
-    @Column(name="CHUNG_LOAI_HH")
-    private String chungLoaiHh;
+    @Column(name="CLOAI_VTHH")
+    private String cloaiVthh;
 
     @Column(name = "LOAI_GIA")
     private String loaiGia;
@@ -104,4 +104,9 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
     @Transient
     private List<KhLtPagTongHopCTiet> pagChitiets = new ArrayList<>();
 
+    @Column(name = "MA_DVI")
+    private String maDvi;
+
+    @Column(name = "CAP_DVI")
+    private String capDvi;
 }
