@@ -78,6 +78,10 @@ public class Contains {
     // Trạng thái tổng hợp bản ghi gốc
     public static final String CHUA_TH = "24";
     public static final String DA_TH = "25";
+    //Trạng thái tạo tờ trình (Phương án giá)
+    public static final String CHUATAOTOTRINH = "31";
+    public static final String DATAOTOTRINH = "32";
+
     // Trạng thái gói thầu
 
     public static final String CHUA_CAP_NHAT = "00";

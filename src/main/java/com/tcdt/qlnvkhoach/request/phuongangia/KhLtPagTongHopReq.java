@@ -44,4 +44,16 @@ public class KhLtPagTongHopReq {
     private String ghiChu;
 
     private List<KhLtPagTongHopCTiet> pagChitiets;
+
+    private String trichYeu;
+
+    /**
+     * thông tin tờ trình
+     */
+    private String maToTrinh;
+
+    private BigDecimal ttGiaDn;
+
+    private BigDecimal ttGiaDnVat;
+
 }

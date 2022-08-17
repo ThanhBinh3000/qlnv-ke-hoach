@@ -75,5 +75,7 @@ public class PathConstants {
 	public static final String URL_GIA_LH = "/gia-lh";
 	public static final String URL_DX_PAG = "/dx-pag";
 
+	public static final String URL_TAO_TO_TRINH = "/tao-to-trinh";
+
 }
 

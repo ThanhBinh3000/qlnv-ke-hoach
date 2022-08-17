@@ -38,6 +38,9 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "SO_TT")
     private String soTT;
 
+    @Column(name="TRICH_YEU")
+    private String trichYeu;
+
     @Column(name = "NGAY_TONG_HOP")
     private LocalDate ngayTongHop;
 
@@ -110,6 +113,18 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "CAP_DVI")
     private String capDvi;
 
-    @Column(name = "MA_TO_TRINH")
+    @Column(name = "MA_TO_TRINH",unique = true)
     private String maToTrinh;
+
+    @Column(name = "TT_TO_TRINH")
+    private String ttToTrinh;
+
+    /**
+     * thông tin tờ trình
+     */
+    @Column(name = "TT_GIA_DN")
+    private BigDecimal ttGiaDn;
+
+    @Column(name = "TT_GIA_DN_VAT")
+    private BigDecimal ttGiaDnVat;
 }

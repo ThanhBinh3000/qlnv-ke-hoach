@@ -166,6 +166,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setCapDvi(userInfo.getCapDvi());
         pagTH.setTrangThai(Contains.MOI_TAO);
         pagTH.setTrangThaiTH(Contains.CHUA_QUYET_DINH);
+        pagTH.setTtToTrinh(Contains.CHUATAOTOTRINH);
         KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
         List<KhLtPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
             KhLtPagTongHopCTiet pagThChiTiet = mapper.map(item, KhLtPagTongHopCTiet.class);
@@ -184,6 +185,31 @@ public class KhLtTongHopPagService extends BaseService {
             return item;
         }).collect(Collectors.toList());
         khLtPhuongAnGiaRepository.saveAll(pagDetails);
+        return pagThSave;
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public KhLtPagTongHop createToTrinh(KhLtPagTongHopReq req) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (userInfo == null) throw new Exception("Bad request.");
+        Optional<KhLtPagTongHop>  optinal = khLtPagTongHopRepository.findById(req.getId());
+        if(!optinal.isPresent()){
+            throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
+        }
+        KhLtPagTongHop pagTH = optinal.get();
+        if(khLtPagTongHopRepository.findByMaToTrinh(req.getMaToTrinh()).get() != null){
+            throw new Exception("Số tờ trình đã tồn tại");
+        }
+        pagTH.setNgaySua(LocalDate.now());
+        pagTH.setNguoiSuaId(userInfo.getId());
+        pagTH.setTrichYeu(req.getTrichYeu());
+        pagTH.setMaToTrinh(req.getMaToTrinh());
+        pagTH.setTtGiaDn(req.getTtGiaDn());
+        pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
+        pagTH.setGhiChu(req.getGhiChu());
+        pagTH.setTtToTrinh(Contains.DATAOTOTRINH);
+        KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
         return pagThSave;
     }
 

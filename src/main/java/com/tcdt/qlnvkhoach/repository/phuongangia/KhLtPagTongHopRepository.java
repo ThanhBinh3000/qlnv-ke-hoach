@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhLtPagTongHopRepository extends JpaRepository<KhLtPagTongHop, Long> {
@@ -24,4 +25,6 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhLtPagTongHop, 
 	Page<KhLtPagTongHop> selectPage(Integer namKh,String loaiHh, String ngayThTu, String ngayThDen, String noiDung ,String dvql,Pageable pageable);
 
 	List<KhLtPagTongHop> findByIdIn(List<Long> ids);
+
+	Optional<KhLtPagTongHop> findByMaToTrinh(String maToTrinh);
 }

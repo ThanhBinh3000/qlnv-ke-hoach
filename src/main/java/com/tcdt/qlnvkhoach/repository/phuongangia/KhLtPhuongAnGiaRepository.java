@@ -30,14 +30,14 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhLtPhuongAnGia
 
 	@Query(value = " SELECT PAG.* \n" +
 			"FROM KH_LT_PHUONG_AN_GIA PAG \n" +
-			" WHERE PAG.LOAI_HANG_HOA = :loaiHh \n" +
-			" AND PAG.TTC_CHUNG_LOAI_HH = :cloaiHh \n" +
+			" WHERE PAG.LOAI_VTHH = :loaiHh \n" +
+			" AND PAG.CLOAI_VTHH = :cloaiHh \n" +
 			" AND PAG.NAM_KE_HOACH = :namKh \n" +
 			" AND PAG.LOAI_GIA = :loaiGia \n" +
 			" AND PAG.NGAY_KY >=  TO_DATE(:ngayDxTu,'yyyy-MM-dd') \n" +
 			" AND PAG.NGAY_KY  <=  TO_DATE(:ngayDxDen,'yyyy-MM-dd') \n" +
-			" AND PAG.TRANG_THAI  ='02') \n" +
-			" AND PAG.TRANG_THAI_TH = '24' ", nativeQuery = true)
+			" AND PAG.TRANG_THAI_TH = '24' \n" +
+			" AND PAG.TRANG_THAI = '02' ", nativeQuery = true)
 	List<KhLtPhuongAnGia> listTongHop(String loaiHh,String cloaiHh,String namKh, String loaiGia,String ngayDxTu, String ngayDxDen);
 
 	@Query("SELECT pag.id, min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhLtPhuongAnGia pag,KhLtPagKetQua kq,KhLtPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2  GROUP BY pag.id")
