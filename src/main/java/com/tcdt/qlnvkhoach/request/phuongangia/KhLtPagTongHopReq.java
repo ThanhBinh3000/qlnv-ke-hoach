@@ -18,7 +18,8 @@ public class KhLtPagTongHopReq {
     private LocalDate ngayTongHop;
     private String noiDung;
     private Long namTongHop;
-    private String loaiHangHoa;
+    private String loaiVthh;
+    private String cloaiVthh;
     private String loaiGia;
     private String trangThai;
     private BigDecimal giaKsTtTu;

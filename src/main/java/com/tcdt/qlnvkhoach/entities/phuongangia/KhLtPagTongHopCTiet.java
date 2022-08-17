@@ -46,4 +46,7 @@ public class KhLtPagTongHopCTiet {
 
     @Column(name = "PAG_TH_ID")
     private Long pagThId;
+
+    @Column(name = "PAG_ID")
+    private Long pagId;
 }

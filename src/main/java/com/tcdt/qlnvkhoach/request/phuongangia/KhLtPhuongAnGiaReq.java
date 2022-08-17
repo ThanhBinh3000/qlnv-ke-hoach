@@ -92,4 +92,9 @@ public class KhLtPhuongAnGiaReq {
 	private String bdgNoiDung; //Nội dung: Biến động giá
 
 	private String bdgGhiChu; //Ghi chú: Biến động giá
+
+	/**
+	 * Địa điêm để hàng
+	 */
+	private List<KhLtPagDiaDiemDeHangReq> diadiemdeHangs = new ArrayList<>();
 }

@@ -1,6 +1,8 @@
 package com.tcdt.qlnvkhoach.response.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagDiaDiemDeHang;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,7 +46,11 @@ public class KhLtPhuongAnGiaRes {
 
 	private Long soLuong;
 
-	private String diaDiemDeHang;
+//	private String diaDiemDeHang;
+	/**
+	 * Địa điểm để hàng
+	 */
+	private List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
 
 	private BigDecimal giaDeNghi;
 	/**

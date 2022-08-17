@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Data
 public class KhLtPagTongHopSearchReq extends BaseRequest {
+
     Integer namKh;
 
     String loaiHh;
