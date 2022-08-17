@@ -7,6 +7,7 @@ import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagDiaDiemDeHang;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagKetQua;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagCcPhapLyRepository;
@@ -132,6 +133,7 @@ public class KhLtPagService {
         log.info("Save: thông tin phương án giá");
         KhLtPhuongAnGia phuongAnGia =  mapper.map(req, KhLtPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
+        phuongAnGia.setTrangThaiTh(PAGTrangThaiTHEnum.CHUA_TH.getId());
         phuongAnGia.setMaDvi(userInfo.getDvql());
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());

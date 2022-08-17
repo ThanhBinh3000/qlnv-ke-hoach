@@ -40,9 +40,11 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	@Column(name = "CAP_DVI")
 	private String capDvi;
 
-
 	@Column(name = "TRANG_THAI")
 	private String trangThai;
+
+	@Column(name = "TRANG_THAI_TH")
+	private String trangThaiTh;
 
 	@Column(name = "NAM_KE_HOACH")
 	private Long namKeHoach;

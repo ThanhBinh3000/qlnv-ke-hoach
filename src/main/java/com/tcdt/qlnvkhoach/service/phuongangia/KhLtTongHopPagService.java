@@ -5,6 +5,7 @@ import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHopCTiet;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
+import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
@@ -174,13 +175,13 @@ public class KhLtTongHopPagService extends BaseService {
         /**
          * update lại stt của dx pag
          */
-//        List<Long> pagIds = req.getPagChitiets().stream().map(KhLtPagTongHopCTiet::getPagId).collect(Collectors.toList());
-//        List<KhLtPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
-//        List<KhLtPhuongAnGia> pagDetails = lPags.stream().map(item -> {
-//            item.setTrangThai(TrangThaiEnum.BAN_HANH.getId());
-//            return item;
-//        }).collect(Collectors.toList());
-//        khLtPhuongAnGiaRepository.saveAll(pagDetails);
+        List<Long> pagIds = req.getPagChitiets().stream().map(KhLtPagTongHopCTiet::getPagId).collect(Collectors.toList());
+        List<KhLtPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
+        List<KhLtPhuongAnGia> pagDetails = lPags.stream().map(item -> {
+            item.setTrangThaiTh(PAGTrangThaiTHEnum.DA_TH.getId());
+            return item;
+        }).collect(Collectors.toList());
+        khLtPhuongAnGiaRepository.saveAll(pagDetails);
         return pagThSave;
     }
 
