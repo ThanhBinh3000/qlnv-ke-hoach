@@ -18,13 +18,13 @@ import java.util.List;
 public class KhLtPhuongAnGiaReq {
 	private Long id;
 
-	private String maDonVi;
+	private String maDvi;
 
 	private String trangThai;
 
 	private Long namKeHoach;
 
-	private String loaiHangHoa;
+	private String loaiVthh;
 
 	private String soDeXuat;
 
@@ -38,7 +38,7 @@ public class KhLtPhuongAnGiaReq {
 
 	private String ghiChu;
 
-	private String ttcChungLoaiHh;
+	private String cloaiVthh;
 
 	private String tieuChuanCl;
 

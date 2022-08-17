@@ -55,7 +55,7 @@ public class KhLtPagService {
     @Autowired
     private FileDinhKemService fileDinhKemService;
     @Autowired
-    private  ModelMapper mapper;
+    private ModelMapper mapper;
     @Autowired
     private  KhLtPagCcPhapLyRepository khLtPagCcPhapLyRepository;
     @Autowired
@@ -125,7 +125,7 @@ public class KhLtPagService {
         log.info("Save: thông tin phương án giá");
         KhLtPhuongAnGia phuongAnGia =  mapper.map(req, KhLtPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
-        phuongAnGia.setMaDonVi(userInfo.getDvql());
+        phuongAnGia.setMaDvi(userInfo.getDvql());
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());
         phuongAnGia.setNgayTao(LocalDate.now());
@@ -139,11 +139,11 @@ public class KhLtPagService {
             KhLtPagCcPhapLy canCuPhapLy = mapper.map(item, KhLtPagCcPhapLy.class);
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
             log.info("Save file đính kèm");
+            canCuPhapLy = khLtPagCcPhapLyRepository.save(canCuPhapLy);
             List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhLtPagCcPhapLy.TABLE_NAME);
             canCuPhapLy.setFileDinhKems(fileDinhKems);
             return canCuPhapLy;
         }).collect(Collectors.toList());
-
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
 
         log.info("Save thông tin khảo sát giá");
@@ -170,12 +170,12 @@ public class KhLtPagService {
             ketQua.setPhuongAnGiaId(phuongAnGiaId);
             ketQua = khLtPagKetQuaRepository.save(ketQua);
             ketQua.setType(type);
-
+            ketQua = khLtPagKetQuaRepository.save(ketQua);
             List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), ketQua.getId(), KhLtPagKetQua.getFileDinhKemDataType(type));
             ketQua.setFileDinhKems(fileDinhKems);
             return ketQua;
         }).collect(Collectors.toList());
-        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
+//        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
         return ketQuaList;
     }
 
@@ -345,7 +345,7 @@ public class KhLtPagService {
             objs[2]=dx.getNgayKy();
             objs[3]=dx.getTrichYeu();
             objs[4]=dx.getNamKeHoach();
-            objs[5]=dx.getLoaiHangHoa();
+            objs[5]=dx.getLoaiVthh();
             objs[6]=dx.getLoaiGia();
             objs[7]=dx.getTenTrangThai();
             dataList.add(objs);

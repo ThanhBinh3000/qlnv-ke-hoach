@@ -65,6 +65,12 @@ public class KhLtTongHopPagService extends BaseService {
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getNoiDung(),
                 pageable);
+        List<Long> khLtPagTHIds = data.getContent().stream().map(KhLtPagTongHop::getId).collect(Collectors.toList());
+        List<KhLtPagTongHopCTiet> lChitiet = khLtPagTongHopCTietRepository.findByPagThIdIn(khLtPagTHIds);
+        Map<Long, List<KhLtPagTongHopCTiet>> mPagTHCtiet = lChitiet.stream().collect(Collectors.groupingBy(o -> o.getPagThId()));
+        for (KhLtPagTongHop khLtPagTongHop : data.getContent()) {
+            khLtPagTongHop.setPagChitiets(mPagTHCtiet.get(khLtPagTongHop.getId()));
+        }
         return data;
     }
 
@@ -126,7 +132,7 @@ public class KhLtTongHopPagService extends BaseService {
             KhLtPagTongHopCTiet cTiet = new KhLtPagTongHopCTiet();
             cTiet.setSoDx(pag.getSoDeXuat());
             cTiet.setSoLuong(pag.getSoLuong());
-            cTiet.setMaDvi(pag.getMaDonVi());
+            cTiet.setMaDvi(pag.getMaDvi());
             cTiet.setGiaDn(pag.getGiaDeNghi());
             cTiet.setGiaDnVat(pag.getGiaDeNghiVat());
             lChitiet.add(cTiet);
@@ -145,6 +151,7 @@ public class KhLtTongHopPagService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public KhLtPagTongHop create(KhLtPagTongHopReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
+        System.out.println(userInfo.getDvql());
         if (userInfo == null) throw new Exception("Bad request.");
         KhLtPagTongHop pagTH = mapper.map(req, KhLtPagTongHop.class);
         pagTH.setTrangThai(TrangThaiEnum.DU_THAO.getId());
@@ -152,15 +159,15 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setNgayTao(LocalDate.now());
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setTrangThaiTH(TrangThaiEnum.DU_THAO.getId());
-        KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
-        List<KhLtPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
-            KhLtPagTongHopCTiet pagThChiTiet = mapper.map(item, KhLtPagTongHopCTiet.class);
-            pagThChiTiet.setPagThId(pagThSave.getId());
-            return pagThChiTiet;
-        }).collect(Collectors.toList());
-        khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
-        pagThSave.setPagChitiets(pagTGChiTiets);
-        return pagThSave;
+//        KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
+//        List<KhLtPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
+//            KhLtPagTongHopCTiet pagThChiTiet = mapper.map(item, KhLtPagTongHopCTiet.class);
+//            pagThChiTiet.setPagThId(pagThSave.getId());
+//            return pagThChiTiet;
+//        }).collect(Collectors.toList());
+//        khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
+//        pagThSave.setPagChitiets(pagTGChiTiets);
+        return null;
     }
 
 

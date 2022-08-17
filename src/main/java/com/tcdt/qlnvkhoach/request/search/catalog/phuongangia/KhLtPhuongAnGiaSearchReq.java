@@ -9,6 +9,7 @@ import lombok.Data;
 
 @Data
 public class KhLtPhuongAnGiaSearchReq extends BaseRequest {
+
     Integer namKh;
 
     String loaiHh;
