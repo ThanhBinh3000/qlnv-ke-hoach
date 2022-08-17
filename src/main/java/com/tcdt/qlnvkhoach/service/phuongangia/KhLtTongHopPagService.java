@@ -198,6 +198,9 @@ public class KhLtTongHopPagService extends BaseService {
             throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
         }
         KhLtPagTongHop pagTH = optinal.get();
+        if(pagTH.getMaToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)){
+            throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
+        }
         if(khLtPagTongHopRepository.findByMaToTrinh(req.getMaToTrinh()).get() != null){
             throw new Exception("Số tờ trình đã tồn tại");
         }
@@ -209,8 +212,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
         pagTH.setGhiChu(req.getGhiChu());
         pagTH.setTtToTrinh(Contains.DATAOTOTRINH);
-        KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
-        return pagThSave;
+        return khLtPagTongHopRepository.save(pagTH);
     }
 
     public  void exportPagTH(KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception{
