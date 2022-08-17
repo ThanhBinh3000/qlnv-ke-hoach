@@ -80,8 +80,11 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	@Column(name = "SO_LUONG")
 	private Long soLuong;
 
-	@Column(name = "DIA_DIEM_DE_HANG")
-	private String diaDiemDeHang;
+
+	@Transient
+	private List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
+//	@Column(name = "DIA_DIEM_DE_HANG")
+//	private String diaDiemDeHang;
 
 	@Column(name = "GIA_DE_NGHI")
 	private BigDecimal giaDeNghi;

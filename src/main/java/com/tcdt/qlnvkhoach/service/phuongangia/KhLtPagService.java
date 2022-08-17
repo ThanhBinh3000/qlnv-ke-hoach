@@ -3,15 +3,18 @@ package com.tcdt.qlnvkhoach.service.phuongangia;
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagDiaDiemDeHang;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagKetQua;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagCcPhapLyRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagDiaDiemDeHangRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
@@ -60,6 +63,8 @@ public class KhLtPagService {
     private  KhLtPagCcPhapLyRepository khLtPagCcPhapLyRepository;
     @Autowired
     private KhLtPagKetQuaRepository khLtPagKetQuaRepository;
+    @Autowired
+    private KhLtPagDiaDiemDeHangRepository khLtPagDiaDiemDeHangRepository;
 
 
     public Iterable<KhLtPhuongAnGia> findAll() {
@@ -156,7 +161,9 @@ public class KhLtPagService {
         log.info("Save thông tin giá của hàng hóa tương tự");
         List<KhLtPagKetQua> thongTinGiaHangHoaTuongTu = this.saveKetQua(req.getThongTinGiaHangHoaTuongTu(), PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGia.getId());
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
-
+        log.info("Save: địa điểm để hàng");
+        List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiadiemdeHangs(), phuongAnGia.getId());
+        phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
         log.info("Build phương án giá response");
 
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
@@ -168,7 +175,6 @@ public class KhLtPagService {
         List<KhLtPagKetQua> ketQuaList = reqs.stream().map(item -> {
             KhLtPagKetQua ketQua = mapper.map(item, KhLtPagKetQua.class);
             ketQua.setPhuongAnGiaId(phuongAnGiaId);
-            ketQua = khLtPagKetQuaRepository.save(ketQua);
             ketQua.setType(type);
             ketQua = khLtPagKetQuaRepository.save(ketQua);
             List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), ketQua.getId(), KhLtPagKetQua.getFileDinhKemDataType(type));
@@ -177,6 +183,16 @@ public class KhLtPagService {
         }).collect(Collectors.toList());
 //        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
         return ketQuaList;
+    }
+
+    private List<KhLtPagDiaDiemDeHang> saveDDDehang(List<KhLtPagDiaDiemDeHangReq> reqs, Long phuongAnGiaId) {
+        List<KhLtPagDiaDiemDeHang> ddDehangs = reqs.stream().map(item -> {
+            KhLtPagDiaDiemDeHang diadiemDehang = mapper.map(item, KhLtPagDiaDiemDeHang.class);
+            diadiemDehang.setPagId(phuongAnGiaId);
+            diadiemDehang = khLtPagDiaDiemDeHangRepository.save(diadiemDehang);
+            return diadiemDehang;
+        }).collect(Collectors.toList());
+        return ddDehangs;
     }
 
 
