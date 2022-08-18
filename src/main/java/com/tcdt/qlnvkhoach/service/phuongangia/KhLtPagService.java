@@ -377,9 +377,7 @@ public class KhLtPagService {
         List<KhPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),ids);
         List<KhPagKetQua> listPagKetQuaTTHHTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(),ids);
         List<Long> khCcPhapLyIds = listPagCCPhapLy.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
-
         List<Long> listKqIds = khLtPagKetQuaRepository.findByPhuongAnGiaIdIn(ids).stream().map(KhPagKetQua::getId).collect(Collectors.toList());
-
         Map<Long, List<FileDinhKemChung>> mapListFileForKqs = fileDinhKemChungRepository.findByDataIdInAndDataType(listKqIds,KhPagKetQua.TABLE_NAME)
                 .stream().collect(Collectors.groupingBy(o ->o.getDataId()));
         if(listPagCCPhapLy.size() > 0){
