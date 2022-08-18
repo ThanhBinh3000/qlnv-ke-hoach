@@ -15,15 +15,16 @@ import java.util.List;
 public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, Long>, KhLtPhuongAnGiaRepositoryCustom {
 
 	@Query(value ="SELECT * FROM KH_PHUONG_AN_GIA KLPAG WHERE (:namKh IS NULL OR KLPAG.NAM_KE_HOACH = TO_NUMBER(:namKh))"
-			+"AND (:soDx IS NULL OR LOWER(KLPAG.SO_DE_XUAT) LIKE LOWER(CONCAT(CONCAT('%',:soDx),'%' ) ) )"
-			+"AND (:dvql IS NULL OR LOWER(KLPAG.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
-			+"AND (:loaiHh IS NULL OR KLPAG.LOAI_VTHH =  :loaiHh)"
-			+"AND (:type IS NULL OR KLPAG.type =  :type)"
-			+"AND (:ngayKyTu IS NULL OR KLPAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd'))"
-			+"AND (:ngayKyDen IS NULL OR KLPAG.NGAY_KY <= TO_DATE(:ngayKyDen,'yyyy-MM-dd'))"
-			+"AND (:trichYeu IS NULL  OR LOWER(KLPAG.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
+			+" AND (:soDx IS NULL OR LOWER(KLPAG.SO_DE_XUAT) LIKE LOWER(CONCAT(CONCAT('%',:soDx),'%' ) ) )"
+			+" AND (:dvql IS NULL OR LOWER(KLPAG.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
+			+" AND (:loaiHh IS NULL OR KLPAG.LOAI_VTHH = :loaiHh)"
+			+" AND (:pagType IS NULL OR KLPAG.LOAI_VTHH LIKE CONCAT(:pagType,'%' ) )"
+			+" AND (:type IS NULL OR KLPAG.type =  :type)"
+			+" AND (:ngayKyTu IS NULL OR KLPAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd'))"
+			+" AND (:ngayKyDen IS NULL OR KLPAG.NGAY_KY <= TO_DATE(:ngayKyDen,'yyyy-MM-dd'))"
+			+" AND (:trichYeu IS NULL  OR LOWER(KLPAG.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
 			, nativeQuery = true)
-	Page<KhPhuongAnGia> selectPage(Integer namKh, String soDx, String loaiHh, String ngayKyTu, String ngayKyDen, String trichYeu , String dvql,String type, Pageable pageable);
+	Page<KhPhuongAnGia> selectPage(Integer namKh, String soDx, String loaiHh, String ngayKyTu, String ngayKyDen, String trichYeu , String dvql,String type,String pagType, Pageable pageable);
 
 	List<KhPhuongAnGia> findByIdIn(List<Long> ids);
 

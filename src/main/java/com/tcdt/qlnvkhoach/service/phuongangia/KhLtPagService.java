@@ -82,6 +82,7 @@ public class KhLtPagService {
                 objReq.getTrichYeu(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
                 objReq.getType(),
+                objReq.getPagType().equals("LT") ? "01" : "02",
                 pageable);
 
 
@@ -92,7 +93,7 @@ public class KhLtPagService {
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
             f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
-            f.setLoaiVthh(hashMapHh.get(f.getLoaiVthh()));
+            f.setTenLoaiVthh(hashMapHh.get(f.getLoaiVthh()));
             f.setTenLoaiGia(hashMapLoaiGia.get(f.getLoaiGia()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());

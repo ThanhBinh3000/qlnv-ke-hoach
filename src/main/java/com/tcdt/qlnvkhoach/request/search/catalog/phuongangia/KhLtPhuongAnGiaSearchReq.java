@@ -25,4 +25,6 @@ public class KhLtPhuongAnGiaSearchReq extends BaseRequest {
     String trichYeu;
 
     String type;
+
+    String pagType;
 }
