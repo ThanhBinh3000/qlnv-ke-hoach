@@ -19,9 +19,9 @@ public class KhLtPagDiaDiemDeHangReq {
 
 	private Long stt;
 
-	private String maChiCuc;
+	private String maDvi;
 
-	private String tenChiCuc;
+	private String tenDvi;
 
 	private BigDecimal soLuong;
 

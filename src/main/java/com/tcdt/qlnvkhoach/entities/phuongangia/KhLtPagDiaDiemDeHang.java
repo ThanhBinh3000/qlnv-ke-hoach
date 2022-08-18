@@ -25,11 +25,11 @@ public class KhLtPagDiaDiemDeHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="MA_CHI_CUC")
-    private String maChiCuc;
+    @Column(name="MA_DVI")
+    private String maDvi;
 
-    @Column(name="TEN_CHI_CUC")
-    private String tenChiCuc;
+    @Column(name="TEN_DVI")
+    private String tenDvi;
 
     @Column(name="SO_LUONG")
     private BigDecimal soLuong;

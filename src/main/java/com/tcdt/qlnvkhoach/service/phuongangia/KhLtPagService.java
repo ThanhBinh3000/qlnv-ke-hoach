@@ -166,7 +166,7 @@ public class KhLtPagService {
         List<KhLtPagKetQua> thongTinGiaHangHoaTuongTu = this.saveKetQua(req.getThongTinGiaHangHoaTuongTu(), PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGia.getId());
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
         log.info("Save: địa điểm để hàng");
-        List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiadiemdeHangs(), phuongAnGia.getId());
+        List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHang(), phuongAnGia.getId());
         phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
         log.info("Build phương án giá response");
 
