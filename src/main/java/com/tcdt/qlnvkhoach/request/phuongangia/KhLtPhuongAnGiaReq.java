@@ -44,7 +44,7 @@ public class KhLtPhuongAnGiaReq {
 
 	private Long soLuong;
 
-//	private String diaDiemDeHang;
+	private String diaDiemDeHang;
 
 	private BigDecimal giaDeNghi;
 
@@ -96,5 +96,7 @@ public class KhLtPhuongAnGiaReq {
 	/**
 	 * Địa điêm để hàng
 	 */
-	private List<KhLtPagDiaDiemDeHangReq> diaDiemDeHang = new ArrayList<>();
+	private List<KhLtPagDiaDiemDeHangReq> diaDiemDeHangs = new ArrayList<>();
+
+	private String moTa;
 }

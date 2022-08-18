@@ -91,8 +91,9 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Transient
 	private List<KhPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
-//	@Column(name = "DIA_DIEM_DE_HANG")
-//	private String diaDiemDeHang;
+
+	@Column(name = "DIA_DIEM_DE_HANG")
+	private String diaDiemDeHang;
 
 	@Column(name = "GIA_DE_NGHI")
 	private BigDecimal giaDeNghi;
@@ -170,4 +171,7 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Column(name = "TYPE")
 	private String type;
+
+	@Column(name = "MO_TA")
+	private String moTa;
 }
