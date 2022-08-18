@@ -90,7 +90,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
     @ApiOperation(value = "Sửa đề xuất phương án giá", response = List.class)
     @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> updateQd(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
+    public final ResponseEntity<Resp> updatePag(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(khLtPagService.update(req));

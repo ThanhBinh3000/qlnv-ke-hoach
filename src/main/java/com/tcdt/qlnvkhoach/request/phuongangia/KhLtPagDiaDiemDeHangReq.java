@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class KhLtPagDiaDiemDeHangReq {
+
 	private Long id;
 
 	private Long stt;

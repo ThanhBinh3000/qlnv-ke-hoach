@@ -221,19 +221,15 @@ public class KhLtPagService {
 
         List<KhLtPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
             KhLtPagCcPhapLy canCuPhapLy = mapper.map(item, KhLtPagCcPhapLy.class);
-
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
-
             canCuPhapLy = khLtPagCcPhapLyRepository.save(canCuPhapLy);
             log.info("Save file đính kèm");
             List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhLtPagCcPhapLy.TABLE_NAME);
             canCuPhapLy.setFileDinhKems(fileDinhKems);
             return canCuPhapLy;
         }).collect(Collectors.toList());
-
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
-
         List<FileDinhKemChung> fileCcPags = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), finalPhuongAnGia.getId(), KhLtPhuongAnGia.TABLE_NAME);
         phuongAnGia.setListFileCCs(fileCcPags);
 
@@ -246,7 +242,9 @@ public class KhLtPagService {
         log.info("Update thông tin giá của hàng hóa tương tự");
         List<KhLtPagKetQua> thongTinGiaHangHoaTuongTu = this.saveKetQua(req.getThongTinGiaHangHoaTuongTu(), PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGia.getId());
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
-
+        log.info("Save: địa điểm để hàng");
+        List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHang(), phuongAnGia.getId());
+        phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
         log.info("Build phương án giá response");
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
 
