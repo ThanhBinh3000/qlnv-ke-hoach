@@ -67,6 +67,9 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 	@Column(name = "LOAI_GIA")
 	private String loaiGia;
 
+	@Transient
+	private String tenLoaiGia;
+
 	@Column(name = "GHI_CHU")
 	private String ghiChu;
 
@@ -75,6 +78,9 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "CLOAI_VTHH")
 	private String cloaiVthh;
+
+	@Transient
+	private String tenCloaiVthh;
 
 	@Column(name = "TIEU_CHUAN_CL")
 	private String tieuChuanCl;

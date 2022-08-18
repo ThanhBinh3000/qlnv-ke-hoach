@@ -165,23 +165,25 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setTrangThaiTH(Contains.CHUA_QUYET_DINH);
         pagTH.setTtToTrinh(Contains.CHUATAOTOTRINH);
         KhPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
-        List<KhPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
-            KhPagTongHopCTiet pagThChiTiet = mapper.map(item, KhPagTongHopCTiet.class);
-            pagThChiTiet.setPagThId(pagThSave.getId());
-            return pagThChiTiet;
-        }).collect(Collectors.toList());
-        khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
-        pagThSave.setPagChitiets(pagTGChiTiets);
-        /**
-         * update lại stt của dx pag
-         */
-        List<Long> pagIds = req.getPagChitiets().stream().map(KhPagTongHopCTiet::getPagId).collect(Collectors.toList());
-        List<KhPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
-        List<KhPhuongAnGia> pagDetails = lPags.stream().map(item -> {
-            item.setTrangThaiTh(Contains.DA_TH);
-            return item;
-        }).collect(Collectors.toList());
-        khLtPhuongAnGiaRepository.saveAll(pagDetails);
+        if (req.getPagChitiets() != null && !req.getPagChitiets().isEmpty()) {
+            List<KhPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
+                KhPagTongHopCTiet pagThChiTiet = mapper.map(item, KhPagTongHopCTiet.class);
+                pagThChiTiet.setPagThId(pagThSave.getId());
+                return pagThChiTiet;
+            }).collect(Collectors.toList());
+            khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
+            pagThSave.setPagChitiets(pagTGChiTiets);
+            /**
+             * update lại stt của dx pag
+             */
+            List<Long> pagIds = req.getPagChitiets().stream().map(KhPagTongHopCTiet::getPagId).collect(Collectors.toList());
+            List<KhPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
+            List<KhPhuongAnGia> pagDetails = lPags.stream().map(item -> {
+                item.setTrangThaiTh(Contains.DA_TH);
+                return item;
+            }).collect(Collectors.toList());
+            khLtPhuongAnGiaRepository.saveAll(pagDetails);
+        }
         return pagThSave;
     }
 
@@ -190,15 +192,15 @@ public class KhLtTongHopPagService extends BaseService {
     public KhPagTongHop createToTrinh(KhLtPagTongHopReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-        Optional<KhPagTongHop>  optinal = khLtPagTongHopRepository.findById(req.getId());
-        if(!optinal.isPresent()){
+        Optional<KhPagTongHop> optinal = khLtPagTongHopRepository.findById(req.getId());
+        if (!optinal.isPresent()) {
             throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
         }
         KhPagTongHop pagTH = optinal.get();
-        if(pagTH.getSoToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)){
+        if (pagTH.getSoToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)) {
             throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
         }
-        if(khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh()).get() != null){
+        if (khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh()).get() != null) {
             throw new Exception("Số tờ trình đã tồn tại");
         }
         pagTH.setNgaySua(LocalDateTime.now());
@@ -212,41 +214,41 @@ public class KhLtTongHopPagService extends BaseService {
         return khLtPagTongHopRepository.save(pagTH);
     }
 
-    public  void exportPagTH(KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception{
+    public void exportPagTH(KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception {
         PaggingReq paggingReq = new PaggingReq();
         paggingReq.setPage(0);
         paggingReq.setLimit(Integer.MAX_VALUE);
         objReq.setPaggingReq(paggingReq);
-        Page<KhPagTongHop> page=this.searchPage(objReq);
-        List<KhPagTongHop> data=page.getContent();
+        Page<KhPagTongHop> page = this.searchPage(objReq);
+        List<KhPagTongHop> data = page.getContent();
 
-        String title="Danh sách tổng hợp phương án giá";
-        String[] rowsName=new String[]{"STT","Mã tổng hợp","Ngày tổng hợp","Nội dung tổng hợp","Năm kế hoạch","Loại hàng hóa","Chủng loại hàng hóa","Loại giá","Trạng thái tổng hợp","Mã tờ trình","Trạng thái"};
-        String fileName="danh-sach-tong-hop-phuong-an-gia.xlsx";
+        String title = "Danh sách tổng hợp phương án giá";
+        String[] rowsName = new String[]{"STT", "Mã tổng hợp", "Ngày tổng hợp", "Nội dung tổng hợp", "Năm kế hoạch", "Loại hàng hóa", "Chủng loại hàng hóa", "Loại giá", "Trạng thái tổng hợp", "Mã tờ trình", "Trạng thái"};
+        String fileName = "danh-sach-tong-hop-phuong-an-gia.xlsx";
         List<Object[]> dataList = new ArrayList<Object[]>();
-        Object[] objs=null;
-        for (int i=0;i<data.size();i++){
-            KhPagTongHop dx=data.get(i);
-            objs=new Object[rowsName.length];
-            objs[0]=i;
-            objs[1]=dx.getId();
-            objs[2]=dx.getNgayTongHop();
-            objs[3]=dx.getNoiDung();
-            objs[4]=dx.getNamTongHop();
-            objs[5]=Contains.getLoaiVthh(dx.getLoaiVthh());
-            objs[6]=dx.getCloaiVthh();
-            objs[7]=dx.getLoaiGia();
-            objs[8]=Contains.getThTongHop(dx.getTrangThaiTH());
-            objs[9]=dx.getSoToTrinh();
-            objs[10]=Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());
+        Object[] objs = null;
+        for (int i = 0; i < data.size(); i++) {
+            KhPagTongHop dx = data.get(i);
+            objs = new Object[rowsName.length];
+            objs[0] = i;
+            objs[1] = dx.getId();
+            objs[2] = dx.getNgayTongHop();
+            objs[3] = dx.getNoiDung();
+            objs[4] = dx.getNamTongHop();
+            objs[5] = Contains.getLoaiVthh(dx.getLoaiVthh());
+            objs[6] = dx.getCloaiVthh();
+            objs[7] = dx.getLoaiGia();
+            objs[8] = Contains.getThTongHop(dx.getTrangThaiTH());
+            objs[9] = dx.getSoToTrinh();
+            objs[10] = Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());
             dataList.add(objs);
         }
-        ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
+        ExportExcel ex = new ExportExcel(title, fileName, rowsName, dataList, response);
         ex.export();
     }
 
     @Transactional
-    public KhPagTongHop detailPagTH(String id) throws  Exception {
+    public KhPagTongHop detailPagTH(String id) throws Exception {
         Optional<KhPagTongHop> qOptional = khLtPagTongHopRepository.findById(Long.parseLong(id));
         if (!qOptional.isPresent()) {
             throw new Exception("Tổng hợp phương án giá không tồn tại");
@@ -255,19 +257,19 @@ public class KhLtTongHopPagService extends BaseService {
         List<Long> ids = new ArrayList<>();
         ids.add(data.getId());
         List<KhPagTongHopCTiet> listPagTHChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
-        if(listPagTHChiTiets.size() > 0){
+        if (listPagTHChiTiets.size() > 0) {
             data.setPagChitiets(listPagTHChiTiets);
         }
         return data;
     }
 
     @Transactional
-    public void delete(Long ids) throws Exception{
-        Optional<KhPagTongHop> qOptional=khLtPagTongHopRepository.findById(ids);
-        if(!qOptional.isPresent()){
+    public void delete(Long ids) throws Exception {
+        Optional<KhPagTongHop> qOptional = khLtPagTongHopRepository.findById(ids);
+        if (!qOptional.isPresent()) {
             throw new UserPrincipalNotFoundException("Id không tồn tại");
         }
-        if(qOptional.get().getTrangThai().equals(Contains.DUYET)){
+        if (qOptional.get().getTrangThai().equals(Contains.DUYET)) {
             throw new Exception("Bản ghi có trạng thái đã duyệt,không được xóa.");
         }
         List<Long> pagTHIds = new ArrayList<>();

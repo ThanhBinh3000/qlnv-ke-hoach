@@ -19,6 +19,7 @@ import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.phuongangia.KhLtPhuongAnGiaRes;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
@@ -59,6 +60,9 @@ public class KhLtPagService {
     @Autowired
     private KhLtPagDiaDiemDeHangRepository khLtPagDiaDiemDeHangRepository;
 
+    @Autowired
+    private QlnvDmService qlnvDmService;
+
 
     public Iterable<KhPhuongAnGia> findAll() {
         return khLtPhuongAnGiaRepository.findAll();
@@ -77,9 +81,17 @@ public class KhLtPagService {
                 objReq.getTrichYeu(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
                 pageable);
+
+
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+
+
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
             f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
+            f.setTenLoaiHh(hashMapHh.get(f.getLoaiVthh()));
+            f.setTenLoaiGia(hashMapLoaiGia.get(f.getLoaiGia()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
 //        get ketqua tham dinh gia va khao sat gia
