@@ -111,9 +111,12 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "CAP_DVI")
     private String capDvi;
 
-    @Column(name = "MA_TO_TRINH",unique = true)
-    private String maToTrinh;
+    @Column(name = "SO_TO_TRINH",unique = true)
+    private String soToTrinh;
 
+    /**
+     * trạng thái tờ trình
+     */
     @Column(name = "TT_TO_TRINH")
     private String ttToTrinh;
 
