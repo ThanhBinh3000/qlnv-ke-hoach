@@ -108,4 +108,6 @@ public class KhLtPhuongAnGiaReq {
 	private String maPphapXdg;
 
 	private String loaiHangXdg;
+
+	private String soCanCu;
 }

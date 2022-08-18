@@ -114,4 +114,6 @@ public class KhLtPhuongAnGiaRes {
 	private String maPphapXdg;
 
 	private String loaiHangXdg;
+
+	private String soCanCu;
 }

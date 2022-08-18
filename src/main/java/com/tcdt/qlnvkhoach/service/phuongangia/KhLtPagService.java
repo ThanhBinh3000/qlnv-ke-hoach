@@ -138,8 +138,10 @@ public class KhLtPagService {
     public KhLtPhuongAnGiaRes create(KhLtPhuongAnGiaReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-
         log.info("Save: thông tin phương án giá");
+        if(khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat()).isPresent()){
+            throw new Exception("Số đề xuất đã tồn tại trong hệ thống!");
+        }
         KhPhuongAnGia phuongAnGia =  mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
         phuongAnGia.setTrangThaiTh(PAGTrangThaiTHEnum.CHUA_TH.getId());
@@ -225,7 +227,6 @@ public class KhLtPagService {
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
 
         KhPhuongAnGia phuongAnGia = optional.get();
-
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
         phuongAnGia.setNgaySua(LocalDateTime.now());

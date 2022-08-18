@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, Long>, KhLtPhuongAnGiaRepositoryCustom {
@@ -44,4 +45,6 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 
 	@Query("SELECT pag.id, min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2  GROUP BY pag.id")
 	List<Object[]> listPagWithDonGia(String type, Collection<Long> pagIds);
+
+	Optional<KhPhuongAnGia> findBySoDeXuat(String soDeXuat);
 }
