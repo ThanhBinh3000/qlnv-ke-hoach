@@ -16,7 +16,7 @@ public interface KhPagLtQuyetDinhBtcRepository extends JpaRepository<KhPagLtQuye
       "AND (:#{#param.soQd}  IS NULL OR LOWER(c.soQd) LIKE CONCAT('%',LOWER(:#{#param.soQd}),'%')) " +
       "AND (:#{#param.trichYeu}  IS NULL OR LOWER(c.trichYeu) LIKE CONCAT('%',LOWER(:#{#param.trichYeu}),'%')) " +
       "AND ((:#{#param.ngayKyTu}  IS NULL OR c.ngayKy >= :#{#param.ngayKyTu}) AND (:#{#param.ngayKyDen}  IS NULL OR c.ngayKy <= :#{#param.ngayKyDen}) ) " +
-      "ORDER BY c.ngaySua desc , c.ngayTao desc")
+      "ORDER BY c.ngaySua desc , c.ngayTao desc, c.id desc")
   Page<KhPagLtQuyetDinhBtc> search(
       @Param("param") KhPagLtQuyetDinhBtcSearchReq param, Pageable pageable);
 }

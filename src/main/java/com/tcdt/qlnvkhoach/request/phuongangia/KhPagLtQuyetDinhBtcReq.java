@@ -1,9 +1,15 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,76 +21,25 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class KhPagLtQuyetDinhBtcReq {
-	private Long id;
-
-	private String maDonVi;
-
-	private String trangThai;
-
-	private Long namKeHoach;
-
-	private String loaiHangHoa;
-
-	private String soDeXuat;
-
-	private LocalDate ngayKy;
-
-	private String trichYeu;
-
-	private Long canCuId;
-
-	private String loaiGia;
-
-	private String ghiChu;
-
-	private String ttcChungLoaiHh;
-
-	private String tieuChuanCl;
-
-	private Long soLuong;
-
-	private String diaDiemDeHang;
-
-	private BigDecimal giaDeNghi;
-	/**
-	 * Căn cứ phương pháp xác định giá
-	 */
-
-	private List<KhLtPagCcPhapLyReq> canCuPhapLy = new ArrayList<>();
-
-	private Long phuongPhapId;
-
-	private Boolean hangSxTrongNuoc;
-
-	private Boolean hangNhapKhau;
-
-	private BigDecimal giaVonNk;
-
-	private BigDecimal chiPhiChung;
-
-	private BigDecimal tongChiPhi;
-	/**
-	 * Thông tin khảo sát giá
-	 * TTGHHTT: Thông tin giá của hàng hóa tương tự
-	 */
-
-	private List<KhLtPagKetQuaReq> ketQuaKhaoSatGiaThiTruong = new ArrayList<>();
-
-	private List<KhLtPagKetQuaReq> ketQuaThamDinhGia = new ArrayList<>();
-
-	private String ttghhttLoaiHh;
-
-	private String ttghhttChungLoaiHh;
-
-	private String ttghhttMoTaTcTuongTu; //Mô tả tính chất tương tự
-
-	private List<KhLtPagKetQuaReq> thongTinGiaHangHoaTuongTu = new ArrayList<>();
-	/**
-	 * Phân tích, dự báo biến động giá
-	 * BDG: Biến động giá
-	 */
-
-	private String bdgNoiDung; //Nội dung: Biến động giá
-
-	private String bdgGhiChu; //Ghi chú: Biến động giá
+  private Long id;
+  private String maDonVi;
+  private String trangThai;
+  private Integer namKeHoach;
+  private String soQd;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = LocalDateSerializer.class)
+  private LocalDate ngayKy;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = LocalDateSerializer.class)
+  private LocalDate ngayHieuLuc;
+  private String soTtDeXuat;
+  private String loaiHangHoa;
+  private String chungLoaiHangHoa;
+  private String loaiGia;
+  private String tieuChuanCl;
+  private String trichYeu;
+  private String ghiChu;
+  private String capDvi;
 }

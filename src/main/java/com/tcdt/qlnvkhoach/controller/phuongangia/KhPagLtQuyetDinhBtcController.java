@@ -52,7 +52,7 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
   private KhPagLtQuyetDinhBtcService khPagLtQuyetDinhBtcService;
 
   @ApiOperation(value = "Tra cứu quyết định giá của BTC", response = List.class)
-  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
   public final ResponseEntity<Resp> searchKhLtPAG(@CurrentUser CustomUserDetails currentUser, @Valid @RequestBody KhPagLtQuyetDinhBtcSearchReq objReq) {
     Resp resp = new Resp();
     try {
@@ -68,7 +68,7 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
   }
 
   @ApiOperation(value = "Tạo mới quyết định giá của BTC", response = List.class)
-  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
   public final ResponseEntity<Resp> create(@CurrentUser CustomUserDetails currentUser, @Valid @RequestBody KhPagLtQuyetDinhBtcReq req) {
     Resp resp = new Resp();
     try {
@@ -86,30 +86,31 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
   }
 
 
-  @ApiOperation(value = "Sửa đề xuất phương án giá", response = List.class)
-  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
-  public final ResponseEntity<Resp> updateQd(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
+  @ApiOperation(value = "Sửa quyết định giá của BTC", response = List.class)
+  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
+  public final ResponseEntity<Resp> update(@CurrentUser CustomUserDetails currentUser,@Valid @RequestBody KhPagLtQuyetDinhBtcReq req) {
     Resp resp = new Resp();
     try {
-      resp.setData(khLtPagService.update(req));
+      resp.setData(khPagLtQuyetDinhBtcService.update(currentUser,req));
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");
     } catch (Exception e) {
       resp.setStatusCode(Constants.RESP_FAIL);
       resp.setMsg(e.getMessage());
       log.error(e.getMessage());
+      e.printStackTrace();
     }
     return ResponseEntity.ok(resp);
   }
 
 
-  @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "Xóa quyết định giá của BTC", response = List.class)
+  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
     Resp resp = new Resp();
     try {
-      resp.setData(khLtPagService.deleteMultiple(req.getIds()));
+      resp.setData(khPagLtQuyetDinhBtcService.deleteMultiple(req.getIds()));
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");
     } catch (Exception e) {
@@ -120,12 +121,13 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
     return ResponseEntity.ok(resp);
   }
 
-  @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
-  public final ResponseEntity<Resp> deletePag(@RequestBody DeleteRecordReq idSearchReq) {
+  @ApiOperation(value = "Chi tiết quyết định giá của BTC", response = List.class)
+  @GetMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public final ResponseEntity<Resp> detail(@ApiParam(value = "ID quyết định giá của BTC", example = "1", required = true) @PathVariable("ids") String ids) {
     Resp resp = new Resp();
     try {
-      khLtPagService.delete(idSearchReq.getId());
+      KhPagLtQuyetDinhBtc data = khPagLtQuyetDinhBtcService.detail(ids);
+      resp.setData(data);
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");
     } catch (Exception e) {
@@ -136,32 +138,13 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
     return ResponseEntity.ok(resp);
   }
 
-  @ApiOperation(value = "Chi tiết đề xuất phương án giá", response = List.class)
-  @GetMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public final ResponseEntity<Resp> detailDxPag(@ApiParam(value = "ID đề xuất phương án giá", example = "1", required = true) @PathVariable("ids") String ids) {
-    Resp resp = new Resp();
-    try {
-      KhLtPhuongAnGia khQdBtcBoNganh = khLtPagService.detailDxPag(ids);
-      resp.setData(khQdBtcBoNganh);
-      resp.setStatusCode(Constants.RESP_SUCC);
-      resp.setMsg("Thành công");
-    } catch (Exception e) {
-      resp.setStatusCode(Constants.RESP_FAIL);
-      resp.setMsg(e.getMessage());
-      log.error(e.getMessage());
-    }
-    return ResponseEntity.ok(resp);
-  }
-
-  @ApiOperation(value = "Kết xuất danh sách đề xuất phương án giá", response = List.class)
-  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(value = "Kết xuất danh sách quyết định giá của BTC", response = List.class)
+  @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_KET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
-  public void exportListDxPagToExcel(@Valid @RequestBody KhLtPhuongAnGiaSearchReq objReq, HttpServletResponse response) throws Exception {
+  public void export(@Valid @RequestBody KhPagLtQuyetDinhBtcSearchReq objReq, HttpServletResponse response) throws Exception {
     try {
-      khLtPagService.exportDxPag(objReq, response);
+      //khPagLtQuyetDinhBtcService.export(objReq, response);
     } catch (Exception e) {
-
-      log.error("Kết xuất danh sách đề xuất phương án giá: {}", e);
       final Map<String, Object> body = new HashMap<>();
       body.put("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       body.put("msg", e.getMessage());

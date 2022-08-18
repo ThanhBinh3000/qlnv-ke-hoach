@@ -1,8 +1,14 @@
 package com.tcdt.qlnvkhoach.entities.phuongangia;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.tcdt.qlnvkhoach.entities.BaseEntity;
+import com.tcdt.qlnvkhoach.enums.KhPagLtQuyetDinhBtcEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,7 +37,13 @@ public class KhPagLtQuyetDinhBtc extends BaseEntity implements Serializable {
   private String trangThai;
   private Integer namKeHoach;
   private String soQd;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate ngayKy;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate ngayHieuLuc;
   private String soTtDeXuat;
   private String loaiHangHoa;
@@ -41,4 +53,10 @@ public class KhPagLtQuyetDinhBtc extends BaseEntity implements Serializable {
   private String trichYeu;
   private String ghiChu;
   private String capDvi;
+  @Transient
+  private String tenTrangThai;
+
+  public String getTenTrangThai() {
+    return KhPagLtQuyetDinhBtcEnum.getLabelById(trangThai);
+  }
 }
