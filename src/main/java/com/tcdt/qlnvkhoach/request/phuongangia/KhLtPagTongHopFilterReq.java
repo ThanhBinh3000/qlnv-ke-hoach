@@ -35,4 +35,7 @@ public class KhLtPagTongHopFilterReq {
 
     @ApiModelProperty
     String ngayDxuatDen;
+
+    @ApiModelProperty
+    String type;
 }
