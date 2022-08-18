@@ -171,7 +171,7 @@ public class KhLtPagService {
         List<KhPagKetQua> thongTinGiaHangHoaTuongTu = this.saveKetQua(req.getThongTinGiaHangHoaTuongTu(), PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGia.getId());
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
         log.info("Save: địa điểm để hàng");
-        List<KhPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHang(), phuongAnGia.getId());
+        List<KhPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHangs(), phuongAnGia.getId());
         phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
         log.info("Build phương án giá response");
 
@@ -248,7 +248,7 @@ public class KhLtPagService {
         List<KhPagKetQua> thongTinGiaHangHoaTuongTu = this.saveKetQua(req.getThongTinGiaHangHoaTuongTu(), PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGia.getId());
         phuongAnGia.setThongTinGiaHangHoaTuongTu(thongTinGiaHangHoaTuongTu);
         log.info("Save: địa điểm để hàng");
-        List<KhPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHang(), phuongAnGia.getId());
+        List<KhPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHangs(), phuongAnGia.getId());
         phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
         log.info("Build phương án giá response");
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
