@@ -225,11 +225,10 @@ public class KhLtPagService {
 
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
-
-//        if(khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat()).isPresent()){
-//            throw new Exception("Số đề xuất đã tồn tại");
-//        }
-
+        Optional<KhPhuongAnGia> optionalCheckUnique = khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat());
+        if(optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId() ){
+            throw new Exception("Số đề xuất đã tồn tại");
+        }
         KhPhuongAnGia phuongAnGia = optional.get();
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
@@ -397,7 +396,6 @@ public class KhLtPagService {
             data.setDiaDiemDeHangs(diaDiemDeHangs);
         }
         return data;
-
     }
 
     public  void exportDxPag(KhLtPhuongAnGiaSearchReq objReq, HttpServletResponse response) throws Exception{
