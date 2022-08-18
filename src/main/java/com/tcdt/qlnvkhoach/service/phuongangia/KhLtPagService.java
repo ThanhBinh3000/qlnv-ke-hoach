@@ -226,7 +226,11 @@ public class KhLtPagService {
         /**
          *Xóa cc pháp lý, file đính kèm , ket qua để insert lại
          */
-        this.deleteChildOfDxPag(phuongAnGia.getId());
+        List<Long> pagIds = new ArrayList<>();
+        pagIds.add(phuongAnGia.getId());
+        this.deleteChildOfDxPag(pagIds);
+        // Xóa file đính kem`
+        fileDinhKemService.deleteMultiple(pagIds, Collections.singleton(KhPhuongAnGia.TABLE_NAME));
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhPhuongAnGia finalPhuongAnGia = phuongAnGia;
         List<KhPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
@@ -292,18 +296,16 @@ public class KhLtPagService {
         return true;
     }
 
-    private void deleteChildOfDxPag(Long pagId){
-        List<Long> ids = new ArrayList<>();
-        ids.add(pagId);
+    private void deleteChildOfDxPag(List<Long> pagIds){
         log.info("Xóa căn cứ pháp lý và file đính kèm");
-        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
+        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(pagIds);
         if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
             List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
             fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
             khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
         }
         log.info("Xóa kết quả");
-        List<KhPagKetQua> allKetQuas = khLtPagKetQuaRepository.findByPhuongAnGiaIdIn(ids);
+        List<KhPagKetQua> allKetQuas = khLtPagKetQuaRepository.findByPhuongAnGiaIdIn(pagIds);
         if (!CollectionUtils.isEmpty(allKetQuas)) {
             List<Long> pagKetquaIds = allKetQuas.stream().map(KhPagKetQua::getId).collect(Collectors.toList());
             fileDinhKemService.deleteMultiple(pagKetquaIds, Collections.singleton(KhPagKetQua.TABLE_NAME));
