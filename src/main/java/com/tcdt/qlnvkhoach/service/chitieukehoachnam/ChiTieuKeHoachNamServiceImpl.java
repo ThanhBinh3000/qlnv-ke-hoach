@@ -47,6 +47,7 @@ import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -157,7 +158,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ChiTieuKeHoachNam chiTieuKeHoachNam = new ChiTieuKeHoachNam();
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
-		chiTieuKeHoachNam.setNgayTao(LocalDate.now());
+		chiTieuKeHoachNam.setNgayTao(LocalDateTime.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
 		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
@@ -337,7 +338,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		ctkhn.setNamKeHoach(req.getNamKeHoach());
 		ctkhn.setTrichYeu(req.getTrichYeu());
 		ctkhn.setGhiChu(req.getGhiChu());
-		ctkhn.setNgaySua(LocalDate.now());
+		ctkhn.setNgaySua(LocalDateTime.now());
 		ctkhn.setNguoiSuaId(userInfo.getId());
 		chiTieuKeHoachNamRepository.save(ctkhn);
 

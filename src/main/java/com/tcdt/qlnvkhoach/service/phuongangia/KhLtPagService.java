@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,7 +130,7 @@ public class KhLtPagService {
         phuongAnGia.setMaDvi(userInfo.getDvql());
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());
-        phuongAnGia.setNgayTao(LocalDate.now());
+        phuongAnGia.setNgayTao(LocalDateTime.now());
 
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
@@ -206,7 +207,7 @@ public class KhLtPagService {
 
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
-        phuongAnGia.setNgaySua(LocalDate.now());
+        phuongAnGia.setNgaySua(LocalDateTime.now());
 
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhPhuongAnGia finalPhuongAnGia = phuongAnGia;

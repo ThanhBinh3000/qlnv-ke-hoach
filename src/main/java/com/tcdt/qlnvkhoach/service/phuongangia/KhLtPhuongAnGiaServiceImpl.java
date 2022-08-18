@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 		phuongAnGia.setMaDvi(userInfo.getDvql());
 		phuongAnGia.setCapDvi(userInfo.getCapDvi());
 		phuongAnGia.setNguoiTaoId(userInfo.getId());
-		phuongAnGia.setNgayTao(LocalDate.now());
+		phuongAnGia.setNgayTao(LocalDateTime.now());
 
 		phuongAnGia = phuongAnGiaRepository.save(phuongAnGia);
 
@@ -125,7 +126,7 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 
 		phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
 		phuongAnGia.setNguoiSuaId(userInfo.getId());
-		phuongAnGia.setNgaySua(LocalDate.now());
+		phuongAnGia.setNgaySua(LocalDateTime.now());
 
 		log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
 		KhPhuongAnGia finalPhuongAnGia = phuongAnGia;
