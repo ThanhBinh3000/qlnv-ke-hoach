@@ -11,14 +11,14 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = KhLtPagTongHopCTiet.TABLE_NAME)
+@Table(name = KhPagTongHopCTiet.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KhLtPagTongHopCTiet {
+public class KhPagTongHopCTiet {
     public static final String TABLE_NAME = "KH_PAG_TONG_HOP_CTIET";
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_TONG_HOP_CTIET_SEQ")
     @SequenceGenerator(sequenceName = "KH_LT_PAG_TONG_HOP_CTIET_SEQ", allocationSize = 1, name = "KH_LT_PAG_TONG_HOP_CTIET_SEQ")
