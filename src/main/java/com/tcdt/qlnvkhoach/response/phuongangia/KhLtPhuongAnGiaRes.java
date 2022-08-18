@@ -96,11 +96,8 @@ public class KhLtPhuongAnGiaRes {
 	private List<KhLtPagKetQuaReq> thongTinGiaHangHoaTuongTu = new ArrayList<>();
 	/**
 	 * Phân tích, dự báo biến động giá
-	 * BDG: Biến động giá
 	 */
-	private String bdgNoiDung; //Nội dung: Biến động giá
-
-	private String bdgGhiChu; //Ghi chú: Biến động giá
+	private String noiDung; //Nội dung: Biến động giá
 
 	/**
 	 * Địa điêm để hàng
@@ -114,4 +111,6 @@ public class KhLtPhuongAnGiaRes {
 	private String maPphapXdg;
 
 	private String loaiHangXdg;
+
+	private String soCanCu;
 }

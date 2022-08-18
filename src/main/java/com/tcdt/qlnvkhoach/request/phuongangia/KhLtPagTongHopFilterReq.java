@@ -42,6 +42,7 @@ public class KhLtPagTongHopFilterReq {
     @ApiModelProperty
     String type;
 
-//    @NotNull(message = "Không được để trống")
+    @NotNull(message = "Không được để trống")
     List<String> maDvis;
+
 }
