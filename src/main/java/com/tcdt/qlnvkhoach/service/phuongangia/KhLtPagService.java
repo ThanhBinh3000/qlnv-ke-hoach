@@ -82,7 +82,7 @@ public class KhLtPagService {
                 objReq.getTrichYeu(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
                 objReq.getType(),
-                objReq.getPagType().equals("LT") ? "01" : "02",
+                objReq.getPagType().equals("VT") ? "02" : "01",
                 pageable);
 
 
