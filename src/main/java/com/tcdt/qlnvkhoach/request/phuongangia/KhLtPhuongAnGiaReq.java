@@ -92,9 +92,7 @@ public class KhLtPhuongAnGiaReq {
 	 * BDG: Biến động giá
 	 */
 
-	private String bdgNoiDung; //Nội dung: Biến động giá
-
-	private String bdgGhiChu; //Ghi chú: Biến động giá
+	private String noiDung; //Nội dung: Biến động giá
 
 	/**
 	 * Địa điêm để hàng
@@ -110,4 +108,6 @@ public class KhLtPhuongAnGiaReq {
 	private String loaiHangXdg;
 
 	private String soCanCu;
+
+	private String  type;
 }

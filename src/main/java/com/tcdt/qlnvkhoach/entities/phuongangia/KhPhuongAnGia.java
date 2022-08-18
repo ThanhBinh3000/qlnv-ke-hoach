@@ -151,11 +151,8 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
      * Phân tích, dự báo biến động giá
      * BDG: Biến động giá
      */
-    @Column(name = "BDG_NOI_DUNG")
-    private String bdgNoiDung; //Nội dung: Biến động giá
-
-    @Column(name = "BDG_GHI_CHU")
-    private String bdgGhiChu; //Ghi chú: Biến động giá
+    @Column(name = "NOI_DUNG")
+    private String noiDung; //Nội dung: Biến động giá
 
     @Transient
     String tenTrangThai;
