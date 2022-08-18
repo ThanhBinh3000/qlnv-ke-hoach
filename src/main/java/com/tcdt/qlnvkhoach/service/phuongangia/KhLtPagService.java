@@ -81,6 +81,7 @@ public class KhLtPagService {
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getTrichYeu(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
+                objReq.getType(),
                 pageable);
 
 
