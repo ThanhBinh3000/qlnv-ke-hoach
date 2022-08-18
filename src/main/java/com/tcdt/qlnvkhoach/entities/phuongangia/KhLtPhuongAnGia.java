@@ -151,6 +151,9 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	String tenTrangThai;
 
 	@Transient
+	String tenTrangThaiTh;
+
+	@Transient
 	String tenLoaiHh;
 
 	@Transient

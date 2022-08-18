@@ -87,6 +87,7 @@ public class KhLtPagService {
                 pageable);
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
+            f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
 //        get ketqua tham dinh gia va khao sat gia
