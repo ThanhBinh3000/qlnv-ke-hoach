@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KhLtPagTongHopCTiet {
-    public static final String TABLE_NAME = "KH_LT_PAG_TONG_HOP_CTIET";
+    public static final String TABLE_NAME = "KH_PAG_TONG_HOP_CTIET";
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_TONG_HOP_CTIET_SEQ")
     @SequenceGenerator(sequenceName = "KH_LT_PAG_TONG_HOP_CTIET_SEQ", allocationSize = 1, name = "KH_LT_PAG_TONG_HOP_CTIET_SEQ")
     @Id

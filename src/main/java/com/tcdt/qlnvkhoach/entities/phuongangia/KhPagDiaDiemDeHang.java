@@ -11,14 +11,14 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "KH_LT_PAG_DIA_DIEM_DE_HANG")
+@Table(name = "KH_PAG_DIA_DIEM_DE_HANG")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KhLtPagDiaDiemDeHang {
+public class KhPagDiaDiemDeHang {
 
     @Id
     @Column(name = "ID", nullable = false)

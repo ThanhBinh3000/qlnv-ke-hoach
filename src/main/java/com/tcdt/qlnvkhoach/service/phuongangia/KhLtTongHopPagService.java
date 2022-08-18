@@ -1,11 +1,7 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
-import com.google.common.collect.Lists;
-import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phuongangia.*;
-import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
-import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
@@ -14,7 +10,6 @@ import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
-import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
@@ -81,11 +76,11 @@ public class KhLtTongHopPagService extends BaseService {
     }
 
     public KhLtPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq, HttpServletRequest req) throws Exception {
-        List<KhLtPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen());
+        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen());
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
         }
-        List<Long> khLtPagIds = listPagTH.stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
+        List<Long> khLtPagIds = listPagTH.stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
         if (khLtPagIds.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
         }
@@ -99,7 +94,7 @@ public class KhLtTongHopPagService extends BaseService {
         Map<Long, List<Object[]>> khLtMinMaxKQKhaoSats = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
         List<KhLtPagTongHopCTiet> lChitiet = new ArrayList<>();
-        for (KhLtPhuongAnGia pag : listPagTH) {
+        for (KhPhuongAnGia pag : listPagTH) {
             List<Object[]> ketquaTDs = khLtMinMaxKQThamDinhs.get(pag.getId());
             List<Object[]> ketquaKSs = khLtMinMaxKQKhaoSats.get(pag.getId());
 //            set min max gia khao sat
@@ -180,8 +175,8 @@ public class KhLtTongHopPagService extends BaseService {
          * update lại stt của dx pag
          */
         List<Long> pagIds = req.getPagChitiets().stream().map(KhLtPagTongHopCTiet::getPagId).collect(Collectors.toList());
-        List<KhLtPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
-        List<KhLtPhuongAnGia> pagDetails = lPags.stream().map(item -> {
+        List<KhPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
+        List<KhPhuongAnGia> pagDetails = lPags.stream().map(item -> {
             item.setTrangThaiTh(Contains.DA_TH);
             return item;
         }).collect(Collectors.toList());

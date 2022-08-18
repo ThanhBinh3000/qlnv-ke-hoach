@@ -27,7 +27,7 @@ import static com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop.TABLE_NAME
 @NoArgsConstructor
 @AllArgsConstructor
 public class KhLtPagTongHop extends BaseEntity implements Serializable {
-    public static final String TABLE_NAME = "KH_LT_PAG_TONG_HOP";
+    public static final String TABLE_NAME = "KH_PAG_TONG_HOP";
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_TONG_HOP_SEQ")
     @SequenceGenerator(sequenceName = "KH_LT_PAG_TONG_HOP_SEQ", allocationSize = 1, name = "KH_LT_PAG_TONG_HOP_SEQ")
