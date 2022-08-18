@@ -34,8 +34,8 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			" AND PAG.CLOAI_VTHH = :cloaiVthh \n" +
 			" AND PAG.NAM_KE_HOACH = :namKh \n" +
 			" AND PAG.LOAI_GIA = :loaiGia \n" +
-			" AND PAG.TYPE = :type \n" +
 			" AND PAG.MA_DVI in (:maDvis) \n" +
+			" AND PAG.TYPE = :type \n" +
 			" AND PAG.NGAY_KY >=  TO_DATE(:ngayDxTu,'yyyy-MM-dd') \n" +
 			" AND PAG.NGAY_KY  <=  TO_DATE(:ngayDxDen,'yyyy-MM-dd') \n" +
 			" AND PAG.TRANG_THAI_TH = '00' \n" +
