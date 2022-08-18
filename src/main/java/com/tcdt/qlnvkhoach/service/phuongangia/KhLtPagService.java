@@ -91,7 +91,7 @@ public class KhLtPagService {
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
             f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
-            f.setTenLoaiHh(hashMapHh.get(f.getLoaiVthh()));
+            f.setLoaiVthh(hashMapHh.get(f.getLoaiVthh()));
             f.setTenLoaiGia(hashMapLoaiGia.get(f.getLoaiGia()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
@@ -216,19 +216,18 @@ public class KhLtPagService {
 
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
-
         KhPhuongAnGia phuongAnGia = optional.get();
-
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
         phuongAnGia.setNgaySua(LocalDateTime.now());
-
+        /**
+         *Xóa cc pháp lý, file đính kèm , ket qua để insert lại
+         */
+        this.deleteChildOfDxPag(phuongAnGia.getId());
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhPhuongAnGia finalPhuongAnGia = phuongAnGia;
-
         List<KhPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
             KhPagCcPhapLy canCuPhapLy = mapper.map(item, KhPagCcPhapLy.class);
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
@@ -291,6 +290,27 @@ public class KhLtPagService {
 
         return true;
     }
+
+    private void deleteChildOfDxPag(Long pagId){
+        List<Long> ids = new ArrayList<>();
+        ids.add(pagId);
+        log.info("Xóa căn cứ pháp lý và file đính kèm");
+        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
+        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
+            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
+            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
+            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
+        }
+        log.info("Xóa kết quả");
+        List<KhPagKetQua> allKetQuas = khLtPagKetQuaRepository.findByPhuongAnGiaIdIn(ids);
+        if (!CollectionUtils.isEmpty(allKetQuas)) {
+            List<Long> pagKetquaIds = allKetQuas.stream().map(KhPagKetQua::getId).collect(Collectors.toList());
+            fileDinhKemService.deleteMultiple(pagKetquaIds, Collections.singleton(KhPagKetQua.TABLE_NAME));
+            khLtPagKetQuaRepository.deleteAll(allKetQuas);
+        }
+    }
+
+
 
     private void deleteKetQua(String type, List<Long> phuongAnGiaIds) {
         List<KhPagKetQua> ketQuaList = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(type, phuongAnGiaIds);
