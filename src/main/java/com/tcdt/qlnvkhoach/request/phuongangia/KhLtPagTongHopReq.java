@@ -1,10 +1,9 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHopCTiet;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,5 +42,17 @@ public class KhLtPagTongHopReq {
 
     private String ghiChu;
 
-    private List<KhLtPagTongHopCTiet> pagChitiets;
+    private List<KhPagTongHopCTiet> pagChitiets;
+
+    private String trichYeu;
+
+    /**
+     * thông tin tờ trình
+     */
+    private String maToTrinh;
+
+    private BigDecimal ttGiaDn;
+
+    private BigDecimal ttGiaDnVat;
+
 }

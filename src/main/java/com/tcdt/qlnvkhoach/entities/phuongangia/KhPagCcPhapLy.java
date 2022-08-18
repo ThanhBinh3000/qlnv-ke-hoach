@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,17 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = KhLtPagCcPhapLy.TABLE_NAME)
+@Table(name = KhPagCcPhapLy.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KhLtPagCcPhapLy implements Serializable {
+public class KhPagCcPhapLy implements Serializable {
 
     private static final long serialVersionUID = -9158383107212840699L;
-    public static final String TABLE_NAME = "KH_LT_PAG_CC_PHAP_LY";
+    public static final String TABLE_NAME = "KH_PAG_CC_PHAP_LY";
 
     //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_CC_PHAP_LY_SEQ")
 //	@SequenceGenerator(sequenceName = "KH_LT_PAG_CC_PHAP_LY_SEQ", allocationSize = 1, name = "KH_LT_PAG_CC_PHAP_LY_SEQ")
@@ -44,7 +43,7 @@ public class KhLtPagCcPhapLy implements Serializable {
     private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
 
     /**
-     * {@link KhLtPhuongAnGia}
+     * {@link KhPhuongAnGia}
      */
     @Column(name = "PAG_ID")
     private Long phuongAnGiaId;

@@ -1,17 +1,12 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
-import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHopCTiet;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
-import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
+import com.tcdt.qlnvkhoach.entities.phuongangia.*;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
-import com.tcdt.qlnvkhoach.enums.TrangThaiEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
@@ -20,6 +15,7 @@ import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.util.Contains;
+import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +25,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,37 +53,38 @@ public class KhLtTongHopPagService extends BaseService {
     @Autowired
     private KhLtPagTongHopCTietRepository khLtPagTongHopCTietRepository;
 
-    public Page<KhLtPagTongHop> searchPage(KhLtPagTongHopSearchReq objReq) throws Exception {
+    public Page<KhPagTongHop> searchPage(KhLtPagTongHopSearchReq objReq) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         Pageable pageable = PageRequest.of(objReq.getPaggingReq().getPage(),
                 objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
-        Page<KhLtPagTongHop> data = khLtPagTongHopRepository.selectPage(
+        Page<KhPagTongHop> data = khLtPagTongHopRepository.selectPage(
                 objReq.getNamKh(),
                 objReq.getLoaiHh(),
                 Contains.convertDateToString(objReq.getNgayKyTu()),
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getNoiDung(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
+                objReq.getTrangThai(),
                 pageable);
-        List<Long> khLtPagTHIds = data.getContent().stream().map(KhLtPagTongHop::getId).collect(Collectors.toList());
-        List<KhLtPagTongHopCTiet> lChitiet = khLtPagTongHopCTietRepository.findByPagThIdIn(khLtPagTHIds);
-        Map<Long, List<KhLtPagTongHopCTiet>> mPagTHCtiet = lChitiet.stream().collect(Collectors.groupingBy(o -> o.getPagThId()));
-        for (KhLtPagTongHop khLtPagTongHop : data.getContent()) {
-            khLtPagTongHop.setPagChitiets(mPagTHCtiet.get(khLtPagTongHop.getId()));
+        List<Long> khLtPagTHIds = data.getContent().stream().map(KhPagTongHop::getId).collect(Collectors.toList());
+        List<KhPagTongHopCTiet> lChitiet = khLtPagTongHopCTietRepository.findByPagThIdIn(khLtPagTHIds);
+        Map<Long, List<KhPagTongHopCTiet>> mPagTHCtiet = lChitiet.stream().collect(Collectors.groupingBy(o -> o.getPagThId()));
+        for (KhPagTongHop khPagTongHop : data.getContent()) {
+            khPagTongHop.setPagChitiets(mPagTHCtiet.get(khPagTongHop.getId()));
         }
         return data;
     }
 
-    public KhLtPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq, HttpServletRequest req) throws Exception {
-        List<KhLtPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen());
+    public KhPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq, HttpServletRequest req) throws Exception {
+        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen());
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
         }
-        List<Long> khLtPagIds = listPagTH.stream().map(KhLtPhuongAnGia::getId).collect(Collectors.toList());
+        List<Long> khLtPagIds = listPagTH.stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
         if (khLtPagIds.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
         }
-        KhLtPagTongHop pagTH = new KhLtPagTongHop();
+        KhPagTongHop pagTH = new KhPagTongHop();
         pagTH.setNamTongHop(Long.valueOf(objReq.getNamKhoach()));
         pagTH.setCloaiVthh(objReq.getChungloaiVthh());
         pagTH.setLoaiGia(objReq.getLoaiGia());
@@ -95,8 +93,8 @@ public class KhLtTongHopPagService extends BaseService {
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
         Map<Long, List<Object[]>> khLtMinMaxKQKhaoSats = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), khLtPagIds)
                 .stream().collect(Collectors.groupingBy(o -> (Long) o[0]));
-        List<KhLtPagTongHopCTiet> lChitiet = new ArrayList<>();
-        for (KhLtPhuongAnGia pag : listPagTH) {
+        List<KhPagTongHopCTiet> lChitiet = new ArrayList<>();
+        for (KhPhuongAnGia pag : listPagTH) {
             List<Object[]> ketquaTDs = khLtMinMaxKQThamDinhs.get(pag.getId());
             List<Object[]> ketquaKSs = khLtMinMaxKQKhaoSats.get(pag.getId());
 //            set min max gia khao sat
@@ -132,7 +130,7 @@ public class KhLtTongHopPagService extends BaseService {
             if (StringUtils.isEmpty(pagTH.getGiaDnDen()) || pagTH.getGiaDnDen().compareTo(pag.getGiaDeNghi()) < 0) {
                 pagTH.setGiaDnDen(pag.getGiaDeNghi());
             }
-            KhLtPagTongHopCTiet cTiet = new KhLtPagTongHopCTiet();
+            KhPagTongHopCTiet cTiet = new KhPagTongHopCTiet();
             cTiet.setSoDx(pag.getSoDeXuat());
             cTiet.setSoLuong(pag.getSoLuong());
             cTiet.setMaDvi(pag.getMaDvi());
@@ -141,7 +139,7 @@ public class KhLtTongHopPagService extends BaseService {
             cTiet.setPagId(pag.getId());
             lChitiet.add(cTiet);
         }
-        List<String> maDvis = lChitiet.stream().map(KhLtPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
+        List<String> maDvis = lChitiet.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
         List<QlnvDmDonvi> dvis = qlnvDmDonviRepository.findByMaDviIn(maDvis);
         Map<String, QlnvDmDonvi> listDvi = dvis.stream()
                 .collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
@@ -153,20 +151,21 @@ public class KhLtTongHopPagService extends BaseService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public KhLtPagTongHop create(KhLtPagTongHopReq req) throws Exception {
+    public KhPagTongHop create(KhLtPagTongHopReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-        KhLtPagTongHop pagTH = mapper.map(req, KhLtPagTongHop.class);
-        pagTH.setTrangThai(TrangThaiEnum.DU_THAO.getId());
+        KhPagTongHop pagTH = mapper.map(req, KhPagTongHop.class);
         pagTH.setNguoiTaoId(userInfo.getId());
         pagTH.setNgayTao(LocalDate.now());
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
-        pagTH.setTrangThaiTH(TrangThaiEnum.DU_THAO.getId());
-        KhLtPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
-        List<KhLtPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
-            KhLtPagTongHopCTiet pagThChiTiet = mapper.map(item, KhLtPagTongHopCTiet.class);
+        pagTH.setTrangThai(Contains.MOI_TAO);
+        pagTH.setTrangThaiTH(Contains.CHUA_QUYET_DINH);
+        pagTH.setTtToTrinh(Contains.CHUATAOTOTRINH);
+        KhPagTongHop pagThSave = khLtPagTongHopRepository.save(pagTH);
+        List<KhPagTongHopCTiet> pagTGChiTiets = req.getPagChitiets().stream().map(item -> {
+            KhPagTongHopCTiet pagThChiTiet = mapper.map(item, KhPagTongHopCTiet.class);
             pagThChiTiet.setPagThId(pagThSave.getId());
             return pagThChiTiet;
         }).collect(Collectors.toList());
@@ -175,14 +174,108 @@ public class KhLtTongHopPagService extends BaseService {
         /**
          * update lại stt của dx pag
          */
-        List<Long> pagIds = req.getPagChitiets().stream().map(KhLtPagTongHopCTiet::getPagId).collect(Collectors.toList());
-        List<KhLtPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
-        List<KhLtPhuongAnGia> pagDetails = lPags.stream().map(item -> {
-            item.setTrangThaiTh(PAGTrangThaiTHEnum.DA_TH.getId());
+        List<Long> pagIds = req.getPagChitiets().stream().map(KhPagTongHopCTiet::getPagId).collect(Collectors.toList());
+        List<KhPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
+        List<KhPhuongAnGia> pagDetails = lPags.stream().map(item -> {
+            item.setTrangThaiTh(Contains.DA_TH);
             return item;
         }).collect(Collectors.toList());
         khLtPhuongAnGiaRepository.saveAll(pagDetails);
         return pagThSave;
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public KhPagTongHop createToTrinh(KhLtPagTongHopReq req) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (userInfo == null) throw new Exception("Bad request.");
+        Optional<KhPagTongHop>  optinal = khLtPagTongHopRepository.findById(req.getId());
+        if(!optinal.isPresent()){
+            throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
+        }
+        KhPagTongHop pagTH = optinal.get();
+        if(pagTH.getMaToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)){
+            throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
+        }
+        if(khLtPagTongHopRepository.findByMaToTrinh(req.getMaToTrinh()).get() != null){
+            throw new Exception("Số tờ trình đã tồn tại");
+        }
+        pagTH.setNgaySua(LocalDate.now());
+        pagTH.setNguoiSuaId(userInfo.getId());
+        pagTH.setTrichYeu(req.getTrichYeu());
+        pagTH.setMaToTrinh(req.getMaToTrinh());
+        pagTH.setTtGiaDn(req.getTtGiaDn());
+        pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
+        pagTH.setGhiChu(req.getGhiChu());
+        pagTH.setTtToTrinh(Contains.DATAOTOTRINH);
+        return khLtPagTongHopRepository.save(pagTH);
+    }
+
+    public  void exportPagTH(KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception{
+        PaggingReq paggingReq = new PaggingReq();
+        paggingReq.setPage(0);
+        paggingReq.setLimit(Integer.MAX_VALUE);
+        objReq.setPaggingReq(paggingReq);
+        Page<KhPagTongHop> page=this.searchPage(objReq);
+        List<KhPagTongHop> data=page.getContent();
+
+        String title="Danh sách tổng hợp phương án giá";
+        String[] rowsName=new String[]{"STT","Mã tổng hợp","Ngày tổng hợp","Nội dung tổng hợp","Năm kế hoạch","Loại hàng hóa","Chủng loại hàng hóa","Loại giá","Trạng thái tổng hợp","Mã tờ trình","Trạng thái"};
+        String fileName="danh-sach-tong-hop-phuong-an-gia.xlsx";
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs=null;
+        for (int i=0;i<data.size();i++){
+            KhPagTongHop dx=data.get(i);
+            objs=new Object[rowsName.length];
+            objs[0]=i;
+            objs[1]=dx.getId();
+            objs[2]=dx.getNgayTongHop();
+            objs[3]=dx.getNoiDung();
+            objs[4]=dx.getNamTongHop();
+            objs[5]=Contains.getLoaiVthh(dx.getLoaiVthh());
+            objs[6]=dx.getCloaiVthh();
+            objs[7]=dx.getLoaiGia();
+            objs[8]=Contains.getThTongHop(dx.getTrangThaiTH());
+            objs[9]=dx.getMaToTrinh();
+            objs[10]=Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());
+            dataList.add(objs);
+        }
+        ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
+        ex.export();
+    }
+
+    @Transactional
+    public KhPagTongHop detailPagTH(String id) throws  Exception {
+        Optional<KhPagTongHop> qOptional = khLtPagTongHopRepository.findById(Long.parseLong(id));
+        if (!qOptional.isPresent()) {
+            throw new Exception("Tổng hợp phương án giá không tồn tại");
+        }
+        KhPagTongHop data = qOptional.get();
+        List<Long> ids = new ArrayList<>();
+        ids.add(data.getId());
+        List<KhPagTongHopCTiet> listPagTHChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
+        if(listPagTHChiTiets.size() > 0){
+            data.setPagChitiets(listPagTHChiTiets);
+        }
+        return data;
+    }
+
+    @Transactional
+    public void delete(Long ids) throws Exception{
+        Optional<KhPagTongHop> qOptional=khLtPagTongHopRepository.findById(ids);
+        if(!qOptional.isPresent()){
+            throw new UserPrincipalNotFoundException("Id không tồn tại");
+        }
+        if(qOptional.get().getTrangThai().equals(Contains.DUYET)){
+            throw new Exception("Bản ghi có trạng thái đã duyệt,không được xóa.");
+        }
+        List<Long> pagTHIds = new ArrayList<>();
+        pagTHIds.add(ids);
+        List<KhPagTongHopCTiet> khPagTongHopCTiet = khLtPagTongHopCTietRepository.findByPagThIdIn(pagTHIds);
+        if (!CollectionUtils.isEmpty(khPagTongHopCTiet)) {
+            khLtPagTongHopCTietRepository.deleteAll(khPagTongHopCTiet);
+        }
+        khLtPagTongHopRepository.delete(qOptional.get());
     }
 
 

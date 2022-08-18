@@ -15,7 +15,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = KhLtPhuongAnGia.TABLE_NAME)
+@Table(name = KhPhuongAnGia.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,9 +23,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
-public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
+public class KhPhuongAnGia extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -8183308525284487273L;
-	public static final String TABLE_NAME = "KH_LT_PHUONG_AN_GIA";
+	public static final String TABLE_NAME = "KH_PHUONG_AN_GIA";
 	public static final String CAN_CU = "CAN_CU";
 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PHUONG_AN_GIA_SEQ")
@@ -84,7 +84,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 
 	@Transient
-	private List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
+	private List<KhPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
 //	@Column(name = "DIA_DIEM_DE_HANG")
 //	private String diaDiemDeHang;
 
@@ -97,7 +97,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	 * Căn cứ phương pháp xác định giá
 	 */
 	@Transient
-	private List<KhLtPagCcPhapLy> canCuPhapLy = new ArrayList<>();
+	private List<KhPagCcPhapLy> canCuPhapLy = new ArrayList<>();
 
 	@Column(name = "PHUONG_PHAP_ID")
 	private Long phuongPhapId;
@@ -121,10 +121,10 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	 * TTGHHTT: Thông tin giá của hàng hóa tương tự
 	 */
 	@Transient
-	private List<KhLtPagKetQua> ketQuaKhaoSatGiaThiTruong = new ArrayList<>();
+	private List<KhPagKetQua> ketQuaKhaoSatGiaThiTruong = new ArrayList<>();
 
 	@Transient
-	private List<KhLtPagKetQua> ketQuaThamDinhGia = new ArrayList<>();
+	private List<KhPagKetQua> ketQuaThamDinhGia = new ArrayList<>();
 
 	@Column(name = "TTGHHTT_LOAI_HH")
 	private String ttghhttLoaiHh;
@@ -136,7 +136,7 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 	private String ttghhttMoTaTcTuongTu; //Mô tả tính chất tương tự
 
 	@Transient
-	private List<KhLtPagKetQua> thongTinGiaHangHoaTuongTu = new ArrayList<>();
+	private List<KhPagKetQua> thongTinGiaHangHoaTuongTu = new ArrayList<>();
 	/**
 	 * Phân tích, dự báo biến động giá
 	 * BDG: Biến động giá
@@ -149,6 +149,9 @@ public class KhLtPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Transient
 	String tenTrangThai;
+
+	@Transient
+	String tenTrangThaiTh;
 
 	@Transient
 	String tenLoaiHh;

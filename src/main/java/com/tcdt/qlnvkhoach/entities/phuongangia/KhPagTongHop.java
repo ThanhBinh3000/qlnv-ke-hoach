@@ -16,18 +16,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagTongHop.TABLE_NAME;
-
 @Entity
-@Table(name = KhLtPagTongHop.TABLE_NAME)
+@Table(name = KhPagTongHop.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KhLtPagTongHop extends BaseEntity implements Serializable {
-    public static final String TABLE_NAME = "KH_LT_PAG_TONG_HOP";
+public class KhPagTongHop extends BaseEntity implements Serializable {
+    public static final String TABLE_NAME = "KH_PAG_TONG_HOP";
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_TONG_HOP_SEQ")
     @SequenceGenerator(sequenceName = "KH_LT_PAG_TONG_HOP_SEQ", allocationSize = 1, name = "KH_LT_PAG_TONG_HOP_SEQ")
@@ -37,6 +35,9 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
 
     @Column(name = "SO_TT")
     private String soTT;
+
+    @Column(name="TRICH_YEU")
+    private String trichYeu;
 
     @Column(name = "NGAY_TONG_HOP")
     private LocalDate ngayTongHop;
@@ -102,11 +103,26 @@ public class KhLtPagTongHop extends BaseEntity implements Serializable {
     private String ghiChu;
 
     @Transient
-    private List<KhLtPagTongHopCTiet> pagChitiets = new ArrayList<>();
+    private List<KhPagTongHopCTiet> pagChitiets = new ArrayList<>();
 
     @Column(name = "MA_DVI")
     private String maDvi;
 
     @Column(name = "CAP_DVI")
     private String capDvi;
+
+    @Column(name = "MA_TO_TRINH",unique = true)
+    private String maToTrinh;
+
+    @Column(name = "TT_TO_TRINH")
+    private String ttToTrinh;
+
+    /**
+     * thông tin tờ trình
+     */
+    @Column(name = "TT_GIA_DN")
+    private BigDecimal ttGiaDn;
+
+    @Column(name = "TT_GIA_DN_VAT")
+    private BigDecimal ttGiaDnVat;
 }
