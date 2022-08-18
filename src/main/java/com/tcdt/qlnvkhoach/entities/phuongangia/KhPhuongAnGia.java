@@ -52,7 +52,7 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "LOAI_VTHH")
     private String loaiVthh;
 
-    @Column(name = "SO_DE_XUAT")
+    @Column(name = "SO_DE_XUAT",unique = true)
     private String soDeXuat;
 
     @Column(name = "NGAY_KY")
@@ -61,8 +61,8 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "TRICH_YEU")
     private String trichYeu;
 
-    @Column(name = "CAN_CU_ID")
-    private Long canCuId;
+    @Column(name = "SO_CAN_CU")
+    private String soCanCu;
 
     @Column(name = "LOAI_GIA")
     private String loaiGia;
