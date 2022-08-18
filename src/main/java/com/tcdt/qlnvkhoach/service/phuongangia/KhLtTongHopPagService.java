@@ -11,6 +11,7 @@ import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
@@ -53,6 +54,8 @@ public class KhLtTongHopPagService extends BaseService {
     private ModelMapper mapper;
     @Autowired
     private KhLtPagTongHopCTietRepository khLtPagTongHopCTietRepository;
+    @Autowired
+    private QlnvDmService qlnvDmService;
 
     public Page<KhPagTongHop> searchPage(KhLtPagTongHopSearchReq objReq) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
@@ -70,14 +73,19 @@ public class KhLtTongHopPagService extends BaseService {
         List<Long> khLtPagTHIds = data.getContent().stream().map(KhPagTongHop::getId).collect(Collectors.toList());
         List<KhPagTongHopCTiet> lChitiet = khLtPagTongHopCTietRepository.findByPagThIdIn(khLtPagTHIds);
         Map<Long, List<KhPagTongHopCTiet>> mPagTHCtiet = lChitiet.stream().collect(Collectors.groupingBy(o -> o.getPagThId()));
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         for (KhPagTongHop khPagTongHop : data.getContent()) {
             khPagTongHop.setPagChitiets(mPagTHCtiet.get(khPagTongHop.getId()));
+            khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
+            khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null :  hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
+            khPagTongHop.setTencloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
         }
         return data;
     }
 
     public KhPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq, HttpServletRequest req) throws Exception {
-        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen());
+        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen(),objReq.getType());
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
         }
@@ -222,6 +230,9 @@ public class KhLtTongHopPagService extends BaseService {
         Page<KhPagTongHop> page = this.searchPage(objReq);
         List<KhPagTongHop> data = page.getContent();
 
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+
         String title = "Danh sách tổng hợp phương án giá";
         String[] rowsName = new String[]{"STT", "Mã tổng hợp", "Ngày tổng hợp", "Nội dung tổng hợp", "Năm kế hoạch", "Loại hàng hóa", "Chủng loại hàng hóa", "Loại giá", "Trạng thái tổng hợp", "Mã tờ trình", "Trạng thái"};
         String fileName = "danh-sach-tong-hop-phuong-an-gia.xlsx";
@@ -235,9 +246,9 @@ public class KhLtTongHopPagService extends BaseService {
             objs[2] = dx.getNgayTongHop();
             objs[3] = dx.getNoiDung();
             objs[4] = dx.getNamTongHop();
-            objs[5] = Contains.getLoaiVthh(dx.getLoaiVthh());
-            objs[6] = dx.getCloaiVthh();
-            objs[7] = dx.getLoaiGia();
+            objs[5] = StringUtils.isEmpty(dx.getLoaiVthh()) ? null : hashMapHh.get(dx.getLoaiVthh());
+            objs[6] = StringUtils.isEmpty(dx.getCloaiVthh()) ? null : hashMapHh.get(dx.getCloaiVthh());
+            objs[7] = hashMapLoaiGia.get(dx.getLoaiGia());
             objs[8] = Contains.getThTongHop(dx.getTrangThaiTH());
             objs[9] = dx.getSoToTrinh();
             objs[10] = Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());

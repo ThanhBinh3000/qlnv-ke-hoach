@@ -36,6 +36,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -89,12 +90,12 @@ public class KhLtPagService {
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
 
-
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
             f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
-            f.setTenLoaiVthh(hashMapHh.get(f.getLoaiVthh()));
-            f.setTenLoaiGia(hashMapLoaiGia.get(f.getLoaiGia()));
+            f.setTenLoaiVthh(StringUtils.isEmpty(f.getLoaiVthh()) ? null : hashMapHh.get(f.getLoaiVthh()));
+            f.setTenLoaiGia(StringUtils.isEmpty(f.getLoaiGia()) ? null :  hashMapLoaiGia.get(f.getLoaiGia()));
+            f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
 //        get ketqua tham dinh gia va khao sat gia
@@ -210,7 +211,6 @@ public class KhLtPagService {
         }).collect(Collectors.toList());
         return ddDehangs;
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public KhLtPhuongAnGiaRes update(KhLtPhuongAnGiaReq req) throws Exception {
