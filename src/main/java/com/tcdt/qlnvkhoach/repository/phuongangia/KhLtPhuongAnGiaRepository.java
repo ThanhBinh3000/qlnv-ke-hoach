@@ -27,7 +27,6 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 
 	List<KhPhuongAnGia> findByIdIn(List<Long> ids);
 
-
 	@Query(value = " SELECT PAG.* \n" +
 			"FROM KH_PHUONG_AN_GIA PAG \n" +
 			" WHERE PAG.LOAI_VTHH = :loaiHh \n" +
