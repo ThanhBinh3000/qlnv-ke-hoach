@@ -76,7 +76,7 @@ public class KhLtTongHopPagService extends BaseService {
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         for (KhPagTongHop khPagTongHop : data.getContent()) {
-            khPagTongHop.setPagChitiets(mPagTHCtiet.get(khPagTongHop.getId()));
+            khPagTongHop.setPagChiTiets(mPagTHCtiet.get(khPagTongHop.getId()));
             khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
             khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null :  hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
             khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
@@ -155,7 +155,7 @@ public class KhLtTongHopPagService extends BaseService {
         lChitiet.forEach(f -> {
             f.setTenDvi(listDvi.get(f.getMaDvi()).getTenDvi());
         });
-        pagTH.setPagChitiets(lChitiet);
+        pagTH.setPagChiTiets(lChitiet);
         return pagTH;
     }
 
@@ -180,7 +180,7 @@ public class KhLtTongHopPagService extends BaseService {
                 return pagThChiTiet;
             }).collect(Collectors.toList());
             khLtPagTongHopCTietRepository.saveAll(pagTGChiTiets);
-            pagThSave.setPagChitiets(pagTGChiTiets);
+            pagThSave.setPagChiTiets(pagTGChiTiets);
             /**
              * update lại stt của dx pag
              */
@@ -269,7 +269,7 @@ public class KhLtTongHopPagService extends BaseService {
         ids.add(data.getId());
         List<KhPagTongHopCTiet> listPagTHChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
         if (listPagTHChiTiets.size() > 0) {
-            data.setPagChitiets(listPagTHChiTiets);
+            data.setPagChiTiets(listPagTHChiTiets);
         }
         return data;
     }
