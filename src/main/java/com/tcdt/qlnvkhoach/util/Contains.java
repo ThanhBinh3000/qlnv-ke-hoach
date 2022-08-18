@@ -72,9 +72,15 @@ public class Contains {
 
     // Trạng thái tổng hợp
     public static final String CHUA_QUYET_DINH = "00";
-
     public static final String DU_THAO_QD = "01";
     public static final String DA_QUYET_DINH = "02";
+
+    // Trạng thái tổng hợp bản ghi gốc
+    public static final String CHUA_TH = "24";
+    public static final String DA_TH = "25";
+    //Trạng thái tạo tờ trình (Phương án giá)
+    public static final String CHUATAOTOTRINH = "31";
+    public static final String DATAOTOTRINH = "32";
 
     // Trạng thái gói thầu
 
@@ -237,6 +243,16 @@ public class Contains {
 
     public static String getLoaiVthh(String key) {
         return Contains.mpLoaiVthh.get(key);
+    }
+
+
+    public static final Map<String, String> mpTrangThaiTH;
+    static {
+        mpTrangThaiTH = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DA_TH, "Gạo")
+                .put(Contains.CHUA_TH, "Thóc").get();
+    }
+    public static String getThTongHop(String key) {
+        return Contains.mpTrangThaiTH.get(key);
     }
 
     public static final Map<String, BigDecimal> mpDVTinh;

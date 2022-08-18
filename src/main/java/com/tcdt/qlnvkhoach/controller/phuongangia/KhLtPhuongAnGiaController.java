@@ -2,34 +2,21 @@ package com.tcdt.qlnvkhoach.controller.phuongangia;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.controller.BaseController;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
-import com.tcdt.qlnvkhoach.enums.GiaoKeHoachVonDauNamEnum;
-import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
-import com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam.KhQdTtcpBoNganhRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
-import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
-import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachvondaunam.KhQdTtcpSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPagService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPhuongAnGiaService;
-import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
-import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Constants;
-import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.PathConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.xml.xpath.XPathConstants;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +76,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
     @ApiOperation(value = "Sửa đề xuất phương án giá", response = List.class)
     @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> updateQd(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
+    public final ResponseEntity<Resp> updatePag(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(khLtPagService.update(req));
@@ -143,7 +129,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     public final ResponseEntity<Resp> detailDxPag(@ApiParam(value = "ID đề xuất phương án giá", example = "1", required = true) @PathVariable("ids") String ids) {
         Resp resp = new Resp();
         try {
-            KhLtPhuongAnGia khQdBtcBoNganh=khLtPagService.detailDxPag(ids);
+            KhPhuongAnGia khQdBtcBoNganh=khLtPagService.detailDxPag(ids);
             resp.setData(khQdBtcBoNganh);
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");

@@ -19,7 +19,7 @@ public class KhLtPagKetQuaReq {
 
 	private Long stt;
 
-	private String tenDonVi;
+	private String tenDviBaoGia;
 
 	private BigDecimal donGia;
 
@@ -27,11 +27,11 @@ public class KhLtPagKetQuaReq {
 
 	private String ghiChu;
 
-	private String chungLoaiHh;
+	private String cloaiVthh;
 
 	private String thoiHanBaoGia;
 
-	private List<FileDinhKemReq> fileDinhKems = new ArrayList<>();
+	private  FileDinhKemReq fileDinhKem;
 
 	private String type;
 

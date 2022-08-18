@@ -7,6 +7,8 @@ import java.util.Date;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 public class KhLtPhuongAnGiaSearchReq extends BaseRequest {
 
@@ -24,4 +26,8 @@ public class KhLtPhuongAnGiaSearchReq extends BaseRequest {
 
     String trichYeu;
 
+    String type;
+
+    @NotNull(message = "Không được để trống")
+    String pagType;
 }

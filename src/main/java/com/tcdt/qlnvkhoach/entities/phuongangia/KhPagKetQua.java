@@ -15,16 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = KhLtPagKetQua.TABLE_NAME)
+@Table(name = KhPagKetQua.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KhLtPagKetQua implements Serializable {
+public class KhPagKetQua implements Serializable {
 	private static final long serialVersionUID = -2281361977218600320L;
-	public static final String TABLE_NAME = "KH_LT_PAG_KET_QUA";
+	public static final String TABLE_NAME = "KH_PAG_KET_QUA";
 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_LT_PAG_KET_QUA_SEQ")
 	@SequenceGenerator(sequenceName = "KH_LT_PAG_KET_QUA_SEQ", allocationSize = 1, name = "KH_LT_PAG_KET_QUA_SEQ")
@@ -35,8 +35,8 @@ public class KhLtPagKetQua implements Serializable {
 	@Column(name = "STT")
 	private Long stt;
 
-	@Column(name = "TEN_DON_VI")
-	private String tenDonVi;
+	@Column(name = "TEN_DVI_BAO_GIA")
+	private String tenDviBaoGia;
 
 	@Column(name = "DON_GIA")
 	private BigDecimal donGia;
@@ -44,8 +44,8 @@ public class KhLtPagKetQua implements Serializable {
 	@Column(name = "DON_GIA_VAT")
 	private BigDecimal donGiaVat;
 
-	@Column(name = "CHUNG_LOAI_HH")
-	private String chungLoaiHh;
+	@Column(name = "CLOAI_VTHH")
+	private String cloaiVthh;
 
 	@Column(name = "THOI_HAN_BAO_GIA")
 	private String thoiHanBaoGia;
@@ -54,7 +54,7 @@ public class KhLtPagKetQua implements Serializable {
 	private String ghiChu;
 
 	@Transient
-	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+	private FileDinhKemChung fileDinhKem;
 
 	/**
 	 * {@link com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum}
@@ -63,12 +63,12 @@ public class KhLtPagKetQua implements Serializable {
 	private String type;
 
 	/**
-	 * {@link KhLtPhuongAnGia}
+	 * {@link KhPhuongAnGia}
 	 */
 	@Column(name = "PAG_ID")
 	private Long phuongAnGiaId;
 
 	static final public String getFileDinhKemDataType(String type) {
-		return String.format("%s_%s", KhLtPagKetQua.TABLE_NAME, type);
+		return String.format("%s_%s", KhPagKetQua.TABLE_NAME, type);
 	}
 }

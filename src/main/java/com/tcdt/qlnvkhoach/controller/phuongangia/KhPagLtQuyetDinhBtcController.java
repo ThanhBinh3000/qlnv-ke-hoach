@@ -2,7 +2,7 @@ package com.tcdt.qlnvkhoach.controller.phuongangia;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.controller.BaseController;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagLtQuyetDinhBtc;
 import com.tcdt.qlnvkhoach.jwt.CurrentUser;
 import com.tcdt.qlnvkhoach.jwt.CustomUserDetails;

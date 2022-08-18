@@ -1,8 +1,10 @@
 package com.tcdt.qlnvkhoach.response.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagDiaDiemDeHang;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagDiaDiemDeHang;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,13 +22,13 @@ import java.util.List;
 public class KhLtPhuongAnGiaRes {
 	private Long id;
 
-	private String maDonVi;
+	private String maDvi;
 
 	private String trangThai;
 
 	private Long namKeHoach;
 
-	private String loaiHangHoa;
+	private String loaiVthh;
 
 	private String soDeXuat;
 
@@ -40,19 +42,21 @@ public class KhLtPhuongAnGiaRes {
 
 	private String ghiChu;
 
-	private String ttcChungLoaiHh;
+	private String cloaiVthh;
 
-	private String tieuChuanCl;
+	private String tchuanCluong;
 
 	private Long soLuong;
 
-//	private String diaDiemDeHang;
-	/**
-	 * Địa điểm để hàng
-	 */
-	private List<KhLtPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
+	private String diaDiemDeHang;
 
 	private BigDecimal giaDeNghi;
+
+	private BigDecimal giaDeNghiVat;
+
+	private List<FileDinhKemReq> fileDinhKems;
+
+
 	/**
 	 * Căn cứ phương pháp xác định giá
 	 */
@@ -69,6 +73,8 @@ public class KhLtPhuongAnGiaRes {
 
 	private BigDecimal giaVonNk;
 
+	private BigDecimal chiPhiPbo;
+
 	private BigDecimal chiPhiChung;
 
 	private BigDecimal tongChiPhi;
@@ -77,9 +83,9 @@ public class KhLtPhuongAnGiaRes {
 	 * TTGHHTT: Thông tin giá của hàng hóa tương tự
 	 */
 
-	private List<KhLtPagKetQuaRes> ketQuaKhaoSatGiaThiTruong = new ArrayList<>();
+	private List<KhLtPagKetQuaReq> ketQuaKhaoSatGiaThiTruong = new ArrayList<>();
 
-	private List<KhLtPagKetQuaRes> ketQuaThamDinhGia = new ArrayList<>();
+	private List<KhLtPagKetQuaReq> ketQuaThamDinhGia = new ArrayList<>();
 
 	private String ttghhttLoaiHh;
 
@@ -87,7 +93,7 @@ public class KhLtPhuongAnGiaRes {
 
 	private String ttghhttMoTaTcTuongTu; //Mô tả tính chất tương tự
 
-	private List<KhLtPagKetQuaRes> thongTinGiaHangHoaTuongTu = new ArrayList<>();
+	private List<KhLtPagKetQuaReq> thongTinGiaHangHoaTuongTu = new ArrayList<>();
 	/**
 	 * Phân tích, dự báo biến động giá
 	 * BDG: Biến động giá
@@ -95,4 +101,17 @@ public class KhLtPhuongAnGiaRes {
 	private String bdgNoiDung; //Nội dung: Biến động giá
 
 	private String bdgGhiChu; //Ghi chú: Biến động giá
+
+	/**
+	 * Địa điêm để hàng
+	 */
+	private List<KhLtPagDiaDiemDeHangReq> diaDiemDeHangs = new ArrayList<>();
+
+	private String moTa;
+
+	private BigDecimal vat;
+
+	private String maPphapXdg;
+
+	private String loaiHangXdg;
 }
