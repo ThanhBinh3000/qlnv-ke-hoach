@@ -369,7 +369,6 @@ public class KhLtPagService {
             objs[6]=dx.getLoaiGia();
             objs[7]=dx.getTenTrangThai();
             dataList.add(objs);
-
         }
         ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
         ex.export();
