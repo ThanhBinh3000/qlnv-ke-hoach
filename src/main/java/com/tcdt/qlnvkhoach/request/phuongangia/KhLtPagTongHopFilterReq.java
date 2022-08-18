@@ -8,6 +8,9 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+
 @Getter
 @Setter
 public class KhLtPagTongHopFilterReq {
@@ -22,7 +25,7 @@ public class KhLtPagTongHopFilterReq {
 
     @NotNull(message = "Không được để trống")
     @ApiModelProperty(example = Contains.LOAI_VTHH_GAO)
-    String chungloaiVthh;
+    String cloaiVthh;
 
 
     @NotNull(message = "Không được để trống")
@@ -38,4 +41,7 @@ public class KhLtPagTongHopFilterReq {
 
     @ApiModelProperty
     String type;
+
+//    @NotNull(message = "Không được để trống")
+    List<String> maDvis;
 }
