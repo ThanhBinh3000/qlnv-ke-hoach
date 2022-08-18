@@ -197,6 +197,7 @@ public class KhLtPagService {
             ketQua.setFileDinhKem(fileDinhKems.get(0));
             return ketQua;
         }).collect(Collectors.toList());
+//        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
         return ketQuaList;
     }
 
@@ -219,9 +220,12 @@ public class KhLtPagService {
         }
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
+
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
+
         KhPhuongAnGia phuongAnGia = optional.get();
+
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
         phuongAnGia.setNgaySua(LocalDateTime.now());
