@@ -9,6 +9,7 @@ import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
+import com.tcdt.qlnvkhoach.repository.FileDinhKemChungRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagCcPhapLyRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagDiaDiemDeHangRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
@@ -64,6 +65,8 @@ public class KhLtPagService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+    @Autowired
+    private FileDinhKemChungRepository fileDinhKemChungRepository;
 
 
     public Iterable<KhPhuongAnGia> findAll() {
@@ -85,7 +88,6 @@ public class KhLtPagService {
                 objReq.getType(),
                 objReq.getPagType().equals("VT") ? "02" : "01",
                 pageable);
-
 
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
@@ -196,7 +198,7 @@ public class KhLtPagService {
             ketQua = khLtPagKetQuaRepository.save(ketQua);
             List<FileDinhKemReq> listFile = new ArrayList<>();
             listFile.add(item.getFileDinhKem());
-            List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(listFile, ketQua.getId(), KhPagKetQua.getFileDinhKemDataType(type));
+            List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(listFile, ketQua.getId(), KhPagKetQua.TABLE_NAME);
             ketQua.setFileDinhKem(fileDinhKems.get(0));
             return ketQua;
         }).collect(Collectors.toList());
@@ -225,11 +227,10 @@ public class KhLtPagService {
 
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
-
-//        if(khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat()).isPresent()){
-//            throw new Exception("Số đề xuất đã tồn tại");
-//        }
-
+        Optional<KhPhuongAnGia> optionalCheckUnique = khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat());
+        if(optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId() ){
+            throw new Exception("Số đề xuất đã tồn tại");
+        }
         KhPhuongAnGia phuongAnGia = optional.get();
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
@@ -366,38 +367,55 @@ public class KhLtPagService {
         KhPhuongAnGia data = qOptional.get();
         List<Long> ids = new ArrayList<>();
         ids.add(data.getId());
+        Collection dataType = new ArrayList();
+        dataType.add(KhPhuongAnGia.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemChungRepository.findByDataIdAndDataTypeIn(data.getId(),dataType);
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
         List<KhPagKetQua> listPagKetQuaTD = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),ids);
         List<KhPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),ids);
         List<KhPagKetQua> listPagKetQuaTTHHTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(),ids);
+        List<Long> khCcPhapLyIds = listPagCCPhapLy.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
+        List<Long> listKqIds = khLtPagKetQuaRepository.findByPhuongAnGiaIdIn(ids).stream().map(KhPagKetQua::getId).collect(Collectors.toList());
+        Map<Long, List<FileDinhKemChung>> mapListFileForKqs = fileDinhKemChungRepository.findByDataIdInAndDataType(listKqIds,KhPagKetQua.TABLE_NAME)
+                .stream().collect(Collectors.groupingBy(o ->o.getDataId()));
         if(listPagCCPhapLy.size() > 0){
+            Map<Long, List<FileDinhKemChung>> mapListFile = fileDinhKemChungRepository.findByDataIdInAndDataType(khCcPhapLyIds,KhPagCcPhapLy.TABLE_NAME)
+                    .stream().collect(Collectors.groupingBy(o ->o.getDataId()));
+            listPagCCPhapLy.forEach( f -> {
+                f.setFileDinhKem(mapListFile.size() > 0 && mapListFile.get(f.getId()).size() >0  ? mapListFile.get(f.getId()).get(0) :null);
+            });
             data.setCanCuPhapLy(listPagCCPhapLy);
         }
         if(listPagKetQuaTD.size() > 0){
             listPagKetQuaTD.forEach( f -> {
                 f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
+                f.setFileDinhKem(mapListFileForKqs.size() > 0 && mapListFileForKqs.get(f.getId()).size() >0  ? mapListFileForKqs.get(f.getId()).get(0) :null);
             });
             data.setKetQuaThamDinhGia(listPagKetQuaTD);
         }
         if(listPagKetQuaKSTT.size() > 0){
             listPagKetQuaKSTT.forEach( f -> {
                 f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
+                f.setFileDinhKem(mapListFileForKqs.size() > 0 && mapListFileForKqs.get(f.getId()).size() >0  ? mapListFileForKqs.get(f.getId()).get(0) :null);
             });
             data.setKetQuaKhaoSatGiaThiTruong(listPagKetQuaKSTT);
         }
         if(listPagKetQuaTTHHTT.size() > 0){
             listPagKetQuaTTHHTT.forEach( f -> {
                 f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
+                f.setFileDinhKem(mapListFileForKqs.size() > 0 && mapListFileForKqs.get(f.getId()).size() >0  ? mapListFileForKqs.get(f.getId()).get(0) :null);
             });
             data.setThongTinGiaHangHoaTuongTu(listPagKetQuaTTHHTT);
         }
         if(diaDiemDeHangs.size() > 0){
             data.setDiaDiemDeHangs(diaDiemDeHangs);
         }
+        if(fileDinhKems.size() > 0){
+            data.setListFileCCs(fileDinhKems);
+        }
         return data;
-
     }
 
     public  void exportDxPag(KhLtPhuongAnGiaSearchReq objReq, HttpServletResponse response) throws Exception{
