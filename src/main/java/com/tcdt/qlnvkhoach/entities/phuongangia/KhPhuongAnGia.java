@@ -161,4 +161,7 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
 	@Transient
 	List<FileDinhKemChung> listFileCCs;
+
+	@Column(name = "TYPE")
+	private String type;
 }

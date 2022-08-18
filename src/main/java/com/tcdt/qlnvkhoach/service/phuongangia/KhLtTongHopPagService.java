@@ -195,7 +195,7 @@ public class KhLtTongHopPagService extends BaseService {
             throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
         }
         KhPagTongHop pagTH = optinal.get();
-        if(pagTH.getMaToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)){
+        if(pagTH.getSoToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)){
             throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
         }
         if(khLtPagTongHopRepository.findByMaToTrinh(req.getMaToTrinh()).get() != null){
@@ -204,7 +204,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setNgaySua(LocalDateTime.now());
         pagTH.setNguoiSuaId(userInfo.getId());
         pagTH.setTrichYeu(req.getTrichYeu());
-        pagTH.setMaToTrinh(req.getMaToTrinh());
+        pagTH.setSoToTrinh(req.getMaToTrinh());
         pagTH.setTtGiaDn(req.getTtGiaDn());
         pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
         pagTH.setGhiChu(req.getGhiChu());
@@ -237,7 +237,7 @@ public class KhLtTongHopPagService extends BaseService {
             objs[6]=dx.getCloaiVthh();
             objs[7]=dx.getLoaiGia();
             objs[8]=Contains.getThTongHop(dx.getTrangThaiTH());
-            objs[9]=dx.getMaToTrinh();
+            objs[9]=dx.getSoToTrinh();
             objs[10]=Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());
             dataList.add(objs);
         }
