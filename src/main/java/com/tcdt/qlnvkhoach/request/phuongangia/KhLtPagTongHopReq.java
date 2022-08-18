@@ -55,4 +55,6 @@ public class KhLtPagTongHopReq {
 
     private BigDecimal ttGiaDnVat;
 
+    private String type;
+
 }

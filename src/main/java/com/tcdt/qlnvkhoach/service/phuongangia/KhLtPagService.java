@@ -36,6 +36,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -81,18 +82,20 @@ public class KhLtPagService {
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getTrichYeu(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
+                objReq.getType(),
+                objReq.getPagType().equals("VT") ? "02" : "01",
                 pageable);
 
 
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String,String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
 
-
         data.getContent().forEach( f -> {
             f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
             f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
-            f.setTenLoaiHh(hashMapHh.get(f.getLoaiVthh()));
-            f.setTenLoaiGia(hashMapLoaiGia.get(f.getLoaiGia()));
+            f.setTenLoaiVthh(StringUtils.isEmpty(f.getLoaiVthh()) ? null : hashMapHh.get(f.getLoaiVthh()));
+            f.setTenLoaiGia(StringUtils.isEmpty(f.getLoaiGia()) ? null :  hashMapLoaiGia.get(f.getLoaiGia()));
+            f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
         });
         List<Long> khLtPagIds = data.getContent().stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
 //        get ketqua tham dinh gia va khao sat gia
@@ -209,11 +212,12 @@ public class KhLtPagService {
         return ddDehangs;
     }
 
-
     @Transactional(rollbackFor = Exception.class)
     public KhLtPhuongAnGiaRes update(KhLtPhuongAnGiaReq req) throws Exception {
         if (req == null) return null;
-
+        if(req.getId() == null ){
+            throw new Exception("Bad request");
+        }
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
 
@@ -225,10 +229,16 @@ public class KhLtPagService {
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setNguoiSuaId(userInfo.getId());
         phuongAnGia.setNgaySua(LocalDateTime.now());
-
+        /**
+         *Xóa cc pháp lý, file đính kèm , ket qua để insert lại
+         */
+        List<Long> pagIds = new ArrayList<>();
+        pagIds.add(phuongAnGia.getId());
+        this.deleteChildOfDxPag(pagIds);
+        // Xóa file đính kem`
+        fileDinhKemService.deleteMultiple(pagIds, Collections.singleton(KhPhuongAnGia.TABLE_NAME));
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhPhuongAnGia finalPhuongAnGia = phuongAnGia;
-
         List<KhPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
             KhPagCcPhapLy canCuPhapLy = mapper.map(item, KhPagCcPhapLy.class);
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
@@ -291,6 +301,25 @@ public class KhLtPagService {
 
         return true;
     }
+
+    private void deleteChildOfDxPag(List<Long> pagIds){
+        log.info("Xóa căn cứ pháp lý và file đính kèm");
+        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(pagIds);
+        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
+            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
+            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
+            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
+        }
+        log.info("Xóa kết quả");
+        List<KhPagKetQua> allKetQuas = khLtPagKetQuaRepository.findByPhuongAnGiaIdIn(pagIds);
+        if (!CollectionUtils.isEmpty(allKetQuas)) {
+            List<Long> pagKetquaIds = allKetQuas.stream().map(KhPagKetQua::getId).collect(Collectors.toList());
+            fileDinhKemService.deleteMultiple(pagKetquaIds, Collections.singleton(KhPagKetQua.TABLE_NAME));
+            khLtPagKetQuaRepository.deleteAll(allKetQuas);
+        }
+    }
+
+
 
     private void deleteKetQua(String type, List<Long> phuongAnGiaIds) {
         List<KhPagKetQua> ketQuaList = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(type, phuongAnGiaIds);
