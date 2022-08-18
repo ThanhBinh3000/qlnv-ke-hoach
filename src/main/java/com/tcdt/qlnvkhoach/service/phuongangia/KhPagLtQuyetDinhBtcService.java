@@ -5,17 +5,19 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagCcPhapLy;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPagKetQua;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhLtPhuongAnGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagCcPhapLy;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagKetQua;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagLtQuyetDinhBtc;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.enums.KhPagLtQuyetDinhBtcEnum;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.jwt.CustomUserDetails;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagCcPhapLyRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagCcPhapLyRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagCcPhapLyRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagLtQuyetDinhBtcRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
@@ -40,6 +42,7 @@ import org.springframework.util.CollectionUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,13 +58,13 @@ public class KhPagLtQuyetDinhBtcService extends BaseService {
   @Autowired
   private ModelMapper mapper;
   @Autowired
-  private KhLtPagCcPhapLyRepository khLtPagCcPhapLyRepository;
+  private KhPagCcPhapLyRepository khLtPagCcPhapLyRepository;
   @Autowired
   private KhLtPagKetQuaRepository khLtPagKetQuaRepository;
   @Autowired
   KhPagLtQuyetDinhBtcRepository khPagLtQuyetDinhBtcRepository;
 
-  public Iterable<KhLtPhuongAnGia> findAll() {
+  public Iterable<KhPhuongAnGia> findAll() {
     return khLtPhuongAnGiaRepository.findAll();
   }
 
@@ -99,7 +102,7 @@ public class KhPagLtQuyetDinhBtcService extends BaseService {
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     updateObjectToObject(currentRow, objectMapper.convertValue(req, KhPagLtQuyetDinhBtc.class));
 
-    currentRow.setNgaySua(LocalDate.now());
+    currentRow.setNgaySua(LocalDateTime.now());
     currentRow.setNguoiSuaId(currentUser.getUser().getId());
     System.out.println(currentRow);
     khPagLtQuyetDinhBtcRepository.save(currentRow);

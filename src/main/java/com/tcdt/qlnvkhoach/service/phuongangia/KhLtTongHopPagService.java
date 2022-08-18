@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -156,7 +157,7 @@ public class KhLtTongHopPagService extends BaseService {
         if (userInfo == null) throw new Exception("Bad request.");
         KhPagTongHop pagTH = mapper.map(req, KhPagTongHop.class);
         pagTH.setNguoiTaoId(userInfo.getId());
-        pagTH.setNgayTao(LocalDate.now());
+        pagTH.setNgayTao(LocalDateTime.now());
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
@@ -200,7 +201,7 @@ public class KhLtTongHopPagService extends BaseService {
         if(khLtPagTongHopRepository.findByMaToTrinh(req.getMaToTrinh()).get() != null){
             throw new Exception("Số tờ trình đã tồn tại");
         }
-        pagTH.setNgaySua(LocalDate.now());
+        pagTH.setNgaySua(LocalDateTime.now());
         pagTH.setNguoiSuaId(userInfo.getId());
         pagTH.setTrichYeu(req.getTrichYeu());
         pagTH.setMaToTrinh(req.getMaToTrinh());
