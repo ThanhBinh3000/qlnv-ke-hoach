@@ -79,13 +79,13 @@ public class KhLtTongHopPagService extends BaseService {
             khPagTongHop.setPagChitiets(mPagTHCtiet.get(khPagTongHop.getId()));
             khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
             khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null :  hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
-            khPagTongHop.setTencloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
+            khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
         }
         return data;
     }
 
     public KhPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq, HttpServletRequest req) throws Exception {
-        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getChungloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen(),objReq.getType());
+        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getCloaiVthh(), objReq.getNamKhoach(), objReq.getLoaiGia(), objReq.getNgayDxuatTu(), objReq.getNgayDxuatDen(),objReq.getType(),objReq.getMaDvis());
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy data tổng hợp");
         }
@@ -95,7 +95,7 @@ public class KhLtTongHopPagService extends BaseService {
         }
         KhPagTongHop pagTH = new KhPagTongHop();
         pagTH.setNamTongHop(Long.valueOf(objReq.getNamKhoach()));
-        pagTH.setCloaiVthh(objReq.getChungloaiVthh());
+        pagTH.setCloaiVthh(objReq.getCloaiVthh());
         pagTH.setLoaiGia(objReq.getLoaiGia());
         pagTH.setLoaiVthh(objReq.getLoaiVthh());
         Map<Long, List<Object[]>> khLtMinMaxKQThamDinhs = khLtPhuongAnGiaRepository.listPagWithDonGia(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), khLtPagIds)

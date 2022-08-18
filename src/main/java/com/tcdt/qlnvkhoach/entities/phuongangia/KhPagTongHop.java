@@ -58,7 +58,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     private String cloaiVthh;
 
     @Transient
-    private String tencloaiVthh;
+    private String tenCloaiVthh;
 
     @Column(name = "LOAI_GIA")
     private String loaiGia;
