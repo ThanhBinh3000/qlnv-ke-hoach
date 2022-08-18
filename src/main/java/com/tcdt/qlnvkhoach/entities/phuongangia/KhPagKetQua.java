@@ -35,8 +35,8 @@ public class KhPagKetQua implements Serializable {
 	@Column(name = "STT")
 	private Long stt;
 
-	@Column(name = "TEN_DON_VI")
-	private String tenDonVi;
+	@Column(name = "TEN_DVI_BAO_GIA")
+	private String tenDviBaoGia;
 
 	@Column(name = "DON_GIA")
 	private BigDecimal donGia;
@@ -44,8 +44,8 @@ public class KhPagKetQua implements Serializable {
 	@Column(name = "DON_GIA_VAT")
 	private BigDecimal donGiaVat;
 
-	@Column(name = "CHUNG_LOAI_HH")
-	private String chungLoaiHh;
+	@Column(name = "CLOAI_VTHH")
+	private String cloaiVthh;
 
 	@Column(name = "THOI_HAN_BAO_GIA")
 	private String thoiHanBaoGia;
@@ -54,7 +54,7 @@ public class KhPagKetQua implements Serializable {
 	private String ghiChu;
 
 	@Transient
-	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
+	private FileDinhKemChung fileDinhKem;
 
 	/**
 	 * {@link com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum}

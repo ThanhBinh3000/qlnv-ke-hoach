@@ -25,5 +25,5 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
 
 	List<KhPagTongHop> findByIdIn(List<Long> ids);
 
-	Optional<KhPagTongHop> findByMaToTrinh(String maToTrinh);
+	Optional<KhPagTongHop> findBySoToTrinh(String soToTrinh);
 }

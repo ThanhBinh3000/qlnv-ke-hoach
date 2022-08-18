@@ -40,8 +40,7 @@ public class KhPagCcPhapLy implements Serializable {
     private String moTa;
 
     @Transient
-    private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
-
+    private  FileDinhKemChung fileDinhKem;
     /**
      * {@link KhPhuongAnGia}
      */
