@@ -112,13 +112,13 @@ public class KhLtPagService {
             List<KhPagKetQua> khPagKetQuaThamDinhs = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaTDs)) {
                 ketquaTDs.forEach(c -> {
-                    khPagKetQuaThamDinhs.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
+                    khPagKetQuaThamDinhs.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8],null));
                 });
             }
             List<KhPagKetQua> khPagKetQuaKhaoSats = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaKSs)) {
                 ketquaKSs.forEach(c -> {
-                    khPagKetQuaKhaoSats.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
+                    khPagKetQuaKhaoSats.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8],null));
                 });
             }
             List<KhPagCcPhapLy> khPagCcPhapLIES = new ArrayList<>();
@@ -225,6 +225,10 @@ public class KhLtPagService {
 
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
+
+//        if(khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat()).isPresent()){
+//            throw new Exception("Số đề xuất đã tồn tại");
+//        }
 
         KhPhuongAnGia phuongAnGia = optional.get();
         phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
@@ -362,6 +366,8 @@ public class KhLtPagService {
         KhPhuongAnGia data = qOptional.get();
         List<Long> ids = new ArrayList<>();
         ids.add(data.getId());
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
         List<KhPagKetQua> listPagKetQuaTD = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(),ids);
         List<KhPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(),ids);
@@ -370,13 +376,25 @@ public class KhLtPagService {
             data.setCanCuPhapLy(listPagCCPhapLy);
         }
         if(listPagKetQuaTD.size() > 0){
+            listPagKetQuaTD.forEach( f -> {
+                f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
+            });
             data.setKetQuaThamDinhGia(listPagKetQuaTD);
         }
         if(listPagKetQuaKSTT.size() > 0){
+            listPagKetQuaKSTT.forEach( f -> {
+                f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
+            });
             data.setKetQuaKhaoSatGiaThiTruong(listPagKetQuaKSTT);
         }
         if(listPagKetQuaTTHHTT.size() > 0){
+            listPagKetQuaTTHHTT.forEach( f -> {
+                f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
+            });
             data.setThongTinGiaHangHoaTuongTu(listPagKetQuaTTHHTT);
+        }
+        if(diaDiemDeHangs.size() > 0){
+            data.setDiaDiemDeHangs(diaDiemDeHangs);
         }
         return data;
 
