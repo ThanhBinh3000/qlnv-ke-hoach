@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class KhLtPhuongAnGiaReq {
 
 	private String cloaiVthh;
 
-	private String tieuChuanCl;
+	private String tchuanCluong;
 
 	private Long soLuong;
 
@@ -66,6 +67,8 @@ public class KhLtPhuongAnGiaReq {
 	private BigDecimal giaVonNk;
 
 	private BigDecimal chiPhiChung;
+
+	private BigDecimal chiPhiPbo;
 
 	private BigDecimal tongChiPhi;
 	/**
@@ -99,4 +102,10 @@ public class KhLtPhuongAnGiaReq {
 	private List<KhLtPagDiaDiemDeHangReq> diaDiemDeHangs = new ArrayList<>();
 
 	private String moTa;
+
+	private BigDecimal vat;
+
+	private String maPphapXdg;
+
+	private String loaiHangXdg;
 }

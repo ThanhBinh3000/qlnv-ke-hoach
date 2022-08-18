@@ -14,6 +14,7 @@ import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagDiaDiemDeHangRepository
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
@@ -154,8 +155,10 @@ public class KhLtPagService {
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
             log.info("Save file đính kèm");
             canCuPhapLy = khPagCcPhapLyRepository.save(canCuPhapLy);
-            List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME);
-            canCuPhapLy.setFileDinhKems(fileDinhKems);
+            List<FileDinhKemReq> listFile = new ArrayList<>();
+            listFile.add(item.getFileDinhKem());
+            FileDinhKemChung fileDinhKems = fileDinhKemService.saveListFileDinhKem(listFile, canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME).get(0);
+            canCuPhapLy.setFileDinhKem(fileDinhKems);
             return canCuPhapLy;
         }).collect(Collectors.toList());
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
@@ -186,8 +189,10 @@ public class KhLtPagService {
             ketQua.setPhuongAnGiaId(phuongAnGiaId);
             ketQua.setType(type);
             ketQua = khLtPagKetQuaRepository.save(ketQua);
-            List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), ketQua.getId(), KhPagKetQua.getFileDinhKemDataType(type));
-            ketQua.setFileDinhKems(fileDinhKems);
+            List<FileDinhKemReq> listFile = new ArrayList<>();
+            listFile.add(item.getFileDinhKem());
+            List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(listFile, ketQua.getId(), KhPagKetQua.getFileDinhKemDataType(type));
+            ketQua.setFileDinhKem(fileDinhKems.get(0));
             return ketQua;
         }).collect(Collectors.toList());
 //        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
@@ -229,15 +234,16 @@ public class KhLtPagService {
             canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
             canCuPhapLy = khPagCcPhapLyRepository.save(canCuPhapLy);
             log.info("Save file đính kèm");
-            List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME);
-            canCuPhapLy.setFileDinhKems(fileDinhKems);
+            List<FileDinhKemReq> listFile = new ArrayList<>();
+            listFile.add(item.getFileDinhKem());
+            FileDinhKemChung fileDinhKem = fileDinhKemService.saveListFileDinhKem(listFile, canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME).get(0);
+            canCuPhapLy.setFileDinhKem(fileDinhKem);
             return canCuPhapLy;
         }).collect(Collectors.toList());
         phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
         List<FileDinhKemChung> fileCcPags = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), finalPhuongAnGia.getId(), KhPhuongAnGia.TABLE_NAME);
         phuongAnGia.setListFileCCs(fileCcPags);
-
         log.info("Update kết quả khảo sát giá thị trường");
         List<KhPagKetQua> ketQuaKhaoSatGiaThiTruong = this.saveKetQua(req.getKetQuaKhaoSatGiaThiTruong(), PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), phuongAnGia.getId());
         phuongAnGia.setKetQuaKhaoSatGiaThiTruong(ketQuaKhaoSatGiaThiTruong);
@@ -252,7 +258,6 @@ public class KhLtPagService {
         phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
         log.info("Build phương án giá response");
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
-
         return phuongAnGiaRes;
     }
 

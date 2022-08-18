@@ -61,17 +61,16 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 		log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
 		KhPhuongAnGia finalPhuongAnGia = phuongAnGia;
 
-		List<KhPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
-			KhPagCcPhapLy canCuPhapLy = mapper.map(item, KhPagCcPhapLy.class);
+//		List<KhPagCcPhapLy> canCuPhapLyList = req.getCanCuPhapLy().stream().map(item -> {
+//			KhPagCcPhapLy canCuPhapLy = mapper.map(item, KhPagCcPhapLy.class);
+//			canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
+//			log.info("Save file đính kèm");
+//			List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME);
+//			canCuPhapLy.setFileDinhKems(fileDinhKems);
+//			return canCuPhapLy;
+//		}).collect(Collectors.toList());
 
-			canCuPhapLy.setPhuongAnGiaId(finalPhuongAnGia.getId());
-			log.info("Save file đính kèm");
-			List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME);
-			canCuPhapLy.setFileDinhKems(fileDinhKems);
-			return canCuPhapLy;
-		}).collect(Collectors.toList());
-
-		phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
+//		phuongAnGia.setCanCuPhapLy(canCuPhapLyList);
 
 
 		log.info("Save thông tin khảo sát giá");
@@ -103,8 +102,8 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 			ketQua = khLtPagKetQuaRepository.save(ketQua);
 			ketQua.setType(type);
 
-			List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), ketQua.getId(), KhPagKetQua.getFileDinhKemDataType(type));
-			ketQua.setFileDinhKems(fileDinhKems);
+//			List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), ketQua.getId(), KhPagKetQua.getFileDinhKemDataType(type));
+//			ketQua.setFileDinhKems(fileDinhKems);
 			return ketQua;
 		}).collect(Collectors.toList());
 		ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
@@ -138,8 +137,8 @@ public class KhLtPhuongAnGiaServiceImpl implements KhLtPhuongAnGiaService {
 
 			canCuPhapLy = khPagCcPhapLyRepository.save(canCuPhapLy);
 			log.info("Save file đính kèm");
-			List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME);
-			canCuPhapLy.setFileDinhKems(fileDinhKems);
+//			List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(item.getFileDinhKems(), canCuPhapLy.getId(), KhPagCcPhapLy.TABLE_NAME);
+//			canCuPhapLy.setFileDinhKems(fileDinhKems);
 			return canCuPhapLy;
 		}).collect(Collectors.toList());
 

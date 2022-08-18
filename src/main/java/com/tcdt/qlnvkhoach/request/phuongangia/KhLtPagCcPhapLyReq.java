@@ -20,7 +20,7 @@ public class KhLtPagCcPhapLyReq {
 
 	private String moTa;
 
-	private List<FileDinhKemReq> fileDinhKems = new ArrayList<>();
+	private FileDinhKemReq fileDinhKem;
 
 	private Long phuongAnGiaId;
 }
