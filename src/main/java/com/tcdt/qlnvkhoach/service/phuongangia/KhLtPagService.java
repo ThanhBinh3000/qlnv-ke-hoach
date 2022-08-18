@@ -196,7 +196,6 @@ public class KhLtPagService {
             ketQua.setFileDinhKem(fileDinhKems.get(0));
             return ketQua;
         }).collect(Collectors.toList());
-//        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
         return ketQuaList;
     }
 
@@ -214,7 +213,9 @@ public class KhLtPagService {
     @Transactional(rollbackFor = Exception.class)
     public KhLtPhuongAnGiaRes update(KhLtPhuongAnGiaReq req) throws Exception {
         if (req == null) return null;
-
+        if(req.getId() == null ){
+            throw new Exception("Bad request");
+        }
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
