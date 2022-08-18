@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, Long>, KhLtPhuongAnGiaRepositoryCustom {
 
-	@Query(value ="SELECT * FROM KH_LT_PHUONG_AN_GIA KLPAG WHERE (:namKh IS NULL OR KLPAG.NAM_KE_HOACH = TO_NUMBER(:namKh))"
+	@Query(value ="SELECT * FROM KH_PHUONG_AN_GIA KLPAG WHERE (:namKh IS NULL OR KLPAG.NAM_KE_HOACH = TO_NUMBER(:namKh))"
 			+"AND (:soDx IS NULL OR LOWER(KLPAG.SO_DE_XUAT) LIKE LOWER(CONCAT(CONCAT('%',:soDx),'%' ) ) )"
 			+"AND (:dvql IS NULL OR LOWER(KLPAG.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
 			+"AND (:loaiHh IS NULL OR KLPAG.LOAI_VTHH =  :loaiHh)"
@@ -28,7 +28,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 
 
 	@Query(value = " SELECT PAG.* \n" +
-			"FROM KH_LT_PHUONG_AN_GIA PAG \n" +
+			"FROM KH_PHUONG_AN_GIA PAG \n" +
 			" WHERE PAG.LOAI_VTHH = :loaiHh \n" +
 			" AND PAG.CLOAI_VTHH = :cloaiHh \n" +
 			" AND PAG.NAM_KE_HOACH = :namKh \n" +

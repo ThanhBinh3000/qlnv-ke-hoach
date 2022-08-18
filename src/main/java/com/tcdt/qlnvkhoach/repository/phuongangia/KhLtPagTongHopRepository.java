@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Long> {
 
-	@Query(value ="SELECT * FROM KH_LT_PAG_TONG_HOP PAG_TH WHERE (:namKh IS NULL OR PAG_TH.NAM_TONG_HOP = TO_NUMBER(:namKh))"
+	@Query(value ="SELECT * FROM KH_PAG_TONG_HOP PAG_TH WHERE (:namKh IS NULL OR PAG_TH.NAM_TONG_HOP = TO_NUMBER(:namKh))"
 			+"AND (:loaiHh IS NULL OR PAG_TH.LOAI_VTHH =  :loaiHh)"
 			+"AND (:trangThai IS NULL OR PAG_TH.TRANG_THAI =  :trangThai)"
 			+"AND (:dvql IS NULL OR LOWER(PAG_TH.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
