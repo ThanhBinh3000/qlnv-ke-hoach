@@ -12,6 +12,7 @@ public class PathConstants {
 
 	public static final String URL_PHE_DUYET = "/phe-duyet";
 	public static final String URL_KIET_XUAT = "/ket-xuat";
+	public static final String URL_KET_XUAT = "/ket-xuat";
 	public static final String URL_DIEU_CHINH = "/cap-nhat";
 	public static final String URL_CHI_TIET_GOC = "/chi-tiet-goc";
 	public static final String URL_THOP_DATA = "/thop-dlieu";
@@ -74,6 +75,9 @@ public class PathConstants {
 
 	public static final String URL_GIA_LH = "/gia-lh";
 	public static final String URL_DX_PAG = "/dx-pag";
+	public static final String URL_QD_GIA_BTC = "/qd-gia-btc";
+
+
 
 	public static final String URL_TAO_TO_TRINH = "/tao-to-trinh";
 
