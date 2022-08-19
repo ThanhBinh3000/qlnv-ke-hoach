@@ -376,8 +376,7 @@ public class KhLtPagService extends BaseService {
         Optional<KhPhuongAnGia> opPag = khLtPhuongAnGiaRepository.findById(Long.valueOf(objReq.getId()));
         if (!opPag.isPresent())
             throw new Exception("Không tìm thấy dữ liệu");
-        KhPhuongAnGia khPhuongAnGia = opPag.get();
-        String status = objReq.getTrangThai() + khPhuongAnGia.getTrangThai();
+        String status = objReq.getTrangThai() + opPag.get().getTrangThai();
         switch (status) {
             case Contains.CHODUYET_TP + Contains.DUTHAO:
             case Contains.CHODUYET_TP + Contains.TUCHOI_TP:
@@ -395,7 +394,7 @@ public class KhLtPagService extends BaseService {
                 throw new Exception("Phê duyệt không thành công");
         }
         opPag.get().setTrangThai(objReq.getTrangThai());
-        khLtPhuongAnGiaRepository.save(opPag.get());
+        KhPhuongAnGia khPhuongAnGia = khLtPhuongAnGiaRepository.save(opPag.get());
         return khPhuongAnGia;
     }
 

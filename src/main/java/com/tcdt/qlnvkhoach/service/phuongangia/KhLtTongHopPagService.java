@@ -7,6 +7,7 @@ import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
@@ -287,6 +288,33 @@ public class KhLtTongHopPagService extends BaseService {
             khLtPagTongHopCTietRepository.deleteAll(khPagTongHopCTiet);
         }
         khLtPagTongHopRepository.delete(qOptional.get());
+    }
+
+    @Transactional
+    public KhPagTongHop approved(StatusReq objReq) throws  Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (StringUtils.isEmpty(objReq.getId()))
+            throw new Exception("Không tìm thấy dữ liệu");
+        Optional<KhPagTongHop> opPagTH = khLtPagTongHopRepository.findById(Long.valueOf(objReq.getId()));
+        if (!opPagTH.isPresent())
+            throw new Exception("Không tìm thấy dữ liệu");
+        String status = objReq.getTrangThai() + opPagTH.get().getTrangThai();
+        switch (status) {
+            case Contains.CHODUYET_TP + Contains.DUTHAO:
+            case Contains.CHODUYET_TP + Contains.TUCHOI_TP:
+            case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
+            case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
+            case Contains.CHODUYET_TP + Contains.TUCHOI_LDC:
+                break;
+            case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
+            case Contains.TUCHOI_LDC + Contains.CHODUYET_LDC:
+                break;
+            default:
+                throw new Exception("Phê duyệt không thành công");
+        }
+        opPagTH.get().setTrangThai(objReq.getTrangThai());
+        KhPagTongHop khPagTongHop = khLtPagTongHopRepository.save(opPagTH.get());
+        return khPagTongHop;
     }
 
 
