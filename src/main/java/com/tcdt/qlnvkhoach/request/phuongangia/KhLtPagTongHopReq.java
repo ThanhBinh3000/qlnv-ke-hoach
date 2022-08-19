@@ -45,7 +45,6 @@ public class KhLtPagTongHopReq {
     private List<KhPagTongHopCTiet> pagChitiets;
 
     private String trichYeu;
-
     /**
      * thông tin tờ trình
      */

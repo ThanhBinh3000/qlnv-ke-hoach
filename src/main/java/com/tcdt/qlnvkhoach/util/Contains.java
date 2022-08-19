@@ -78,9 +78,9 @@ public class Contains {
     public static final String TUCHOI_LDC = "04";
     public static final String DADUYET_LDC = "05";
     // Trạng thái tổng hợp
-    public static final String CHUA_QUYET_DINH = "00";
-    public static final String DU_THAO_QD = "01";
-    public static final String DA_QUYET_DINH = "02";
+    public static final String CHUA_QUYET_DINH = "26";
+    public static final String DU_THAO_QD = "27";
+    public static final String DA_QUYET_DINH = "27";
 
     // Trạng thái tổng hợp bản ghi gốc
     public static final String CHUA_TH = "24";

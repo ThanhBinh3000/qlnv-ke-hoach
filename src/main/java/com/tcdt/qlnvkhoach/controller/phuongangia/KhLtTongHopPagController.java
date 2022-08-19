@@ -48,7 +48,7 @@ public class KhLtTongHopPagController extends BaseController {
                                                     @Valid @RequestBody KhLtPagTongHopFilterReq objReq) {
         Resp resp = new Resp();
         try {
-            resp.setData(khLtTongHopPagService.tongHopData(objReq, request));
+            resp.setData(khLtTongHopPagService.tongHopData(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -62,7 +62,7 @@ public class KhLtTongHopPagController extends BaseController {
 
     @ApiOperation(value = "Tạo mới tổng hợp đề xuất phương án giá", response = List.class)
     @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> create(@Valid @RequestBody KhLtPagTongHopReq req) {
+    public final ResponseEntity<Resp> create(@Valid @RequestBody KhLtPagTongHopFilterReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(khLtTongHopPagService.create(req));
