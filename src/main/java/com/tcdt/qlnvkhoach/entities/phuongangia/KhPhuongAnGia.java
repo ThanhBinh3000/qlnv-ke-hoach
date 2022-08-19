@@ -183,4 +183,13 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
     @Column(name = "LOAI_HANG_XDG")
     private String loaiHangXdg;
+
+    @Column(name = "NGUOI_GUI_DUYET")
+    private Long nguoiGuiDuyet;
+
+    @Column(name = "NGUOI_PHE_DUYET")
+    private Long nguoiPheDuyet;
+
+    @Column(name = "LY_DO_TU_CHOI")
+    private String lyDoTuChoi;
 }

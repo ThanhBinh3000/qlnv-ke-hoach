@@ -70,6 +70,13 @@ public class Contains {
     public static final String LANHDAO_TU_CHOI = "12";
     public static final String TT_DA_QUYET_DINH = "13"; // Trang thai Lanh dao duyet
 
+    //Trạng thái đề xuất PAG
+    public static final String DUTHAO = "00";
+    public static final String CHODUYET_TP = "01";
+    public static final String TUCHOI_TP = "02";
+    public static final String CHODUYET_LDC  = "03";
+    public static final String TUCHOI_LDC = "04";
+    public static final String DADUYET_LDC = "05";
     // Trạng thái tổng hợp
     public static final String CHUA_QUYET_DINH = "00";
     public static final String DU_THAO_QD = "01";
@@ -248,8 +255,8 @@ public class Contains {
 
     public static final Map<String, String> mpTrangThaiTH;
     static {
-        mpTrangThaiTH = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DA_TH, "Gạo")
-                .put(Contains.CHUA_TH, "Thóc").get();
+        mpTrangThaiTH = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DA_TH, "Đã tổng hợp")
+                .put(Contains.CHUA_TH, "Chưa tổng hợp").get();
     }
     public static String getThTongHop(String key) {
         return Contains.mpTrangThaiTH.get(key);
