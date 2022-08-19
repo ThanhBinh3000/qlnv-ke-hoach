@@ -49,4 +49,7 @@ public class KhPagTongHopCTiet {
 
     @Column(name = "PAG_ID")
     private Long pagId;
+
+    @Column(name = "TRANG_THAI")
+    private String trangThai;
 }
