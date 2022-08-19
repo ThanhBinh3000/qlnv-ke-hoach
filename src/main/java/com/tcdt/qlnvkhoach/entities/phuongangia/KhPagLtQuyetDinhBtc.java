@@ -33,21 +33,15 @@ public class KhPagLtQuyetDinhBtc extends BaseEntity implements Serializable {
   @SequenceGenerator(sequenceName = "KH_PAG_LT_QD_BTC_SEQ", allocationSize = 1, name = "KH_PAG_LT_QD_BTC_SEQ")
   @Id
   private Long id;
-  private String maDonVi;
+  private String maDvi;
   private String trangThai;
   private Integer namKeHoach;
   private String soQd;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate ngayKy;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate ngayHieuLuc;
   private String soTtDeXuat;
-  private String loaiHangHoa;
-  private String chungLoaiHangHoa;
+  private String loaiVthh;
+  private String cloaiVthh;
   private String loaiGia;
   private String tieuChuanCl;
   private String trichYeu;

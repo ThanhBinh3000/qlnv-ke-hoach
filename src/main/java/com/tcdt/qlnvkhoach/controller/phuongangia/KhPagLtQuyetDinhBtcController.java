@@ -72,15 +72,16 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
   public final ResponseEntity<Resp> create(@CurrentUser CustomUserDetails currentUser, @Valid @RequestBody KhPagLtQuyetDinhBtcReq req) {
     Resp resp = new Resp();
     try {
-      System.out.println(currentUser.getUser());
       resp.setData(khPagLtQuyetDinhBtcService.create(currentUser, req));
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");
     } catch (Exception e) {
       resp.setStatusCode(Constants.RESP_FAIL);
       resp.setMsg(e.getMessage());
+      if (e.getMessage().contains("ConstraintViolationException")) {
+        resp.setMsg("Số quyết định đã tồn tại.");
+      }
       log.error(e.getMessage());
-      e.printStackTrace();
     }
     return ResponseEntity.ok(resp);
   }
@@ -88,10 +89,10 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
 
   @ApiOperation(value = "Sửa quyết định giá của BTC", response = List.class)
   @PostMapping(value = PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_QD_GIA_BTC + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
-  public final ResponseEntity<Resp> update(@CurrentUser CustomUserDetails currentUser,@Valid @RequestBody KhPagLtQuyetDinhBtcReq req) {
+  public final ResponseEntity<Resp> update(@CurrentUser CustomUserDetails currentUser, @Valid @RequestBody KhPagLtQuyetDinhBtcReq req) {
     Resp resp = new Resp();
     try {
-      resp.setData(khPagLtQuyetDinhBtcService.update(currentUser,req));
+      resp.setData(khPagLtQuyetDinhBtcService.update(currentUser, req));
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");
     } catch (Exception e) {
@@ -143,7 +144,7 @@ public class KhPagLtQuyetDinhBtcController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   public void export(@Valid @RequestBody KhPagLtQuyetDinhBtcSearchReq objReq, HttpServletResponse response) throws Exception {
     try {
-      //khPagLtQuyetDinhBtcService.export(objReq, response);
+      khPagLtQuyetDinhBtcService.export(objReq, response);
     } catch (Exception e) {
       final Map<String, Object> body = new HashMap<>();
       body.put("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
