@@ -52,4 +52,7 @@ public class KhPagTongHopCTiet {
 
     @Column(name = "TRANG_THAI")
     private String trangThai;
+
+    @Transient
+    private String tenTrangThai;
 }
