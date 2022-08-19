@@ -5,15 +5,14 @@ import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.util.Contains;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
 public class KhPagLtQuyetDinhBtcSearchReq extends BaseRequest {
-  Integer namKh;
+  String namKeHoach;
   String soQd;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
-  Date ngayKyTu;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
-  Date ngayKyDen;
+  LocalDate ngayKyTu;
+  LocalDate ngayKyDen;
   String trichYeu;
 }

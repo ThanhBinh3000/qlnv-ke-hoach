@@ -26,13 +26,7 @@ public class KhPagLtQuyetDinhBtcReq {
   private String trangThai;
   private Integer namKeHoach;
   private String soQd;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate ngayKy;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate ngayHieuLuc;
   private String soTtDeXuat;
   private String loaiHangHoa;

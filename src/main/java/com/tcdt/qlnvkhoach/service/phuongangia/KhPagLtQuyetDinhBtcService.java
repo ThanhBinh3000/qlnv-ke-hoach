@@ -1,36 +1,23 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.Lists;
-import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagCcPhapLy;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagKetQua;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagLtQuyetDinhBtc;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.enums.KhPagLtQuyetDinhBtcEnum;
-import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
-import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.jwt.CustomUserDetails;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagCcPhapLyRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagCcPhapLyRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagLtQuyetDinhBtcRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
-import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagLtQuyetDinhBtcReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagLtQuyetDinhBtcSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
-import com.tcdt.qlnvkhoach.util.DataUtils;
+import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,13 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Log4j2
@@ -58,15 +43,10 @@ public class KhPagLtQuyetDinhBtcService extends BaseService {
   @Autowired
   private ModelMapper mapper;
   @Autowired
-  private KhPagCcPhapLyRepository khLtPagCcPhapLyRepository;
-  @Autowired
   private KhLtPagKetQuaRepository khLtPagKetQuaRepository;
   @Autowired
   KhPagLtQuyetDinhBtcRepository khPagLtQuyetDinhBtcRepository;
 
-  public Iterable<KhPhuongAnGia> findAll() {
-    return khLtPhuongAnGiaRepository.findAll();
-  }
 
   public Page<KhPagLtQuyetDinhBtc> searchPage(KhPagLtQuyetDinhBtcSearchReq objReq) throws Exception {
     Pageable pageable = PageRequest.of(objReq.getPaggingReq().getPage(),
@@ -80,10 +60,10 @@ public class KhPagLtQuyetDinhBtcService extends BaseService {
   @Transactional(rollbackFor = Exception.class)
   public KhPagLtQuyetDinhBtc create(CustomUserDetails currentUser, KhPagLtQuyetDinhBtcReq req) throws Exception {
     if (currentUser == null) throw new Exception("Bad request.");
-    KhPagLtQuyetDinhBtc newRow = mapper.map(req, KhPagLtQuyetDinhBtc.class);
-    newRow.setId(null);
+    KhPagLtQuyetDinhBtc newRow = new KhPagLtQuyetDinhBtc();
+    BeanUtils.copyProperties(req, newRow, "id");
     newRow.setTrangThai(KhPagLtQuyetDinhBtcEnum.DU_THAO.getId());
-    newRow.setMaDonVi(currentUser.getDvql());
+    newRow.setMaDvi(currentUser.getDvql());
     newRow.setCapDvi(currentUser.getUser().getCapDvi());
     return khPagLtQuyetDinhBtcRepository.save(newRow);
   }
@@ -97,14 +77,15 @@ public class KhPagLtQuyetDinhBtcService extends BaseService {
     if (currentRow == null) {
       throw new Exception("Không tìm thấy dữ liệu.");
     }
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    updateObjectToObject(currentRow, objectMapper.convertValue(req, KhPagLtQuyetDinhBtc.class));
 
-    currentRow.setNgaySua(LocalDateTime.now());
-    currentRow.setNguoiSuaId(currentUser.getUser().getId());
-    System.out.println(currentRow);
+    if (!Constants.TONG_CUC.equals(currentUser.getUser().getCapDvi()))
+      throw new Exception("Tài khoản không có quyền thực hiện.");
+
+
+    if (!KhPagLtQuyetDinhBtcEnum.DU_THAO.getId().equals(currentRow.getTrangThai())) {
+      throw new Exception("Chỉ được sửa quyết định dự thảo.");
+    }
+    BeanUtils.copyProperties(req, currentRow, "id", "trangThai");
     khPagLtQuyetDinhBtcRepository.save(currentRow);
     return currentRow;
   }
@@ -155,7 +136,7 @@ public class KhPagLtQuyetDinhBtcService extends BaseService {
       objs[3] = dx.getTrichYeu();
       objs[4] = dx.getNamKeHoach();
       objs[6] = dx.getLoaiGia();
-      objs[5] = dx.getLoaiHangHoa();
+      objs[5] = dx.getLoaiVthh();
       objs[7] = KhPagLtQuyetDinhBtcEnum.getLabelById(dx.getTrangThai());
       dataList.add(objs);
     }
