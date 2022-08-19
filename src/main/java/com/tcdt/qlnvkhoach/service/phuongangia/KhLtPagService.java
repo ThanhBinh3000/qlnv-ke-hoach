@@ -19,6 +19,7 @@ import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagDiaDiemDeHangRepository
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
+import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
@@ -46,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.print.DocFlavor;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -243,7 +245,7 @@ public class KhLtPagService extends BaseService {
         BeanUtils.copyProperties(req,phuongAnGia,"id");
         phuongAnGia.setMaDvi(userInfo.getDvql());
         /**
-         *Xóa cc pháp lý, file đính kèm , ket qua để insert lại
+         * Xóa cc pháp lý, file đính kèm , ket qua để insert lại
          */
         List<Long> pagIds = new ArrayList<>();
         pagIds.add(phuongAnGia.getId());
@@ -284,13 +286,6 @@ public class KhLtPagService extends BaseService {
         return phuongAnGiaRes;
     }
 
-//    public <T> void updateObjectToObject(T source, T objectEdit) throws JsonMappingException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.setDateFormat(new SimpleDateFormat(Contains.FORMAT_DATE_STR));
-//        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        mapper.updateValue(source, objectEdit);
-//    }
 
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteMultiple(List<Long> ids) throws Exception {
@@ -305,21 +300,21 @@ public class KhLtPagService extends BaseService {
 
         if (CollectionUtils.isEmpty(phuongAnGiaList)) throw new Exception("Bad request.");
 
-        log.info("Xóa căn cứ pháp lý và file đính kèm");
-        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(phuongAnGiaIds);
-
-        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
-            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
-            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
-            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
-        }
-        log.info("Xóa kết quả");
-        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), phuongAnGiaIds);
-        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), phuongAnGiaIds);
-        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGiaIds);
-
+        log.info("Xóa căn cứ pháp lý, kết quả và file đính kèm");
+        deleteChildOfDxPag(phuongAnGiaIds);
+//        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(phuongAnGiaIds);
+//        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
+//            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
+//            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
+//            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
+//        }
+//        log.info("Xóa kết quả");
+//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), phuongAnGiaIds);
+//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), phuongAnGiaIds);
+//        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGiaIds);
+        log.info("Xóa file đính  kèm của phương án giá");
+        fileDinhKemService.deleteMultiple(phuongAnGiaIds, Collections.singleton(KhPhuongAnGia.TABLE_NAME));
         khLtPhuongAnGiaRepository.deleteAll(phuongAnGiaList);
-
         return true;
     }
 
@@ -371,6 +366,40 @@ public class KhLtPagService extends BaseService {
         this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), pagIds);
         fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
         khLtPhuongAnGiaRepository.delete(qOptional.get());
+    }
+
+    @javax.transaction.Transactional
+    public KhPhuongAnGia approved(StatusReq objReq) throws  Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (StringUtils.isEmpty(objReq.getId()))
+            throw new Exception("Không tìm thấy dữ liệu");
+        Optional<KhPhuongAnGia> opPag = khLtPhuongAnGiaRepository.findById(Long.valueOf(objReq.getId()));
+        if (!opPag.isPresent())
+            throw new Exception("Không tìm thấy dữ liệu");
+        KhPhuongAnGia khPhuongAnGia = opPag.get();
+        String status = objReq.getTrangThai() + khPhuongAnGia.getTrangThai();
+        switch (status) {
+            case Contains.CHODUYET_TP + Contains.DUTHAO:
+                opPag.get().setNguoiGuiDuyet(userInfo.getId());
+                break;
+            case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
+                opPag.get().setNguoiPheDuyet(userInfo.getId());
+                break;
+            case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
+                opPag.get().setNguoiGuiDuyet(userInfo.getId());
+                break;
+            case Contains.TUCHOI_LDC + Contains.CHODUYET_LDC:
+                opPag.get().setNguoiPheDuyet(userInfo.getId());
+                break;
+            case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
+                opPag.get().setNguoiGuiDuyet(userInfo.getId());
+                break;
+            default:
+                throw new Exception("Phê duyệt không thành công");
+        }
+        opPag.get().setTrangThai(objReq.getTrangThai());
+        khLtPhuongAnGiaRepository.save(opPag.get());
+        return khPhuongAnGia;
     }
 
     @javax.transaction.Transactional
@@ -438,9 +467,8 @@ public class KhLtPagService extends BaseService {
         paggingReq.setPage(0);
         paggingReq.setLimit(Integer.MAX_VALUE);
         objReq.setPaggingReq(paggingReq);
-        Page<KhPhuongAnGia> page=this.searchPage(objReq);
+        Page<KhPhuongAnGia> page= this.searchPage(objReq);
         List<KhPhuongAnGia> data=page.getContent();
-
         String title="Danh sách đề xuất phương án giá";
         String[] rowsName=new String[]{"STT","Số đề xuất","Ngày ký","Trích yếu","Năm kế hoạch","Loại hàng hóa","Loại giá","Trạng thái"};
         String fileName="danh-sach-de-xuat-phuong-an-gia.xlsx";
@@ -454,9 +482,9 @@ public class KhLtPagService extends BaseService {
             objs[2]=dx.getNgayKy();
             objs[3]=dx.getTrichYeu();
             objs[4]=dx.getNamKeHoach();
-            objs[5]=dx.getLoaiVthh();
-            objs[6]=dx.getLoaiGia();
-            objs[7]=dx.getTenTrangThai();
+            objs[5]= dx.getTenLoaiVthh();
+            objs[6]= dx.getTenLoaiGia();
+            objs[7]= dx.getTenTrangThai();
             dataList.add(objs);
         }
         ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
