@@ -68,9 +68,6 @@ public class KhPagKetQua implements Serializable {
 	@Column(name = "PAG_ID")
 	private Long phuongAnGiaId;
 
-	@Transient
-	private String tenCloaiVthh;
-
 	static final public String getFileDinhKemDataType(String type) {
 		return String.format("%s_%s", KhPagKetQua.TABLE_NAME, type);
 	}

@@ -124,13 +124,13 @@ public class KhLtPagService extends BaseService {
             List<KhPagKetQua> khPagKetQuaThamDinhs = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaTDs)) {
                 ketquaTDs.forEach(c -> {
-                    khPagKetQuaThamDinhs.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8],null));
+                    khPagKetQuaThamDinhs.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                 });
             }
             List<KhPagKetQua> khPagKetQuaKhaoSats = new ArrayList<>();
             if (!CollectionUtils.isEmpty(ketquaKSs)) {
                 ketquaKSs.forEach(c -> {
-                    khPagKetQuaKhaoSats.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8],null));
+                    khPagKetQuaKhaoSats.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3],(BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                 });
             }
             List<KhPagCcPhapLy> khPagCcPhapLIES = new ArrayList<>();
@@ -380,19 +380,16 @@ public class KhLtPagService extends BaseService {
         String status = objReq.getTrangThai() + khPhuongAnGia.getTrangThai();
         switch (status) {
             case Contains.CHODUYET_TP + Contains.DUTHAO:
+            case Contains.CHODUYET_TP + Contains.TUCHOI_TP:
+            case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
+            case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
+            case Contains.CHODUYET_TP + Contains.TUCHOI_LDC:
                 opPag.get().setNguoiGuiDuyet(userInfo.getId());
                 break;
             case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
-                opPag.get().setNguoiPheDuyet(userInfo.getId());
-                break;
-            case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
-                opPag.get().setNguoiGuiDuyet(userInfo.getId());
-                break;
             case Contains.TUCHOI_LDC + Contains.CHODUYET_LDC:
                 opPag.get().setNguoiPheDuyet(userInfo.getId());
-                break;
-            case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
-                opPag.get().setNguoiGuiDuyet(userInfo.getId());
+                opPag.get().setLyDoTuChoi(objReq.getLyDoTuChoi());
                 break;
             default:
                 throw new Exception("Phê duyệt không thành công");
@@ -434,21 +431,18 @@ public class KhLtPagService extends BaseService {
         }
         if(listPagKetQuaTD.size() > 0){
             listPagKetQuaTD.forEach( f -> {
-                f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
                 f.setFileDinhKem(mapListFileForKqs.size() > 0 && mapListFileForKqs.get(f.getId()).size() >0  ? mapListFileForKqs.get(f.getId()).get(0) :null);
             });
             data.setKetQuaThamDinhGia(listPagKetQuaTD);
         }
         if(listPagKetQuaKSTT.size() > 0){
             listPagKetQuaKSTT.forEach( f -> {
-                f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
                 f.setFileDinhKem(mapListFileForKqs.size() > 0 && mapListFileForKqs.get(f.getId()).size() >0  ? mapListFileForKqs.get(f.getId()).get(0) :null);
             });
             data.setKetQuaKhaoSatGiaThiTruong(listPagKetQuaKSTT);
         }
         if(listPagKetQuaTTHHTT.size() > 0){
             listPagKetQuaTTHHTT.forEach( f -> {
-                f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
                 f.setFileDinhKem(mapListFileForKqs.size() > 0 && mapListFileForKqs.get(f.getId()).size() >0  ? mapListFileForKqs.get(f.getId()).get(0) :null);
             });
             data.setThongTinGiaHangHoaTuongTu(listPagKetQuaTTHHTT);
