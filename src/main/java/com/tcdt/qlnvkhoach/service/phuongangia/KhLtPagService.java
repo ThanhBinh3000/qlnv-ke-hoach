@@ -1,5 +1,9 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagCcPhapLy;
@@ -21,14 +25,17 @@ import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.phuongangia.KhLtPhuongAnGiaRes;
+import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
+import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +49,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,7 +57,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Log4j2
-public class KhLtPagService {
+public class KhLtPagService extends BaseService {
     @Autowired
     private KhLtPhuongAnGiaRepository khLtPhuongAnGiaRepository;
     @Autowired
@@ -232,9 +240,8 @@ public class KhLtPagService {
             throw new Exception("Số đề xuất đã tồn tại");
         }
         KhPhuongAnGia phuongAnGia = optional.get();
-        phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
-        phuongAnGia.setNguoiSuaId(userInfo.getId());
-        phuongAnGia.setNgaySua(LocalDateTime.now());
+        BeanUtils.copyProperties(req,phuongAnGia,"id");
+        phuongAnGia.setMaDvi(userInfo.getDvql());
         /**
          *Xóa cc pháp lý, file đính kèm , ket qua để insert lại
          */
@@ -276,6 +283,14 @@ public class KhLtPagService {
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
         return phuongAnGiaRes;
     }
+
+//    public <T> void updateObjectToObject(T source, T objectEdit) throws JsonMappingException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.setDateFormat(new SimpleDateFormat(Contains.FORMAT_DATE_STR));
+//        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//        mapper.updateValue(source, objectEdit);
+//    }
 
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteMultiple(List<Long> ids) throws Exception {
