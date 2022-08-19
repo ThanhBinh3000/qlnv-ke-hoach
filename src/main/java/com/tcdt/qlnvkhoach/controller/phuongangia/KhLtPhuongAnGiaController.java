@@ -182,4 +182,20 @@ public class KhLtPhuongAnGiaController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
+
+//    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + "/getDmVattu", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Resp> getDmVt(HttpServletRequest req){
+//        Resp resp = new Resp();
+//        try {
+//            resp.setData(ql.approved(stReq));
+//            resp.setStatusCode(Constants.RESP_SUCC);
+//            resp.setMsg("Thành công");
+//        } catch (Exception e) {
+//            resp.setStatusCode(Constants.RESP_FAIL);
+//            resp.setMsg(e.getMessage());
+//            log.error(e.getMessage());
+//        }
+//        return ResponseEntity.ok(resp);
+//    }
+
 }
