@@ -31,6 +31,7 @@ import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
@@ -395,6 +396,7 @@ public class KhLtPagService extends BaseService {
         }
         opPag.get().setTrangThai(objReq.getTrangThai());
         KhPhuongAnGia khPhuongAnGia = khLtPhuongAnGiaRepository.save(opPag.get());
+        khPhuongAnGia.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(khPhuongAnGia.getTrangThai()));
         return khPhuongAnGia;
     }
 
@@ -452,6 +454,7 @@ public class KhLtPagService extends BaseService {
         if(fileDinhKems.size() > 0){
             data.setListFileCCs(fileDinhKems);
         }
+        data.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(data.getTrangThai()));
         return data;
     }
 
@@ -483,4 +486,5 @@ public class KhLtPagService extends BaseService {
         ExportExcel ex =new ExportExcel(title,fileName,rowsName,dataList,response);
         ex.export();
     }
+
 }

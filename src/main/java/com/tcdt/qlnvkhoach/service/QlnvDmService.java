@@ -104,7 +104,6 @@ public class QlnvDmService {
 	public Map<String, QlnvDmVattu> getMapVatTu(Collection<String> maVatTus) {
 		if (CollectionUtils.isEmpty(maVatTus))
 			return Collections.emptyMap();
-
 		return qlnvDmVattuRepository.findByMaIn(maVatTus).stream()
 				.collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
 	}
