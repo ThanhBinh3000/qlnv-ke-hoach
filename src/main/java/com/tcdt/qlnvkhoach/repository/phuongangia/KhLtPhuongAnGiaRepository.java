@@ -37,11 +37,11 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			" AND PAG.LOAI_GIA = :loaiGia \n" +
 			" AND PAG.MA_DVI in (:maDvis) \n" +
 			" AND PAG.TYPE = :type \n" +
-			" AND PAG.NGAY_KY >=  TO_DATE(:ngayDxTu,'yyyy-MM-dd') \n" +
-			" AND PAG.NGAY_KY  <=  TO_DATE(:ngayDxDen,'yyyy-MM-dd') \n" +
-			" AND PAG.TRANG_THAI_TH = '00' \n" +
-			" AND PAG.TRANG_THAI = '00' ", nativeQuery = true)
-	List<KhPhuongAnGia> listTongHop(String loaiVthh, String cloaiVthh, String namKh, String loaiGia, String ngayDxTu, String ngayDxDen,String type,List<String> maDvis);
+			" AND PAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd') \n" +
+			" AND PAG.NGAY_KY  <=  TO_DATE(:ngayKyDen,'yyyy-MM-dd') \n" +
+			" AND PAG.TRANG_THAI_TH = '24' \n" +
+			" AND PAG.TRANG_THAI = '05' ", nativeQuery = true)
+	List<KhPhuongAnGia> listTongHop(String loaiVthh, String cloaiVthh, String namKh, String loaiGia, String ngayKyTu, String ngayKyDen,String type,List<String> maDvis);
 
 	@Query("SELECT pag.id, min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2  GROUP BY pag.id")
 	List<Object[]> listPagWithDonGia(String type, Collection<Long> pagIds);

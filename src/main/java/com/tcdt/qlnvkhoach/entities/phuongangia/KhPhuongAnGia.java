@@ -88,7 +88,6 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "SO_LUONG")
     private Long soLuong;
 
-
     @Transient
     private List<KhPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
 
