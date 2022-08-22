@@ -44,11 +44,20 @@ public class KhPagTongHopCTiet {
     @Column(name = "GIA_DN_VAT")
     private BigDecimal giaDnVat;
 
+    @Column(name = "GIA_QD")
+    private BigDecimal giaQd;
+
+    @Column(name = "GIA_QD_VAT")
+    private BigDecimal giaQdVat;
+
     @Column(name = "PAG_TH_ID")
     private Long pagThId;
 
     @Column(name = "PAG_ID")
     private Long pagId;
+
+    @Column(name = "QD_BTC_ID")
+    private Long QdBtcId;
 
     @Column(name = "TRANG_THAI")
     private String trangThai;

@@ -317,5 +317,18 @@ public class KhLtTongHopPagService extends BaseService {
         return khPagTongHop;
     }
 
+    public List<KhPagTongHop> DsToTrinhDeXuat(KhLtPagTongHopSearchReq objReq) throws Exception {
+        List<KhPagTongHop> data = khLtPagTongHopRepository.DsToTrinhDeXuat(objReq);
+        return data;
+    }
+    public List<KhPagTongHopCTiet> DsToTrinhDeXuatChiTiet(List<Long> ids) throws Exception {
+        List<KhPagTongHopCTiet> data = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
+        List<String> maDvis = data.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
+        Map<String, QlnvDmDonvi> listDvi =qlnvDmService.getMapDonVi(maDvis);
+        data.forEach(s -> {
+            s.setTenDvi(listDvi.get(s.getMaDvi()).getTenDvi());
+        });
+        return data;
+    }
 
 }

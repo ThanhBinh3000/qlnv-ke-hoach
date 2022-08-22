@@ -1,10 +1,12 @@
 package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +28,9 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
 	List<KhPagTongHop> findByIdIn(List<Long> ids);
 
 	Optional<KhPagTongHop> findBySoToTrinh(String soToTrinh);
+
+	@Query("SELECT c FROM KhPagTongHop c WHERE 1=1 " +
+			"ORDER BY c.ngaySua desc , c.ngayTao desc")
+	List<KhPagTongHop> DsToTrinhDeXuat(
+			@Param("param") KhLtPagTongHopSearchReq param);
 }
