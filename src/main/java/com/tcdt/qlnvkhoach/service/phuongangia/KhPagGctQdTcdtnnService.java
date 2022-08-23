@@ -10,6 +10,7 @@ import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.util.Contains;
@@ -26,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -41,6 +39,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     @Autowired
     private KhLtPagTongHopCTietRepository khLtPagTongHopCTietRepository;
 
+    @Autowired
+    private QlnvDmService qlnvDmService;
 
 
     public Page<KhPagGctQdTcdtnn> searchPage(KhPagGctQdTcdtnnSearchReq objReq) throws Exception{
@@ -55,9 +55,15 @@ public class KhPagGctQdTcdtnnService extends BaseService {
                 Contains.convertDateToString(objReq.getNgayKyTu()),
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getTrichYeu(),
+                objReq.getPagType().equals("VT") ? "02" : null ,
                 pageable);
+        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         data.getContent().forEach(f->{
             f.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(f.getTrangThai()));
+            f.setTenLoaiVthh(StringUtils.isEmpty(f.getLoaiVthh()) ? null : hashMapHh.get(f.getLoaiVthh()));
+            f.setTenLoaiGia(StringUtils.isEmpty(f.getLoaiGia()) ? null : hashMapLoaiGia.get(f.getLoaiGia()));
+            f.setTenCloaiVthh(StringUtils.isEmpty(f.getCloaiVthh()) ? null : hashMapHh.get(f.getCloaiVthh()));
         });
         return data;
     }
@@ -72,14 +78,13 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         data.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
         data.setMaDvi(userInfo.getDvql());
         data.setCapDvi(userInfo.getCapDvi());
-
+        KhPagGctQdTcdtnn save=khPagGctQdTcdtnnRepository.save(data);
         //lưu thong tin giá
         req.getThongTinGia().forEach(f->{
-            f.getGiaQd();
             f.setQdTcdtnnId(data.getId());
         });
         khLtPagTongHopCTietRepository.saveAll(req.getThongTinGia());
-        return khPagGctQdTcdtnnRepository.save(data);
+        return save;
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -98,7 +103,6 @@ public class KhPagGctQdTcdtnnService extends BaseService {
 
         //lưu thong tin giá
         req.getThongTinGia().forEach(f->{
-            f.getGiaQd();
             f.setQdTcdtnnId(data.getId());
         });
         return khPagGctQdTcdtnnRepository.save(data);

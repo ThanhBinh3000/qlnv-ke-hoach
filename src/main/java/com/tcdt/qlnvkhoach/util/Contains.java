@@ -89,6 +89,15 @@ public class Contains {
     public static final String CHUATAOTOTRINH = "31";
     public static final String DATAOTOTRINH = "32";
 
+    public static final Map<String, String> mpTrangThaiTT;
+    static {
+        mpTrangThaiTT = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.CHUATAOTOTRINH, "Chưa tạo tờ trình")
+                .put(Contains.DATAOTOTRINH, "Đã tạo tờ trình").get();
+    }
+    public static String getTrangThaiTT(String key) {
+        return Contains.mpTrangThaiTT.get(key);
+    }
+
     // Trạng thái gói thầu
 
     public static final String CHUA_CAP_NHAT = "00";
@@ -261,6 +270,15 @@ public class Contains {
     public static String getThTongHop(String key) {
         return Contains.mpTrangThaiTH.get(key);
     }
+    public static final Map<String, String> mpTrangThaiPagTH;
+    static {
+        mpTrangThaiPagTH = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.CHUATAO_QD, "Chưa tạo quyết định")
+                .put(Contains.DADUTHAO_QD, "Dự thảo quyết định").put(Contains.DABANHANH_QD, "Ban hành quyết định").put(Contains.BAN_HANH, "Ban hành").get();
+    }
+    public static String getThPagTongHop(String key) {
+        return Contains.mpTrangThaiPagTH.get(key);
+    }
+
 
     public static final Map<String, BigDecimal> mpDVTinh;
     static {

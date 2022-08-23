@@ -31,9 +31,6 @@ public class KhPagTtChung implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "STT")
-    private Long stt;
-
     @Column(name = "CLOAI_VTHH")
     private String cloaiVthh;
 
@@ -51,9 +48,18 @@ public class KhPagTtChung implements Serializable {
 
     @Column(name = "GIA_DN_VAT")
     private BigDecimal giaDnVat;
+
+    @Column(name = "GIA_QD")
+    private BigDecimal giaQd;
+
+    @Column(name = "GIA_QD_VAT")
+    private BigDecimal giaQdVat;
     /**
      * {@link KhPhuongAnGia}
      */
     @Column(name = "PAG_ID")
     private Long phuongAnGiaId;
+
+    @Column(name = "QD_BTC_ID")
+    private Long qdBtcId;
 }

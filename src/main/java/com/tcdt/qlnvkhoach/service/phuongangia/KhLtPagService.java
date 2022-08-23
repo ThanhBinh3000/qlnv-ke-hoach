@@ -98,7 +98,7 @@ public class KhLtPagService extends BaseService {
                 objReq.getTrichYeu(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
                 objReq.getType(),
-                objReq.getPagType().equals("VT") ? "02" : "01",
+                objReq.getPagType().equals("VT") ? "02" : null,
                 pageable);
 
         Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
@@ -161,7 +161,7 @@ public class KhLtPagService extends BaseService {
         }
         KhPhuongAnGia phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
-        phuongAnGia.setTrangThaiTh(PAGTrangThaiTHEnum.CHUA_TH.getId());
+        phuongAnGia.setTrangThaiTh(Contains.CHUA_TH);
         phuongAnGia.setMaDvi(userInfo.getDvql());
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());
@@ -380,7 +380,7 @@ public class KhLtPagService extends BaseService {
     }
 
 
-    @javax.transaction.Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Long ids) throws Exception {
         Optional<KhPhuongAnGia> qOptional = khLtPhuongAnGiaRepository.findById(ids);
         if (!qOptional.isPresent()) {
@@ -403,7 +403,7 @@ public class KhLtPagService extends BaseService {
         khLtPhuongAnGiaRepository.delete(qOptional.get());
     }
 
-    @javax.transaction.Transactional
+    @Transactional(rollbackFor = Exception.class)
     public KhPhuongAnGia approved(StatusReq objReq) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (StringUtils.isEmpty(objReq.getId()))
@@ -434,7 +434,7 @@ public class KhLtPagService extends BaseService {
         return khPhuongAnGia;
     }
 
-    @javax.transaction.Transactional
+    @Transactional(rollbackFor = Exception.class)
     public KhPhuongAnGia detailDxPag(String id) throws Exception {
         Optional<KhPhuongAnGia> qOptional = khLtPhuongAnGiaRepository.findById(Long.parseLong(id));
         if (!qOptional.isPresent()) {
@@ -449,9 +449,11 @@ public class KhLtPagService extends BaseService {
 //        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
-        //Thông tin chung, loại Vật tư sẽ có
+        //Thông tin chung,can cu xac dinh gia (loại Vật tư)
         List<KhPagTtChung> listPagTtChungs = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
         data.setPagTtChungs(listPagTtChungs);
+        List<KhPagPpXacDinhGia> listPpXacDinhGia = khPagPpXacDinhGiaRepository.findByPhuongAnGiaIdIn(ids);
+        data.setPagPpXacDinhGias(listPpXacDinhGia);
         List<KhPagKetQua> listPagKetQuaTD = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), ids);
         List<KhPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), ids);
         List<KhPagKetQua> listPagKetQuaTTHHTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), ids);
@@ -505,20 +507,40 @@ public class KhLtPagService extends BaseService {
         String title = "Danh sách đề xuất phương án giá";
         String[] rowsName = new String[]{"STT", "Số đề xuất", "Ngày ký", "Trích yếu", "Năm kế hoạch", "Loại hàng hóa", "Loại giá", "Trạng thái"};
         String fileName = "danh-sach-de-xuat-phuong-an-gia.xlsx";
+        if (objReq.getPagType().equals("VT")) {
+            rowsName = new String[]{"STT", "Số đề xuất", "Ngày ký", "Trích yếu", "Quyết định giao chỉ tiêu kế hoạch", "Năm kế hoạch", "Loại hàng hóa", "Loại giá", "Trạng thái"};
+        }
         List<Object[]> dataList = new ArrayList<Object[]>();
         Object[] objs = null;
-        for (int i = 0; i < data.size(); i++) {
-            KhPhuongAnGia dx = data.get(i);
-            objs = new Object[rowsName.length];
-            objs[0] = i;
-            objs[1] = dx.getSoDeXuat();
-            objs[2] = dx.getNgayKy();
-            objs[3] = dx.getTrichYeu();
-            objs[4] = dx.getNamKeHoach();
-            objs[5] = dx.getTenLoaiVthh();
-            objs[6] = dx.getTenLoaiGia();
-            objs[7] = dx.getTenTrangThai();
-            dataList.add(objs);
+        if (objReq.getPagType().equals("VT")) {
+            for (int i = 0; i < data.size(); i++) {
+                KhPhuongAnGia dx = data.get(i);
+                objs = new Object[rowsName.length];
+                objs[0] = i;
+                objs[1] = dx.getSoDeXuat();
+                objs[2] = dx.getNgayKy();
+                objs[3] = dx.getTrichYeu();
+                objs[4] = dx.getQdCtKhNam();
+                objs[5] = dx.getNamKeHoach();
+                objs[6] = dx.getTenLoaiVthh();
+                objs[7] = dx.getTenLoaiGia();
+                objs[8] = dx.getTenTrangThai();
+                dataList.add(objs);
+            }
+        } else {
+            for (int i = 0; i < data.size(); i++) {
+                KhPhuongAnGia dx = data.get(i);
+                objs = new Object[rowsName.length];
+                objs[0] = i;
+                objs[1] = dx.getSoDeXuat();
+                objs[2] = dx.getNgayKy();
+                objs[3] = dx.getTrichYeu();
+                objs[4] = dx.getNamKeHoach();
+                objs[5] = dx.getTenLoaiVthh();
+                objs[6] = dx.getTenLoaiGia();
+                objs[7] = dx.getTenTrangThai();
+                dataList.add(objs);
+            }
         }
         ExportExcel ex = new ExportExcel(title, fileName, rowsName, dataList, response);
         ex.export();

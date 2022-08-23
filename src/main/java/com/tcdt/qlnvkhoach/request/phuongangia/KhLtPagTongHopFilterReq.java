@@ -23,7 +23,7 @@ public class KhLtPagTongHopFilterReq {
 
     @NotNull(message = "Không được để trống")
     @ApiModelProperty(example = "2022")
-    String namKeHoach;
+    String namTongHop;
 
     @NotNull(message = "Không được để trống")
     @ApiModelProperty(example = Contains.LOAI_VTHH_GAO)
@@ -41,11 +41,11 @@ public class KhLtPagTongHopFilterReq {
     @NotNull(message = "Không được để trống")
     @ApiModelProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
-    Date ngayKyTu;
+    Date ngayDxTu;
 
     @ApiModelProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
-    Date ngayKyDen;
+    Date ngayDxDen;
 
     @ApiModelProperty
     String type;
