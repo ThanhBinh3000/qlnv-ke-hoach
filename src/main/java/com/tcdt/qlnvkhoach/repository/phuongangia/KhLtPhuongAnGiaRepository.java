@@ -19,7 +19,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			+" AND (:soDx IS NULL OR LOWER(KLPAG.SO_DE_XUAT) LIKE LOWER(CONCAT(CONCAT('%',:soDx),'%' ) ) )"
 			+" AND (:dvql IS NULL OR LOWER(KLPAG.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
 			+" AND (:loaiHh IS NULL OR KLPAG.LOAI_VTHH = :loaiHh)"
-			+" AND (:pagType IS NULL OR KLPAG.LOAI_VTHH LIKE CONCAT(:pagType,'%' ) )"
+			+" AND (( :pagType IS NULL AND (KLPAG.LOAI_VTHH LIKE '01%' OR KLPAG.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND KLPAG.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )"
 			+" AND (:type IS NULL OR KLPAG.type =  :type)"
 			+" AND (:ngayKyTu IS NULL OR KLPAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd'))"
 			+" AND (:ngayKyDen IS NULL OR KLPAG.NGAY_KY <= TO_DATE(:ngayKyDen,'yyyy-MM-dd'))"
