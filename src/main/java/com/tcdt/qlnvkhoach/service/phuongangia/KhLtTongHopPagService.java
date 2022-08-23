@@ -85,8 +85,8 @@ public class KhLtTongHopPagService extends BaseService {
             khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
             khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null : hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
             khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
-            khPagTongHop.setTentrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThai()));
-            khPagTongHop.setTentrangThaiTH(Contains.getThPagTongHop(khPagTongHop.getTrangThaiTH()));
+            khPagTongHop.setTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThaiTt()) : null);
+            khPagTongHop.setTentrangThaiTH(Contains.getTrangThaiTT(khPagTongHop.getTrangThaiTH()));
         }
         return data;
     }
@@ -176,13 +176,11 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
-        pagTH.setTrangThai(Contains.MOI_TAO);
-        pagTH.setTrangThaiTH(Contains.CHUATAO_QD);
-        pagTH.setTtToTrinh(Contains.CHUATAOTOTRINH);
+        pagTH.setTrangThaiTH(Contains.CHUATAOTOTRINH);
         pagTH.setType(req.getType());
         pagTH.setGhiChu(req.getGhiChu());
         pagTH.setNoiDung(req.getNoiDung());
-        pagTH.setLDonVi(String.join(",",req.getMaDvis()));
+        pagTH.setLDonVi(String.join(",", req.getMaDvis()));
         pagTH.setNgayDxTu(Instant.ofEpochMilli(req.getNgayDxTu().getTime())
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate());
@@ -221,7 +219,7 @@ public class KhLtTongHopPagService extends BaseService {
             throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
         }
         KhPagTongHop pagTH = optinal.get();
-        if (pagTH.getSoToTrinh() != null || pagTH.getTtToTrinh().equals(Contains.DATAOTOTRINH)) {
+        if (pagTH.getSoToTrinh() != null || pagTH.getTrangThaiTH().equals(Contains.DATAOTOTRINH)) {
             throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
         }
         if (khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh()).get() != null) {
@@ -231,9 +229,12 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setSoToTrinh(req.getMaToTrinh());
         pagTH.setTtGiaDn(req.getTtGiaDn());
         pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
+        pagTH.setTtGiaTdtt(req.getTtGiaTdtt());
+        pagTH.setTtGiaTdttVat(req.getTtGiaTdttVat());
         pagTH.setGhiChu(req.getGhiChu());
-        pagTH.setTrangThaiTH(Contains.DADUTHAO_QD);
-        pagTH.setTtToTrinh(Contains.DATAOTOTRINH);
+        pagTH.setTrangThaiTH(Contains.DATAOTOTRINH);
+        pagTH.setTrangThaiTt(Contains.DUTHAO);
+        pagTH.setQdGtdttBtc(req.getType().equals("GCT") ? req.getQdGtdttBtc() : null);
         return khLtPagTongHopRepository.save(pagTH);
     }
 
@@ -264,9 +265,9 @@ public class KhLtTongHopPagService extends BaseService {
             objs[5] = StringUtils.isEmpty(dx.getLoaiVthh()) ? null : hashMapHh.get(dx.getLoaiVthh());
             objs[6] = StringUtils.isEmpty(dx.getCloaiVthh()) ? null : hashMapHh.get(dx.getCloaiVthh());
             objs[7] = hashMapLoaiGia.get(dx.getLoaiGia());
-            objs[8] = Contains.getThTongHop(dx.getTrangThaiTH());
+            objs[8] = dx.getTentrangThaiTH();
             objs[9] = dx.getSoToTrinh();
-            objs[10] = Contains.mapTrangThaiPheDuyet.get(dx.getLoaiGia());
+            objs[10] = dx.getTentrangThaiTT();
             dataList.add(objs);
         }
         ExportExcel ex = new ExportExcel(title, fileName, rowsName, dataList, response);
@@ -296,7 +297,7 @@ public class KhLtTongHopPagService extends BaseService {
         if (!qOptional.isPresent()) {
             throw new UserPrincipalNotFoundException("Id không tồn tại");
         }
-        if (qOptional.get().getTrangThai().equals(Contains.DUYET)) {
+        if (qOptional.get().getTrangThaiTt().equals(Contains.DUYET)) {
             throw new Exception("Bản ghi có trạng thái đã duyệt,không được xóa.");
         }
         List<Long> pagTHIds = new ArrayList<>();
@@ -316,7 +317,7 @@ public class KhLtTongHopPagService extends BaseService {
         Optional<KhPagTongHop> opPagTH = khLtPagTongHopRepository.findById(Long.valueOf(objReq.getId()));
         if (!opPagTH.isPresent())
             throw new Exception("Không tìm thấy dữ liệu");
-        String status = objReq.getTrangThai() + opPagTH.get().getTrangThai();
+        String status = objReq.getTrangThai() + opPagTH.get().getTrangThaiTt();
         switch (status) {
             case Contains.CHODUYET_TP + Contains.DUTHAO:
             case Contains.CHODUYET_TP + Contains.TUCHOI_TP:
@@ -330,7 +331,7 @@ public class KhLtTongHopPagService extends BaseService {
             default:
                 throw new Exception("Phê duyệt không thành công");
         }
-        opPagTH.get().setTrangThai(objReq.getTrangThai());
+        opPagTH.get().setTrangThaiTt(objReq.getTrangThai());
         KhPagTongHop khPagTongHop = khLtPagTongHopRepository.save(opPagTH.get());
         return khPagTongHop;
     }
