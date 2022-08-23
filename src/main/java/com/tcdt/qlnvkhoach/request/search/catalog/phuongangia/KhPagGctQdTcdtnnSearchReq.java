@@ -21,4 +21,6 @@ public class KhPagGctQdTcdtnnSearchReq extends BaseRequest {
 
     String trichYeu;
 
+    String PagType;
+
 }
