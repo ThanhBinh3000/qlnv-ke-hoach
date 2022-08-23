@@ -55,7 +55,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
                 Contains.convertDateToString(objReq.getNgayKyTu()),
                 Contains.convertDateToString(objReq.getNgayKyDen()),
                 objReq.getTrichYeu(),
-                objReq.getPagType().equals("VT") ? "02" : "01",
+                objReq.getPagType().equals("VT") ? "02" : null ,
                 pageable);
         data.getContent().forEach(f->{
             f.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(f.getTrangThai()));
