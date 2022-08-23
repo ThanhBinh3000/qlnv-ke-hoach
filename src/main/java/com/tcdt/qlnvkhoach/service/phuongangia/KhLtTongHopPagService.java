@@ -168,7 +168,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
         pagTH.setTrangThai(Contains.MOI_TAO);
-        pagTH.setTrangThaiTH(Contains.CHUA_QUYET_DINH);
+        pagTH.setTrangThaiTH(Contains.CHUATAO_QD);
         pagTH.setTtToTrinh(Contains.CHUATAOTOTRINH);
         pagTH.setGhiChu(req.getGhiChu());
         pagTH.setNoiDung(req.getNoiDung());
