@@ -58,8 +58,6 @@ public class KhLtPhuongAnGiaReq {
 
 	private List<KhLtPagCcPhapLyReq> canCuPhapLy = new ArrayList<>();
 
-	private Long phuongPhapId;
-
 	private Boolean hangSxTrongNuoc;
 
 	private Boolean hangNhapKhau;
@@ -110,4 +108,12 @@ public class KhLtPhuongAnGiaReq {
 	private String soCanCu;
 
 	private String  type;
+
+	/**
+	 * Các field dành riêng cho vật tư
+	 */
+	private String nguoiKy;
+
+	private String qdCtKhNam;
+
 }

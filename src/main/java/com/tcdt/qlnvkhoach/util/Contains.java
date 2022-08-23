@@ -66,7 +66,7 @@ public class Contains {
     public static final String TPHONG_DUYET = "09"; // Trang thai Truong phong duyet
     public static final String LANHDAO_DUYET = "10"; // Trang thai Lanh dao duyet
 
-    public static final String BAN_HANH = "11"; // Trang thai Lanh dao duyet
+//    public static final String BAN_HANH = "11"; // Trang thai Lanh dao duyet
     public static final String LANHDAO_TU_CHOI = "12";
     public static final String TT_DA_QUYET_DINH = "13"; // Trang thai Lanh dao duyet
 
@@ -78,10 +78,10 @@ public class Contains {
     public static final String TUCHOI_LDC = "04";
     public static final String DADUYET_LDC = "05";
     // Trạng thái tổng hợp
-    public static final String CHUA_QUYET_DINH = "26";
-    public static final String DU_THAO_QD = "27";
-    public static final String DA_QUYET_DINH = "27";
-
+    public static final String CHUATAO_QD = "26";
+    public static final String DADUTHAO_QD = "27";
+    public static final String DABANHANH_QD = "28";
+    public static final String BAN_HANH = "29";
     // Trạng thái tổng hợp bản ghi gốc
     public static final String CHUA_TH = "24";
     public static final String DA_TH = "25";
