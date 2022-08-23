@@ -50,7 +50,6 @@ public class KhPagGctQdTcdtnnReq{
     @NotNull(message = "Không được để trống")
     private String trichYeu;
 
-    @NotNull(message = "Không được để trống")
     private String ghiChu;
 
     private String capDvi;
