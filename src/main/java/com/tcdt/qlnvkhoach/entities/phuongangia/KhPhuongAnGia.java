@@ -105,9 +105,6 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Transient
     private List<KhPagCcPhapLy> canCuPhapLy = new ArrayList<>();
 
-    @Column(name = "PHUONG_PHAP_ID")
-    private Long phuongPhapId;
-
     @Column(name = "HANG_SX_TRONG_NUOC")
     private Boolean hangSxTrongNuoc;
 
@@ -191,4 +188,13 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
     @Column(name = "LY_DO_TU_CHOI")
     private String lyDoTuChoi;
+
+    /**
+     * Các field dành riêng cho vật tư
+     */
+    @Column(name = "NGUOI_KY")
+    private String nguoiKy;
+
+    @Column(name = "QD_CT_KH_NAM")
+    private String qdCtKhNam;
 }
