@@ -2,6 +2,8 @@ package com.tcdt.qlnvkhoach.response.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagDiaDiemDeHang;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagPpXacDinhGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
@@ -10,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -113,4 +116,16 @@ public class KhLtPhuongAnGiaRes {
 	private String loaiHangXdg;
 
 	private String soCanCu;
+
+	private String nguoiKy;
+
+	private String qdCtKhNam;
+
+	/**
+	 * Phương án giá vật tư
+	 */
+
+	private List<KhPagTtChung> pagTtChungs;
+
+	private List<KhPagPpXacDinhGia> pagPpXacDinhGias;
 }

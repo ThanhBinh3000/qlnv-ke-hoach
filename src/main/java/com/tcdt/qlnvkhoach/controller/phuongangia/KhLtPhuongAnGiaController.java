@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/kh-lt-pag")
+@RequestMapping(value = "/phuong-an-gia")
 @Slf4j
 @Api(tags = "Kế hoạch, đề xuất phương án giá")
 public class KhLtPhuongAnGiaController extends BaseController {
@@ -45,7 +45,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=  PathConstants.URL_DX_PAG + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> searchKhLtPAG(@Valid @RequestBody KhLtPhuongAnGiaSearchReq objReq) {
         Resp resp = new Resp();
         try {
@@ -61,7 +61,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "Tạo mới đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=  PathConstants.URL_DX_PAG + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> create(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
@@ -80,7 +80,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Sửa đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=   PathConstants.URL_DX_PAG + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> updatePag(@Valid @RequestBody KhLtPhuongAnGiaReq req) {
         Resp resp = new Resp();
         try {
@@ -97,7 +97,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
 
 
     @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_DX_PAG +PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value =  PathConstants.URL_DX_PAG +PathConstants.URL_XOA_MULTI, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
         Resp resp = new Resp();
@@ -114,7 +114,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "Xóa đề xuất phương án giá", response = List.class)
-    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=   PathConstants.URL_DX_PAG + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> deletePag(@RequestBody DeleteRecordReq idSearchReq) {
         Resp resp = new Resp();
         try {
@@ -130,7 +130,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "Chi tiết đề xuất phương án giá", response = List.class)
-    @GetMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value=  PathConstants.URL_DX_PAG + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> detailDxPag(@ApiParam(value = "ID đề xuất phương án giá", example = "1", required = true) @PathVariable("ids") String ids) {
         Resp resp = new Resp();
         try {
@@ -147,7 +147,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "Kết xuất danh sách đề xuất phương án giá", response = List.class)
-    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value= PathConstants.URL_DX_PAG + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void exportListDxPagToExcel(@Valid @RequestBody KhLtPhuongAnGiaSearchReq objReq, HttpServletResponse response) throws Exception{
         try {
@@ -168,7 +168,7 @@ public class KhLtPhuongAnGiaController extends BaseController {
     }
 
     @ApiOperation(value = "01-Dự thảo,02-Chờ duyệt – TP,03-Chờ duyệt – LĐ Cục,04-Đã duyệt,05-Từ chối – TP,06-Từ chối – LĐ Cục", response = List.class)
-    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value =  PathConstants.URL_DX_PAG + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> approve(HttpServletRequest req, @Valid @RequestBody StatusReq stReq) {
         Resp resp = new Resp();
         try {
@@ -182,20 +182,5 @@ public class KhLtPhuongAnGiaController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
-
-//    @PostMapping(value =PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_DX_PAG + "/getDmVattu", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Resp> getDmVt(HttpServletRequest req){
-//        Resp resp = new Resp();
-//        try {
-//            resp.setData(ql.approved(stReq));
-//            resp.setStatusCode(Constants.RESP_SUCC);
-//            resp.setMsg("Thành công");
-//        } catch (Exception e) {
-//            resp.setStatusCode(Constants.RESP_FAIL);
-//            resp.setMsg(e.getMessage());
-//            log.error(e.getMessage());
-//        }
-//        return ResponseEntity.ok(resp);
-//    }
 
 }

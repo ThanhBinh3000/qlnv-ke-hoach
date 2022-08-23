@@ -185,8 +185,7 @@ public class KhLtTongHopPagService extends BaseService {
              * update lại stt của dx pag
              */
             List<Long> pagIds = pagTH.getPagChiTiets().stream().map(KhPagTongHopCTiet::getPagId).collect(Collectors.toList());
-            List<KhPhuongAnGia> lPags = khLtPhuongAnGiaRepository.findByIdIn(pagIds);
-            List<KhPhuongAnGia> pagDetails = lPags.stream().map(item -> {
+            List<KhPhuongAnGia> pagDetails = khLtPhuongAnGiaRepository.findByIdIn(pagIds).stream().map(item -> {
                 item.setTrangThaiTh(Contains.DA_TH);
                 return item;
             }).collect(Collectors.toList());

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/kh-lt-pag")
+@RequestMapping(value = "/phuong-an-gia")
 @Slf4j
 @Api(tags = "Kế hoạch, đề xuất phương án giá")
 public class KhLtTongHopPagController extends BaseController {
@@ -42,10 +42,10 @@ public class KhLtTongHopPagController extends BaseController {
     private KhLtPagService khLtPagService;
 
     @ApiOperation(value = "Tổng hợp đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = PathConstants.URL_TONG_HOP, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Resp> sumarryData(HttpServletRequest request,
-                                                    @Valid @RequestBody KhLtPagTongHopFilterReq objReq) {
+                                            @Valid @RequestBody KhLtPagTongHopFilterReq objReq) {
         Resp resp = new Resp();
         try {
             resp.setData(khLtTongHopPagService.tongHopData(objReq));
@@ -61,7 +61,7 @@ public class KhLtTongHopPagController extends BaseController {
     }
 
     @ApiOperation(value = "Tạo mới tổng hợp đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> create(@Valid @RequestBody KhLtPagTongHopFilterReq req) {
         Resp resp = new Resp();
         try {
@@ -78,7 +78,7 @@ public class KhLtTongHopPagController extends BaseController {
     }
 
     @ApiOperation(value = "Tạo mới tổng hợp đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_TAO_TO_TRINH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_TAO_TO_TRINH, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> createToTrinh(@Valid @RequestBody KhLtPagTongHopReq req) {
         Resp resp = new Resp();
         try {
@@ -94,7 +94,7 @@ public class KhLtTongHopPagController extends BaseController {
     }
 
     @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> searchKhLtPAGTh(@Valid @RequestBody KhLtPagTongHopSearchReq objReq) {
         Resp resp = new Resp();
         try {
@@ -110,11 +110,11 @@ public class KhLtTongHopPagController extends BaseController {
     }
 
     @ApiOperation(value = "Kết xuất danh sách đề xuất phương án giá", response = List.class)
-    @PostMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_KIET_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void exportListPagTHToExcel(@Valid @RequestBody KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception{
+    public void exportListPagTHToExcel(@Valid @RequestBody KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception {
         try {
-            khLtTongHopPagService.exportPagTH(objReq,response);
+            khLtTongHopPagService.exportPagTH(objReq, response);
         } catch (Exception e) {
             log.error("Kết xuất danh sách tổng hợp phương án giá: {}", e);
             final Map<String, Object> body = new HashMap<>();
@@ -128,7 +128,7 @@ public class KhLtTongHopPagController extends BaseController {
     }
 
     @ApiOperation(value = "Chi tiết tổng hợp phương án giá", response = List.class)
-    @GetMapping(value= PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH + PathConstants.URL_TONG_HOP + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> detailPagTH(@ApiParam(value = "ID tổng hợp phương án giá", example = "1", required = true) @PathVariable("ids") String ids) {
         Resp resp = new Resp();
         try {
@@ -144,7 +144,7 @@ public class KhLtTongHopPagController extends BaseController {
     }
 
     @ApiOperation(value = "Xóa tổng hợp phương án giá", response = List.class)
-    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_TONG_HOP + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_XOA, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> deletePagTH(@RequestBody DeleteRecordReq idSearchReq) {
         Resp resp = new Resp();
         try {
