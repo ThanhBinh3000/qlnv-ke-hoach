@@ -197,4 +197,10 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
     @Column(name = "QD_CT_KH_NAM")
     private String qdCtKhNam;
+
+    @Transient
+    private List<KhPagTtChung> pagTtChungs = new ArrayList<>();
+
+    @Transient
+    private List<KhPagPpXacDinhGia> pagPpXacDinhGias  = new ArrayList<>();
 }

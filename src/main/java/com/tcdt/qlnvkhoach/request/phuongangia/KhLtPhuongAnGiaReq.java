@@ -1,6 +1,8 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagPpXacDinhGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -109,6 +111,8 @@ public class KhLtPhuongAnGiaReq {
 
 	private String  type;
 
+	private String pagType;
+
 	/**
 	 * Các field dành riêng cho vật tư
 	 */
@@ -116,4 +120,7 @@ public class KhLtPhuongAnGiaReq {
 
 	private String qdCtKhNam;
 
+	private List<KhPagTtChung> pagTtChungs;
+
+	private List<KhPagPpXacDinhGia> pagPpXacDinhGias;
 }

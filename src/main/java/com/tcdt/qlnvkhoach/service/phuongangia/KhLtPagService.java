@@ -6,18 +6,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagCcPhapLy;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagDiaDiemDeHang;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagKetQua;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.*;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.repository.FileDinhKemChungRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagCcPhapLyRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagDiaDiemDeHangRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagKetQuaRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPhuongAnGiaRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.*;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
@@ -78,6 +72,12 @@ public class KhLtPagService extends BaseService {
     private QlnvDmService qlnvDmService;
     @Autowired
     private FileDinhKemChungRepository fileDinhKemChungRepository;
+
+    @Autowired
+    private KhPagTtChungRepository khPagTtChungRepository;
+
+    @Autowired
+    private KhPagPpXacDinhGiaRepository khPagPpXacDinhGiaRepository;
 
 
     public Iterable<KhPhuongAnGia> findAll() {
@@ -198,10 +198,15 @@ public class KhLtPagService extends BaseService {
         log.info("Save: địa điểm để hàng");
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHangs(), phuongAnGia.getId());
         phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
+        //Lưu thông tin chung của Vật tư
+        if (req.getLoaiVthh().startsWith("02")) {
+            List<KhPagTtChung> pagTtChungs = this.savePagTtChung(req.getPagTtChungs(), phuongAnGia.getId());
+            phuongAnGia.setPagTtChungs(pagTtChungs);
+            List<KhPagPpXacDinhGia> pagPpXacDinhGias = this.savePagPpXacDinhGia(req.getPagPpXacDinhGias(), phuongAnGia.getId());
+            phuongAnGia.setPagPpXacDinhGias(pagPpXacDinhGias);
+        }
         log.info("Build phương án giá response");
-
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
-
         return phuongAnGiaRes;
     }
 
@@ -217,7 +222,6 @@ public class KhLtPagService extends BaseService {
             ketQua.setFileDinhKem(fileDinhKems.get(0));
             return ketQua;
         }).collect(Collectors.toList());
-//        ketQuaList = khLtPagKetQuaRepository.saveAll(ketQuaList);
         return ketQuaList;
     }
 
@@ -229,6 +233,26 @@ public class KhLtPagService extends BaseService {
             return diadiemDehang;
         }).collect(Collectors.toList());
         return ddDehangs;
+    }
+
+    private List<KhPagTtChung> savePagTtChung(List<KhPagTtChung> reqs, Long phuongAnGiaId) {
+        List<KhPagTtChung> ttChungs = reqs.stream().map(item -> {
+            KhPagTtChung ttchung = mapper.map(item, KhPagTtChung.class);
+            ttchung.setPhuongAnGiaId(phuongAnGiaId);
+            ttchung = khPagTtChungRepository.save(ttchung);
+            return ttchung;
+        }).collect(Collectors.toList());
+        return ttChungs;
+    }
+
+    private List<KhPagPpXacDinhGia> savePagPpXacDinhGia(List<KhPagPpXacDinhGia> reqs, Long phuongAnGiaId) {
+        List<KhPagPpXacDinhGia> ppXacDinhGias = reqs.stream().map(item -> {
+            KhPagPpXacDinhGia ppXacDinh = mapper.map(item, KhPagPpXacDinhGia.class);
+            ppXacDinh.setPhuongAnGiaId(phuongAnGiaId);
+            ppXacDinh = khPagPpXacDinhGiaRepository.save(ppXacDinh);
+            return ppXacDinh;
+        }).collect(Collectors.toList());
+        return ppXacDinhGias;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -286,6 +310,13 @@ public class KhLtPagService extends BaseService {
         log.info("Save: địa điểm để hàng");
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = this.saveDDDehang(req.getDiaDiemDeHangs(), phuongAnGia.getId());
         phuongAnGia.setDiaDiemDeHangs(diaDiemDeHangs);
+        //Lưu thông tin chung của Vật tư
+        if (req.getLoaiVthh().startsWith("02")) {
+            List<KhPagTtChung> pagTtChungs = this.savePagTtChung(req.getPagTtChungs(), phuongAnGia.getId());
+            phuongAnGia.setPagTtChungs(pagTtChungs);
+            List<KhPagPpXacDinhGia> pagPpXacDinhGias = this.savePagPpXacDinhGia(req.getPagPpXacDinhGias(), phuongAnGia.getId());
+            phuongAnGia.setPagPpXacDinhGias(pagPpXacDinhGias);
+        }
         log.info("Build phương án giá response");
         KhLtPhuongAnGiaRes phuongAnGiaRes = mapper.map(phuongAnGia, KhLtPhuongAnGiaRes.class);
         return phuongAnGiaRes;
@@ -295,28 +326,13 @@ public class KhLtPagService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteMultiple(List<Long> ids) throws Exception {
         if (CollectionUtils.isEmpty(ids)) throw new Exception("Bad request.");
-
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-
         List<KhPhuongAnGia> phuongAnGiaList = khLtPhuongAnGiaRepository.findByIdIn(ids);
-
         List<Long> phuongAnGiaIds = phuongAnGiaList.stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
-
         if (CollectionUtils.isEmpty(phuongAnGiaList)) throw new Exception("Bad request.");
-
         log.info("Xóa căn cứ pháp lý, kết quả và file đính kèm");
         deleteChildOfDxPag(phuongAnGiaIds);
-//        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(phuongAnGiaIds);
-//        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
-//            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
-//            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
-//            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
-//        }
-//        log.info("Xóa kết quả");
-//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), phuongAnGiaIds);
-//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), phuongAnGiaIds);
-//        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), phuongAnGiaIds);
         log.info("Xóa file đính  kèm của phương án giá");
         fileDinhKemService.deleteMultiple(phuongAnGiaIds, Collections.singleton(KhPhuongAnGia.TABLE_NAME));
         khLtPhuongAnGiaRepository.deleteAll(phuongAnGiaList);
@@ -338,6 +354,20 @@ public class KhLtPagService extends BaseService {
             fileDinhKemService.deleteMultiple(pagKetquaIds, Collections.singleton(KhPagKetQua.TABLE_NAME));
             khLtPagKetQuaRepository.deleteAll(allKetQuas);
         }
+        /**
+         * Xóa thông tin chung khi là vật tư
+         */
+        List<KhPagTtChung> allTtChung = khPagTtChungRepository.findByPhuongAnGiaIdIn(pagIds);
+        if (!CollectionUtils.isEmpty(allTtChung)) {
+            khPagTtChungRepository.deleteAll(allTtChung);
+        }
+        /**
+         * Xóa pp xác định giá khi là vật tư
+         */
+        List<KhPagPpXacDinhGia> allPpXacDinhGias = khPagPpXacDinhGiaRepository.findByPhuongAnGiaIdIn(pagIds);
+        if (!CollectionUtils.isEmpty(allPpXacDinhGias)) {
+            khPagPpXacDinhGiaRepository.deleteAll(allPpXacDinhGias);
+        }
     }
 
 
@@ -358,16 +388,17 @@ public class KhLtPagService extends BaseService {
         }
         List<Long> pagIds = new ArrayList<>();
         pagIds.add(ids);
-        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(pagIds);
-        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
-            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
-            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
-            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
-        }
-        log.info("Xóa kết quả");
-        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), pagIds);
-        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), pagIds);
-        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), pagIds);
+        deleteChildOfDxPag(pagIds);
+//        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(pagIds);
+//        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
+//            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
+//            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
+//            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
+//        }
+//        log.info("Xóa kết quả");
+//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), pagIds);
+//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), pagIds);
+//        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), pagIds);
         fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
         khLtPhuongAnGiaRepository.delete(qOptional.get());
     }
@@ -415,9 +446,12 @@ public class KhLtPagService extends BaseService {
         Collection dataType = new ArrayList();
         dataType.add(KhPhuongAnGia.TABLE_NAME);
         List<FileDinhKemChung> fileDinhKems = fileDinhKemChungRepository.findByDataIdAndDataTypeIn(data.getId(), dataType);
-        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+//        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
+        //Thông tin chung, loại Vật tư sẽ có
+        List<KhPagTtChung> listPagTtChungs = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
+        data.setPagTtChungs(listPagTtChungs);
         List<KhPagKetQua> listPagKetQuaTD = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), ids);
         List<KhPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), ids);
         List<KhPagKetQua> listPagKetQuaTTHHTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), ids);
