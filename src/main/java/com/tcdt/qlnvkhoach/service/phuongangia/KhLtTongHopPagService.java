@@ -222,7 +222,8 @@ public class KhLtTongHopPagService extends BaseService {
         if (pagTH.getSoToTrinh() != null || pagTH.getTrangThaiTH().equals(Contains.DATAOTOTRINH)) {
             throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
         }
-        if (khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh()).get() != null) {
+        Optional<KhPagTongHop> optionalCheckUnique = khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh());
+        if (optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId()) {
             throw new Exception("Số tờ trình đã tồn tại");
         }
         pagTH.setTrichYeu(req.getTrichYeu());
