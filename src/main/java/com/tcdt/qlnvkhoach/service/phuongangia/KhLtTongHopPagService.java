@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.*;
+import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
@@ -84,6 +85,8 @@ public class KhLtTongHopPagService extends BaseService {
             khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
             khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null : hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
             khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
+            khPagTongHop.setTentrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThai()));
+            khPagTongHop.setTentrangThaiTH(Contains.getThPagTongHop(khPagTongHop.getTrangThaiTH()));
         }
         return data;
     }
@@ -229,6 +232,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setTtGiaDn(req.getTtGiaDn());
         pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
         pagTH.setGhiChu(req.getGhiChu());
+        pagTH.setTrangThaiTH(Contains.DADUTHAO_QD);
         pagTH.setTtToTrinh(Contains.DATAOTOTRINH);
         return khLtPagTongHopRepository.save(pagTH);
     }

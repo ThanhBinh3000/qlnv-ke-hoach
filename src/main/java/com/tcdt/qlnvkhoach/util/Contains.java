@@ -261,6 +261,15 @@ public class Contains {
     public static String getThTongHop(String key) {
         return Contains.mpTrangThaiTH.get(key);
     }
+    public static final Map<String, String> mpTrangThaiPagTH;
+    static {
+        mpTrangThaiPagTH = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.CHUATAO_QD, "Chưa tạo quyết định")
+                .put(Contains.DADUTHAO_QD, "Dự thảo quyết định").put(Contains.DABANHANH_QD, "Ban hành quyết định").put(Contains.BAN_HANH, "Ban hành").get();
+    }
+    public static String getThPagTongHop(String key) {
+        return Contains.mpTrangThaiPagTH.get(key);
+    }
+
 
     public static final Map<String, BigDecimal> mpDVTinh;
     static {
