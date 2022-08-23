@@ -147,5 +147,15 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "TYPE")
     private String type;
 
+    @Column(name = "NGAY_DX_TU")
+    private LocalDate ngayDxTu;
 
+    @Column(name = "NGAY_DX_DEN")
+    private LocalDate ngayDxDen;
+
+    @Column(name = "L_DON_VI")
+    private String lDonVi;
+
+    @Transient
+    private List<String> maDvis;
 }

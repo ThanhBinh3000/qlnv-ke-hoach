@@ -161,7 +161,7 @@ public class KhLtPagService extends BaseService {
         }
         KhPhuongAnGia phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
-        phuongAnGia.setTrangThaiTh(PAGTrangThaiTHEnum.CHUA_TH.getId());
+        phuongAnGia.setTrangThaiTh(Contains.CHUA_TH);
         phuongAnGia.setMaDvi(userInfo.getDvql());
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());
