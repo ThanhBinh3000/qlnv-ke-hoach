@@ -85,7 +85,7 @@ public class KhLtTongHopPagService extends BaseService {
             khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
             khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null : hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
             khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
-            khPagTongHop.setTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThaiTt()) : null);
+            khPagTongHop.setTenTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThaiTt()) : null);
             khPagTongHop.setTenTrangThaiTh(Contains.getTrangThaiTT(khPagTongHop.getTrangThaiTh()));
         }
         return data;
