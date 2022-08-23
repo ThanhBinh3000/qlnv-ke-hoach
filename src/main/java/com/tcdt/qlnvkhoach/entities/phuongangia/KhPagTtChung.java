@@ -31,9 +31,6 @@ public class KhPagTtChung implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "STT")
-    private Long stt;
-
     @Column(name = "CLOAI_VTHH")
     private String cloaiVthh;
 

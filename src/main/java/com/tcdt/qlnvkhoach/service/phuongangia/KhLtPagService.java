@@ -449,9 +449,11 @@ public class KhLtPagService extends BaseService {
 //        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
-        //Thông tin chung, loại Vật tư sẽ có
+        //Thông tin chung,can cu xac dinh gia (loại Vật tư)
         List<KhPagTtChung> listPagTtChungs = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
         data.setPagTtChungs(listPagTtChungs);
+        List<KhPagPpXacDinhGia> listPpXacDinhGia = khPagPpXacDinhGiaRepository.findByPhuongAnGiaIdIn(ids);
+        data.setPagPpXacDinhGias(listPpXacDinhGia);
         List<KhPagKetQua> listPagKetQuaTD = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), ids);
         List<KhPagKetQua> listPagKetQuaKSTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), ids);
         List<KhPagKetQua> listPagKetQuaTTHHTT = khLtPagKetQuaRepository.findByTypeAndPhuongAnGiaIdIn(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), ids);
