@@ -239,6 +239,41 @@ public class KhLtTongHopPagService extends BaseService {
         return khLtPagTongHopRepository.save(pagTH);
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
+    public KhPagTongHop updateToTrinh(KhLtPagTongHopReq req) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (userInfo == null) throw new Exception("Bad request.");
+        Optional<KhPagTongHop> optinal = khLtPagTongHopRepository.findById(req.getId());
+        if (!optinal.isPresent()) {
+            throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
+        }
+        KhPagTongHop pagTH = optinal.get();
+        if (pagTH.getSoToTrinh() != null || pagTH.getTenTrangThaiTh().equals(Contains.DATAOTOTRINH)) {
+            throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
+        }
+        Optional<KhPagTongHop> optionalCheckUnique = khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh());
+        if (optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId()) {
+            throw new Exception("Số tờ trình đã tồn tại");
+        }
+        String status = req.getTrangThaiTt() + pagTH.getTrangThaiTt();
+        switch (status) {
+            case Contains.CHODUYET_LDV + Contains.DUTHAO:
+            case Contains.DADUYET_LDV + Contains.CHODUYET_LDV:
+                pagTH.setTtNguoiGuiDuyet(userInfo.getId());
+                break;
+            case Contains.TUCHOI_LDV + Contains.CHODUYET_LDV:
+                pagTH.setTtNguoiPheDuyet(userInfo.getId());
+                pagTH.setTtLyDoTuChoi(req.getTtLyDoTuChoi());
+                break;
+            default:
+                throw new Exception("Phê duyệt không thành công");
+        }
+        pagTH.setTrangThaiTt(req.getTrangThaiTt());
+        pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
+        return khLtPagTongHopRepository.save(pagTH);
+    }
+
     public void exportPagTH(KhLtPagTongHopSearchReq objReq, HttpServletResponse response) throws Exception {
         PaggingReq paggingReq = new PaggingReq();
         paggingReq.setPage(0);

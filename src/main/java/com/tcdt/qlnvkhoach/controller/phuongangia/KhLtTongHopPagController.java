@@ -77,12 +77,29 @@ public class KhLtTongHopPagController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Tạo mới tổng hợp đề xuất phương án giá", response = List.class)
-    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_TAO_TO_TRINH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Tạo mới tờ trình tổng hợp phương án giá", response = List.class)
+    @PostMapping(value = PathConstants.URL_TO_TRINH + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> createToTrinh(@Valid @RequestBody KhLtPagTongHopReq req) {
         Resp resp = new Resp();
         try {
             resp.setData(khLtTongHopPagService.createToTrinh(req));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Cập nhật tờ trình tổng hợp phương án giá", response = List.class)
+    @PostMapping(value = PathConstants.URL_TO_TRINH + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> updateToTrinh(@Valid @RequestBody KhLtPagTongHopReq req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khLtTongHopPagService.updateToTrinh(req));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

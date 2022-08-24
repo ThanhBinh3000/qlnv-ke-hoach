@@ -161,4 +161,13 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
 
     @Column(name="QD_GTDTT_BTC")
     private String qdGtdttBtc;
+
+    @Column(name="TT_LY_DO_TU_CHOI")
+    private String ttLyDoTuChoi;
+
+    @Column(name="TT_NGUOI_PHE_DUYET")
+    private Long ttNguoiPheDuyet;
+
+    @Column(name="TT_NGUOI_GUI_DUYET")
+    private Long ttNguoiGuiDuyet;
 }

@@ -20,7 +20,7 @@ public class KhLtPagTongHopReq {
     private String loaiVthh;
     private String cloaiVthh;
     private String loaiGia;
-    private String trangThai;
+    private String trangThaiTt;
     private BigDecimal giaKsTtTu;
     private BigDecimal giaKsTtDen;
     private BigDecimal giaKsTtVatTu;
@@ -61,5 +61,7 @@ public class KhLtPagTongHopReq {
     private String type;
 
     private String qdGtdttBtc;
+
+    private String ttLyDoTuChoi;
 
 }
