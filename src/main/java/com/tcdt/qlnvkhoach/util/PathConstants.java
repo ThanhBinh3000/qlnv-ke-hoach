@@ -82,5 +82,8 @@ public class PathConstants {
 
 	public static final String URL_TAO_TO_TRINH = "/tao-to-trinh";
 
+	public static final String URL_TO_TRINH = "/to-trinh";
+
+
 }
 

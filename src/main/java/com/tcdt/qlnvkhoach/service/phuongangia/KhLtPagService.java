@@ -389,16 +389,6 @@ public class KhLtPagService extends BaseService {
         List<Long> pagIds = new ArrayList<>();
         pagIds.add(ids);
         deleteChildOfDxPag(pagIds);
-//        List<KhPagCcPhapLy> khPagCcPhapLyList = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(pagIds);
-//        if (!CollectionUtils.isEmpty(khPagCcPhapLyList)) {
-//            List<Long> canCuPhapLyIds = khPagCcPhapLyList.stream().map(KhPagCcPhapLy::getId).collect(Collectors.toList());
-//            fileDinhKemService.deleteMultiple(canCuPhapLyIds, Collections.singleton(KhPagCcPhapLy.TABLE_NAME));
-//            khPagCcPhapLyRepository.deleteAll(khPagCcPhapLyList);
-//        }
-//        log.info("Xóa kết quả");
-//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_KHAO_SAT_GIA_THI_TRUONG.getValue(), pagIds);
-//        this.deleteKetQua(PhuongAnGiaEnum.KET_QUA_THAM_DINH_GIA.getValue(), pagIds);
-//        this.deleteKetQua(PhuongAnGiaEnum.THONG_TIN_GIA_CUA_HANG_HOA_TUONG_TU.getValue(), pagIds);
         fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
         khLtPhuongAnGiaRepository.delete(qOptional.get());
     }
@@ -418,10 +408,13 @@ public class KhLtPagService extends BaseService {
             case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
             case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
             case Contains.CHODUYET_TP + Contains.TUCHOI_LDC:
+            case Contains.CHODUYET_LDV + Contains.DUTHAO:
                 opPag.get().setNguoiGuiDuyet(userInfo.getId());
                 break;
             case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
             case Contains.TUCHOI_LDC + Contains.CHODUYET_LDC:
+            case Contains.TUCHOI_LDV + Contains.CHODUYET_LDV:
+            case Contains.DADUYET_LDV + Contains.CHODUYET_LDV:
                 opPag.get().setNguoiPheDuyet(userInfo.getId());
                 opPag.get().setLyDoTuChoi(objReq.getLyDoTuChoi());
                 break;
