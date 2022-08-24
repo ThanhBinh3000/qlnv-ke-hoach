@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.controller.phuongangia;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagQuyetDinhBtc;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.jwt.CurrentUser;
 import com.tcdt.qlnvkhoach.jwt.CustomUserDetails;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
@@ -182,6 +183,8 @@ public class KhPagQuyetDinhBtcController extends BaseController {
   public final ResponseEntity<Resp> DsToTrinhTongHop(@RequestBody KhLtPagTongHopSearchReq objReq) {
     Resp resp = new Resp();
     try {
+      objReq.setDsTrangThai(Arrays.asList(TrangThaiDungChungEnum.DADUYET_LDV.getId()
+          ,TrangThaiDungChungEnum.DATAOTOTRINH.getId()));
       resp.setData(khPagLtQuyetDinhBtcService.DsToTrinhDeXuat(objReq));
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");
@@ -214,6 +217,8 @@ public class KhPagQuyetDinhBtcController extends BaseController {
   public final ResponseEntity<Resp> DsToTrinhDeXuat(@RequestBody KhLtPhuongAnGiaSearchReq objReq) {
     Resp resp = new Resp();
     try {
+      objReq.setDsTrangThai(Arrays.asList(TrangThaiDungChungEnum.DADUYET_LDV.getId()
+          ,TrangThaiDungChungEnum.DATAOTOTRINH.getId()));
       resp.setData(khPagLtQuyetDinhBtcService.DsToTrinhDeXuat(objReq));
       resp.setStatusCode(Constants.RESP_SUCC);
       resp.setMsg("Thành công");

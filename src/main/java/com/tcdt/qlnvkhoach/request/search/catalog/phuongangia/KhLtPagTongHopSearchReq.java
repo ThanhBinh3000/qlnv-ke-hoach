@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.util.Contains;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class KhLtPagTongHopSearchReq extends BaseRequest {
@@ -24,4 +25,5 @@ public class KhLtPagTongHopSearchReq extends BaseRequest {
 
     String trangThai;
 
+    List<String> dsTrangThai;
 }
