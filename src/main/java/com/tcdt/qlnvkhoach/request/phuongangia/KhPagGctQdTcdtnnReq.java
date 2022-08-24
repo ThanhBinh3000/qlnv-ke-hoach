@@ -58,8 +58,6 @@ public class KhPagGctQdTcdtnnReq{
 
     private BigDecimal giaMtdbttVatBtc;
 
-    private KhPagTongHop soTtDeXuat;
-
     private List<KhPagTongHopCTiet> thongTinGia;
 
 

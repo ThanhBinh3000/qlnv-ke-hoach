@@ -5,6 +5,7 @@ import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhPagGctQdTcdtnnService;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class KhPagGctQdTcdtnnController extends BaseController {
 
     @Autowired
-    KhPagGctQdTcdtnnService khPagGctQdTcdtnnService;
+    private KhPagGctQdTcdtnnService khPagGctQdTcdtnnService;
 
     @ApiOperation(value = "Giá cụ thể Tra cứu Quyết định giá của TCDTNN", response = List.class)
     @PostMapping(value =PathConstants.URL_QD_GIA_TCDTNN + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -165,4 +166,22 @@ public class KhPagGctQdTcdtnnController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
+
+
+    @ApiOperation(value = "Danh sách tờ trình đề xuất cho quyết định TCDTNN", response = List.class)
+    @PostMapping(value= PathConstants.URL_QD_GIA_TCDTNN + "/list-to-trinh", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> DsToTrinhDeXuat(@RequestBody KhLtPagTongHopSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khPagGctQdTcdtnnService.listToTrinh(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
 }
