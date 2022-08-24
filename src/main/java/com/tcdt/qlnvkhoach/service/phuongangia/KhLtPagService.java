@@ -329,6 +329,11 @@ public class KhLtPagService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         List<KhPhuongAnGia> phuongAnGiaList = khLtPhuongAnGiaRepository.findByIdIn(ids);
+        for (KhPhuongAnGia khPhuongAnGia : phuongAnGiaList){
+            if(khPhuongAnGia.getTrangThaiTh().equals(Contains.DA_TH)){
+                throw new Exception("Có bản ghi đề xuất đã được tổng hợp, không được phép xóa.");
+            }
+        }
         List<Long> phuongAnGiaIds = phuongAnGiaList.stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(phuongAnGiaList)) throw new Exception("Bad request.");
         log.info("Xóa căn cứ pháp lý, kết quả và file đính kèm");
@@ -385,6 +390,9 @@ public class KhLtPagService extends BaseService {
         Optional<KhPhuongAnGia> qOptional = khLtPhuongAnGiaRepository.findById(ids);
         if (!qOptional.isPresent()) {
             throw new UserPrincipalNotFoundException("Id không tồn tại");
+        }
+        if(qOptional.get().getTrangThaiTh().equals(Contains.DA_TH)){
+            throw new UserPrincipalNotFoundException("Đề xuất đã được tổng hợp, không được phép xóa.");
         }
         List<Long> pagIds = new ArrayList<>();
         pagIds.add(ids);

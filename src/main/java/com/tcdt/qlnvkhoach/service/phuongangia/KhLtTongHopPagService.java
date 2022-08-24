@@ -74,6 +74,7 @@ public class KhLtTongHopPagService extends BaseService {
                 objReq.getNoiDung(),
                 userInfo.getCapDvi().equals("1") ? null : userInfo.getDvql(),
                 objReq.getTrangThai(),
+                objReq.getType(),
                 pageable);
         List<Long> khLtPagTHIds = data.getContent().stream().map(KhPagTongHop::getId).collect(Collectors.toList());
         List<KhPagTongHopCTiet> lChitiet = khLtPagTongHopCTietRepository.findByPagThIdIn(khLtPagTHIds);
@@ -287,7 +288,7 @@ public class KhLtTongHopPagService extends BaseService {
         if (listPagTHChiTiets.size() > 0) {
             data.setPagChiTiets(listPagTHChiTiets);
         }
-        data.setMaDvis(new ArrayList<String>(Arrays.asList(data.getLDonVi().split(","))));
+        data.setMaDvis(data.getLDonVi() != null ? new ArrayList<String>(Arrays.asList(data.getLDonVi().split(","))) : null);
         Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         data.setTenLoaiVthh(hashMapHh.get(data.getLoaiVthh()));
@@ -303,6 +304,9 @@ public class KhLtTongHopPagService extends BaseService {
         if (!qOptional.isPresent()) {
             throw new UserPrincipalNotFoundException("Id không tồn tại");
         }
+        if (!StringUtils.isEmpty(qOptional.get().getSoToTrinh())) {
+            throw new Exception("Tổng hợp đã ra tờ trình, không được phép xóa.");
+        }
         if (qOptional.get().getTrangThaiTt().equals(Contains.DUYET)) {
             throw new Exception("Bản ghi có trạng thái đã duyệt,không được xóa.");
         }
@@ -310,7 +314,14 @@ public class KhLtTongHopPagService extends BaseService {
         pagTHIds.add(ids);
         List<KhPagTongHopCTiet> khPagTongHopCTiet = khLtPagTongHopCTietRepository.findByPagThIdIn(pagTHIds);
         if (!CollectionUtils.isEmpty(khPagTongHopCTiet)) {
+            List<Long> dxIds = khPagTongHopCTiet.stream().map(KhPagTongHopCTiet::getPagThId).collect(Collectors.toList());
             khLtPagTongHopCTietRepository.deleteAll(khPagTongHopCTiet);
+            //cập nhật lại đề xuất về trạng thái chưa tổng hợp.
+            List<KhPhuongAnGia> pagDetails = khLtPhuongAnGiaRepository.findByIdIn(dxIds).stream().map(item -> {
+                item.setTrangThaiTh(Contains.CHUA_TH);
+                return item;
+            }).collect(Collectors.toList());
+            khLtPhuongAnGiaRepository.saveAll(pagDetails);
         }
         khLtPagTongHopRepository.delete(qOptional.get());
     }
