@@ -85,8 +85,8 @@ public class KhLtTongHopPagService extends BaseService {
             khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
             khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null : hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
             khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
-            khPagTongHop.setTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThaiTt()) : null);
-            khPagTongHop.setTentrangThaiTH(Contains.getTrangThaiTT(khPagTongHop.getTrangThaiTH()));
+            khPagTongHop.setTenTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThaiTt()) : null);
+            khPagTongHop.setTenTrangThaiTh(Contains.getTrangThaiTT(khPagTongHop.getTrangThaiTh()));
         }
         return data;
     }
@@ -176,7 +176,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setNgayTongHop(LocalDate.now());
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
-        pagTH.setTrangThaiTH(Contains.CHUATAOTOTRINH);
+        pagTH.setTrangThaiTh(Contains.CHUATAOTOTRINH);
         pagTH.setType(req.getType());
         pagTH.setGhiChu(req.getGhiChu());
         pagTH.setNoiDung(req.getNoiDung());
@@ -219,10 +219,11 @@ public class KhLtTongHopPagService extends BaseService {
             throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
         }
         KhPagTongHop pagTH = optinal.get();
-        if (pagTH.getSoToTrinh() != null || pagTH.getTrangThaiTH().equals(Contains.DATAOTOTRINH)) {
+        if (pagTH.getSoToTrinh() != null || pagTH.getTenTrangThaiTh().equals(Contains.DATAOTOTRINH)) {
             throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
         }
-        if (khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh()).get() != null) {
+        Optional<KhPagTongHop> optionalCheckUnique = khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh());
+        if (optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId()) {
             throw new Exception("Số tờ trình đã tồn tại");
         }
         pagTH.setTrichYeu(req.getTrichYeu());
@@ -232,7 +233,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setTtGiaTdtt(req.getTtGiaTdtt());
         pagTH.setTtGiaTdttVat(req.getTtGiaTdttVat());
         pagTH.setGhiChu(req.getGhiChu());
-        pagTH.setTrangThaiTH(Contains.DATAOTOTRINH);
+        pagTH.setTrangThaiTh(Contains.DATAOTOTRINH);
         pagTH.setTrangThaiTt(Contains.DUTHAO);
         pagTH.setQdGtdttBtc(req.getType().equals("GCT") ? req.getQdGtdttBtc() : null);
         return khLtPagTongHopRepository.save(pagTH);
@@ -265,9 +266,9 @@ public class KhLtTongHopPagService extends BaseService {
             objs[5] = StringUtils.isEmpty(dx.getLoaiVthh()) ? null : hashMapHh.get(dx.getLoaiVthh());
             objs[6] = StringUtils.isEmpty(dx.getCloaiVthh()) ? null : hashMapHh.get(dx.getCloaiVthh());
             objs[7] = hashMapLoaiGia.get(dx.getLoaiGia());
-            objs[8] = dx.getTentrangThaiTH();
+            objs[8] = dx.getTenTrangThaiTh();
             objs[9] = dx.getSoToTrinh();
-            objs[10] = dx.getTentrangThaiTT();
+            objs[10] = dx.getTenTrangThaiTt();
             dataList.add(objs);
         }
         ExportExcel ex = new ExportExcel(title, fileName, rowsName, dataList, response);
