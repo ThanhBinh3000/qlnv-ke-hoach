@@ -2,10 +2,13 @@ package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.repository.KhLtPhuongAnGiaRepositoryCustom;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -46,5 +49,11 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 	@Query("SELECT min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2")
 	List<Object[]> listPagWithDonGia(String type, Collection<Long> pagIds);
 
-	Optional<KhPhuongAnGia> findBySoDeXuat(String soDeXuat);
+  Optional<KhPhuongAnGia> findBySoDeXuat(String soDeXuat);
+
+  @Query("SELECT c FROM KhPhuongAnGia c WHERE 1=1 " +
+      "AND c.loaiVthh like '02%'"+
+      "ORDER BY c.ngaySua desc , c.ngayTao desc")
+  List<KhPhuongAnGia> DsToTrinhDeXuat(
+      @Param("param") KhLtPhuongAnGiaSearchReq param);
 }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KhPagQuyetDinhBtcRepository extends JpaRepository<KhPagQuyetDinhBtc, Long> {
   @Query("SELECT c FROM KhPagQuyetDinhBtc c WHERE 1=1 " +
+      "AND (:#{#param.pagTypeLT} IS NULL OR c.loaiVthh NOT LIKE CONCAT('02','%')) " +
+      "AND (:#{#param.pagTypeVT} IS NULL OR c.loaiVthh LIKE CONCAT('02','%')) " +
+      "AND (:#{#param.dvql} IS NULL OR c.maDvi LIKE CONCAT(:#{#param.dvql},'%')) " +
       "AND (:#{#param.namKeHoach} IS NULL OR function('TO_CHAR',c.namKeHoach) = :#{#param.namKeHoach}) " +
       "AND (:#{#param.soQd}  IS NULL OR LOWER(c.soQd) LIKE CONCAT('%',LOWER(:#{#param.soQd}),'%')) " +
       "AND (:#{#param.trichYeu}  IS NULL OR LOWER(c.trichYeu) LIKE CONCAT('%',LOWER(:#{#param.trichYeu}),'%')) " +

@@ -31,6 +31,6 @@ public class KhPagQuyetDinhBtcReq {
   private String ghiChu;
   private String capDvi;
   private KhPagTongHop soTtDeXuat;
-  private List<KhPagTongHopCTiet> thongTinGia;
-
+  private List<Object> thongTinGia;
+  private String pagType;
 }

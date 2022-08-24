@@ -19,13 +19,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-//kế hoạch - phương án giá - lương thực - quyết định giá của bộ tài chính
-public class KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
+//kế hoạch - phương án giá - lương thực/vật tư - quyết định giá của bộ tài chính
+public class  KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
   private static final long serialVersionUID = -8183308525284487273L;
   public static final String TABLE_NAME = "KH_PAG_QD_BTC";
 
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PAG_LT_QD_BTC_SEQ")
-  @SequenceGenerator(sequenceName = "KH_PAG_QD_BTC_SEQ", allocationSize = 1, name = "KH_PAG_LT_QD_BTC_SEQ")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PAG_QD_BTC_SEQ")
+  @SequenceGenerator(sequenceName = "KH_PAG_QD_BTC_SEQ", allocationSize = 1, name = "KH_PAG_QD_BTC_SEQ")
   @Id
   private Long id;
   private String maDvi;
@@ -44,6 +44,12 @@ public class KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
   private String capDvi;
   @Transient
   private String tenTrangThai;
+  @Transient
+  private String tenLoaiVthh;
+  @Transient
+  private String tenCloaiVthh;
+  @Transient
+  private String tenLoaiGia;
 
   public String getTenTrangThai() {
     return KhPagQuyetDinhBtcEnum.getLabelById(trangThai);

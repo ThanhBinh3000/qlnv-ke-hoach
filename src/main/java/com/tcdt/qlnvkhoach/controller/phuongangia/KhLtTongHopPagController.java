@@ -177,34 +177,4 @@ public class KhLtTongHopPagController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
-    @ApiOperation(value = "Danh sách tờ trình đề xuất cho quyết định BTC", response = List.class)
-    @PostMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_TONG_HOP + PathConstants.URL_DANH_SACH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> DsToTrinhDeXuat(@RequestBody KhLtPagTongHopSearchReq objReq) {
-        Resp resp = new Resp();
-        try {
-            resp.setData(khLtTongHopPagService.DsToTrinhDeXuat(objReq));
-            resp.setStatusCode(Constants.RESP_SUCC);
-            resp.setMsg("Thành công");
-        } catch (Exception e) {
-            resp.setStatusCode(Constants.RESP_FAIL);
-            resp.setMsg(e.getMessage());
-            log.error(e.getMessage());
-        }
-        return ResponseEntity.ok(resp);
-    }
-    @ApiOperation(value = "Danh sách thông tin giá của tờ trình đề xuất cho quyết định BTC", response = List.class)
-    @GetMapping(value=PathConstants.URL_LUONG_THUC + PathConstants.URL_GIA_LH +  PathConstants.URL_TONG_HOP + PathConstants.URL_DANH_SACH+PathConstants.URL_CHI_TIET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> DsToTrinhDeXuatChiTiet(@PathVariable("ids") Long ids) {
-        Resp resp = new Resp();
-        try {
-            resp.setData(khLtTongHopPagService.DsToTrinhDeXuatChiTiet(Arrays.asList(ids)));
-            resp.setStatusCode(Constants.RESP_SUCC);
-            resp.setMsg("Thành công");
-        } catch (Exception e) {
-            resp.setStatusCode(Constants.RESP_FAIL);
-            resp.setMsg(e.getMessage());
-            log.error(e.getMessage());
-        }
-        return ResponseEntity.ok(resp);
-    }
 }
