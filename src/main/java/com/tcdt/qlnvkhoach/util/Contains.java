@@ -125,8 +125,6 @@ public class Contains {
 
     public static final String KH_MUA_BO_SUNG= "MBS";
 
-    public static final String GCT = "GCT";
-
     public static final Map<String, String> mappingLoaiDx;
     static {
         mappingLoaiDx = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DX_THANH_LY, "Thanh lý")
