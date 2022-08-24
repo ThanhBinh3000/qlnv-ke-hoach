@@ -63,21 +63,28 @@ public class Contains {
     //Trạng thái tạo tờ trình (Phương án giá)
     public static final String CHUATAOTOTRINH = "31";
     public static final String DATAOTOTRINH = "32";
+    public static final Map<String, String> mpTrangThaiTh;
+    static {
+        mpTrangThaiTh = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.CHUATAOTOTRINH, "Chưa tạo tờ trình")
+                .put(Contains.DATAOTOTRINH, "Đã tạo tờ trình").get();
+    }
+    public static String getTrangThaiTh(String key) {
+        return Contains.mpTrangThaiTh.get(key);
+    }
 
     //Trạng thái của tờ trình (Phương án giá)
     public static final String CHODUYET_LDV = "18";
     public static final String TUCHOI_LDV = "19";
     public static final String DADUYET_LDV = "20";
 
-    public static final Map<String, String> mpTrangThaiTT;
+    public static final Map<String, String> mpTrangThaiTt;
     static {
-        mpTrangThaiTT = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.CHUATAOTOTRINH, "Chưa tạo tờ trình")
-                .put(Contains.DATAOTOTRINH, "Đã tạo tờ trình").get();
+        mpTrangThaiTt = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DUTHAO, "Dự thảo").put(Contains.CHODUYET_LDV, "Chờ duyệt - Lãnh đạo Vụ")
+                .put(Contains.TUCHOI_LDV, "Từ chối - Lãnh đạo Vụ").put(Contains.DADUYET_LDV, "Đã duyệt - Lãnh đạo Vụ").get();
     }
-    public static String getTrangThaiTT(String key) {
-        return Contains.mpTrangThaiTT.get(key);
+    public static String getTrangThaiTt(String key) {
+        return Contains.mpTrangThaiTt.get(key);
     }
-
     // Trang thai response
     public static final int RESP_SUCC = 0;
     public static final int RESP_FAIL = 1;

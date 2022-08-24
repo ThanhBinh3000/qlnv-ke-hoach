@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.controller.phuongangia;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
+import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
@@ -77,12 +78,12 @@ public class KhLtTongHopPagController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Tạo mới tờ trình tổng hợp phương án giá", response = List.class)
-    @PostMapping(value = PathConstants.URL_TO_TRINH + PathConstants.URL_TAO_MOI, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> createToTrinh(@Valid @RequestBody KhLtPagTongHopReq req) {
+    @ApiOperation(value = "Cập nhật thông tin tờ trình tổng hợp phương án giá", response = List.class)
+    @PostMapping(value = PathConstants.URL_TO_TRINH + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> updateToTrinhToThPag(@Valid @RequestBody KhLtPagTongHopReq req) {
         Resp resp = new Resp();
         try {
-            resp.setData(khLtTongHopPagService.createToTrinh(req));
+            resp.setData(khLtTongHopPagService.updateToTrinhToThPag(req));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -94,16 +95,15 @@ public class KhLtTongHopPagController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Cập nhật tờ trình tổng hợp phương án giá", response = List.class)
-    @PostMapping(value = PathConstants.URL_TO_TRINH + PathConstants.URL_CAP_NHAT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> updateToTrinh(@Valid @RequestBody KhLtPagTongHopReq req) {
+    @ApiOperation(value = "00-Dự thảo,02-Chờ duyệt – TP,03-Chờ duyệt – LĐ Cục,04-Đã duyệt,05-Từ chối – TP,06-Từ chối – LĐ Cục", response = List.class)
+    @PostMapping(value =  PathConstants.URL_TO_TRINH + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resp> approve(HttpServletRequest req, @Valid @RequestBody StatusReq stReq) {
         Resp resp = new Resp();
         try {
-            resp.setData(khLtTongHopPagService.updateToTrinh(req));
+            resp.setData(khLtTongHopPagService.approved(stReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
-            e.printStackTrace();
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error(e.getMessage());

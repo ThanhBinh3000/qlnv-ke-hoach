@@ -48,7 +48,7 @@ public class KhLtPagTongHopReq {
     /**
      * thông tin tờ trình
      */
-    private String maToTrinh;
+    private String soToTrinh;
 
     private BigDecimal ttGiaDn;
 
@@ -63,5 +63,7 @@ public class KhLtPagTongHopReq {
     private String qdGtdttBtc;
 
     private String ttLyDoTuChoi;
+
+    private LocalDate ttNgayKy;
 
 }
