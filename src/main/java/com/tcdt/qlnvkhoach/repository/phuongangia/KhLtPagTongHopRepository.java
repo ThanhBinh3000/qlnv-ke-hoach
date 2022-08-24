@@ -34,4 +34,12 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
 			"ORDER BY c.ngaySua desc , c.ngayTao desc")
 	List<KhPagTongHop> DsToTrinhDeXuat(
 			@Param("param") KhLtPagTongHopSearchReq param);
+
+    @Query(value = "SELECT DISTINCT *" +
+            "From KH_PAG_TONG_HOP TT" +
+            " where TT.TYPE='GCT'" +
+            "AND TT.TRANG_THAI_TH= '32'" +
+            "AND TT.TRANG_THAI_TT='20' ",
+            nativeQuery = true)
+	List<KhPagTongHop> listToTrinh(KhLtPagTongHopSearchReq req);
 }
