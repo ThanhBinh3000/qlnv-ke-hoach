@@ -70,13 +70,13 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     private String trangThaiTt;
 
     @Transient
-    private String tentrangThaiTT;
+    private String tenTrangThaiTt;
 
     @Column(name="TRANG_THAI_TH")
-    private String trangThaiTH;
+    private String trangThaiTh;
 
     @Transient
-    private String tentrangThaiTH;
+    private String tenTrangThaiTh;
 
     @Column(name="GIA_KS_TT_TU")
     private BigDecimal giaKsTtTu;
