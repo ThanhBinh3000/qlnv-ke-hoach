@@ -82,11 +82,11 @@ public class KhLtTongHopPagService extends BaseService {
         Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         for (KhPagTongHop khPagTongHop : data.getContent()) {
             khPagTongHop.setPagChiTiets(mPagTHCtiet.get(khPagTongHop.getId()));
-            khPagTongHop.setTenloaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
-            khPagTongHop.setTenloaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null : hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
+            khPagTongHop.setTenLoaiVthh(StringUtils.isEmpty(khPagTongHop.getLoaiVthh()) ? null : hashMapHh.get(khPagTongHop.getLoaiVthh()));
+            khPagTongHop.setTenLoaiGia(StringUtils.isEmpty(khPagTongHop.getLoaiGia()) ? null : hashMapLoaiGia.get(khPagTongHop.getLoaiGia()));
             khPagTongHop.setTenCloaiVthh(StringUtils.isEmpty(khPagTongHop.getCloaiVthh()) ? null : hashMapHh.get(khPagTongHop.getCloaiVthh()));
-            khPagTongHop.setTenTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? PAGTrangThaiEnum.getTrangThaiDuyetById(khPagTongHop.getTrangThaiTt()) : null);
-            khPagTongHop.setTenTrangThaiTh(Contains.getTrangThaiTT(khPagTongHop.getTrangThaiTh()));
+            khPagTongHop.setTenTrangThaiTt(khPagTongHop.getTrangThaiTt() != null ? Contains.getTrangThaiTt(khPagTongHop.getTrangThaiTt()) : null);
+            khPagTongHop.setTenTrangThaiTh(Contains.getTrangThaiTh(khPagTongHop.getTrangThaiTh()));
         }
         return data;
     }
@@ -177,6 +177,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setMaDvi(userInfo.getDvql());
         pagTH.setCapDvi(userInfo.getCapDvi());
         pagTH.setTrangThaiTh(Contains.CHUATAOTOTRINH);
+        pagTH.setTrangThaiTt(Contains.DUTHAO);
         pagTH.setType(req.getType());
         pagTH.setGhiChu(req.getGhiChu());
         pagTH.setNoiDung(req.getNoiDung());
@@ -211,7 +212,7 @@ public class KhLtTongHopPagService extends BaseService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public KhPagTongHop createToTrinh(KhLtPagTongHopReq req) throws Exception {
+    public KhPagTongHop updateToTrinhToThPag(KhLtPagTongHopReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         Optional<KhPagTongHop> optinal = khLtPagTongHopRepository.findById(req.getId());
@@ -219,22 +220,20 @@ public class KhLtTongHopPagService extends BaseService {
             throw new Exception("Không tìm thấy bản ghi tổng hợp phương án giá");
         }
         KhPagTongHop pagTH = optinal.get();
-        if (pagTH.getSoToTrinh() != null || pagTH.getTenTrangThaiTh().equals(Contains.DATAOTOTRINH)) {
-            throw new Exception("Đã tạo tờ trình cho tổng hợp này.");
-        }
-        Optional<KhPagTongHop> optionalCheckUnique = khLtPagTongHopRepository.findBySoToTrinh(req.getMaToTrinh());
+        Optional<KhPagTongHop> optionalCheckUnique = khLtPagTongHopRepository.findBySoToTrinh(req.getSoToTrinh());
         if (optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId()) {
             throw new Exception("Số tờ trình đã tồn tại");
         }
         pagTH.setTrichYeu(req.getTrichYeu());
-        pagTH.setSoToTrinh(req.getMaToTrinh());
+        pagTH.setSoToTrinh(req.getSoToTrinh());
         pagTH.setTtGiaDn(req.getTtGiaDn());
         pagTH.setTtGiaDnVat(req.getTtGiaDnVat());
         pagTH.setTtGiaTdtt(req.getTtGiaTdtt());
         pagTH.setTtGiaTdttVat(req.getTtGiaTdttVat());
         pagTH.setGhiChu(req.getGhiChu());
         pagTH.setTrangThaiTh(Contains.DATAOTOTRINH);
-        pagTH.setTrangThaiTt(Contains.DUTHAO);
+        pagTH.setTrangThaiTt(req.getTrangThaiTt());
+        pagTH.setTtNgayKy(req.getTtNgayKy());
         pagTH.setQdGtdttBtc(req.getType().equals("GCT") ? req.getQdGtdttBtc() : null);
         return khLtPagTongHopRepository.save(pagTH);
     }
@@ -289,6 +288,12 @@ public class KhLtTongHopPagService extends BaseService {
             data.setPagChiTiets(listPagTHChiTiets);
         }
         data.setMaDvis(new ArrayList<String>(Arrays.asList(data.getLDonVi().split(","))));
+        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+        data.setTenLoaiVthh(hashMapHh.get(data.getLoaiVthh()));
+        data.setTenLoaiGia(hashMapLoaiGia.get(data.getLoaiGia()));
+        data.setTenCloaiVthh(hashMapHh.get(data.getCloaiVthh()));
+        data.setTenTrangThaiTt(Contains.getTrangThaiTt(data.getTrangThaiTt()));
         return data;
     }
 
@@ -320,14 +325,16 @@ public class KhLtTongHopPagService extends BaseService {
             throw new Exception("Không tìm thấy dữ liệu");
         String status = objReq.getTrangThai() + opPagTH.get().getTrangThaiTt();
         switch (status) {
-            case Contains.CHODUYET_TP + Contains.DUTHAO:
-            case Contains.CHODUYET_TP + Contains.TUCHOI_TP:
-            case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
-            case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
-            case Contains.CHODUYET_TP + Contains.TUCHOI_LDC:
+            case Contains.CHODUYET_LDV + Contains.DUTHAO:
+            case Contains.CHODUYET_LDV + Contains.TUCHOI_LDV:
+                opPagTH.get().setTtNguoiGuiDuyet(userInfo.getId());
                 break;
-            case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
-            case Contains.TUCHOI_LDC + Contains.CHODUYET_LDC:
+            case Contains.TUCHOI_LDV + Contains.CHODUYET_LDV:
+                opPagTH.get().setTtNguoiPheDuyet(userInfo.getId());
+                opPagTH.get().setTtLyDoTuChoi(objReq.getLyDoTuChoi());
+                break;
+            case Contains.DADUYET_LDV + Contains.CHODUYET_LDV:
+                opPagTH.get().setTtNguoiPheDuyet(userInfo.getId());
                 break;
             default:
                 throw new Exception("Phê duyệt không thành công");

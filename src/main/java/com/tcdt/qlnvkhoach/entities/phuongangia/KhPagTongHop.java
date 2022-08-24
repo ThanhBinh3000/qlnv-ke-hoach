@@ -52,7 +52,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     private String loaiVthh;
 
     @Transient
-    private String tenloaiVthh;
+    private String tenLoaiVthh;
 
     @Column(name="CLOAI_VTHH")
     private String cloaiVthh;
@@ -64,7 +64,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     private String loaiGia;
 
     @Transient
-    private String tenloaiGia;
+    private String tenLoaiGia;
 
     @Column(name="TRANG_THAI_TT")
     private String trangThaiTt;
@@ -161,4 +161,16 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
 
     @Column(name="QD_GTDTT_BTC")
     private String qdGtdttBtc;
+
+    @Column(name="TT_LY_DO_TU_CHOI")
+    private String ttLyDoTuChoi;
+
+    @Column(name="TT_NGUOI_PHE_DUYET")
+    private Long ttNguoiPheDuyet;
+
+    @Column(name="TT_NGUOI_GUI_DUYET")
+    private Long ttNguoiGuiDuyet;
+
+    @Column(name="TT_NGAY_KY")
+    private LocalDate ttNgayKy;
 }
