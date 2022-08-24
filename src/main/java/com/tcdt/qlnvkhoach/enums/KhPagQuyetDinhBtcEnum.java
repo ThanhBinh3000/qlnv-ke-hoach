@@ -1,20 +1,23 @@
 package com.tcdt.qlnvkhoach.enums;
 
-public enum KhPagLtQuyetDinhBtcEnum {
+public enum KhPagQuyetDinhBtcEnum {
   DU_THAO("00", "Dự Thảo"),
-  BAN_HANH("01", "Ban Hành");
+  CHUATAO_QD("26", "Chưa tạo QĐ"),
+  DADUTHAO_QD("27", "Đã dự thảo QĐ"),
+  DABANHANH_QD("28", "Đã ban hành QĐ"),
+  BAN_HANH("29", "Ban Hành");
 
   private final String id;
   private final String ten;
 
-  KhPagLtQuyetDinhBtcEnum(String id, String ten) {
+  KhPagQuyetDinhBtcEnum(String id, String ten) {
     this.id = id;
     this.ten = ten;
 
   }
 
   public static String getLabelById(String id) {
-    for (KhPagLtQuyetDinhBtcEnum e : values()) {
+    for (KhPagQuyetDinhBtcEnum e : values()) {
       if (e.id.equals(id)) {
         return e.ten;
       }

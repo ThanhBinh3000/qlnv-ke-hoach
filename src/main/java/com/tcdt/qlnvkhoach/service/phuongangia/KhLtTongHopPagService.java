@@ -354,6 +354,4 @@ public class KhLtTongHopPagService extends BaseService {
         KhPagTongHop khPagTongHop = khLtPagTongHopRepository.save(opPagTH.get());
         return khPagTongHop;
     }
-
-
 }

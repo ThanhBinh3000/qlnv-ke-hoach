@@ -1,14 +1,9 @@
 package com.tcdt.qlnvkhoach.entities.phuongangia;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.tcdt.qlnvkhoach.entities.BaseEntity;
-import com.tcdt.qlnvkhoach.enums.KhPagLtQuyetDinhBtcEnum;
+import com.tcdt.qlnvkhoach.enums.KhPagQuyetDinhBtcEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,20 +12,20 @@ import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = KhPagLtQuyetDinhBtc.TABLE_NAME)
+@Table(name = KhPagQuyetDinhBtc.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-//kế hoạch - phương án giá - lương thực - quyết định giá của bộ tài chính
-public class KhPagLtQuyetDinhBtc extends BaseEntity implements Serializable {
+//kế hoạch - phương án giá - lương thực/vật tư - quyết định giá của bộ tài chính
+public class  KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
   private static final long serialVersionUID = -8183308525284487273L;
-  public static final String TABLE_NAME = "KH_PAG_LT_QD_BTC";
+  public static final String TABLE_NAME = "KH_PAG_QD_BTC";
 
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PAG_LT_QD_BTC_SEQ")
-  @SequenceGenerator(sequenceName = "KH_PAG_LT_QD_BTC_SEQ", allocationSize = 1, name = "KH_PAG_LT_QD_BTC_SEQ")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PAG_QD_BTC_SEQ")
+  @SequenceGenerator(sequenceName = "KH_PAG_QD_BTC_SEQ", allocationSize = 1, name = "KH_PAG_QD_BTC_SEQ")
   @Id
   private Long id;
   private String maDvi;
@@ -39,7 +34,7 @@ public class KhPagLtQuyetDinhBtc extends BaseEntity implements Serializable {
   private String soQd;
   private LocalDate ngayKy;
   private LocalDate ngayHieuLuc;
-  private String soTtDeXuat;
+  private Long soToTrinh;
   private String loaiVthh;
   private String cloaiVthh;
   private String loaiGia;
@@ -49,8 +44,14 @@ public class KhPagLtQuyetDinhBtc extends BaseEntity implements Serializable {
   private String capDvi;
   @Transient
   private String tenTrangThai;
+  @Transient
+  private String tenLoaiVthh;
+  @Transient
+  private String tenCloaiVthh;
+  @Transient
+  private String tenLoaiGia;
 
   public String getTenTrangThai() {
-    return KhPagLtQuyetDinhBtcEnum.getLabelById(trangThai);
+    return KhPagQuyetDinhBtcEnum.getLabelById(trangThai);
   }
 }
