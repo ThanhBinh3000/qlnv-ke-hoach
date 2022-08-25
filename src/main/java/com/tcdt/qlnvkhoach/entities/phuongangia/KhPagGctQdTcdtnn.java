@@ -53,7 +53,7 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     private LocalDate ngayHieuLuc;
 
     @Column(name="SO_TO_TRINH")
-    private Long soToTrinh;
+    private String soToTrinh;
 
     @Column(name = "LOAI_VTHH")
     private String loaiVthh;
