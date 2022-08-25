@@ -103,11 +103,4 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     @Transient
     String tenDvi;
 
-    @Transient
-    private BigDecimal giaQd;
-
-    @Transient
-    private BigDecimal giaQdVat;
-
-
 }
