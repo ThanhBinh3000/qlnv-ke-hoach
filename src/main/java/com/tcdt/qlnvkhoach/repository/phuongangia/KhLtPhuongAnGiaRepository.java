@@ -42,9 +42,9 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			" AND PAG.TYPE = :type \n" +
 			" AND PAG.NGAY_KY >=  TO_DATE(:ngayDxTu,'yyyy-MM-dd') \n" +
 			" AND PAG.NGAY_KY  <=  TO_DATE(:ngayDxDen,'yyyy-MM-dd') \n" +
-			" AND PAG.TRANG_THAI_TH = '24' \n" +
-			" AND PAG.TRANG_THAI = '05' ", nativeQuery = true)
-	List<KhPhuongAnGia> listTongHop(String loaiVthh, String cloaiVthh, String namTongHop, String loaiGia, String ngayDxTu, String ngayDxDen,String type,List<String> maDvis);
+			" AND PAG.TRANG_THAI_TH = :trangThaiTh \n" +
+			" AND PAG.TRANG_THAI = :trangThai ", nativeQuery = true)
+	List<KhPhuongAnGia> listTongHop(String loaiVthh, String cloaiVthh, String namTongHop, String loaiGia, String ngayDxTu, String ngayDxDen,String type,List<String> maDvis,String trangThaiTh,String trangThai);
 
 	@Query("SELECT min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2")
 	List<Object[]> listPagWithDonGia(String type, Collection<Long> pagIds);

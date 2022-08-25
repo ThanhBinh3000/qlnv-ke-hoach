@@ -7,10 +7,12 @@ import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopFilterReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagTongHopReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPagService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPhuongAnGiaService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhLtTongHopPagService;
+import com.tcdt.qlnvkhoach.service.phuongangia.KhPagQuyetDinhBtcService;
 import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.PathConstants;
 import io.swagger.annotations.Api;
@@ -31,6 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tcdt.qlnvkhoach.util.PathConstants.URL_DANH_SACH_TO_TRINH_DE_XUAT;
+import static com.tcdt.qlnvkhoach.util.PathConstants.URL_QD_GIA_BTC;
+
 @RestController
 @RequestMapping(value = "/phuong-an-gia")
 @Slf4j
@@ -42,6 +47,8 @@ public class KhLtTongHopPagController extends BaseController {
     private KhLtTongHopPagService khLtTongHopPagService;
     @Autowired
     private KhLtPagService khLtPagService;
+    @Autowired
+    private KhPagQuyetDinhBtcService khPagQuyetDinhBtcService;
 
     @ApiOperation(value = "Tổng hợp đề xuất phương án giá", response = List.class)
     @PostMapping(value = PathConstants.URL_TONG_HOP, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -178,4 +185,21 @@ public class KhLtTongHopPagController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
+
+    @ApiOperation(value = "Danh sách tờ trình đề xuất theo type và trạng thái", response = List.class)
+    @PostMapping(value = PathConstants.URL_TONG_HOP + PathConstants.URL_DANH_SACH_TO_TRINH_DE_XUAT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> dsToTrinhDeXuat(@RequestBody KhLtPagTongHopSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khPagQuyetDinhBtcService.dsToTrinhTh(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
 }

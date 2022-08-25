@@ -262,6 +262,12 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     return data;
   }
 
+
+  public List<KhPagTongHop> dsToTrinhTh(KhLtPagTongHopSearchReq objReq) throws Exception {
+    List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(),objReq.getTrangThaiTt());
+    return data;
+  }
+
   public List<KhPagTongHopCTiet> DsToTrinhDeXuatChiTietLt(List<Long> ids) throws Exception {
     List<KhPagTongHopCTiet> data = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
     List<String> maDvis = data.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
