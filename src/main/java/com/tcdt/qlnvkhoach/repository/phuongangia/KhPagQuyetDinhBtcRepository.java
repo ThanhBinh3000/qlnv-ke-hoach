@@ -28,5 +28,5 @@ public interface KhPagQuyetDinhBtcRepository extends JpaRepository<KhPagQuyetDin
 
   Optional<KhPagQuyetDinhBtc> findById(Long aLong);
 
-  Optional<KhPagQuyetDinhBtc> findBySoToTrinh(Long soToTrinh);
+  Optional<KhPagQuyetDinhBtc> findBySoToTrinh(String soToTrinh);
 }
