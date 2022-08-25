@@ -98,7 +98,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             throw new Exception("số quyết định đã tồn tại");
         Optional<KhPagGctQdTcdtnn> soToTrinh = khPagGctQdTcdtnnRepository.findBySoToTrinh(req.getSoToTrinh());
         if(soToTrinh.isPresent())
-            throw new Exception("số tờ trình đã tồn tại");
+            throw new Exception("số quyết định đã tồn tại");
         KhPagGctQdTcdtnn data=new KhPagGctQdTcdtnn();
         BeanUtils.copyProperties(req, data, "id");
         data.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
