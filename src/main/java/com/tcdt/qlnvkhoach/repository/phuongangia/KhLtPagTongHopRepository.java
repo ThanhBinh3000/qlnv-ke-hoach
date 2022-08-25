@@ -48,8 +48,9 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
             "From KH_PAG_TONG_HOP TT" +
             " where TT.TYPE= :type" +
             " AND TT.TRANG_THAI_TT= :trangThaiTt " +
-            " AND NOT EXISTS(SELECT BTC.ID FROM KH_PAG_QD_BTC BTC WHERE BTC.SO_TO_TRINH = TT.ID) " +
-            " AND NOT EXISTS(SELECT QD_TCDT.ID FROM KH_PAG_GCT_QD_TCDTNN QD_TCDT WHERE QD_TCDT.SO_TO_TRINH = TT.ID) ",
+            " AND NOT EXISTS(SELECT BTC.ID FROM KH_PAG_QD_BTC BTC WHERE BTC.SO_TO_TRINH = TT.SO_TO_TRINH) " +
+            " AND NOT EXISTS(SELECT QD_TCDT.ID FROM KH_PAG_GCT_QD_TCDTNN QD_TCDT WHERE QD_TCDT.SO_TO_TRINH = TT.SO_TO_TRINH) " +
+            " AND NOT EXISTS(SELECT QD_DC_TCDT.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDT WHERE QD_DC_TCDT.SO_TO_TRINH_DX = TT.SO_TO_TRINH) ",
             nativeQuery = true)
     List<KhPagTongHop> dsToTrinhTh(String type, String trangThaiTt);
 }
