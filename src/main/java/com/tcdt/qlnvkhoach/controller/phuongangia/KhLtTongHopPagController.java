@@ -96,7 +96,7 @@ public class KhLtTongHopPagController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "00-Dự thảo,02-Chờ duyệt – TP,03-Chờ duyệt – LĐ Cục,04-Đã duyệt,05-Từ chối – TP,06-Từ chối – LĐ Cục", response = List.class)
+    @ApiOperation(value = "00-Dự thảo,18-Chờ duyệt LDV – TP,19-Từ chối – LĐ Vụ,20-Đã duyệt - LĐ Vụ", response = List.class)
     @PostMapping(value =  PathConstants.URL_TO_TRINH + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> approve(HttpServletRequest req, @Valid @RequestBody StatusReq stReq) {
         Resp resp = new Resp();
@@ -155,6 +155,7 @@ public class KhLtTongHopPagController extends BaseController {
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error(e.getMessage());

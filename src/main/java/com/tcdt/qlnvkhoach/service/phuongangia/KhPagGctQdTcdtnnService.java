@@ -2,12 +2,15 @@ package com.tcdt.qlnvkhoach.service.phuongangia;
 
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagGctQdTcdtnn;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagGctQdTcdtnnRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
@@ -41,6 +44,9 @@ public class KhPagGctQdTcdtnnService extends BaseService {
 
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private KhLtPagTongHopRepository khLtPagTongHopRepository;
 
 
     public Page<KhPagGctQdTcdtnn> searchPage(KhPagGctQdTcdtnnSearchReq objReq) throws Exception{
@@ -82,6 +88,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         //lưu thong tin giá
         req.getThongTinGia().forEach(f->{
             f.setQdTcdtnnId(data.getId());
+            f.setGiaQd(data.getGiaQd());
+            f.setGiaQdVat(data.getGiaQdVat());
         });
         khLtPagTongHopCTietRepository.saveAll(req.getThongTinGia());
         return save;
@@ -100,12 +108,14 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             throw new Exception("Chỉ được sửa quyết định dự thảo.");
         KhPagGctQdTcdtnn data=optional.get();
         BeanUtils.copyProperties(req,data, "id");
-
+        KhPagGctQdTcdtnn update=khPagGctQdTcdtnnRepository.save(data);
+        khLtPagTongHopCTietRepository.deleteAllByQdTcdtnnId(data.getId());
         //lưu thong tin giá
         req.getThongTinGia().forEach(f->{
             f.setQdTcdtnnId(data.getId());
         });
-        return khPagGctQdTcdtnnRepository.save(data);
+        khLtPagTongHopCTietRepository.saveAll(req.getThongTinGia());
+        return update;
     }
 
     public KhPagGctQdTcdtnn detail(String id) throws Exception{
@@ -151,8 +161,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             objs[2]=dx.getNgayKy();
             objs[3]=dx.getTrichYeu();
             objs[4]=dx.getNamKeHoach();
-            objs[5]=dx.getLoaiGia();
-            objs[6]=dx.getLoaiVthh();
+            objs[5]=dx.getTenLoaiGia();
+            objs[6]=dx.getTenLoaiVthh();
             objs[7]=dx.getTenTrangThai();
             dataList.add(objs);
 
@@ -185,4 +195,11 @@ public class KhPagGctQdTcdtnnService extends BaseService {
 
         return createCheck;
     }
+
+    @org.springframework.transaction.annotation.Transactional
+    public List<KhPagTongHop> listToTrinh(KhLtPagTongHopSearchReq req) throws Exception{
+        List<KhPagTongHop> list=khLtPagTongHopRepository.listToTrinh(req);
+        return list;
+    }
+
 }
