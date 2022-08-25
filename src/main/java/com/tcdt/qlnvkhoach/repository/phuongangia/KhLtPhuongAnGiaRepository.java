@@ -2,14 +2,18 @@ package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.repository.KhLtPhuongAnGiaRepositoryCustom;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, Long>, KhLtPhuongAnGiaRepositoryCustom {
@@ -18,7 +22,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			+" AND (:soDx IS NULL OR LOWER(KLPAG.SO_DE_XUAT) LIKE LOWER(CONCAT(CONCAT('%',:soDx),'%' ) ) )"
 			+" AND (:dvql IS NULL OR LOWER(KLPAG.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
 			+" AND (:loaiHh IS NULL OR KLPAG.LOAI_VTHH = :loaiHh)"
-			+" AND (:pagType IS NULL OR KLPAG.LOAI_VTHH LIKE CONCAT(:pagType,'%' ) )"
+			+" AND (( :pagType IS NULL AND (KLPAG.LOAI_VTHH LIKE '01%' OR KLPAG.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND KLPAG.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )"
 			+" AND (:type IS NULL OR KLPAG.type =  :type)"
 			+" AND (:ngayKyTu IS NULL OR KLPAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd'))"
 			+" AND (:ngayKyDen IS NULL OR KLPAG.NGAY_KY <= TO_DATE(:ngayKyDen,'yyyy-MM-dd'))"
@@ -32,16 +36,24 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			"FROM KH_PHUONG_AN_GIA PAG \n" +
 			" WHERE PAG.LOAI_VTHH = :loaiVthh \n" +
 			" AND PAG.CLOAI_VTHH = :cloaiVthh \n" +
-			" AND PAG.NAM_KE_HOACH = :namKh \n" +
+			" AND PAG.NAM_KE_HOACH = :namTongHop \n" +
 			" AND PAG.LOAI_GIA = :loaiGia \n" +
-			" AND PAG.TYPE = :type \n" +
 			" AND PAG.MA_DVI in (:maDvis) \n" +
+			" AND PAG.TYPE = :type \n" +
 			" AND PAG.NGAY_KY >=  TO_DATE(:ngayDxTu,'yyyy-MM-dd') \n" +
 			" AND PAG.NGAY_KY  <=  TO_DATE(:ngayDxDen,'yyyy-MM-dd') \n" +
-			" AND PAG.TRANG_THAI_TH = '00' \n" +
-			" AND PAG.TRANG_THAI = '00' ", nativeQuery = true)
-	List<KhPhuongAnGia> listTongHop(String loaiVthh, String cloaiVthh, String namKh, String loaiGia, String ngayDxTu, String ngayDxDen,String type,List<String> maDvis);
+			" AND PAG.TRANG_THAI_TH = '24' \n" +
+			" AND PAG.TRANG_THAI = '05' ", nativeQuery = true)
+	List<KhPhuongAnGia> listTongHop(String loaiVthh, String cloaiVthh, String namTongHop, String loaiGia, String ngayDxTu, String ngayDxDen,String type,List<String> maDvis);
 
-	@Query("SELECT pag.id, min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2  GROUP BY pag.id")
+	@Query("SELECT min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2")
 	List<Object[]> listPagWithDonGia(String type, Collection<Long> pagIds);
+
+  Optional<KhPhuongAnGia> findBySoDeXuat(String soDeXuat);
+
+  @Query("SELECT c FROM KhPhuongAnGia c WHERE 1=1 " +
+      "AND c.loaiVthh like '02%'"+
+      "ORDER BY c.ngaySua desc , c.ngayTao desc")
+  List<KhPhuongAnGia> DsToTrinhDeXuat(
+      @Param("param") KhLtPhuongAnGiaSearchReq param);
 }

@@ -1,6 +1,8 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagPpXacDinhGia;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,8 +60,6 @@ public class KhLtPhuongAnGiaReq {
 
 	private List<KhLtPagCcPhapLyReq> canCuPhapLy = new ArrayList<>();
 
-	private Long phuongPhapId;
-
 	private Boolean hangSxTrongNuoc;
 
 	private Boolean hangNhapKhau;
@@ -92,9 +92,7 @@ public class KhLtPhuongAnGiaReq {
 	 * BDG: Biến động giá
 	 */
 
-	private String bdgNoiDung; //Nội dung: Biến động giá
-
-	private String bdgGhiChu; //Ghi chú: Biến động giá
+	private String noiDung; //Nội dung: Biến động giá
 
 	/**
 	 * Địa điêm để hàng
@@ -108,4 +106,21 @@ public class KhLtPhuongAnGiaReq {
 	private String maPphapXdg;
 
 	private String loaiHangXdg;
+
+	private String soCanCu;
+
+	private String  type;
+
+	private String pagType;
+
+	/**
+	 * Các field dành riêng cho vật tư
+	 */
+	private String nguoiKy;
+
+	private String qdCtKhNam;
+
+	private List<KhPagTtChung> pagTtChungs;
+
+	private List<KhPagPpXacDinhGia> pagPpXacDinhGias;
 }

@@ -52,7 +52,7 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "LOAI_VTHH")
     private String loaiVthh;
 
-    @Column(name = "SO_DE_XUAT")
+    @Column(name = "SO_DE_XUAT",unique = true)
     private String soDeXuat;
 
     @Column(name = "NGAY_KY")
@@ -61,8 +61,8 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "TRICH_YEU")
     private String trichYeu;
 
-    @Column(name = "CAN_CU_ID")
-    private Long canCuId;
+    @Column(name = "SO_CAN_CU")
+    private String soCanCu;
 
     @Column(name = "LOAI_GIA")
     private String loaiGia;
@@ -88,7 +88,6 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "SO_LUONG")
     private Long soLuong;
 
-
     @Transient
     private List<KhPagDiaDiemDeHang> diaDiemDeHangs = new ArrayList<>();
 
@@ -105,9 +104,6 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
      */
     @Transient
     private List<KhPagCcPhapLy> canCuPhapLy = new ArrayList<>();
-
-    @Column(name = "PHUONG_PHAP_ID")
-    private Long phuongPhapId;
 
     @Column(name = "HANG_SX_TRONG_NUOC")
     private Boolean hangSxTrongNuoc;
@@ -151,11 +147,8 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
      * Phân tích, dự báo biến động giá
      * BDG: Biến động giá
      */
-    @Column(name = "BDG_NOI_DUNG")
-    private String bdgNoiDung; //Nội dung: Biến động giá
-
-    @Column(name = "BDG_GHI_CHU")
-    private String bdgGhiChu; //Ghi chú: Biến động giá
+    @Column(name = "NOI_DUNG")
+    private String noiDung; //Nội dung: Biến động giá
 
     @Transient
     String tenTrangThai;
@@ -186,4 +179,28 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
 
     @Column(name = "LOAI_HANG_XDG")
     private String loaiHangXdg;
+
+    @Column(name = "NGUOI_GUI_DUYET")
+    private Long nguoiGuiDuyet;
+
+    @Column(name = "NGUOI_PHE_DUYET")
+    private Long nguoiPheDuyet;
+
+    @Column(name = "LY_DO_TU_CHOI")
+    private String lyDoTuChoi;
+
+    /**
+     * Các field dành riêng cho vật tư
+     */
+    @Column(name = "NGUOI_KY")
+    private String nguoiKy;
+
+    @Column(name = "QD_CT_KH_NAM")
+    private String qdCtKhNam;
+
+    @Transient
+    private List<KhPagTtChung> pagTtChungs = new ArrayList<>();
+
+    @Transient
+    private List<KhPagPpXacDinhGia> pagPpXacDinhGias  = new ArrayList<>();
 }

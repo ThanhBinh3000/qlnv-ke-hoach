@@ -1,10 +1,12 @@
 package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,15 +17,29 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
 
 	@Query(value ="SELECT * FROM KH_PAG_TONG_HOP PAG_TH WHERE (:namKh IS NULL OR PAG_TH.NAM_TONG_HOP = TO_NUMBER(:namKh))"
 			+"AND (:loaiHh IS NULL OR PAG_TH.LOAI_VTHH =  :loaiHh)"
-			+"AND (:trangThai IS NULL OR PAG_TH.TRANG_THAI =  :trangThai)"
+			+"AND (:trangThai IS NULL OR PAG_TH.TRANG_THAI_TH =  :trangThai)"
+			+"AND (:type IS NULL OR PAG_TH.TYPE =  :type)"
 			+"AND (:dvql IS NULL OR LOWER(PAG_TH.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
 			+"AND (:ngayThTu IS NULL OR PAG_TH.NGAY_TONG_HOP >=  TO_DATE(:ngayThTu,'yyyy-MM-dd'))"
 			+"AND (:ngayThDen IS NULL OR PAG_TH.NGAY_TONG_HOP <= TO_DATE(:ngayThDen,'yyyy-MM-dd'))"
 			+"AND (:noiDung IS NULL  OR LOWER(PAG_TH.NOI_DUNG) LIKE LOWER(CONCAT(CONCAT('%',:noiDung),'%' ) ) )"
 			, nativeQuery = true)
-	Page<KhPagTongHop> selectPage(Integer namKh, String loaiHh, String ngayThTu, String ngayThDen, String noiDung , String dvql, String trangThai, Pageable pageable);
+	Page<KhPagTongHop> selectPage(Integer namKh, String loaiHh, String ngayThTu, String ngayThDen, String noiDung , String dvql, String trangThai,String type, Pageable pageable);
 
 	List<KhPagTongHop> findByIdIn(List<Long> ids);
 
 	Optional<KhPagTongHop> findBySoToTrinh(String soToTrinh);
+
+	@Query("SELECT c FROM KhPagTongHop c WHERE 1=1 " +
+			"ORDER BY c.ngaySua desc , c.ngayTao desc")
+	List<KhPagTongHop> DsToTrinhDeXuat(
+			@Param("param") KhLtPagTongHopSearchReq param);
+
+    @Query(value = "SELECT DISTINCT *" +
+            "From KH_PAG_TONG_HOP TT" +
+            " where TT.TYPE='GCT'" +
+            "AND TT.TRANG_THAI_TH= '32'" +
+            "AND TT.TRANG_THAI_TT='20' ",
+            nativeQuery = true)
+	List<KhPagTongHop> listToTrinh(KhLtPagTongHopSearchReq req);
 }

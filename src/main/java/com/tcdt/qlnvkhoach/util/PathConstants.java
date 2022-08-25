@@ -76,10 +76,15 @@ public class PathConstants {
 	public static final String URL_GIA_LH = "/gia-lh";
 	public static final String URL_DX_PAG = "/dx-pag";
 	public static final String URL_QD_GIA_BTC = "/qd-gia-btc";
+	public static final String URL_QD_GIA_TCDTNN = "/qd-gia-tcdtnn";
 
-
+	public static final String URL_DANH_SACH_TO_TRINH_DE_XUAT = "/ds-tt-dx";
+	public static final String URL_DANH_SACH_TO_TRINH_TONG_HOP = "/ds-tt-th";
 
 	public static final String URL_TAO_TO_TRINH = "/tao-to-trinh";
+
+	public static final String URL_TO_TRINH = "/to-trinh";
+
 
 }
 

@@ -20,7 +20,7 @@ public class KhLtPagTongHopReq {
     private String loaiVthh;
     private String cloaiVthh;
     private String loaiGia;
-    private String trangThai;
+    private String trangThaiTt;
     private BigDecimal giaKsTtTu;
     private BigDecimal giaKsTtDen;
     private BigDecimal giaKsTtVatTu;
@@ -45,16 +45,25 @@ public class KhLtPagTongHopReq {
     private List<KhPagTongHopCTiet> pagChitiets;
 
     private String trichYeu;
-
     /**
      * thông tin tờ trình
      */
-    private String maToTrinh;
+    private String soToTrinh;
 
     private BigDecimal ttGiaDn;
 
     private BigDecimal ttGiaDnVat;
 
+    private BigDecimal ttGiaTdtt;
+
+    private BigDecimal ttGiaTdttVat;
+
     private String type;
+
+    private String qdGtdttBtc;
+
+    private String ttLyDoTuChoi;
+
+    private LocalDate ttNgayKy;
 
 }

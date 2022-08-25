@@ -6,13 +6,12 @@ import com.tcdt.qlnvkhoach.util.Contains;
 import lombok.Data;
 
 import java.util.Date;
-
 @Data
-public class KhLtPagTongHopSearchReq extends BaseRequest {
+public class KhPagGctQdTcdtnnSearchReq extends BaseRequest {
 
     Integer namKh;
 
-    String loaiHh;
+    String soQd;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
     Date ngayKyTu;
@@ -20,12 +19,8 @@ public class KhLtPagTongHopSearchReq extends BaseRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
     Date ngayKyDen;
 
-    String noiDung;
+    String trichYeu;
 
-    String trangThai;
-
-    String type;
-    String trangThaiTh;
-    String trangThaiTt;
+    String PagType;
 
 }
