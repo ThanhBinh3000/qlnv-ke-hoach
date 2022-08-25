@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface KhPagQuyetDinhBtcRepository extends JpaRepository<KhPagQuyetDinhBtc, Long> {
   @Query("SELECT c FROM KhPagQuyetDinhBtc c WHERE 1=1 " +
@@ -22,4 +24,9 @@ public interface KhPagQuyetDinhBtcRepository extends JpaRepository<KhPagQuyetDin
       "ORDER BY c.ngaySua desc , c.ngayTao desc")
   Page<KhPagQuyetDinhBtc> search(
       @Param("param") KhPagQuyetDinhBtcSearchReq param, Pageable pageable);
+
+
+  Optional<KhPagQuyetDinhBtc> findById(Long aLong);
+
+  Optional<KhPagQuyetDinhBtc> findBySoToTrinh(Long soToTrinh);
 }

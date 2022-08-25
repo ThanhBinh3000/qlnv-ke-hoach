@@ -22,6 +22,7 @@ import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
+import org.checkerframework.checker.units.qual.K;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,10 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     if (req.getThongTinGia() == null || req.getThongTinGia().size() == 0) {
       throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
     }
+    Optional<KhPagQuyetDinhBtc> optional = khPagLtQuyetDinhBtcRepository.findBySoToTrinh(req.getSoToTrinh());
+    if(optional.isPresent()){
+      throw new Exception("Số tờ trình đã tồn tại");
+    }
     KhPagQuyetDinhBtc newRow = new KhPagQuyetDinhBtc();
     BeanUtils.copyProperties(req, newRow, "id");
     newRow.setTrangThai(KhPagQuyetDinhBtcEnum.DU_THAO.getId());
@@ -146,6 +151,14 @@ public class KhPagQuyetDinhBtcService extends BaseService {
       throw new Exception("Số tờ trình thiếu hoặc không hợp lệ.");
     if (req.getThongTinGia() == null || req.getThongTinGia().size() == 0)
       throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
+    Optional<KhPagQuyetDinhBtc>optional=khPagLtQuyetDinhBtcRepository.findById(req.getId());
+    if (!optional.isPresent()) {
+      throw new UnsupportedOperationException("Không tồn tại bản ghi");
+    }
+    Optional<KhPagQuyetDinhBtc> soToTrinh = khPagLtQuyetDinhBtcRepository.findBySoToTrinh(req.getSoToTrinh());
+    if(soToTrinh!=null && soToTrinh.get().getId()!=req.getId()){
+      throw new UnsupportedOperationException("Số tờ trình đã tồn tại");
+    }
 
     BeanUtils.copyProperties(req, currentRow, "id", "trangThai");
     khPagLtQuyetDinhBtcRepository.save(currentRow);
