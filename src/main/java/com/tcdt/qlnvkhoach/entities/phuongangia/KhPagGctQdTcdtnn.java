@@ -104,5 +104,6 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     String tenDvi;
 
     @Transient
-    List<KhPagQdTcdtnnCtiet> khPagQdTcdtnnCtiets;
+    private List<KhPagQdTcdtnnCtiet> thongTinGia;
+
 }
