@@ -45,7 +45,6 @@ public class KhPagGctQdTcdtnnReq{
 
     private String tchuanCluong;
 
-    @NotNull(message = "Không được để trống")
     private String trichYeu;
 
     private String ghiChu;

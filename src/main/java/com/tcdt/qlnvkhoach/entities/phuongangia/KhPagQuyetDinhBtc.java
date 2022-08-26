@@ -9,6 +9,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -50,6 +51,8 @@ public class  KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
   private String tenCloaiVthh;
   @Transient
   private String tenLoaiGia;
+  @Transient
+  private List<KhPagQdTcdtnnCtiet> thongTinGia;
 
   public String getTenTrangThai() {
     return KhPagQuyetDinhBtcEnum.getLabelById(trangThai);

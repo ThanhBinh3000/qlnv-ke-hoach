@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.math.BigDecimal;
 @Entity
-@Table(name = KhPagQdDcTcdtnnCTiet.TABLE_NAME)
+@Table(name = KhPagQdBtcCtiet.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
