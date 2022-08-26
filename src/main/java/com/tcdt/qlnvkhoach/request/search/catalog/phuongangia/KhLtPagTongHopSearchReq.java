@@ -26,7 +26,11 @@ public class KhLtPagTongHopSearchReq extends BaseRequest {
     String trangThai;
 
     String type;
+
     String trangThaiTh;
+
+    String pagType;
+
     String trangThaiTt;
 
     List<String> dsTrangThai;

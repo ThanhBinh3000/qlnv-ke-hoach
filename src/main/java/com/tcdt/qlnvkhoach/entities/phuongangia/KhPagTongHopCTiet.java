@@ -72,4 +72,10 @@ public class KhPagTongHopCTiet {
     private BigDecimal giaQdVatTcdtnn;
     @Transient
     private String tenTrangThai;
+
+    @Transient
+    private BigDecimal giaTdttBtc;
+
+    @Transient
+    private BigDecimal giaTdttBtcVat;
 }

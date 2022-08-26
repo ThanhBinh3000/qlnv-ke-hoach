@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +30,6 @@ public interface KhPagQuyetDinhBtcRepository extends JpaRepository<KhPagQuyetDin
   Optional<KhPagQuyetDinhBtc> findById(Long aLong);
 
   Optional<KhPagQuyetDinhBtc> findBySoToTrinh(String soToTrinh);
+
+  List<KhPagQuyetDinhBtc> findAllBySoToTrinhIn(List<String> soToTrinhs);
 }

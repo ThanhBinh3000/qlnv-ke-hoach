@@ -31,10 +31,10 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
     Optional<KhPagTongHop> findBySoToTrinh(String soToTrinh);
 
     @Query("SELECT c FROM KhPagTongHop c WHERE 1=1 " +
-        "AND (c.trangThaiTt in :#{#param.dsTrangThai})"+
-        "ORDER BY c.ngaySua desc , c.ngayTao desc")
+            "AND (c.trangThaiTt in :#{#param.dsTrangThai})" +
+            "ORDER BY c.ngaySua desc , c.ngayTao desc")
     List<KhPagTongHop> DsToTrinhDeXuat(
-        @Param("param") KhLtPagTongHopSearchReq param);
+            @Param("param") KhLtPagTongHopSearchReq param);
 
     @Query(value = "SELECT DISTINCT *" +
             "From KH_PAG_TONG_HOP TT" +
@@ -45,13 +45,18 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
     List<KhPagTongHop> listToTrinh(KhLtPagTongHopSearchReq req);
 
 
+    //    @Query(value = "SELECT DISTINCT *" +
+//            "From KH_PAG_TONG_HOP TT" +
+//            " where TT.TYPE= :type" +
+//            " AND TT.TRANG_THAI_TT= :trangThaiTt " +
+//            " AND NOT EXISTS(SELECT BTC.ID FROM KH_PAG_QD_BTC BTC WHERE BTC.SO_TO_TRINH = TT.SO_TO_TRINH) " +
+//            " AND NOT EXISTS(SELECT QD_TCDT.ID FROM KH_PAG_GCT_QD_TCDTNN QD_TCDT WHERE QD_TCDT.SO_TO_TRINH = TT.SO_TO_TRINH) " +
+//            " AND NOT EXISTS(SELECT QD_DC_TCDT.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDT WHERE QD_DC_TCDT.SO_TO_TRINH_DX = TT.SO_TO_TRINH) ",
+//            nativeQuery = true)
     @Query(value = "SELECT DISTINCT *" +
             "From KH_PAG_TONG_HOP TT" +
             " where TT.TYPE= :type" +
-            " AND TT.TRANG_THAI_TT= :trangThaiTt " +
-            " AND NOT EXISTS(SELECT BTC.ID FROM KH_PAG_QD_BTC BTC WHERE BTC.SO_TO_TRINH = TT.SO_TO_TRINH) " +
-            " AND NOT EXISTS(SELECT QD_TCDT.ID FROM KH_PAG_GCT_QD_TCDTNN QD_TCDT WHERE QD_TCDT.SO_TO_TRINH = TT.SO_TO_TRINH) " +
-            " AND NOT EXISTS(SELECT QD_DC_TCDT.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDT WHERE QD_DC_TCDT.SO_TO_TRINH_DX = TT.SO_TO_TRINH) ",
+            " AND TT.TRANG_THAI_TT= :trangThaiTt ",
             nativeQuery = true)
     List<KhPagTongHop> dsToTrinhTh(String type, String trangThaiTt);
 

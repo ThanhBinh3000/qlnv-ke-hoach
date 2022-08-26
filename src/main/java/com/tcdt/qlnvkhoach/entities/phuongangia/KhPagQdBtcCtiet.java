@@ -49,4 +49,7 @@ public class KhPagQdBtcCtiet {
     @Column(name = "TEN_DVI")
     private String tenDvi;
 
+    @Transient
+    private String soQdBtc;
+
 }

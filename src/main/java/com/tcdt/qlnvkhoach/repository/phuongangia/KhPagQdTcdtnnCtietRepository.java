@@ -1,17 +1,21 @@
 package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagQdTcdtnnCtiet;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.beans.Transient;
+import javax.transaction.Transactional;
 import java.util.List;
 
-public interface KhPagQdTcdtnnCtietRepository extends JpaRepository<KhPagQdTcdtnnCtiet,Long> {
-    @Transient
+public interface KhPagQdTcdtnnCtietRepository extends JpaRepository<KhPagQdTcdtnnCtiet, Long> {
+
+    List<KhPagQdTcdtnnCtiet> findByIdIn(List<Long> ids);
+    List<KhPagQdTcdtnnCtiet> findByQdTcdtnnIdIn(List<Long> ids);
+
+    @Transactional
     void deleteAllByQdTcdtnnId(Long qdTcdtnnId);
-    @Transient
-    void deleteAllByQdTcdtnnIdIn(List<Long> listQdTcdtnnId);
-    @Transient
-    List<KhPagQdTcdtnnCtiet> findAllByQdTcdtnnId(Long qdTcdtnnId);
+
+    @Transactional
+    void deleteAllByQdTcdtnnIdIn(List<Long> qdTcdtnnIdList);
 
 }
