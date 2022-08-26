@@ -31,9 +31,10 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
     Optional<KhPagTongHop> findBySoToTrinh(String soToTrinh);
 
     @Query("SELECT c FROM KhPagTongHop c WHERE 1=1 " +
-            "ORDER BY c.ngaySua desc , c.ngayTao desc")
+        "AND (c.trangThaiTt in :#{#param.dsTrangThai})"+
+        "ORDER BY c.ngaySua desc , c.ngayTao desc")
     List<KhPagTongHop> DsToTrinhDeXuat(
-            @Param("param") KhLtPagTongHopSearchReq param);
+        @Param("param") KhLtPagTongHopSearchReq param);
 
     @Query(value = "SELECT DISTINCT *" +
             "From KH_PAG_TONG_HOP TT" +
@@ -53,4 +54,6 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
             " AND NOT EXISTS(SELECT QD_DC_TCDT.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDT WHERE QD_DC_TCDT.SO_TO_TRINH_DX = TT.SO_TO_TRINH) ",
             nativeQuery = true)
     List<KhPagTongHop> dsToTrinhTh(String type, String trangThaiTt);
+
+
 }

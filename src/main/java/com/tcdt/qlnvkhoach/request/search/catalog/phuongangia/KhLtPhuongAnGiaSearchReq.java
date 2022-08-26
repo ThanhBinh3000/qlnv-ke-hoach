@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.util.Contains;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -30,4 +31,6 @@ public class KhLtPhuongAnGiaSearchReq extends BaseRequest {
 
     @NotNull(message = "Không được để trống")
     String pagType;
+
+    List<String> dsTrangThai;
 }
