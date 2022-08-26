@@ -36,12 +36,13 @@ public class KhPagGctQdDcTcdtnnReq {
 
     private LocalDate ngayHieuLuc;
 
-    @NotNull(message = "Không được để trống")
-    private String soToTrinh;
-
     private String loaiVthh;
 
     private String cloaiVthh;
+
+    private String soToTrinhDx;
+
+    private String soQdgTcdtnn;
 
     private String loaiGia;
 
@@ -53,10 +54,6 @@ public class KhPagGctQdDcTcdtnnReq {
     private String ghiChu;
 
     private String capDvi;
-
-    private BigDecimal giaMtdbttBtc;
-
-    private BigDecimal giaMtdbttVatBtc;
 
     private List<KhPagQdDcTcdtnnCTiet> thongTinGias;
 

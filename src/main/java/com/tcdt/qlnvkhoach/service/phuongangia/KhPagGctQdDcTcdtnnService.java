@@ -93,7 +93,6 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
         List<KhPagQdDcTcdtnnCTiet> khPagQdDcTcdtnnCTiets = req.getThongTinGias().stream().map(item -> {
             KhPagQdDcTcdtnnCTiet modelCTiet = mapper.map(item, KhPagQdDcTcdtnnCTiet.class);
             modelCTiet.setQdDcTcdtnnId(khPagGctQdDcTcdtnn.getId());
-            log.info("Save file đính kèm");
             modelCTiet = khPagGctQdDcTcdtnnCTietRepository.save(modelCTiet);
             return modelCTiet;
         }).collect(Collectors.toList());

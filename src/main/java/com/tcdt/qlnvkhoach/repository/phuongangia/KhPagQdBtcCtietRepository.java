@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface KhPagQdBtcCtietRepository extends JpaRepository<KhPagQdBtcCtiet,Long> {
 
-    @Transient
-    List<KhPagQdTcdtnnCtiet> findAllByQdBtcId(Long qdBtcId);
+    List<KhPagQdBtcCtiet> findAllByQdBtcId(Long qdBtcId);
+
+    List<KhPagQdBtcCtiet> findAllByQdBtcIdIn(List<Long> ids);
 
 }

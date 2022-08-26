@@ -20,10 +20,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class KhPagQdDcTcdtnnCTiet {
     public static final String TABLE_NAME = "KH_PAG_GCT_QDDC_TCDTNN_CTIET";
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PAG_GCT_QDDC_TCDTNN_CTIET_SEQ")
-    @SequenceGenerator(sequenceName = "KH_PAG_GCT_QDDC_TCDTNN_CTIET_SEQ", allocationSize = 1, name = "KH_PAG_GCT_QDDC_TCDTNN_CTIET_SEQ")
+
     @Id
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
     @Column(name = "MA_DVI")

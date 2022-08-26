@@ -77,18 +77,18 @@ public class KhPagGctQdDcTcdtnn extends BaseEntity implements Serializable {
 
     @Column(name = "CAP_DVI")
     private String capDvi;
+//
+//    @Column(name="GIA_MTDBTT_BTC")
+//    private BigDecimal giaMtdbttBtc;
+//
+//    @Column(name="GIA_MTDBTT_VAT_BTC")
+//    private BigDecimal giaMtdbttVatBtc;
 
-    @Column(name="GIA_MTDBTT_BTC")
-    private BigDecimal giaMtdbttBtc;
-
-    @Column(name="GIA_MTDBTT_VAT_BTC")
-    private BigDecimal giaMtdbttVatBtc;
-
-    @Column(name="NGUOI_PDUYET ")
-    private String nguoiPduyet;
-
-    @Column(name="NGAY_PDUYET ")
-    private Date ngayPduyet;
+//    @Column(name="NGUOI_PDUYET ")
+//    private String nguoiPduyet;
+//
+//    @Column(name="NGAY_PDUYET ")
+//    private Date ngayPduyet;
 
     @Transient
     String tenTrangThai;

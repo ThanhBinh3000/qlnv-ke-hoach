@@ -36,10 +36,12 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,6 +67,9 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     private KhPagTtChungRepository khPagTtChungRepository;
     @Autowired
     private QlnvDmService qlnvDmService;
+
+    @Autowired
+    private KhPagQdBtcCtietRepository khPagQdBtcCtietRepository;
 
 
     public Page<KhPagQuyetDinhBtc> searchPage(CustomUserDetails currentUser, KhPagQuyetDinhBtcSearchReq objReq) throws Exception {
@@ -267,10 +272,23 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     public List<KhPagTongHop> dsToTrinhTh(KhLtPagTongHopSearchReq objReq) throws Exception {
         List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(), objReq.getTrangThaiTt());
         List<Long> idsPagTh = data.stream().map(KhPagTongHop::getId).collect(Collectors.toList());
+        List<String> soTTBtcs = data.stream().map(KhPagTongHop::getQdGtdttBtc).collect(Collectors.toList());
+//        List<KhPagQuyetDinhBtc> listQdBtcs = khPagLtQuyetDinhBtcRepository.findAllBySoToTrinhIn(soTTBtcs);
+//        Map<Long,KhPagQuyetDinhBtc> mapIdSoQdBtc = listQdBtcs.stream().collect(Collectors.toMap(KhPagQuyetDinhBtc::getId, Function.identity()));
+//
+//        List<Long> idsQdBtc = listQdBtcs.stream().map(KhPagQuyetDinhBtc::getId).collect(Collectors.toList());
+//        List<KhPagQdBtcCtiet> listPagQdBtcChiTiets = khPagQdBtcCtietRepository.findAllByQdBtcIdIn(idsQdBtc);
+//        listPagQdBtcChiTiets.forEach(item ->{
+//            item.setSoQdBtc(mapIdSoQdBtc.get(item.getQdBtcId()).getSoToTrinh());
+//        });
+        //Lấy all qd gtdtt của BTC
+//        List<KhPagQdBtcCtiet> daksdj= khPagQdBtcCtietRepository.findAllByQdBtcIdIn(soTTBtcs);
         List<KhPagTongHopCTiet> lChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(idsPagTh);
         List<String> maDvis = lChiTiets.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
         Map<String, QlnvDmDonvi> listDvi = qlnvDmService.getMapDonVi(maDvis);
         lChiTiets.forEach(s -> {
+            s.setGiaTdttBtc(BigDecimal.ZERO);
+            s.setGiaTdttBtcVat(BigDecimal.ZERO);
             s.setTenDvi(listDvi.get(s.getMaDvi()).getTenDvi());
         });
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
