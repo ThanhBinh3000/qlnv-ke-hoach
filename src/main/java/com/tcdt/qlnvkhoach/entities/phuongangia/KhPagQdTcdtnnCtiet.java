@@ -38,10 +38,10 @@ public class KhPagQdTcdtnnCtiet {
     private Long soLuong;
 
     @Column(name = "GIA_QD_TCDTNN")
-    private BigDecimal giaDn;
+    private BigDecimal giaQdTcdtnn;
 
     @Column(name = "GIA_QD_VAT_TCDTNN")
-    private BigDecimal giaDnVat;
+    private BigDecimal giaQdVatTcdtnn;
 
     @Column(name = "MA_DVI")
     private String maDvi;
