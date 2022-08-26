@@ -35,7 +35,7 @@ public class KhPagGctQdTcdtnnReq{
     private LocalDate ngayHieuLuc;
 
     @NotNull(message = "Không được để trống")
-    private Long soToTrinh;
+    private String soToTrinh;
 
     private String loaiVthh;
 

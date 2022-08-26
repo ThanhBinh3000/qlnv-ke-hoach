@@ -245,7 +245,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
         if (!currentRow.isPresent())
             throw new Exception("Không tìm thấy dữ liệu.");
         if (req.getTrangThai().equals(KhPagQuyetDinhBtcEnum.BAN_HANH.getId())) {
-            Optional<KhPagTongHop> toTrinh = khLtPagTongHopRepository.findById(currentRow.get().getSoToTrinh());
+            Optional<KhPagTongHop> toTrinh = khLtPagTongHopRepository.findBySoToTrinh(currentRow.get().getSoToTrinh());
             if (toTrinh.isPresent()) {
                 toTrinh.get().setTrangThaiTt(KhPagQuyetDinhBtcEnum.DABANHANH_QD.getId());
                 khLtPagTongHopRepository.save(toTrinh.get());

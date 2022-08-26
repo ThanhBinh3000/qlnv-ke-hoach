@@ -34,7 +34,7 @@ public class  KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
   private String soQd;
   private LocalDate ngayKy;
   private LocalDate ngayHieuLuc;
-  private Long soToTrinh;
+  private String soToTrinh;
   private String loaiVthh;
   private String cloaiVthh;
   private String loaiGia;
