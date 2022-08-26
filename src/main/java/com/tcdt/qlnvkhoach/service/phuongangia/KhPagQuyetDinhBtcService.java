@@ -22,6 +22,7 @@ import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
+import org.checkerframework.checker.units.qual.K;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,10 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     if (req.getThongTinGia() == null || req.getThongTinGia().size() == 0) {
       throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
     }
+    Optional<KhPagQuyetDinhBtc> optional = khPagLtQuyetDinhBtcRepository.findBySoToTrinh(req.getSoToTrinh());
+    if(optional.isPresent()){
+      throw new Exception("Số tờ trình đã tồn tại");
+    }
     KhPagQuyetDinhBtc newRow = new KhPagQuyetDinhBtc();
     BeanUtils.copyProperties(req, newRow, "id");
     newRow.setTrangThai(KhPagQuyetDinhBtcEnum.DU_THAO.getId());
@@ -146,6 +151,14 @@ public class KhPagQuyetDinhBtcService extends BaseService {
       throw new Exception("Số tờ trình thiếu hoặc không hợp lệ.");
     if (req.getThongTinGia() == null || req.getThongTinGia().size() == 0)
       throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
+    Optional<KhPagQuyetDinhBtc>optional=khPagLtQuyetDinhBtcRepository.findById(req.getId());
+    if (!optional.isPresent()) {
+      throw new UnsupportedOperationException("Không tồn tại bản ghi");
+    }
+    Optional<KhPagQuyetDinhBtc> soToTrinh = khPagLtQuyetDinhBtcRepository.findBySoToTrinh(req.getSoToTrinh());
+    if(soToTrinh!=null && soToTrinh.get().getId()!=req.getId()){
+      throw new UnsupportedOperationException("Số tờ trình đã tồn tại");
+    }
 
     BeanUtils.copyProperties(req, currentRow, "id", "trangThai");
     khPagLtQuyetDinhBtcRepository.save(currentRow);
@@ -231,7 +244,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     if (!currentRow.isPresent())
       throw new Exception("Không tìm thấy dữ liệu.");
     if (req.getTrangThai().equals(KhPagQuyetDinhBtcEnum.BAN_HANH.getId())) {
-      Optional<KhPagTongHop> toTrinh = khLtPagTongHopRepository.findById(currentRow.get().getSoToTrinh());
+      Optional<KhPagTongHop> toTrinh = khLtPagTongHopRepository.findBySoToTrinh(currentRow.get().getSoToTrinh());
       if (toTrinh.isPresent()) {
         toTrinh.get().setTrangThaiTt(KhPagQuyetDinhBtcEnum.DABANHANH_QD.getId());
         khLtPagTongHopRepository.save(toTrinh.get());
@@ -246,6 +259,12 @@ public class KhPagQuyetDinhBtcService extends BaseService {
 
   public List<KhPagTongHop> DsToTrinhDeXuat(KhLtPagTongHopSearchReq objReq) throws Exception {
     List<KhPagTongHop> data = khLtPagTongHopRepository.DsToTrinhDeXuat(objReq);
+    return data;
+  }
+
+
+  public List<KhPagTongHop> dsToTrinhTh(KhLtPagTongHopSearchReq objReq) throws Exception {
+    List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(),objReq.getTrangThaiTt());
     return data;
   }
 

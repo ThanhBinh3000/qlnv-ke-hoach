@@ -1,12 +1,17 @@
 package com.tcdt.qlnvkhoach.service.phuongangia;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagGctQdTcdtnn;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagGctQdTcdtnnRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagTtChungRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
@@ -48,6 +53,12 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     @Autowired
     private KhLtPagTongHopRepository khLtPagTongHopRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private KhPagTtChungRepository khPagTtChungRepository;
+
 
     public Page<KhPagGctQdTcdtnn> searchPage(KhPagGctQdTcdtnnSearchReq objReq) throws Exception{
         Pageable pageable= PageRequest.of(
@@ -77,44 +88,90 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     @Transactional(rollbackOn = Exception.class)
     public KhPagGctQdTcdtnn craete(KhPagGctQdTcdtnnReq req) throws Exception{
         UserInfo userInfo = SecurityContextService.getUser();
-        if (userInfo==null)throw new Exception("Bad request.");
+        if (userInfo==null)
+            throw new Exception("Bad request.");
+        if (req.getThongTinGia() == null || req.getThongTinGia().size() == 0) {
+            throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
+        }
         Optional<KhPagGctQdTcdtnn> optional=khPagGctQdTcdtnnRepository.findBySoQd(req.getSoQd());
-        if(optional.isPresent()) throw new Exception("số quyết định đã tồn tại");
-        KhPagGctQdTcdtnn data=new ModelMapper().map(req, KhPagGctQdTcdtnn.class);
+        if(optional.isPresent())
+            throw new Exception("số quyết định đã tồn tại");
+        Optional<KhPagGctQdTcdtnn> soToTrinh = khPagGctQdTcdtnnRepository.findBySoToTrinh(req.getSoToTrinh());
+        if(soToTrinh.isPresent())
+            throw new Exception("số quyết định đã tồn tại");
+        KhPagGctQdTcdtnn data=new KhPagGctQdTcdtnn();
+        BeanUtils.copyProperties(req, data, "id");
         data.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
         data.setMaDvi(userInfo.getDvql());
         data.setCapDvi(userInfo.getCapDvi());
         KhPagGctQdTcdtnn save=khPagGctQdTcdtnnRepository.save(data);
         //lưu thong tin giá
-        req.getThongTinGia().forEach(f->{
-            f.setQdTcdtnnId(data.getId());
-            f.setGiaQd(data.getGiaQd());
-            f.setGiaQdVat(data.getGiaQdVat());
-        });
-        khLtPagTongHopCTietRepository.saveAll(req.getThongTinGia());
+        String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
+        if (req.getPagType().equals("LT")) {
+            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
+            });
+            if (listThongTinGiaTongHop != null) {
+                listThongTinGiaTongHop.forEach(s -> {
+                    s.setQdBtcId(data.getId());
+                });
+            }
+            khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
+        } else if (req.getPagType().equals("VT")) {
+            List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
+            });
+            if (listThongTinGiaDeXuat != null) {
+                listThongTinGiaDeXuat.forEach(s -> {
+                    s.setQdBtcId(data.getId());
+                });
+            }
+            khPagTtChungRepository.saveAll(listThongTinGiaDeXuat);
+        }
+
         return save;
     }
 
     @Transactional(rollbackOn = Exception.class)
     public KhPagGctQdTcdtnn update(KhPagGctQdTcdtnnReq req) throws Exception{
         UserInfo userInfo =SecurityContextService.getUser();
-        if(userInfo==null) throw new Exception("Bab request.");
+        if(userInfo==null)
+            throw new Exception("Bab request.");
         Optional<KhPagGctQdTcdtnn> optional=khPagGctQdTcdtnnRepository.findById(req.getId());
-        if(!optional.isPresent()) throw new Exception("Quyết định giá của TCDTNN không tồn tại");
+        if(!optional.isPresent())
+            throw new Exception("Quyết định giá của TCDTNN không tồn tại");
         Optional<KhPagGctQdTcdtnn> qdTcdtnn=khPagGctQdTcdtnnRepository.findBySoQd(req.getSoQd());
         if(qdTcdtnn.isPresent() && qdTcdtnn.get().getId() != req.getId())
             throw new Exception("số quyết định đã tồn tại");
         if(!TrangThaiDungChungEnum.DUTHAO.getId().equals(optional.get().getTrangThai()))
             throw new Exception("Chỉ được sửa quyết định dự thảo.");
+        Optional<KhPagGctQdTcdtnn> soToTrinh = khPagGctQdTcdtnnRepository.findBySoToTrinh(req.getSoToTrinh());
+        if(soToTrinh!=null && soToTrinh.get().getId()!=req.getId()){
+            throw new UnsupportedOperationException("Số tờ trình đã tồn tại");
+        }
         KhPagGctQdTcdtnn data=optional.get();
         BeanUtils.copyProperties(req,data, "id");
         KhPagGctQdTcdtnn update=khPagGctQdTcdtnnRepository.save(data);
         khLtPagTongHopCTietRepository.deleteAllByQdTcdtnnId(data.getId());
         //lưu thong tin giá
-        req.getThongTinGia().forEach(f->{
-            f.setQdTcdtnnId(data.getId());
-        });
-        khLtPagTongHopCTietRepository.saveAll(req.getThongTinGia());
+        String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
+        if (req.getPagType().equals("LT")) {
+            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
+            });
+            if (listThongTinGiaTongHop != null) {
+                listThongTinGiaTongHop.forEach(s -> {
+                    s.setQdBtcId(data.getId());
+                });
+            }
+            khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
+        } else if (req.getPagType().equals("VT")) {
+            List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
+            });
+            if (listThongTinGiaDeXuat != null) {
+                listThongTinGiaDeXuat.forEach(s -> {
+                    s.setQdBtcId(data.getId());
+                });
+            }
+            khPagTtChungRepository.saveAll(listThongTinGiaDeXuat);
+        }
         return update;
     }
 
@@ -130,13 +187,12 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     public  void delete(Long id){
         Optional<KhPagGctQdTcdtnn> optional=khPagGctQdTcdtnnRepository.findById(id);
         if (!optional.isPresent())throw new UnsupportedOperationException("id không tồn tại");
-        khLtPagTongHopCTietRepository.deleteAllByQdTcdtnnId(id);
+
         khPagGctQdTcdtnnRepository.delete(optional.get());
    }
 
    @Transactional(rollbackOn = Exception.class)
    public void deleteListId(List<Long> listId){
-        khLtPagTongHopCTietRepository.deleteAllByQdTcdtnnIdIn(listId);
         khPagGctQdTcdtnnRepository.deleteAllByIdIn(listId);
    }
 

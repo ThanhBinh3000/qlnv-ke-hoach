@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagQdDcTcdtnnCTiet;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KhPagGctQdTcdtnnReq{
+public class KhPagGctQdDcTcdtnnReq {
+
     private Long id;
 
     private String maDvi;
@@ -56,8 +58,7 @@ public class KhPagGctQdTcdtnnReq{
 
     private BigDecimal giaMtdbttVatBtc;
 
-    private List<Object> thongTinGia;
+    private List<KhPagQdDcTcdtnnCTiet> thongTinGias;
 
-    private String pagType;
 
 }

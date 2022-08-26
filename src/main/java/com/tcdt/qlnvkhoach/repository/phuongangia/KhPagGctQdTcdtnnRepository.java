@@ -24,5 +24,9 @@ public interface KhPagGctQdTcdtnnRepository extends JpaRepository<KhPagGctQdTcdt
 
     Optional<KhPagGctQdTcdtnn> findBySoQd(String soQd);
 
+    Optional<KhPagGctQdTcdtnn> findBySoToTrinh(String soToTrinh);
+
+    Optional<KhPagGctQdTcdtnn> findById(Long aLong);
+
     void deleteAllByIdIn(List<Long> ids);
 }

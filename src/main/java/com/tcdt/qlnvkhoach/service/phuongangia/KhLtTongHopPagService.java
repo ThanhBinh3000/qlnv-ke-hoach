@@ -93,7 +93,7 @@ public class KhLtTongHopPagService extends BaseService {
     }
 
     public KhPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq) throws Exception {
-        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getCloaiVthh(), objReq.getNamTongHop(), objReq.getLoaiGia(), Contains.convertDateToString(objReq.getNgayDxTu()), Contains.convertDateToString(objReq.getNgayDxDen()), objReq.getType(), objReq.getMaDvis());
+        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getCloaiVthh(), objReq.getNamTongHop(), objReq.getLoaiGia(), Contains.convertDateToString(objReq.getNgayDxTu()), Contains.convertDateToString(objReq.getNgayDxDen()), objReq.getType(), objReq.getMaDvis(),Contains.CHUA_TH,Contains.DADUYET_LDC);
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy dữ liệu tổng hợp");
         }
