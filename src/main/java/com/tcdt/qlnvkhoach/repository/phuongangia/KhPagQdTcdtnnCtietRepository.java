@@ -5,17 +5,17 @@ import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;
+import java.beans.Transient;
 import java.util.List;
 
 public interface KhPagQdTcdtnnCtietRepository extends JpaRepository<KhPagQdTcdtnnCtiet, Long> {
 
-    List<KhPagQdTcdtnnCtiet> findByIdIn(List<Long> ids);
-    List<KhPagQdTcdtnnCtiet> findByQdTcdtnnIdIn(List<Long> ids);
-
-    @Transactional
+    @Transient
     void deleteAllByQdTcdtnnId(Long qdTcdtnnId);
+    @Transient
+    void deleteAllByQdTcdtnnIdIn(List<Long> listQdTcdtnnId);
+    @Transient
+    List<KhPagQdTcdtnnCtiet> findAllByQdTcdtnnId(Long qdTcdtnnId);
 
-    @Transactional
-    void deleteAllByQdTcdtnnIdIn(List<Long> qdTcdtnnIdList);
 
 }

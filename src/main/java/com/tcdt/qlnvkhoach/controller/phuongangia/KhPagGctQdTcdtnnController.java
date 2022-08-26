@@ -184,21 +184,4 @@ public class KhPagGctQdTcdtnnController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Danh sách quyết định TCDTNN", response = List.class)
-    @PostMapping(value= PathConstants.URL_QD_GIA_TCDTNN + "/list-qd-tcdtnn", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> dsQdTcdtnn(@RequestBody KhPagGctQdTcdtnnSearchReq objReq) {
-        Resp resp = new Resp();
-        try {
-            resp.setData(khPagGctQdTcdtnnService.dsToTrinhQdTcdtnn(objReq));
-            resp.setStatusCode(Constants.RESP_SUCC);
-            resp.setMsg("Thành công");
-        } catch (Exception e) {
-            e.printStackTrace();
-            resp.setStatusCode(Constants.RESP_FAIL);
-            resp.setMsg(e.getMessage());
-            log.error(e.getMessage());
-        }
-        return ResponseEntity.ok(resp);
-    }
-
 }
