@@ -17,5 +17,6 @@ public interface KhPagQdTcdtnnCtietRepository extends JpaRepository<KhPagQdTcdtn
     @Transient
     List<KhPagQdTcdtnnCtiet> findAllByQdTcdtnnId(Long qdTcdtnnId);
 
+    List<KhPagQdTcdtnnCtiet> findAllByQdTcdtnnIdIn(List<Long> qdTcdtnnId);
 
 }

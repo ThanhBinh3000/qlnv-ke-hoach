@@ -35,10 +35,12 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -263,7 +265,37 @@ public class KhPagQuyetDinhBtcService extends BaseService {
         return data;
     }
     public List<KhPagTongHop> dsToTrinhTh(KhLtPagTongHopSearchReq objReq) throws Exception {
-        List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(),objReq.getTrangThaiTt());
+        List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(), objReq.getTrangThaiTt());
+        List<Long> idsPagTh = data.stream().map(KhPagTongHop::getId).collect(Collectors.toList());
+        List<String> soTTBtcs = data.stream().map(KhPagTongHop::getQdGtdttBtc).collect(Collectors.toList());
+        List<KhPagQuyetDinhBtc> listQdBtcs = khPagLtQuyetDinhBtcRepository.findAllBySoToTrinhIn(soTTBtcs);
+        List<Long> idsQdBtc = listQdBtcs.stream().map(KhPagQuyetDinhBtc::getId).collect(Collectors.toList());
+        List<KhPagQdBtcCtiet> listPagQdBtcChiTiets = khPagQdBtcCtietRepository.findAllByQdBtcIdIn(idsQdBtc);
+        Map<Long,List<KhPagQdBtcCtiet>> mapQdBtcIdListChitiets = listPagQdBtcChiTiets.stream().collect(Collectors.groupingBy(item -> item.getQdBtcId()));
+        List<KhPagTongHopCTiet> lChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(idsPagTh);
+        List<String> maDvis = lChiTiets.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
+        Map<String, QlnvDmDonvi> listDvi = qlnvDmService.getMapDonVi(maDvis);
+        lChiTiets.forEach(s -> {
+            List<KhPagQdBtcCtiet> listCt = mapQdBtcIdListChitiets.get(s.getQdBtcId());
+            if(listCt != null && listCt.size() > 0){
+                listCt.forEach(c ->{
+                    if(s.getMaDvi().equals(c.getMaDvi())){
+                        s.setGiaTdttBtc(c.getGiaDn());
+                        s.setGiaDnVat(c.getGiaDnVat());
+                    }
+                });
+            }
+            s.setTenDvi(listDvi.get(s.getMaDvi()).getTenDvi());
+        });
+        Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> mapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+        Map<Long, List<KhPagTongHopCTiet>> mapListChitietByPagTh = lChiTiets.stream().collect(Collectors.groupingBy(item -> item.getPagThId()));
+        data.forEach(dt -> {
+            dt.setTenLoaiGia(mapLoaiGia.get(dt.getLoaiGia() ));
+            dt.setTenCloaiVthh(mapHh.get(dt.getCloaiVthh() ));
+            dt.setTenLoaiVthh(mapHh.get(dt.getLoaiVthh() ));
+            dt.setPagChiTiets(mapListChitietByPagTh.get(dt.getId()));
+        });
         return data;
     }
 
