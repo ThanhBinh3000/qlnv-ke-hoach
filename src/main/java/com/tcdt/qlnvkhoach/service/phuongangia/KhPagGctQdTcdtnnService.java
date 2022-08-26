@@ -150,14 +150,14 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (req.getPagType().equals("LT")) {
-            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
+            List<KhPagQdTcdtnnCtiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagQdTcdtnnCtiet>>() {
             });
             if (listThongTinGiaTongHop != null) {
                 listThongTinGiaTongHop.forEach(s -> {
-                    s.setQdBtcId(data.getId());
+                    s.setQdTcdtnnId(data.getId());
                 });
             }
-            khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
+            khPagQdTcdtnnCtietRepository.saveAll(listThongTinGiaTongHop);
         } else if (req.getPagType().equals("VT")) {
             List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
             });

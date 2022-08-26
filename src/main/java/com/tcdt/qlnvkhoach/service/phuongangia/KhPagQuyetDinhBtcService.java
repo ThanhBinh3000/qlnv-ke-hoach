@@ -65,6 +65,9 @@ public class KhPagQuyetDinhBtcService extends BaseService {
   @Autowired
   private QlnvDmService qlnvDmService;
 
+  @Autowired
+  private KhPagQdBtcCtietRepository khPagQdBtcCtietRepository;
+
 
   public Page<KhPagQuyetDinhBtc> searchPage(CustomUserDetails currentUser, KhPagQuyetDinhBtcSearchReq objReq) throws Exception {
     Pageable pageable = PageRequest.of(objReq.getPaggingReq().getPage(),
@@ -115,14 +118,14 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     //luu thong tin gia
     String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
     if (req.getPagType().equals("LT")) {
-      List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
+      List<KhPagQdBtcCtiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagQdBtcCtiet>>() {
       });
       if (listThongTinGiaTongHop != null) {
         listThongTinGiaTongHop.forEach(s -> {
           s.setQdBtcId(newRow.getId());
         });
       }
-      khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
+      khPagQdBtcCtietRepository.saveAll(listThongTinGiaTongHop);
     } else if (req.getPagType().equals("VT")) {
       List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
       });
@@ -166,14 +169,14 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     //luu thong tin gia
     String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
     if (req.getPagType().equals("LT")) {
-      List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
+      List<KhPagQdBtcCtiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagQdBtcCtiet>>() {
       });
       if (listThongTinGiaTongHop != null) {
         listThongTinGiaTongHop.forEach(s -> {
           s.setQdBtcId(currentRow.getId());
         });
       }
-      khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
+      khPagQdBtcCtietRepository.saveAll(listThongTinGiaTongHop);
     } else if (req.getPagType().equals("VT")) {
       List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
       });
@@ -204,6 +207,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     if (!data.isPresent()) {
       throw new Exception("Bản ghi không tồn tại");
     }
+    data.get().setThongTinGia(khPagQdBtcCtietRepository.findAllByQdBtcId(Long.valueOf(id)));
     return data.get();
 
   }
