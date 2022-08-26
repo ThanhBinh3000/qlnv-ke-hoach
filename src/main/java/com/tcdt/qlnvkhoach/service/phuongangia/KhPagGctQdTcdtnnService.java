@@ -3,15 +3,9 @@ package com.tcdt.qlnvkhoach.service.phuongangia;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagGctQdTcdtnn;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
+import com.tcdt.qlnvkhoach.entities.phuongangia.*;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopCTietRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhLtPagTongHopRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagGctQdTcdtnnRepository;
-import com.tcdt.qlnvkhoach.repository.phuongangia.KhPagTtChungRepository;
+import com.tcdt.qlnvkhoach.repository.phuongangia.*;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
@@ -24,7 +18,6 @@ import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,6 +51,9 @@ public class KhPagGctQdTcdtnnService extends BaseService {
 
     @Autowired
     private KhPagTtChungRepository khPagTtChungRepository;
+
+    @Autowired
+    private KhPagQdTcdtnnCtietRepository khPagQdTcdtnnCtietRepository;
 
 
     public Page<KhPagGctQdTcdtnn> searchPage(KhPagGctQdTcdtnnSearchReq objReq) throws Exception{
@@ -98,7 +94,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             throw new Exception("số quyết định đã tồn tại");
         Optional<KhPagGctQdTcdtnn> soToTrinh = khPagGctQdTcdtnnRepository.findBySoToTrinh(req.getSoToTrinh());
         if(soToTrinh.isPresent())
-            throw new Exception("số quyết định đã tồn tại");
+            throw new Exception("số tờ trình đã tồn tại");
         KhPagGctQdTcdtnn data=new KhPagGctQdTcdtnn();
         BeanUtils.copyProperties(req, data, "id");
         data.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
@@ -108,14 +104,14 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (req.getPagType().equals("LT")) {
-            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
+            List<KhPagQdTcdtnnCtiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagQdTcdtnnCtiet>>() {
             });
             if (listThongTinGiaTongHop != null) {
                 listThongTinGiaTongHop.forEach(s -> {
-                    s.setQdBtcId(data.getId());
+                    s.setQdTcdtnnId(data.getId());
                 });
             }
-            khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
+            khPagQdTcdtnnCtietRepository.saveAll(listThongTinGiaTongHop);
         } else if (req.getPagType().equals("VT")) {
             List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
             });
@@ -180,6 +176,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         if (!data.isPresent()){
             throw new Exception("Không tìm thấy dữ liệu");
         }
+        List<KhPagQdTcdtnnCtiet> thongTinGia = khPagQdTcdtnnCtietRepository.findAllByQdTcdtnnId(Long.valueOf(id));
+        data.get().setThongTinGia(thongTinGia);
         return data.get();
    }
 
@@ -187,12 +185,13 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     public  void delete(Long id){
         Optional<KhPagGctQdTcdtnn> optional=khPagGctQdTcdtnnRepository.findById(id);
         if (!optional.isPresent())throw new UnsupportedOperationException("id không tồn tại");
-
+        khPagQdTcdtnnCtietRepository.deleteAllByQdTcdtnnId(id);
         khPagGctQdTcdtnnRepository.delete(optional.get());
    }
 
    @Transactional(rollbackOn = Exception.class)
    public void deleteListId(List<Long> listId){
+        khPagQdTcdtnnCtietRepository.deleteAllByQdTcdtnnIdIn(listId);
         khPagGctQdTcdtnnRepository.deleteAllByIdIn(listId);
    }
 
