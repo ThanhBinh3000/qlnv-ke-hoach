@@ -273,8 +273,13 @@ public class KhPagQuyetDinhBtcService extends BaseService {
         lChiTiets.forEach(s -> {
             s.setTenDvi(listDvi.get(s.getMaDvi()).getTenDvi());
         });
+        Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> mapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         Map<Long, List<KhPagTongHopCTiet>> mapListChitietByPagTh = lChiTiets.stream().collect(Collectors.groupingBy(item -> item.getPagThId()));
         data.forEach(dt -> {
+            dt.setTenLoaiGia(mapLoaiGia.get(dt.getLoaiGia() ));
+            dt.setTenCloaiVthh(mapHh.get(dt.getCloaiVthh() ));
+            dt.setTenLoaiVthh(mapHh.get(dt.getLoaiVthh() ));
             dt.setPagChiTiets(mapListChitietByPagTh.get(dt.getId()));
         });
         return data;

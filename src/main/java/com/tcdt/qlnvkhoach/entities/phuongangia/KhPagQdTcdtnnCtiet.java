@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
 @Entity
-@Table(name = KhPagQdDcTcdtnnCTiet.TABLE_NAME)
+@Table(name = KhPagQdTcdtnnCtiet.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -19,10 +20,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class KhPagQdTcdtnnCtiet {
     public static final String TABLE_NAME = "KH_PAG_QD_TCDTNN_CTIET";
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PAG_QD_TCDTNN_CTIET_SEQ")
-    @SequenceGenerator(sequenceName = "KH_PAG_QD_TCDTNN_CTIET_SEQ", allocationSize = 1, name = "KH_PAG_QD_TCDTNN_CTIET_SEQ")
+
     @Id
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
     @Column(name = "GIA_QD_BTC")
@@ -30,9 +31,6 @@ public class KhPagQdTcdtnnCtiet {
 
     @Column(name = "GIA_QD_VAT_BTC")
     private BigDecimal giaQdVatBtc;
-
-    @Column(name = "QD_TCDTNN_ID")
-    private Long qdBtcId;
 
     @Column(name = "SO_LUONG")
     private Long soLuong;
@@ -48,4 +46,9 @@ public class KhPagQdTcdtnnCtiet {
 
     @Column(name = "TEN_DVI")
     private String tenDvi;
+
+    @Column(name = "QD_TCDTNN_ID")
+    private Long qdTcdtnnId;
+
+
 }

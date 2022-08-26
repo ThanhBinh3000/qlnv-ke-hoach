@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagGctQdTcdtnn;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +30,11 @@ public interface KhPagGctQdTcdtnnRepository extends JpaRepository<KhPagGctQdTcdt
     Optional<KhPagGctQdTcdtnn> findById(Long aLong);
 
     void deleteAllByIdIn(List<Long> ids);
+
+    @Query(value = "SELECT DISTINCT *" +
+            "From KH_PAG_GCT_QD_TCDTNN QD_TCDTCC" +
+            " where QD_TCDTCC.TRANG_THAI= :trangThai" +
+            " AND NOT EXISTS(SELECT QD_DC_TCDTCC.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDTCC WHERE QD_DC_TCDTCC.SO_QDG_TCDTNN = QD_TCDTCC.SO_QD) " ,
+            nativeQuery = true)
+    List<KhPagGctQdTcdtnn> dsToTrinhTh(String trangThai);
 }
