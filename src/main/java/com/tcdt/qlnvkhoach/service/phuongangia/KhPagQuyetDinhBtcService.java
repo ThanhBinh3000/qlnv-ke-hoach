@@ -265,7 +265,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
         return data;
     }
     public List<KhPagTongHop> dsToTrinhTh(KhLtPagTongHopSearchReq objReq) throws Exception {
-        List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(), objReq.getTrangThaiTt(),objReq.getPagType().equals("VT") ? "04" : null);
+        List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(), objReq.getDsTrangThai(),objReq.getPagType().equals("VT") ? "04" : null);
         List<Long> idsPagTh = data.stream().map(KhPagTongHop::getId).collect(Collectors.toList());
         List<String> soTTBtcs = data.stream().map(KhPagTongHop::getQdGtdttBtc).collect(Collectors.toList());
         List<KhPagQuyetDinhBtc> listQdBtcs = khPagLtQuyetDinhBtcRepository.findAllBySoToTrinhIn(soTTBtcs);
