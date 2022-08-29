@@ -267,24 +267,10 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     public List<KhPagTongHop> dsToTrinhTh(KhLtPagTongHopSearchReq objReq) throws Exception {
         List<KhPagTongHop> data = khLtPagTongHopRepository.dsToTrinhTh(objReq.getType(), objReq.getDsTrangThai(),objReq.getPagType().equals("VT") ? "04" : null);
         List<Long> idsPagTh = data.stream().map(KhPagTongHop::getId).collect(Collectors.toList());
-        List<String> soTTBtcs = data.stream().map(KhPagTongHop::getQdGtdttBtc).collect(Collectors.toList());
-        List<KhPagQuyetDinhBtc> listQdBtcs = khPagLtQuyetDinhBtcRepository.findAllBySoToTrinhIn(soTTBtcs);
-        List<Long> idsQdBtc = listQdBtcs.stream().map(KhPagQuyetDinhBtc::getId).collect(Collectors.toList());
-        List<KhPagQdBtcCtiet> listPagQdBtcChiTiets = khPagQdBtcCtietRepository.findAllByQdBtcIdIn(idsQdBtc);
-        Map<Long,List<KhPagQdBtcCtiet>> mapQdBtcIdListChitiets = listPagQdBtcChiTiets.stream().collect(Collectors.groupingBy(item -> item.getQdBtcId()));
         List<KhPagTongHopCTiet> lChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(idsPagTh);
         List<String> maDvis = lChiTiets.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
         Map<String, QlnvDmDonvi> listDvi = qlnvDmService.getMapDonVi(maDvis);
         lChiTiets.forEach(s -> {
-            List<KhPagQdBtcCtiet> listCt = mapQdBtcIdListChitiets.get(s.getQdBtcId());
-            if(listCt != null && listCt.size() > 0){
-                listCt.forEach(c ->{
-                    if(s.getMaDvi().equals(c.getMaDvi())){
-                        s.setGiaTdttBtc(c.getGiaDn());
-                        s.setGiaDnVat(c.getGiaDnVat());
-                    }
-                });
-            }
             s.setTenDvi(listDvi.get(s.getMaDvi()).getTenDvi());
         });
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
