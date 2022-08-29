@@ -38,7 +38,7 @@ public interface KhPagGctQdTcdtnnRepository extends JpaRepository<KhPagGctQdTcdt
 //            " where QD_TCDTCC.TRANG_THAI= :trangThai" +
 //            " AND NOT EXISTS(SELECT QD_DC_TCDTCC.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDTCC WHERE QD_DC_TCDTCC.SO_QDG_TCDTNN = QD_TCDTCC.SO_QD) " ,
 //            nativeQuery = true)
-    @Query(value = "SELECT DISTINCT *" +
+    @Query(value = "SELECT *" +
             "From KH_PAG_GCT_QD_TCDTNN QD_TCDTCC" +
             " where QD_TCDTCC.TRANG_THAI= :trangThai" +
             " AND (( :pagType IS NULL AND (QD_TCDTCC.LOAI_VTHH LIKE '01%' OR QD_TCDTCC.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND QD_TCDTCC.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )" ,
