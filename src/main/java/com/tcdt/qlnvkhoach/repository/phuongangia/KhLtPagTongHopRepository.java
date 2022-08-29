@@ -53,12 +53,13 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
 //            " AND NOT EXISTS(SELECT QD_TCDT.ID FROM KH_PAG_GCT_QD_TCDTNN QD_TCDT WHERE QD_TCDT.SO_TO_TRINH = TT.SO_TO_TRINH) " +
 //            " AND NOT EXISTS(SELECT QD_DC_TCDT.ID FROM KH_PAG_GCT_QD_DC_TCDTNN QD_DC_TCDT WHERE QD_DC_TCDT.SO_TO_TRINH_DX = TT.SO_TO_TRINH) ",
 //            nativeQuery = true)
-    @Query(value = "SELECT DISTINCT *" +
+    @Query(value = "SELECT *" +
             "From KH_PAG_TONG_HOP TT" +
             " where TT.TYPE= :type" +
+            " AND (( :pagType IS NULL AND (TT.LOAI_VTHH LIKE '01%' OR TT.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND TT.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )" +
             " AND TT.TRANG_THAI_TT= :trangThaiTt ",
             nativeQuery = true)
-    List<KhPagTongHop> dsToTrinhTh(String type, String trangThaiTt);
+    List<KhPagTongHop> dsToTrinhTh(String type, String trangThaiTt,String pagType);
 
 
 }

@@ -88,6 +88,9 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     @Column(name="NGAY_PDUYET ")
     private Date ngayPduyet;
 
+    @Column(name="LASTEST")
+    private Integer lastest;
+
     @Transient
     String tenTrangThai;
 

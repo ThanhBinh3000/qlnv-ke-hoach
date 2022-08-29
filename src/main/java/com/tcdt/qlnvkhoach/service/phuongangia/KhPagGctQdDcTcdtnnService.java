@@ -42,8 +42,15 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
     @Autowired
     private KhPagGctQdDcTcdtnnRepository khPagGctQdDcTcdtnnRepository;
 
+
+    @Autowired
+    private KhPagGctQdTcdtnnRepository khPagGctQdTcdtnnRepository;
+
     @Autowired
     private KhPagGctQdDcTcdtnnCTietRepository khPagGctQdDcTcdtnnCTietRepository;
+
+    @Autowired
+    private KhLtPagTongHopCTietRepository khLtPagTongHopCTietRepository;
     @Autowired
     private ModelMapper mapper;
     @Autowired
@@ -79,7 +86,7 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public KhPagGctQdDcTcdtnn craete(KhPagGctQdDcTcdtnnReq req) throws Exception {
+    public KhPagGctQdDcTcdtnn create(KhPagGctQdDcTcdtnnReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         Optional<KhPagGctQdDcTcdtnn> optional = khPagGctQdDcTcdtnnRepository.findBySoQd(req.getSoQd());
@@ -97,6 +104,23 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
             return modelCTiet;
         }).collect(Collectors.toList());
         khPagGctQdDcTcdtnn.setKhPagQdDcTcdtnnCTiets(khPagQdDcTcdtnnCTiets);
+        //update lại thông tin giá cho bản ghi qd tcdtnn sau khi điều chỉnh
+        Optional<KhPagGctQdTcdtnn> optionalQd = khPagGctQdTcdtnnRepository.findBySoToTrinhAndLastest(req.getSoQdgTcdtnn(), 1);
+        if (optionalQd.isPresent()) {
+            KhPagGctQdTcdtnn qdTcdtnn = optionalQd.get();
+            List<KhPagTongHopCTiet> listQdChiTiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(qdTcdtnn.getId());
+            if (listQdChiTiets != null && !listQdChiTiets.isEmpty()) {
+                for (KhPagTongHopCTiet khPagTongHopCTiet : listQdChiTiets) {
+                    for (KhPagQdDcTcdtnnCTiet khPagQdDcTcdtnnCTiet : req.getThongTinGias()) {
+                        if (khPagTongHopCTiet.getMaDvi().equals(khPagQdDcTcdtnnCTiet.getMaDvi())) {
+                            khPagTongHopCTiet.setGiaQdTcdtnn(khPagQdDcTcdtnnCTiet.getDonGia());
+                            khPagTongHopCTiet.setGiaQdVatTcdtnn(khPagQdDcTcdtnnCTiet.getDonGiaVat());
+                        }
+                    }
+                }
+                khLtPagTongHopCTietRepository.saveAll(listQdChiTiets);
+            }
+        }
         return khPagGctQdDcTcdtnn;
     }
 
@@ -124,6 +148,23 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
             return modelCTiet;
         }).collect(Collectors.toList());
         update.setKhPagQdDcTcdtnnCTiets(khPagQdDcTcdtnnCTiets);
+        //update lại thông tin giá cho bản ghi qd tcdtnn sau khi điều chỉnh
+        Optional<KhPagGctQdTcdtnn> optionalQd = khPagGctQdTcdtnnRepository.findBySoToTrinhAndLastest(req.getSoQdgTcdtnn(), 1);
+        if (optionalQd.isPresent()) {
+            KhPagGctQdTcdtnn qdTcdtnn = optionalQd.get();
+            List<KhPagTongHopCTiet> listQdChiTiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(qdTcdtnn.getId());
+            if (listQdChiTiets != null && !listQdChiTiets.isEmpty()) {
+                for (KhPagTongHopCTiet khPagTongHopCTiet : listQdChiTiets) {
+                    for (KhPagQdDcTcdtnnCTiet khPagQdDcTcdtnnCTiet : req.getThongTinGias()) {
+                        if (khPagTongHopCTiet.getMaDvi().equals(khPagQdDcTcdtnnCTiet.getMaDvi())) {
+                            khPagTongHopCTiet.setGiaQdTcdtnn(khPagQdDcTcdtnnCTiet.getDonGia());
+                            khPagTongHopCTiet.setGiaQdVatTcdtnn(khPagQdDcTcdtnnCTiet.getDonGiaVat());
+                        }
+                    }
+                }
+                khLtPagTongHopCTietRepository.saveAll(listQdChiTiets);
+            }
+        }
         return update;
     }
 
@@ -154,11 +195,11 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
         khPagGctQdDcTcdtnnRepository.delete(optional.get());
     }
 
-   @Transactional(rollbackOn = Exception.class)
-   public void deleteListId(List<Long> listId){
-       khPagGctQdDcTcdtnnCTietRepository.deleteAllByQdDcTcdtnnIdIn(listId);
-       khPagGctQdDcTcdtnnRepository.deleteAllByIdIn(listId);
-   }
+    @Transactional(rollbackOn = Exception.class)
+    public void deleteListId(List<Long> listId) {
+        khPagGctQdDcTcdtnnCTietRepository.deleteAllByQdDcTcdtnnIdIn(listId);
+        khPagGctQdDcTcdtnnRepository.deleteAllByIdIn(listId);
+    }
 
     public void export(KhPagGctQdDcTcdtnnSearchReq objReq, HttpServletResponse response) throws Exception {
         PaggingReq paggingReq = new PaggingReq();
@@ -190,6 +231,29 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
         }
         ExportExcel ex = new ExportExcel(title, fileName, rowsName, dataList, response);
         ex.export();
+    }
+
+    public KhPagGctQdDcTcdtnn approve(StatusReq stReq) throws Exception {
+        UserInfo userInfo = SecurityContextService.getUser();
+        if (StringUtils.isEmpty(stReq.getId())) {
+            throw new Exception("Không tìm thấy dữ liệu");
+        }
+        Optional<KhPagGctQdDcTcdtnn> data = khPagGctQdDcTcdtnnRepository.findById(stReq.getId());
+        if (!data.isPresent()) {
+            throw new Exception("Không tìm thấy dữ liệu");
+        }
+        String status = stReq.getTrangThai() + data.get().getTrangThai();
+        switch (status) {
+            case Contains.BAN_HANH + Contains.MOI_TAO:
+                data.get().setNguoiPduyet(userInfo.getUsername());
+                data.get().setNgayPduyet(new Date());
+                break;
+            default:
+                throw new Exception("Phê duyệt không thành công");
+        }
+        data.get().setTrangThai(stReq.getTrangThai());
+        KhPagGctQdDcTcdtnn itemModel = khPagGctQdDcTcdtnnRepository.save(data.get());
+        return itemModel;
     }
 
 

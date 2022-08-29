@@ -96,7 +96,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             throw new Exception("số quyết định đã tồn tại");
         Optional<KhPagGctQdTcdtnn> soToTrinh = khPagGctQdTcdtnnRepository.findBySoToTrinh(req.getSoToTrinh());
         if (soToTrinh.isPresent())
-            throw new Exception("số tờ trình đã tồn tại");
+            throw new Exception("Số tờ trình đã tồn tại");
         KhPagGctQdTcdtnn data = new KhPagGctQdTcdtnn();
         BeanUtils.copyProperties(req, data, "id");
         data.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
@@ -106,14 +106,14 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (req.getPagType().equals("LT")) {
-            List<KhPagQdTcdtnnCtiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagQdTcdtnnCtiet>>() {
+            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
             });
             if (listThongTinGiaTongHop != null) {
                 listThongTinGiaTongHop.forEach(s -> {
                     s.setQdTcdtnnId(data.getId());
                 });
             }
-            khPagQdTcdtnnCtietRepository.saveAll(listThongTinGiaTongHop);
+            khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
         } else if (req.getPagType().equals("VT")) {
             List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
             });
@@ -261,7 +261,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     }
 
     public List<KhPagGctQdTcdtnn> listQdgTcdtnn(KhPagGctQdTcdtnnSearchReq req) throws Exception {
-        List<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.dsToTrinhTh(req.getTrangThai());
+        List<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.dsToTrinhTh(req.getTrangThai(), req.getPagType().equals("VT") ? "04" : null);
         List<Long> qdTcdtnnIds = data.stream().map(KhPagGctQdTcdtnn::getId).collect(Collectors.toList());
         List<KhPagQdTcdtnnCtiet> lChitiets = khPagQdTcdtnnCtietRepository.findAllByQdTcdtnnIdIn(qdTcdtnnIds);
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
