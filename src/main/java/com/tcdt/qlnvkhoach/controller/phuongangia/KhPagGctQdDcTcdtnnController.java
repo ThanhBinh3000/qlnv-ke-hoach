@@ -60,7 +60,7 @@ public class KhPagGctQdDcTcdtnnController extends BaseController {
     public final ResponseEntity<Resp> create(@Valid @RequestBody KhPagGctQdDcTcdtnnReq  objReq) {
         Resp resp = new Resp();
         try {
-            resp.setData(khPagGctQdDcTcdtnnService.craete(objReq));
+            resp.setData(khPagGctQdDcTcdtnnService.create(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -155,22 +155,22 @@ public class KhPagGctQdDcTcdtnnController extends BaseController {
         }
     }
 
-//    @ApiOperation(value = "Giá cụ thể phê duyệt quyết định TCDTNN", response = List.class)
-//    @PostMapping(value =PathConstants.URL_QD_DC_GIA_TCDTNN + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(HttpStatus.OK)
-//    public final ResponseEntity<Resp> updateStatus(@Valid @RequestBody StatusReq objReq) throws Exception {
-//        Resp resp = new Resp();
-//        try {
-//            resp.setData(khPagGctQdTcdtnnService.approve(objReq));
-//            resp.setStatusCode(Constants.RESP_SUCC);
-//            resp.setMsg("Thành công");
-//        }  catch (Exception e) {
-//            resp.setStatusCode(Constants.RESP_FAIL);
-//            resp.setMsg(e.getMessage());
-//            log.error(e.getMessage());
-//        }
-//        return ResponseEntity.ok(resp);
-//    }
+    @ApiOperation(value = "Giá cụ thể ban hành quyết định điều chỉnh giá TCDTNN", response = List.class)
+    @PostMapping(value =PathConstants.URL_QD_DC_GIA_TCDTNN + PathConstants.URL_PHE_DUYET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public final ResponseEntity<Resp> banHanh(@Valid @RequestBody StatusReq objReq) throws Exception {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khPagGctQdDcTcdtnnService.approve(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        }  catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
 
 
 }
