@@ -123,4 +123,6 @@ public class KhLtPhuongAnGiaReq {
 	private List<KhPagTtChung> pagTtChungs;
 
 	private List<KhPagPpXacDinhGia> pagPpXacDinhGias;
+
+	private String moTaHangHoa;
 }

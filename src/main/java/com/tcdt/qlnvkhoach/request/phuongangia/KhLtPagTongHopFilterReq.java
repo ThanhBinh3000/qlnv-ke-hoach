@@ -66,4 +66,6 @@ public class KhLtPagTongHopFilterReq {
     private BigDecimal ttGiaDn;
 
     private BigDecimal ttGiaDnVat;
+
+    private String moTaHangHoa;
 }
