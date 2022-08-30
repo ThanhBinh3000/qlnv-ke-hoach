@@ -198,6 +198,9 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "QD_CT_KH_NAM")
     private String qdCtKhNam;
 
+    @Column(name = "MO_TA_HANG_HOA")
+    private String moTaHangHoa;
+
     @Transient
     private List<KhPagTtChung> pagTtChungs = new ArrayList<>();
 

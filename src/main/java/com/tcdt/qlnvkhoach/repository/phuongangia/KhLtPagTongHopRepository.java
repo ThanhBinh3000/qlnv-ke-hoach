@@ -57,9 +57,9 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
             "From KH_PAG_TONG_HOP TT" +
             " where TT.TYPE= :type" +
             " AND (( :pagType IS NULL AND (TT.LOAI_VTHH LIKE '01%' OR TT.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND TT.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )" +
-            " AND TT.TRANG_THAI_TT= :trangThaiTt ",
+            " AND TT.TRANG_THAI_TT in (:dsTrangThai)",
             nativeQuery = true)
-    List<KhPagTongHop> dsToTrinhTh(String type, String trangThaiTt,String pagType);
+    List<KhPagTongHop> dsToTrinhTh(String type, List<String> dsTrangThai,String pagType);
 
 
 }

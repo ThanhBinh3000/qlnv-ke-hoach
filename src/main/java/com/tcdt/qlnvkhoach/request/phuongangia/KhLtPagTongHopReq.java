@@ -66,4 +66,5 @@ public class KhLtPagTongHopReq {
 
     private LocalDate ttNgayKy;
 
+    private String moTaHangHoa;
 }
