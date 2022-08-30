@@ -276,8 +276,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             item.setTchuanCluong(qlnvDmService.getTieuChuanCluongByMaLoaiVthh(item.getLoaiVthh()));
             item.setThongTinGia(mapListChitiet.get(item.getId()));
             item.setTenLoaiGia(mapLoaiGia.get(item.getLoaiGia()));
-            item.setTenLoaiVthh(mapHh.get(item.getTenLoaiVthh()));
-            item.setCloaiVthh(mapHh.get(item.getCloaiVthh()));
+            item.setTenLoaiVthh(mapHh.get(item.getLoaiVthh()));
+            item.setTenCloaiVthh(mapHh.get(item.getCloaiVthh()));
         });
         return data;
     }
