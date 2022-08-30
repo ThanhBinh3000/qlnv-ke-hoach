@@ -164,7 +164,7 @@ public class QlnvDmService {
         try {
             ResponseEntity<String> response = qlnvDmClient.getTchuanCluong(maLoai);
             String str = Request.getAttrFromJson(response.getBody(), "data");
-            if (!StringUtils.isEmpty(str)) {
+            if (str != null && !str.equals("")) {
                 JSONObject object = new JSONObject(str);
                 if (object.has("tenQchuan")) {
                     tentieuChuanCluong = object.getString("tenQchuan");
