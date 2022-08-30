@@ -1,20 +1,13 @@
 package com.tcdt.qlnvkhoach.repository.khcnbq;
 
-import com.tcdt.qlnvkhoach.entities.khcnbq.CnCtNc;
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
-import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.tcdt.qlnvkhoach.entities.khcnbq.CnCtrinhNcuu;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface CnCtNcRepository extends JpaRepository<CnCtNc, Long> {
+public interface CnCtrinhNcuuRepository extends JpaRepository<CnCtrinhNcuu, Long> {
 
 //    @Query(value = "SELECT * FROM KH_PAG_TONG_HOP PAG_TH WHERE (:namKh IS NULL OR PAG_TH.NAM_TONG_HOP = TO_NUMBER(:namKh))"
 //            + "AND (:loaiHh IS NULL OR PAG_TH.LOAI_VTHH =  :loaiHh)"
@@ -27,6 +20,6 @@ public interface CnCtNcRepository extends JpaRepository<CnCtNc, Long> {
 //            , nativeQuery = true)
 //    Page<CnCtNc> selectPage(String maDt, String tenDt, String capDt, String trangThai, Integer namTu, Integer namDen, Pageable pageable);
 
-    List<CnCtNc> findByIdIn(List<Long> ids);
+    List<CnCtrinhNcuu> findByIdIn(List<Long> ids);
 
 }
