@@ -191,7 +191,11 @@ public class KhLtTongHopPagController extends BaseController {
     public final ResponseEntity<Resp> dsToTrinhDeXuat(@RequestBody KhLtPagTongHopSearchReq objReq) {
         Resp resp = new Resp();
         try {
-            resp.setData(khPagQuyetDinhBtcService.dsToTrinhTh(objReq));
+            if (objReq.getPagType().equals("LT")) {
+                resp.setData(khPagQuyetDinhBtcService.dsToTrinhTh(objReq));
+            }else{
+                resp.setData(khLtPagService.dsSoDeXuat(objReq));
+            }
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

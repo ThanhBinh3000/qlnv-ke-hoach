@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.repository.phuongangia;
 
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPhuongAnGia;
 import com.tcdt.qlnvkhoach.repository.KhLtPhuongAnGiaRepositoryCustom;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
@@ -57,4 +58,13 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
       "ORDER BY c.ngaySua desc , c.ngayTao desc")
   List<KhPhuongAnGia> DsToTrinhDeXuat(
       @Param("param") KhLtPhuongAnGiaSearchReq param);
+
+
+	@Query(value = "SELECT *" +
+			"From KH_PHUONG_AN_GIA TT" +
+			" where TT.TYPE= :type" +
+			" AND (( :pagType IS NULL AND (TT.LOAI_VTHH LIKE '01%' OR TT.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND TT.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )" +
+			" AND TT.TRANG_THAI in (:dsTrangThai)",
+			nativeQuery = true)
+	List<KhPhuongAnGia> dsSoDeXuatPag(String type, List<String> dsTrangThai, String pagType);
 }

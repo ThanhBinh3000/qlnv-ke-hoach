@@ -179,4 +179,5 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
 
     @Column(name = "MO_TA_HANG_HOA")
     private String moTaHangHoa;
+
 }

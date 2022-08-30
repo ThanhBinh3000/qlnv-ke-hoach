@@ -18,6 +18,7 @@ import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagDiaDiemDeHangReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPagKetQuaReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhLtPhuongAnGiaReq;
+import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPhuongAnGiaSearchReq;
 import com.tcdt.qlnvkhoach.response.phuongangia.KhLtPhuongAnGiaRes;
 import com.tcdt.qlnvkhoach.service.BaseService;
@@ -25,6 +26,7 @@ import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.util.Contains;
@@ -329,8 +331,8 @@ public class KhLtPagService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         List<KhPhuongAnGia> phuongAnGiaList = khLtPhuongAnGiaRepository.findByIdIn(ids);
-        for (KhPhuongAnGia khPhuongAnGia : phuongAnGiaList){
-            if(khPhuongAnGia.getTrangThaiTh().equals(Contains.DA_TH)){
+        for (KhPhuongAnGia khPhuongAnGia : phuongAnGiaList) {
+            if (khPhuongAnGia.getTrangThaiTh().equals(Contains.DA_TH)) {
                 throw new Exception("Có bản ghi đề xuất đã được tổng hợp, không được phép xóa.");
             }
         }
@@ -391,7 +393,7 @@ public class KhLtPagService extends BaseService {
         if (!qOptional.isPresent()) {
             throw new UserPrincipalNotFoundException("Id không tồn tại");
         }
-        if(qOptional.get().getTrangThaiTh().equals(Contains.DA_TH)){
+        if (qOptional.get().getTrangThaiTh().equals(Contains.DA_TH)) {
             throw new UserPrincipalNotFoundException("Đề xuất đã được tổng hợp, không được phép xóa.");
         }
         List<Long> pagIds = new ArrayList<>();
@@ -546,5 +548,22 @@ public class KhLtPagService extends BaseService {
         ExportExcel ex = new ExportExcel(title, fileName, rowsName, dataList, response);
         ex.export();
     }
+
+    public List<KhPhuongAnGia> dsSoDeXuat(KhLtPagTongHopSearchReq objReq) throws Exception {
+        List<KhPhuongAnGia> data = khLtPhuongAnGiaRepository.dsSoDeXuatPag(objReq.getType(), objReq.getDsTrangThai(), objReq.getPagType().equals("VT") ? "02" : null);
+        List<Long> idsPagTh = data.stream().map(KhPhuongAnGia::getId).collect(Collectors.toList());
+        List<KhPagTtChung> lChiTiets = khPagTtChungRepository.findByPhuongAnGiaIdIn(idsPagTh);
+        Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> mapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+        Map<Long, List<KhPagTtChung>> mapListTTChung = lChiTiets.stream().collect(Collectors.groupingBy(item -> item.getPhuongAnGiaId()));
+        data.forEach(dt -> {
+            dt.setTenLoaiGia(mapLoaiGia.get(dt.getLoaiGia()));
+            dt.setTenCloaiVthh(mapHh.get(dt.getCloaiVthh()));
+            dt.setTenLoaiVthh(mapHh.get(dt.getLoaiVthh()));
+            dt.setPagTtChungs(mapListTTChung.get(dt.getId()));
+        });
+        return data;
+    }
+
 
 }
