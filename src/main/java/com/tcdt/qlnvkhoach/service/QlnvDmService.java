@@ -9,6 +9,7 @@ import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoach.request.BaseRequest;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoach.util.Request;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -154,14 +155,20 @@ public class QlnvDmService {
 		return qlnvDmDonviRepository.findByMaDvi(maDvi);
 	}
 
+
+//	@Cacheable(value = "dmTchuanCluongHdr", key = "#maLoai", unless = "#result==null")
 	public String  getTieuChuanCluongByMaLoaiVthh(String maLoai) {
 		String tentieuChuanCluong = null;
 		try {
 			ResponseEntity<String> response = qlnvDmClient.getTchuanCluong(maLoai);
-			System.out.println("AHAAAAAAAAAAAA:" +response);
+			String str = Request.getAttrFromJson(response.getBody(), "data");
+			JSONObject object = new JSONObject(str);
+			if(object.has("tenQchuan")){
+				tentieuChuanCluong = object.getString("tenQchuan");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("Không thể lấy thông tin danh mục kế hoạch phí", e);
+			log.error("Không thể lấy thông tin", e);
 		}
 		return tentieuChuanCluong;
 	}
