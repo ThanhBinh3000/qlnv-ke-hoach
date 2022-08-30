@@ -64,7 +64,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			"From KH_PHUONG_AN_GIA TT" +
 			" where TT.TYPE= :type" +
 			" AND (( :pagType IS NULL AND (TT.LOAI_VTHH LIKE '01%' OR TT.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND TT.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )" +
-			" AND TT.TRANG_THAI in (:dsTrangThai)",
+			" AND (TT.TRANG_THAI in (:dsTrangThai) or :dsTrangThai is NULL)",
 			nativeQuery = true)
 	List<KhPhuongAnGia> dsSoDeXuatPag(String type, List<String> dsTrangThai, String pagType);
 }

@@ -50,4 +50,6 @@ public class KhPagQdDcTcdtnnCTiet {
     @Column(name = "QD_DC_TCDTNN_ID")
     private Long qdDcTcdtnnId;
 
+    @Column(name = "TTG_ID")
+    private Long ttgId;
 }

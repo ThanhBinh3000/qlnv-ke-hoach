@@ -15,6 +15,7 @@ import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
@@ -147,7 +148,6 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         KhPagGctQdTcdtnn data = optional.get();
         BeanUtils.copyProperties(req, data, "id");
         KhPagGctQdTcdtnn update = khPagGctQdTcdtnnRepository.save(data);
-        khLtPagTongHopCTietRepository.deleteAllByQdTcdtnnId(data.getId());
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (!req.getLoaiVthh().startsWith("02")) {
@@ -269,7 +269,11 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         List<KhPagTongHopCTiet> lChitiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnIdIn(qdTcdtnnIds);
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String, String> mapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
-//        Map<String, String> mapLoaiGia = qlnvDmService.ge("LOAI_GIA");
+        List<String> maDvis = lChitiets.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
+        Map<String, QlnvDmDonvi> listDvi = qlnvDmService.getMapDonVi(maDvis);
+        lChitiets.forEach(s -> {
+            s.setTenDvi(listDvi.get(s.getMaDvi()).getTenDvi());
+        });
         Map<Long, List<KhPagTongHopCTiet>> mapListChitiet = lChitiets.stream().collect(Collectors.groupingBy(item -> item.getQdTcdtnnId()));
         data.forEach(item -> {
             item.setTchuanCluong(qlnvDmService.getTieuChuanCluongByMaLoaiVthh(item.getLoaiVthh()));
