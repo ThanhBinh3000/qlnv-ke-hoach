@@ -14,4 +14,6 @@ public class PathClientConstants {
 
 	public static final String URL_DM_DUNG_CHUNG = "/dmuc-chung/danh-sach/{loai}";
 
+	public static final String URL_DM_TCHUAN_HDR = "dm-tieu-chuan/chi-tiet/ma-hh/{maHh}";
+
 }

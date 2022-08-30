@@ -107,6 +107,9 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     String tenDvi;
 
     @Transient
+    String tenTchuanCluong;
+
+    @Transient
     private List<KhPagTongHopCTiet> thongTinGia;
 
     @Column(name = "MO_TA_HANG_HOA")

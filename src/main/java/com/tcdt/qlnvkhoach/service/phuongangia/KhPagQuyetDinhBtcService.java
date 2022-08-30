@@ -280,7 +280,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
             dt.setTenLoaiGia(mapLoaiGia.get(dt.getLoaiGia() ));
             dt.setTenCloaiVthh(mapHh.get(dt.getCloaiVthh() ));
             dt.setTenLoaiVthh(mapHh.get(dt.getLoaiVthh() ));
-            dt.setPagChiTiets(mapListChitietByPagTh.get(dt.getId()));
+            dt.setThongTinGia(mapListChitietByPagTh.get(dt.getId()));
         });
         return data;
     }

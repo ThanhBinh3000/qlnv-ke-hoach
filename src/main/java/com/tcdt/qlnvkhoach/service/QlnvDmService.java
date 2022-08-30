@@ -153,4 +153,16 @@ public class QlnvDmService {
 	public QlnvDmDonvi getDonViByMa(String maDvi) {
 		return qlnvDmDonviRepository.findByMaDvi(maDvi);
 	}
+
+	public String  getTieuChuanCluongByMaLoaiVthh(String maLoai) {
+		String tentieuChuanCluong = null;
+		try {
+			ResponseEntity<String> response = qlnvDmClient.getTchuanCluong(maLoai);
+			System.out.println("AHAAAAAAAAAAAA:" +response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Không thể lấy thông tin danh mục kế hoạch phí", e);
+		}
+		return tentieuChuanCluong;
+	}
 }
