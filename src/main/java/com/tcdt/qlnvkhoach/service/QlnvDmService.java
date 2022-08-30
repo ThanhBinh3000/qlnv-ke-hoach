@@ -164,15 +164,14 @@ public class QlnvDmService {
         try {
             ResponseEntity<String> response = qlnvDmClient.getTchuanCluong(maLoai);
             String str = Request.getAttrFromJson(response.getBody(), "data");
-            if (str != null && !str.equals("")) {
+            if (str != null && !str.equals("") && !str.equals("null")) {
                 JSONObject object = new JSONObject(str);
                 if (object.has("tenQchuan")) {
                     tentieuChuanCluong = object.getString("tenQchuan");
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("Không thể lấy thông tin", e);
+            return tentieuChuanCluong;
         }
         return tentieuChuanCluong;
     }
