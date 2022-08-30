@@ -28,147 +28,152 @@ import com.tcdt.qlnvkhoach.util.Constants;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Service
 public class QlnvDmService {
-	@Autowired
-	private QlnvDmClient qlnvDmClient;
-	@Autowired
-	private Gson gson;
+    @Autowired
+    private QlnvDmClient qlnvDmClient;
+    @Autowired
+    private Gson gson;
 
-	@Autowired
-	private ModelMapper modelMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
-	@Autowired
-	private QlnvDmDonviRepository qlnvDmDonviRepository;
+    @Autowired
+    private QlnvDmDonviRepository qlnvDmDonviRepository;
 
-	@Autowired
-	private QlnvDmVattuRepository qlnvDmVattuRepository;
+    @Autowired
+    private QlnvDmVattuRepository qlnvDmVattuRepository;
 
-	@Autowired
-	private QlnvDmKhoachVonPhiRepository qlnvDmKhoachVonPhiRepository;
+    @Autowired
+    private QlnvDmKhoachVonPhiRepository qlnvDmKhoachVonPhiRepository;
 
-	@Cacheable(value = "dmDonviCache", key = "#id", unless = "#result==null")
-	public QlnvDmDonvi getDonViById(Long id) {
-		Optional<QlnvDmDonvi> qOptional = qlnvDmDonviRepository.findById(id);
-		return qOptional.get();
-	}
+    @Cacheable(value = "dmDonviCache", key = "#id", unless = "#result==null")
+    public QlnvDmDonvi getDonViById(Long id) {
+        Optional<QlnvDmDonvi> qOptional = qlnvDmDonviRepository.findById(id);
+        return qOptional.get();
+    }
 
-	@Cacheable(value = "dmKhoachVonPhiCache", key = "#id", unless = "#result==null")
-	public QlnvDmKhoachVonPhi getDmKhoachVonPhiById(Long id) throws Exception {
-		Optional<QlnvDmKhoachVonPhi> qOptional = qlnvDmKhoachVonPhiRepository.findById(id);
-		return qOptional.get();
-	}
-	
-	@Deprecated
-	@Cacheable(value = "dmDonviCache", key = "#maDvi", unless = "#result==null")
-	public QlnvDmDonvi getDonViById(String maDvi) throws Exception {
-		QlnvDmDonvi qlnvDmDonvi = null;
-		try {
-			Resp resp = qlnvDmClient.getDmDviByIdDetail(maDvi);
-			log.info("Kết quả danh mục client: {}", gson.toJson(resp));
-			if (resp.getStatusCode() != Constants.RESP_SUCC) {
-				throw new NotFoundException(resp.getMsg());
-			}
-			qlnvDmDonvi = modelMapper.map(resp.getData(), QlnvDmDonvi.class);
-		} catch (Exception e) {
-			log.error("Không thể lấy thông tin danh mục đơn vị", e);
-			throw e;
-		}
-		return qlnvDmDonvi;
-	}
+    @Cacheable(value = "dmKhoachVonPhiCache", key = "#id", unless = "#result==null")
+    public QlnvDmKhoachVonPhi getDmKhoachVonPhiById(Long id) throws Exception {
+        Optional<QlnvDmKhoachVonPhi> qOptional = qlnvDmKhoachVonPhiRepository.findById(id);
+        return qOptional.get();
+    }
 
-	@Deprecated
-	@Cacheable(value = "dmKhoachVonPhiCache", key = "#maDmKhoachVonPhi", unless = "#result==null")
-	public QlnvDmKhoachVonPhi getDmKhoachVonPhiById(String maDmKhoachVonPhi) throws Exception {
-		QlnvDmKhoachVonPhi qlnvDmVonPhi = null;
-		try {
-			Resp resp = qlnvDmClient.getDmKhoachVphiByIdDetail(maDmKhoachVonPhi);
-			log.info("Kết quả danh mục client: {}", gson.toJson(resp));
-			if (resp.getStatusCode() != Constants.RESP_SUCC) {
-				throw new NotFoundException(resp.getMsg());
-			}
-			if (resp == null || resp.getData() == null) {
-				return null;
-			}
-			qlnvDmVonPhi = modelMapper.map(resp.getData(), QlnvDmKhoachVonPhi.class);
-		} catch (Exception e) {
-			log.error("Không thể lấy thông tin danh mục kế hoạch phí", e);
-			throw e;
-		}
-		return qlnvDmVonPhi;
-	}
+    @Deprecated
+    @Cacheable(value = "dmDonviCache", key = "#maDvi", unless = "#result==null")
+    public QlnvDmDonvi getDonViById(String maDvi) throws Exception {
+        QlnvDmDonvi qlnvDmDonvi = null;
+        try {
+            Resp resp = qlnvDmClient.getDmDviByIdDetail(maDvi);
+            log.info("Kết quả danh mục client: {}", gson.toJson(resp));
+            if (resp.getStatusCode() != Constants.RESP_SUCC) {
+                throw new NotFoundException(resp.getMsg());
+            }
+            qlnvDmDonvi = modelMapper.map(resp.getData(), QlnvDmDonvi.class);
+        } catch (Exception e) {
+            log.error("Không thể lấy thông tin danh mục đơn vị", e);
+            throw e;
+        }
+        return qlnvDmDonvi;
+    }
 
-	public Map<String, QlnvDmVattu> getMapVatTu(Collection<String> maVatTus) {
-		if (CollectionUtils.isEmpty(maVatTus))
-			return Collections.emptyMap();
-		return qlnvDmVattuRepository.findByMaIn(maVatTus).stream()
-				.collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
-	}
+    @Deprecated
+    @Cacheable(value = "dmKhoachVonPhiCache", key = "#maDmKhoachVonPhi", unless = "#result==null")
+    public QlnvDmKhoachVonPhi getDmKhoachVonPhiById(String maDmKhoachVonPhi) throws Exception {
+        QlnvDmKhoachVonPhi qlnvDmVonPhi = null;
+        try {
+            Resp resp = qlnvDmClient.getDmKhoachVphiByIdDetail(maDmKhoachVonPhi);
+            log.info("Kết quả danh mục client: {}", gson.toJson(resp));
+            if (resp.getStatusCode() != Constants.RESP_SUCC) {
+                throw new NotFoundException(resp.getMsg());
+            }
+            if (resp == null || resp.getData() == null) {
+                return null;
+            }
+            qlnvDmVonPhi = modelMapper.map(resp.getData(), QlnvDmKhoachVonPhi.class);
+        } catch (Exception e) {
+            log.error("Không thể lấy thông tin danh mục kế hoạch phí", e);
+            throw e;
+        }
+        return qlnvDmVonPhi;
+    }
 
-	public Map<String, QlnvDmDonvi> getMapDonVi(Collection<String> maDvis) {
-		if (CollectionUtils.isEmpty(maDvis))
-			return Collections.emptyMap();
+    public Map<String, QlnvDmVattu> getMapVatTu(Collection<String> maVatTus) {
+        if (CollectionUtils.isEmpty(maVatTus))
+            return Collections.emptyMap();
+        return qlnvDmVattuRepository.findByMaIn(maVatTus).stream()
+                .collect(Collectors.toMap(QlnvDmVattu::getMa, Function.identity()));
+    }
 
-		return qlnvDmDonviRepository.findByMaDviIn(maDvis).stream()
-				.collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
-	}
+    public Map<String, QlnvDmDonvi> getMapDonVi(Collection<String> maDvis) {
+        if (CollectionUtils.isEmpty(maDvis))
+            return Collections.emptyMap();
 
-	public Map<String, String> getListDanhMucDonVi(String capDvi){
-		ResponseEntity<String> response = qlnvDmClient.getAllDanhMucDonVi(capDvi);
-		String str = Request.getAttrFromJson(response.getBody(), "data");
-		HashMap<String, String> data = new HashMap<String, String>();
-		List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {}.getType());
-		for (Map<String, Object> map : retMap){
-			data.put(String.valueOf(map.get("maDvi")), String.valueOf(map.get("tenDvi")));
-		}
-		return data;
-	}
+        return qlnvDmDonviRepository.findByMaDviIn(maDvis).stream()
+                .collect(Collectors.toMap(QlnvDmDonvi::getMaDvi, Function.identity()));
+    }
 
-	public Map<String, String> getListDanhMucHangHoa(){
-		ResponseEntity<String> response = qlnvDmClient.getDanhMucHangHoa();
-		String str = Request.getAttrFromJson(response.getBody(), "data");
-		HashMap<String, String> data = new HashMap<String, String>();
-		List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {}.getType());
-		for (Map<String, Object> map : retMap){
-			data.put(String.valueOf(map.get("ma")), String.valueOf(map.get("ten")));
-		}
-		return data;
-	}
+    public Map<String, String> getListDanhMucDonVi(String capDvi) {
+        ResponseEntity<String> response = qlnvDmClient.getAllDanhMucDonVi(capDvi);
+        String str = Request.getAttrFromJson(response.getBody(), "data");
+        HashMap<String, String> data = new HashMap<String, String>();
+        List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {
+        }.getType());
+        for (Map<String, Object> map : retMap) {
+            data.put(String.valueOf(map.get("maDvi")), String.valueOf(map.get("tenDvi")));
+        }
+        return data;
+    }
 
-	public Map<String, String> getListDanhMucChung(String loai) {
-		ResponseEntity<String> response = qlnvDmClient.getDanhMucChung(loai);
-		String str = Request.getAttrFromJson(response.getBody(), "data");
-		HashMap<String, String> data = new HashMap<String, String>();
-		List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {
-		}.getType());
-		for (Map<String, Object> map : retMap) {
-			data.put(String.valueOf(map.get("ma")), String.valueOf(map.get("giaTri")));
-		}
-		return data;
-	}
+    public Map<String, String> getListDanhMucHangHoa() {
+        ResponseEntity<String> response = qlnvDmClient.getDanhMucHangHoa();
+        String str = Request.getAttrFromJson(response.getBody(), "data");
+        HashMap<String, String> data = new HashMap<String, String>();
+        List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {
+        }.getType());
+        for (Map<String, Object> map : retMap) {
+            data.put(String.valueOf(map.get("ma")), String.valueOf(map.get("ten")));
+        }
+        return data;
+    }
 
-	public QlnvDmDonvi getDonViByMa(String maDvi) {
-		return qlnvDmDonviRepository.findByMaDvi(maDvi);
-	}
+    public Map<String, String> getListDanhMucChung(String loai) {
+        ResponseEntity<String> response = qlnvDmClient.getDanhMucChung(loai);
+        String str = Request.getAttrFromJson(response.getBody(), "data");
+        HashMap<String, String> data = new HashMap<String, String>();
+        List<Map<String, Object>> retMap = new Gson().fromJson(str, new TypeToken<List<HashMap<String, Object>>>() {
+        }.getType());
+        for (Map<String, Object> map : retMap) {
+            data.put(String.valueOf(map.get("ma")), String.valueOf(map.get("giaTri")));
+        }
+        return data;
+    }
+
+    public QlnvDmDonvi getDonViByMa(String maDvi) {
+        return qlnvDmDonviRepository.findByMaDvi(maDvi);
+    }
 
 
-	public String  getTieuChuanCluongByMaLoaiVthh(String maLoai) {
-		String tentieuChuanCluong = null;
-		try {
-			ResponseEntity<String> response = qlnvDmClient.getTchuanCluong(maLoai);
-			String str = Request.getAttrFromJson(response.getBody(), "data");
-			JSONObject object = new JSONObject(str);
-			if(object.has("tenQchuan")){
-				tentieuChuanCluong = object.getString("tenQchuan");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("Không thể lấy thông tin", e);
-		}
-		return tentieuChuanCluong;
-	}
+    public String getTieuChuanCluongByMaLoaiVthh(String maLoai) {
+        String tentieuChuanCluong = null;
+        try {
+            ResponseEntity<String> response = qlnvDmClient.getTchuanCluong(maLoai);
+            String str = Request.getAttrFromJson(response.getBody(), "data");
+            if (!StringUtils.isEmpty(str)) {
+                JSONObject object = new JSONObject(str);
+                if (object.has("tenQchuan")) {
+                    tentieuChuanCluong = object.getString("tenQchuan");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Không thể lấy thông tin", e);
+        }
+        return tentieuChuanCluong;
+    }
 }
