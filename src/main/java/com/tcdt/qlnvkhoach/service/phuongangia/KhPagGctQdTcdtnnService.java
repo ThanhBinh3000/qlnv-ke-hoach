@@ -105,7 +105,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         KhPagGctQdTcdtnn save = khPagGctQdTcdtnnRepository.save(data);
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
-        if (req.getPagType().equals("LT")) {
+        if (!req.getLoaiVthh().startsWith("02")) {
             List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
             });
             if (listThongTinGiaTongHop != null) {
@@ -114,7 +114,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
                 });
             }
             khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
-        } else if (req.getPagType().equals("VT")) {
+        } else {
             List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
             });
             if (listThongTinGiaDeXuat != null) {
@@ -124,7 +124,6 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             }
             khPagTtChungRepository.saveAll(listThongTinGiaDeXuat);
         }
-
         return save;
     }
 
@@ -151,7 +150,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         khLtPagTongHopCTietRepository.deleteAllByQdTcdtnnId(data.getId());
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
-        if (req.getPagType().equals("LT")) {
+        if (!req.getLoaiVthh().startsWith("02")) {
             List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
             });
             if (listThongTinGiaTongHop != null) {
@@ -160,7 +159,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
                 });
             }
             khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
-        } else if (req.getPagType().equals("VT")) {
+        } else {
             List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
             });
             if (listThongTinGiaDeXuat != null) {
