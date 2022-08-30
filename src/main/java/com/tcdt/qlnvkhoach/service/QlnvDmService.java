@@ -156,7 +156,6 @@ public class QlnvDmService {
 	}
 
 
-//	@Cacheable(value = "dmTchuanCluongHdr", key = "#maLoai", unless = "#result==null")
 	public String  getTieuChuanCluongByMaLoaiVthh(String maLoai) {
 		String tentieuChuanCluong = null;
 		try {
