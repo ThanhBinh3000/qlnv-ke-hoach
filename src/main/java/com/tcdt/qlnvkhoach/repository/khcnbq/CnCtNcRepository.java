@@ -25,7 +25,7 @@ public interface CnCtNcRepository extends JpaRepository<CnCtNc, Long> {
 //            + "AND (:ngayThDen IS NULL OR PAG_TH.NGAY_TONG_HOP <= TO_DATE(:ngayThDen,'yyyy-MM-dd'))"
 //            + "AND (:noiDung IS NULL  OR LOWER(PAG_TH.NOI_DUNG) LIKE LOWER(CONCAT(CONCAT('%',:noiDung),'%' ) ) )"
 //            , nativeQuery = true)
-    Page<CnCtNc> selectPage(String maDt, String tenDt, String capDt, String trangThai, Integer namTu, Integer namDen, Pageable pageable);
+//    Page<CnCtNc> selectPage(String maDt, String tenDt, String capDt, String trangThai, Integer namTu, Integer namDen, Pageable pageable);
 
     List<CnCtNc> findByIdIn(List<Long> ids);
 
