@@ -178,7 +178,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         if (!data.isPresent()) {
             throw new Exception("Không tìm thấy dữ liệu");
         }
-        List<KhPagQdTcdtnnCtiet> thongTinGia = khPagQdTcdtnnCtietRepository.findAllByQdTcdtnnId(Long.valueOf(id));
+        List<KhPagTongHopCTiet> thongTinGia = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(Long.valueOf(id));
         data.get().setThongTinGia(thongTinGia);
         return data.get();
     }
@@ -263,10 +263,10 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     public List<KhPagGctQdTcdtnn> listQdgTcdtnn(KhPagGctQdTcdtnnSearchReq req) throws Exception {
         List<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.dsToTrinhTh(req.getTrangThai(), req.getPagType().equals("VT") ? "04" : null);
         List<Long> qdTcdtnnIds = data.stream().map(KhPagGctQdTcdtnn::getId).collect(Collectors.toList());
-        List<KhPagQdTcdtnnCtiet> lChitiets = khPagQdTcdtnnCtietRepository.findAllByQdTcdtnnIdIn(qdTcdtnnIds);
+        List<KhPagTongHopCTiet> lChitiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnIdIn(qdTcdtnnIds);
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String, String> mapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
-        Map<Long, List<KhPagQdTcdtnnCtiet>> mapListChitiet = lChitiets.stream().collect(Collectors.groupingBy(item -> item.getQdTcdtnnId()));
+        Map<Long, List<KhPagTongHopCTiet>> mapListChitiet = lChitiets.stream().collect(Collectors.groupingBy(item -> item.getQdTcdtnnId()));
         data.forEach(item -> {
             item.setThongTinGia(mapListChitiet.get(item.getId()));
             item.setTenLoaiGia(mapLoaiGia.get(item.getLoaiGia()));

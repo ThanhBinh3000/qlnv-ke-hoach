@@ -301,7 +301,6 @@ public class KhPagQuyetDinhBtcService extends BaseService {
     }
     public List<KhPagTtChung> DsToTrinhDeXuatChiTietVt(List<Long> ids) throws Exception {
         List<KhPagTtChung> data = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
-
         List<String> listMaVatTu = data.stream().map(KhPagTtChung::getCloaiVthh).collect(Collectors.toList());
         Map<String, QlnvDmVattu> mapVatTu = qlnvDmService.getMapVatTu(listMaVatTu);
 //    List<String> maDvis = data.stream().map(KhPagTtChung::getMaDvi).collect(Collectors.toList());
