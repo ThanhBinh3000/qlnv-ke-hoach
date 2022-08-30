@@ -59,4 +59,6 @@ public class KhPagGctQdTcdtnnReq{
 
     private String pagType;
 
+    private String moTaHangHoa;
+
 }

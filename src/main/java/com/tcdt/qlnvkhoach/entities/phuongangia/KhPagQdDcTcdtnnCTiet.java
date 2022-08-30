@@ -41,6 +41,12 @@ public class KhPagQdDcTcdtnnCTiet {
     @Column(name = "DON_GIA_VAT")
     private BigDecimal donGiaVat;
 
+    @Column(name = "DON_GIA_BTC")
+    private BigDecimal donGiaBtc;
+
+    @Column(name = "DON_GIA_VAT_BTC")
+    private BigDecimal donGiaVatBtc;
+
     @Column(name = "QD_DC_TCDTNN_ID")
     private Long qdDcTcdtnnId;
 
