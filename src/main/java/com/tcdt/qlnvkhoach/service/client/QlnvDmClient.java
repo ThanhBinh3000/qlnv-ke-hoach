@@ -38,4 +38,8 @@ public interface QlnvDmClient {
 	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
 	public ResponseEntity<String> getDanhMucChung(@PathVariable("loai") String loai);
 
+	@GetMapping(PathClientConstants.URL_DM_TCHUAN_HDR)
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getTchuanCluong(@PathVariable("maHh") String loai);
+
 }
