@@ -25,7 +25,6 @@ import java.util.stream.StreamSupport;
 
 @Service
 public abstract class BaseService {
-
     @Autowired
     private com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository QlnvDmDonviRepository;
 

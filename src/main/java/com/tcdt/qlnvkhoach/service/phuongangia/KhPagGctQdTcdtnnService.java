@@ -265,7 +265,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     }
 
     public List<KhPagGctQdTcdtnn> listQdgTcdtnn(KhPagGctQdTcdtnnSearchReq req) throws Exception {
-        List<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.dsToTrinhTh(req.getTrangThai(), req.getPagType().equals("VT") ? "04" : null);
+        List<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.dsToTrinhTh(req.getTrangThai(), req.getPagType().equals("VT") ? "02" : null);
         List<Long> qdTcdtnnIds = data.stream().map(KhPagGctQdTcdtnn::getId).collect(Collectors.toList());
         List<KhPagTongHopCTiet> lChitiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnIdIn(qdTcdtnnIds);
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();

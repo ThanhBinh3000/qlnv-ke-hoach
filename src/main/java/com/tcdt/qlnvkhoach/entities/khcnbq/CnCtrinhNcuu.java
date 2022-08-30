@@ -13,14 +13,14 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = CnCtNc.TABLE_NAME)
+@Table(name = CnCtrinhNcuu.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CnCtNc extends BaseEntity implements Serializable {
+public class CnCtrinhNcuu extends BaseEntity implements Serializable {
 
     public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU";
 
@@ -88,8 +88,8 @@ public class CnCtNc extends BaseEntity implements Serializable {
     private String loai;
 
     @Transient
-    private List<CnCtNcCanCu> cnCtNcCanCus;
+    private List<CnCtrinhNcuuCanCu> cnCtrinhNcuuCanCuses;
 
     @Transient
-    private List<CnCtNcTienDo> cnCtNcTienDos;
+    private List<CnCtrinhNcuuTienDo> cnCtrinhNcuuTienDos;
 }
