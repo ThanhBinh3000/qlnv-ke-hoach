@@ -152,14 +152,14 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         //lưu thong tin giá
         String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (req.getPagType().equals("LT")) {
-            List<KhPagQdTcdtnnCtiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagQdTcdtnnCtiet>>() {
+            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
             });
             if (listThongTinGiaTongHop != null) {
                 listThongTinGiaTongHop.forEach(s -> {
                     s.setQdTcdtnnId(data.getId());
                 });
             }
-            khPagQdTcdtnnCtietRepository.saveAll(listThongTinGiaTongHop);
+            khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
         } else if (req.getPagType().equals("VT")) {
             List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
             });
@@ -187,7 +187,11 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     public void delete(Long id) {
         Optional<KhPagGctQdTcdtnn> optional = khPagGctQdTcdtnnRepository.findById(id);
         if (!optional.isPresent()) throw new UnsupportedOperationException("id không tồn tại");
-        khPagQdTcdtnnCtietRepository.deleteAllByQdTcdtnnId(id);
+        List<KhPagTongHopCTiet> listCTiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(id);
+        listCTiets.forEach(item -> {
+            item.setQdTcdtnnId(null);
+        });
+        khLtPagTongHopCTietRepository.saveAll(listCTiets);
         khPagGctQdTcdtnnRepository.delete(optional.get());
     }
 
