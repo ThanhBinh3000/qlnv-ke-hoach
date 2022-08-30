@@ -270,8 +270,10 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         List<KhPagTongHopCTiet> lChitiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnIdIn(qdTcdtnnIds);
         Map<String, String> mapHh = qlnvDmService.getListDanhMucHangHoa();
         Map<String, String> mapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+//        Map<String, String> mapLoaiGia = qlnvDmService.ge("LOAI_GIA");
         Map<Long, List<KhPagTongHopCTiet>> mapListChitiet = lChitiets.stream().collect(Collectors.groupingBy(item -> item.getQdTcdtnnId()));
         data.forEach(item -> {
+            item.setTenTchuanCluong(qlnvDmService.getTieuChuanCluongByMaLoaiVthh("0101"));
             item.setThongTinGia(mapListChitiet.get(item.getId()));
             item.setTenLoaiGia(mapLoaiGia.get(item.getLoaiGia()));
             item.setTenLoaiVthh(mapHh.get(item.getTenLoaiVthh()));
