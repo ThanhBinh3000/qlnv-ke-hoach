@@ -7,21 +7,19 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = CnCtNcTienDo.TABLE_NAME)
+@Table(name = CnCtrinhNcuuCanCu.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CnCtNcTienDo extends BaseEntity implements Serializable {
+public class CnCtrinhNcuuCanCu extends BaseEntity implements Serializable {
 
-    public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU_TIENDO";
+    public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU_CANCU";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,21 +28,6 @@ public class CnCtNcTienDo extends BaseEntity implements Serializable {
 
     @Column(name="NOI_DUNG")
     private String noiDung;
-
-    @Column(name="SAN_PHAM")
-    private String sanPham;
-
-    @Column(name="TU_NGAY")
-    private LocalDate tuNgay;
-
-    @Column(name="DEN_NGAY")
-    private LocalDate denNgay;
-
-    @Column(name="NGUOI_TH")
-    private String nguoiTh;
-
-    @Column(name="TRANG_THAI")
-    private String trangThai;
 
     @Column(name="CN_CT_NC_ID")
     private Long cnCtNcId;
