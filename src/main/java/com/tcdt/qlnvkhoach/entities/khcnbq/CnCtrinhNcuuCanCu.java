@@ -3,6 +3,8 @@ package com.tcdt.qlnvkhoach.entities.khcnbq;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tcdt.qlnvkhoach.entities.BaseEntity;
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,7 +21,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CnCtrinhNcuuCanCu extends BaseEntity implements Serializable {
 
-    public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU_CANCU";
+    public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU_CC";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +33,7 @@ public class CnCtrinhNcuuCanCu extends BaseEntity implements Serializable {
 
     @Column(name="CN_CT_NC_ID")
     private Long cnCtNcId;
+
+    @Transient
+    private FileDinhKemChung fileDinhKem;
 }
