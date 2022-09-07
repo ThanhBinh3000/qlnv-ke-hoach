@@ -88,7 +88,7 @@ public class CnCtrinhNcuuService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         CnCtrinhNcuu ctrinhNcuu = mapper.map(req, CnCtrinhNcuu.class);
-        ctrinhNcuu.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
+        ctrinhNcuu.setTrangThai(Contains.DUTHAO);
         ctrinhNcuu = cnCtrinhNcuuRepository.save(ctrinhNcuu);
         CnCtrinhNcuu finalCnCtrinhNcuu = ctrinhNcuu;
         //Save can cu

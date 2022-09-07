@@ -23,7 +23,7 @@ public class KhQdBtcBoNganhReq {
     @NotNull(message = "Không được để trống")
     String soQd;
 
-    Long idTtcpBoNganh;
+    String idTtcpBoNganh;
 
     @NotNull(message = "Không được để trống")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Contains.FORMAT_DATE_STR)
