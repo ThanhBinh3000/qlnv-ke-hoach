@@ -112,43 +112,34 @@ public class KhQdTtcpService {
     }
 
     public void saveBoNgayCtiet(KhQdTtcpBoNganhReq boNganhReq,KhQdTtcpBoNganh bNganhSaved) {
-        if (boNganhReq.getMuaTangList() != null) {
-            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getMuaTangList()){
-                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-                cTiet.setId(null);
-                cTiet.setIdBoNganh(bNganhSaved.getId());
-                cTiet.setType(Contains.KH_MUA_TANG);
-                khQdTtcpBoNganhCtietRepository.save(cTiet);
-            }
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getMuaTangList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_MUA_TANG);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
         }
-        if (boNganhReq.getXuatGiamList() != null) {
-            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatGiamList()){
-                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-                cTiet.setId(null);
-                cTiet.setIdBoNganh(bNganhSaved.getId());
-                cTiet.setType(Contains.KH_XUAT_GIAM);
-                khQdTtcpBoNganhCtietRepository.save(cTiet);
-            }
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatGiamList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_XUAT_GIAM);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
         }
-        if (boNganhReq.getXuatBanList() != null){
-            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatBanList()){
-                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-                cTiet.setId(null);
-                cTiet.setIdBoNganh(bNganhSaved.getId());
-                cTiet.setType(Contains.KH_XUAT_BAN);
-                khQdTtcpBoNganhCtietRepository.save(cTiet);
-            }
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatBanList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_XUAT_BAN);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
         }
-       if (boNganhReq.getLuanPhienList() != null) {
-           for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getLuanPhienList()){
-               KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-               cTiet.setId(null);
-               cTiet.setIdBoNganh(bNganhSaved.getId());
-               cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
-               khQdTtcpBoNganhCtietRepository.save(cTiet);
-           }
-       }
-
+        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getLuanPhienList()){
+            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+            cTiet.setId(null);
+            cTiet.setIdBoNganh(bNganhSaved.getId());
+            cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
+            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        }
     }
 
     public <T> void updateObjectToObject(T source, T objectEdit) throws JsonMappingException {
