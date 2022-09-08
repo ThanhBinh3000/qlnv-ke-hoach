@@ -93,7 +93,7 @@ public class KhLtTongHopPagService extends BaseService {
     }
 
     public KhPagTongHop tongHopData(KhLtPagTongHopFilterReq objReq) throws Exception {
-        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getCloaiVthh(), objReq.getNamTongHop(), objReq.getLoaiGia(), Contains.convertDateToString(objReq.getNgayDxTu()), Contains.convertDateToString(objReq.getNgayDxDen()), objReq.getType(), objReq.getMaDvis());
+        List<KhPhuongAnGia> listPagTH = khLtPhuongAnGiaRepository.listTongHop(objReq.getLoaiVthh(), objReq.getCloaiVthh(), objReq.getNamTongHop(), objReq.getLoaiGia(), Contains.convertDateToString(objReq.getNgayDxTu()), Contains.convertDateToString(objReq.getNgayDxDen()), objReq.getType(), objReq.getMaDvis(), Contains.CHUA_TH, Contains.DADUYET_LDC);
         if (listPagTH.isEmpty()) {
             throw new Exception("Không tìm thấy dữ liệu tổng hợp");
         }
@@ -181,6 +181,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setTrangThaiTt(Contains.DUTHAO);
         pagTH.setType(req.getType());
         pagTH.setGhiChu(req.getGhiChu());
+        pagTH.setMoTaHangHoa(req.getMoTaHangHoa());
         pagTH.setNoiDung(req.getNoiDung());
         pagTH.setLDonVi(String.join(",", req.getMaDvis()));
         pagTH.setNgayDxTu(Instant.ofEpochMilli(req.getNgayDxTu().getTime())
@@ -235,6 +236,7 @@ public class KhLtTongHopPagService extends BaseService {
         pagTH.setTrangThaiTh(Contains.DATAOTOTRINH);
         pagTH.setTrangThaiTt(req.getTrangThaiTt());
         pagTH.setTtNgayKy(req.getTtNgayKy());
+        pagTH.setMoTaHangHoa(req.getMoTaHangHoa());
         pagTH.setQdGtdttBtc(req.getType().equals("GCT") ? req.getQdGtdttBtc() : null);
         return khLtPagTongHopRepository.save(pagTH);
     }

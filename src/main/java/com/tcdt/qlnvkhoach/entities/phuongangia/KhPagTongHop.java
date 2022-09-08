@@ -36,7 +36,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "SO_TT")
     private String soTT;
 
-    @Column(name="TRICH_YEU")
+    @Column(name = "TRICH_YEU")
     private String trichYeu;
 
     @Column(name = "NGAY_TONG_HOP")
@@ -45,7 +45,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "NOI_DUNG")
     private String noiDung;
 
-    @Column(name="NAM_TONG_HOP")
+    @Column(name = "NAM_TONG_HOP")
     private Long namTongHop;
 
     @Column(name = "LOAI_VTHH")
@@ -54,7 +54,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Transient
     private String tenLoaiVthh;
 
-    @Column(name="CLOAI_VTHH")
+    @Column(name = "CLOAI_VTHH")
     private String cloaiVthh;
 
     @Transient
@@ -66,59 +66,62 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Transient
     private String tenLoaiGia;
 
-    @Column(name="TRANG_THAI_TT")
+    @Column(name = "TRANG_THAI_TT")
     private String trangThaiTt;
 
     @Transient
     private String tenTrangThaiTt;
 
-    @Column(name="TRANG_THAI_TH")
+    @Column(name = "TRANG_THAI_TH")
     private String trangThaiTh;
 
     @Transient
     private String tenTrangThaiTh;
 
-    @Column(name="GIA_KS_TT_TU")
+    @Column(name = "GIA_KS_TT_TU")
     private BigDecimal giaKsTtTu;
 
-    @Column(name="GIA_KS_TT_DEN")
+    @Column(name = "GIA_KS_TT_DEN")
     private BigDecimal giaKsTtDen;
 
-    @Column(name="GIA_KS_TT_VAT_TU")
+    @Column(name = "GIA_KS_TT_VAT_TU")
     private BigDecimal giaKsTtVatTu;
 
-    @Column(name="GIA_KS_TT_VAT_DEN")
+    @Column(name = "GIA_KS_TT_VAT_DEN")
     private BigDecimal giaKsTtVatDen;
 
-    @Column(name="GIA_TD_TU")
+    @Column(name = "GIA_TD_TU")
     private BigDecimal giaTdTu;
 
-    @Column(name="GIA_TD_DEN")
+    @Column(name = "GIA_TD_DEN")
     private BigDecimal giaTdDen;
 
-    @Column(name="GIA_TD_VAT_TU")
+    @Column(name = "GIA_TD_VAT_TU")
     private BigDecimal giaTdVatTu;
 
-    @Column(name="GIA_TD_VAT_DEN")
+    @Column(name = "GIA_TD_VAT_DEN")
     private BigDecimal giaTdVatDen;
 
-    @Column(name="GIA_DE_NGHI_TU")
+    @Column(name = "GIA_DE_NGHI_TU")
     private BigDecimal giaDnTu;
 
-    @Column(name="GIA_DE_NGHI_DEN")
+    @Column(name = "GIA_DE_NGHI_DEN")
     private BigDecimal giaDnDen;
 
-    @Column(name="GIA_DE_NGHI_VAT_TU")
+    @Column(name = "GIA_DE_NGHI_VAT_TU")
     private BigDecimal giaDnVatTu;
 
-    @Column(name="GIA_DE_NGHI_VAT_DEN")
+    @Column(name = "GIA_DE_NGHI_VAT_DEN")
     private BigDecimal giaDnVatDen;
 
-    @Column(name="GHI_CHU")
+    @Column(name = "GHI_CHU")
     private String ghiChu;
 
     @Transient
     private List<KhPagTongHopCTiet> pagChiTiets = new ArrayList<>();
+
+    @Transient
+    private List<KhPagTongHopCTiet> thongTinGia = new ArrayList<>();
 
     @Column(name = "MA_DVI")
     private String maDvi;
@@ -126,7 +129,7 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Column(name = "CAP_DVI")
     private String capDvi;
 
-    @Column(name = "SO_TO_TRINH",unique = true)
+    @Column(name = "SO_TO_TRINH", unique = true)
     private String soToTrinh;
 
     /**
@@ -159,18 +162,22 @@ public class KhPagTongHop extends BaseEntity implements Serializable {
     @Transient
     private List<String> maDvis;
 
-    @Column(name="QD_GTDTT_BTC")
+    @Column(name = "QD_GTDTT_BTC")
     private String qdGtdttBtc;
 
-    @Column(name="TT_LY_DO_TU_CHOI")
+    @Column(name = "TT_LY_DO_TU_CHOI")
     private String ttLyDoTuChoi;
 
-    @Column(name="TT_NGUOI_PHE_DUYET")
+    @Column(name = "TT_NGUOI_PHE_DUYET")
     private Long ttNguoiPheDuyet;
 
-    @Column(name="TT_NGUOI_GUI_DUYET")
+    @Column(name = "TT_NGUOI_GUI_DUYET")
     private Long ttNguoiGuiDuyet;
 
-    @Column(name="TT_NGAY_KY")
+    @Column(name = "TT_NGAY_KY")
     private LocalDate ttNgayKy;
+
+    @Column(name = "MO_TA_HANG_HOA")
+    private String moTaHangHoa;
+
 }

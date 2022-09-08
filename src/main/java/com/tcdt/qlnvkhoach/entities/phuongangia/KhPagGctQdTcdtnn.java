@@ -88,6 +88,9 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     @Column(name="NGAY_PDUYET ")
     private Date ngayPduyet;
 
+    @Column(name="LASTEST")
+    private Integer lastest;
+
     @Transient
     String tenTrangThai;
 
@@ -104,10 +107,8 @@ public class KhPagGctQdTcdtnn extends BaseEntity implements Serializable {
     String tenDvi;
 
     @Transient
-    private BigDecimal giaQd;
+    private List<KhPagTongHopCTiet> thongTinGia;
 
-    @Transient
-    private BigDecimal giaQdVat;
-
-
+    @Column(name = "MO_TA_HANG_HOA")
+    private String moTaHangHoa;
 }

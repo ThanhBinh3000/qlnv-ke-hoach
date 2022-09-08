@@ -63,6 +63,9 @@ public class KhPagTtChung implements Serializable {
     @Column(name = "QD_BTC_ID")
     private Long qdBtcId;
 
+    @Column(name = "QD_TCDTNN_ID")
+    private Long qdTcdtnnId;
+
     @Transient
     private String tenCloaiVthh;
 }

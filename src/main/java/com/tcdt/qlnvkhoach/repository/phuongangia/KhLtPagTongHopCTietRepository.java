@@ -12,6 +12,10 @@ public interface KhLtPagTongHopCTietRepository extends JpaRepository<KhPagTongHo
 	List<KhPagTongHopCTiet> findByIdIn(List<Long> ids);
 	List<KhPagTongHopCTiet> findByPagThIdIn(List<Long> ids);
 
+	List<KhPagTongHopCTiet> findAllByQdTcdtnnId(Long idQd);
+
+	List<KhPagTongHopCTiet> findAllByQdTcdtnnIdIn(List<Long> idsQd);
+
 	@Transactional
 	void deleteAllByQdTcdtnnId(Long qdTcdtnnId);
 

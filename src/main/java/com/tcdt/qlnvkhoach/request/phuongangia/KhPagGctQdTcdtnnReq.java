@@ -1,6 +1,5 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
-import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHop;
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -47,7 +45,6 @@ public class KhPagGctQdTcdtnnReq{
 
     private String tchuanCluong;
 
-    @NotNull(message = "Không được để trống")
     private String trichYeu;
 
     private String ghiChu;
@@ -58,7 +55,10 @@ public class KhPagGctQdTcdtnnReq{
 
     private BigDecimal giaMtdbttVatBtc;
 
-    private List<KhPagTongHopCTiet> thongTinGia;
+    private List<Object> thongTinGia;
 
+    private String pagType;
+
+    private String moTaHangHoa;
 
 }

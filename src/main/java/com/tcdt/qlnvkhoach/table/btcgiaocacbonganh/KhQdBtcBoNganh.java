@@ -19,7 +19,7 @@ public class KhQdBtcBoNganh implements Serializable {
     String soQd;
     @Temporal(TemporalType.DATE)
     Date ngayQd;
-    Long idTtcpBoNganh;
+    String idTtcpBoNganh;
     Integer namQd;
     String trichYeu;
     Date ngayTao;

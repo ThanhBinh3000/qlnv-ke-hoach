@@ -65,6 +65,17 @@ public class KhPagTongHopCTiet {
     @Column(name = "TRANG_THAI")
     private String trangThai;
 
+    @Column(name = "GIA_QD_TCDTNN")
+    private BigDecimal giaQdTcdtnn;
+
+    @Column(name = "GIA_QD_VAT_TCDTNN")
+    private BigDecimal giaQdVatTcdtnn;
     @Transient
     private String tenTrangThai;
+
+    @Transient
+    private BigDecimal giaTdttBtc;
+
+    @Transient
+    private BigDecimal giaTdttBtcVat;
 }

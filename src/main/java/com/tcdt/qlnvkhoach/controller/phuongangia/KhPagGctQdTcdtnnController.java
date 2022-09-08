@@ -8,6 +8,7 @@ import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
+import com.tcdt.qlnvkhoach.service.phuongangia.KhLtPagService;
 import com.tcdt.qlnvkhoach.service.phuongangia.KhPagGctQdTcdtnnService;
 import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.PathConstants;
@@ -32,6 +33,8 @@ import java.util.Map;
 @Api(tags = "Kế hoạch, đề xuất phương án giá")
 public class KhPagGctQdTcdtnnController extends BaseController {
 
+    @Autowired
+    private KhLtPagService khLtPagService;
     @Autowired
     private KhPagGctQdTcdtnnService khPagGctQdTcdtnnService;
 
@@ -170,10 +173,26 @@ public class KhPagGctQdTcdtnnController extends BaseController {
 
     @ApiOperation(value = "Danh sách tờ trình đề xuất cho quyết định TCDTNN", response = List.class)
     @PostMapping(value= PathConstants.URL_QD_GIA_TCDTNN + "/list-to-trinh", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Resp> DsToTrinhDeXuat(@RequestBody KhLtPagTongHopSearchReq objReq) {
+    public final ResponseEntity<Resp> dsToTrinhDeXuat(@RequestBody KhLtPagTongHopSearchReq objReq) {
         Resp resp = new Resp();
         try {
-            resp.setData(khPagGctQdTcdtnnService.listToTrinh(objReq));
+            resp.setData(khLtPagService.dsSoDeXuat(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Danh sách quyết định giá TCDTNN", response = List.class)
+    @PostMapping(value= PathConstants.URL_QD_GIA_TCDTNN + "/list-qd-tcdtnn", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> dsToTrinhQdgTcdtnn(@RequestBody KhPagGctQdTcdtnnSearchReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khPagGctQdTcdtnnService.listQdgTcdtnn(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
