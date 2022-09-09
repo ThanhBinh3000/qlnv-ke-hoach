@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.repository.giaokehoachvondaunam;
 
+import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
 import com.tcdt.qlnvkhoach.table.btcgiaotcdt.KhQdBtcTcdt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhQdBtcTcdtRepository extends CrudRepository<KhQdBtcTcdt,Long> {
@@ -22,7 +24,8 @@ public interface KhQdBtcTcdtRepository extends CrudRepository<KhQdBtcTcdt,Long> 
             , nativeQuery = true)
     Page<KhQdBtcTcdt> selectPage(Integer namQd, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, String trangThai,  Pageable pageable);
 
-
+    Optional<KhQdBtcTcdt> findByNamQd(Integer namQd);
+    Optional<KhQdBtcTcdt> findBySoQd (String soQd);
     @Transactional
     @Modifying
     void deleteAllByIdIn(List<Long> ids);

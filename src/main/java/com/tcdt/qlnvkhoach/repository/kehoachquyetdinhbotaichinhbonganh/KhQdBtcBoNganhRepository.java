@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh;
 
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhQdBtcBoNganhRepository extends CrudRepository<KhQdBtcBoNganh, Long> {
@@ -21,6 +23,9 @@ public interface KhQdBtcBoNganhRepository extends CrudRepository<KhQdBtcBoNganh,
             +"AND (:trangThai IS NULL OR QD.TRANG_THAI = :trangThai )"
             , nativeQuery = true)
     Page<KhQdBtcBoNganh> selectPage(Integer namQd, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, String trangThai,  Pageable pageable);
+
+    Optional<KhQdBtcBoNganh> findByNamQd(Integer namQd);
+    Optional<KhQdBtcBoNganh> findBySoQd (String soQd);
 
     @Transactional
     @Modifying
