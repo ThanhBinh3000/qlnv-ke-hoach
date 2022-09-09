@@ -72,7 +72,7 @@ public class KhQdTtcpService {
                 objReq.getTrangThai(),
                 pageable);
         data.getContent().forEach( f -> {
-                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));
         });
         return data;
     }
@@ -208,6 +208,7 @@ public class KhQdTtcpService {
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhQdTtcpBoNganh> listBoNganh = khQdTtcpBoNganhRepository.findAllByIdQdTtcp(data.getId());
         data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_QD_TTCP")));
+        data.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(data.getTrangThai()));
 
         for(KhQdTtcpBoNganh boNganh : listBoNganh){
             boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
@@ -297,7 +298,7 @@ public class KhQdTtcpService {
 
         String status = stReq.getTrangThai() + optional.get().getTrangThai();
         switch (status) {
-            case Contains.BAN_HANH + Contains.MOI_TAO:
+            case Contains.BAN_HANH + Contains.DUTHAO:
                 optional.get().setNguoiPduyet(userInfo.getUsername());
                 optional.get().setNgayPduyet(new Date());
                 break;

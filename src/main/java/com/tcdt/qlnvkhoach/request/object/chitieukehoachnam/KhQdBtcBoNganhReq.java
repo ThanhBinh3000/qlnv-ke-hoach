@@ -18,6 +18,7 @@ public class KhQdBtcBoNganhReq {
     Long id;
 
     @NotNull(message = "Không được để trống")
+
     Integer namQd;
 
     @NotNull(message = "Không được để trống")

@@ -52,6 +52,14 @@ public class KhQdBtcTcdtService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
+        Optional<KhQdBtcTcdt> soQd = khQdBtcTcdtRepository.findBySoQd(objReq.getSoQd());
+        if(soQd.isPresent()){
+            throw new Exception("Số quyết định đã tồn tại");
+        }
+        Optional<KhQdBtcTcdt> namQd = khQdBtcTcdtRepository.findByNamQd(objReq.getNamQd());
+        if(namQd.isPresent()){
+            throw new Exception("Năm "+objReq.getNamQd()+" đã tồn tại quyết định");
+        }
         KhQdBtcTcdt data=new ModelMapper().map(objReq,KhQdBtcTcdt.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
@@ -121,6 +129,12 @@ public class KhQdBtcTcdtService {
         Optional<KhQdBtcTcdt> qOptional=khQdBtcTcdtRepository.findById(objReq.getId());
         if (!qOptional.isPresent())
             throw new UnsupportedOperationException("Id không tồn tại");
+        Optional<KhQdBtcTcdt> namQd = khQdBtcTcdtRepository.findByNamQd(objReq.getNamQd());
+        if (namQd.isPresent()){
+            if(!namQd.get().getId().equals(objReq.getId())){
+                throw new Exception("Số quyết định " + objReq.getSoQd() + " đã tồn tại");
+            }
+        }
         KhQdBtcTcdt data=qOptional.get();
         KhQdBtcTcdt dataMap= new ModelMapper().map(objReq,KhQdBtcTcdt.class);
         Contains.updateObjectToObject(data,dataMap);
@@ -147,6 +161,7 @@ public class KhQdBtcTcdtService {
         List<KhQdBtcTcdtCtiet> listChiTiet = khQdBtcTcdtCtietRepository.findAllByIdQdBtcTcdt(data.getId());
 
         data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_QD_BTC_TCDT")));
+        data.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(data.getTrangThai()));
         listChiTiet.forEach( item -> {
             item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
             item.setTenVthh(hashMapHh.get(item.getLoaiVthh()));
@@ -183,7 +198,7 @@ public class KhQdBtcTcdtService {
                 objReq.getTrangThai(),
                 pageable);
         data.getContent().forEach( f -> {
-                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));
         });
         return data;
     }

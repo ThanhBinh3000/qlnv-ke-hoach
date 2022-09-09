@@ -31,6 +31,8 @@ public class KhQdBtcBoNganh implements Serializable {
     String tenTrangThai;
     String nguoiPduyet;
     Date ngayPduyet;
+    @Transient
+    String tenBoNganh;
 
 
 

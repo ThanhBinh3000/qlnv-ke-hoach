@@ -14,6 +14,8 @@ import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhCtietReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
+import com.tcdt.qlnvkhoach.service.BaseService;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
@@ -38,7 +40,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class KhQdBtcBoNganhService {
+public class KhQdBtcBoNganhService extends BaseService {
     @Autowired
     private KhQdBtcBoNganhRepository khQdBtcBoNganhRepository;
 
@@ -47,6 +49,9 @@ public class KhQdBtcBoNganhService {
 
     @Autowired
     private FileDinhKemService fileDinhKemService;
+
+    @Autowired
+    private QlnvDmService qlnvDmService;
 
     public Iterable<KhQdBtcBoNganh> findAll() {
         return khQdBtcBoNganhRepository.findAll();
@@ -62,8 +67,10 @@ public class KhQdBtcBoNganhService {
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
                 pageable);
+        Map<String, String> hasMApTenBnganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
         data.getContent().forEach( f -> {
-                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));
+                f.setTenBoNganh(StringUtils.isEmpty(f.getIdTtcpBoNganh()) ? null : hasMApTenBnganh.get(f.getIdTtcpBoNganh()));
         });
         return data;
     }
@@ -73,6 +80,14 @@ public class KhQdBtcBoNganhService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw  new Exception("Bad request.");
+        Optional<KhQdBtcBoNganh> namQd= khQdBtcBoNganhRepository.findByNamQd(objReq.getNamQd());
+        if(namQd.isPresent()){
+            throw new Exception("Năm "+objReq.getNamQd()+" đã tồn tại quyết định");
+        }
+        Optional<KhQdBtcBoNganh> soQd= khQdBtcBoNganhRepository.findBySoQd(objReq.getSoQd());
+        if (soQd.isPresent()){
+            throw new Exception("số quyết định đã tồn tại");
+        }
         KhQdBtcBoNganh data = new ModelMapper().map(objReq,KhQdBtcBoNganh.class);
         data.setNgayTao(new Date());
         data.setNguoiTao(userInfo.getUsername());
@@ -140,6 +155,12 @@ public class KhQdBtcBoNganhService {
         Optional<KhQdBtcBoNganh> qOptional=khQdBtcBoNganhRepository.findById(objReq.getId());
         if (!qOptional.isPresent())
             throw new UnsupportedOperationException("Id không tồn tại");
+        Optional<KhQdBtcBoNganh> soQd= khQdBtcBoNganhRepository.findBySoQd(objReq.getSoQd());
+        if (soQd.isPresent()){
+            if(!soQd.get().getId().equals(objReq.getId())){
+                throw new Exception("Số quyết định " + objReq.getSoQd() + " đã tồn tại");
+            }
+        }
         KhQdBtcBoNganh data=qOptional.get();
         KhQdBtcBoNganh dataMap=new ModelMapper().map(objReq,KhQdBtcBoNganh.class);
         updateObjectToObject(data,dataMap);
@@ -170,6 +191,7 @@ public class KhQdBtcBoNganhService {
         KhQdBtcBoNganh data = qOptional.get();
         List<KhQdBtcBoNganhCtiet> listBoNganh = khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(data.getId());
         data.setFileDinhkems(fileDinhKemService.search(data.getId(), Collections.singleton("KH_QD_BTC_BO_NGANH")));
+        data.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(data.getTrangThai()));
 
         if(listBoNganh.size() > 0){
             data.setMuaTangList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
@@ -223,8 +245,9 @@ public class KhQdBtcBoNganhService {
             objs[1]=dx.getSoQd();
             objs[2]=dx.getNamQd();
             objs[3]=dx.getNgayQd();
-            objs[4]=dx.getTrichYeu();
-            objs[5]=dx.getTenTrangThai();
+            objs[4]=dx.getTenBoNganh();
+            objs[5]=dx.getTrichYeu();
+            objs[6]=dx.getTenTrangThai();
             dataList.add(objs);
 
         }
