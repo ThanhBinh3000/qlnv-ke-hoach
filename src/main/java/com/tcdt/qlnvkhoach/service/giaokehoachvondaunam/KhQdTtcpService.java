@@ -72,7 +72,7 @@ public class KhQdTtcpService {
                 objReq.getTrangThai(),
                 pageable);
         data.getContent().forEach( f -> {
-                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));
         });
         return data;
     }
@@ -112,33 +112,41 @@ public class KhQdTtcpService {
     }
 
     public void saveBoNgayCtiet(KhQdTtcpBoNganhReq boNganhReq,KhQdTtcpBoNganh bNganhSaved) {
-        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getMuaTangList()){
-            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-            cTiet.setId(null);
-            cTiet.setIdBoNganh(bNganhSaved.getId());
-            cTiet.setType(Contains.KH_MUA_TANG);
-            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        if(boNganhReq.getMuaTangList() != null ) {
+            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getMuaTangList()){
+                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+                cTiet.setId(null);
+                cTiet.setIdBoNganh(bNganhSaved.getId());
+                cTiet.setType(Contains.KH_MUA_TANG);
+                khQdTtcpBoNganhCtietRepository.save(cTiet);
+            }
         }
-        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatGiamList()){
-            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-            cTiet.setId(null);
-            cTiet.setIdBoNganh(bNganhSaved.getId());
-            cTiet.setType(Contains.KH_XUAT_GIAM);
-            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        if (boNganhReq.getXuatGiamList()!=null) {
+            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatGiamList()){
+                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+                cTiet.setId(null);
+                cTiet.setIdBoNganh(bNganhSaved.getId());
+                cTiet.setType(Contains.KH_XUAT_GIAM);
+                khQdTtcpBoNganhCtietRepository.save(cTiet);
+            }
         }
-        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatBanList()){
-            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-            cTiet.setId(null);
-            cTiet.setIdBoNganh(bNganhSaved.getId());
-            cTiet.setType(Contains.KH_XUAT_BAN);
-            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        if (boNganhReq.getXuatBanList() != null) {
+            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getXuatBanList()){
+                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+                cTiet.setId(null);
+                cTiet.setIdBoNganh(bNganhSaved.getId());
+                cTiet.setType(Contains.KH_XUAT_BAN);
+                khQdTtcpBoNganhCtietRepository.save(cTiet);
+            }
         }
-        for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getLuanPhienList()){
-            KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
-            cTiet.setId(null);
-            cTiet.setIdBoNganh(bNganhSaved.getId());
-            cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
-            khQdTtcpBoNganhCtietRepository.save(cTiet);
+        if (boNganhReq.getLuanPhienList() != null ) {
+            for(KhQdTtcpBoNganhCtietReq ctietReq : boNganhReq.getLuanPhienList()){
+                KhQdTtcpBoNganhCTiet cTiet = new ModelMapper().map(ctietReq,KhQdTtcpBoNganhCTiet.class);
+                cTiet.setId(null);
+                cTiet.setIdBoNganh(bNganhSaved.getId());
+                cTiet.setType(Contains.KH_LUAN_PHIEN_DOI_HANG);
+                khQdTtcpBoNganhCtietRepository.save(cTiet);
+            }
         }
     }
 
@@ -200,6 +208,7 @@ public class KhQdTtcpService {
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhQdTtcpBoNganh> listBoNganh = khQdTtcpBoNganhRepository.findAllByIdQdTtcp(data.getId());
         data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_QD_TTCP")));
+        data.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(data.getTrangThai()));
 
         for(KhQdTtcpBoNganh boNganh : listBoNganh){
             boNganh.setTenBoNganh(hashMapBoNganh.get(boNganh.getMaBoNganh()));
@@ -289,7 +298,7 @@ public class KhQdTtcpService {
 
         String status = stReq.getTrangThai() + optional.get().getTrangThai();
         switch (status) {
-            case Contains.BAN_HANH + Contains.MOI_TAO:
+            case Contains.BAN_HANH + Contains.DUTHAO:
                 optional.get().setNguoiPduyet(userInfo.getUsername());
                 optional.get().setNgayPduyet(new Date());
                 break;

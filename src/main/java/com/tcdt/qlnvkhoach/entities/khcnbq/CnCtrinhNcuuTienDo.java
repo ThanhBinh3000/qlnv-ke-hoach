@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CnCtrinhNcuuTienDo extends BaseEntity implements Serializable {
 
-    public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU_TIENDO";
+    public static final String TABLE_NAME = "CN_CONGTRINH_NGHIENCUU_TD";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

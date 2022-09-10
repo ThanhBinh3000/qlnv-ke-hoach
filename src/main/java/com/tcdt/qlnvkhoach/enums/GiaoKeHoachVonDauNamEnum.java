@@ -4,7 +4,7 @@ public enum GiaoKeHoachVonDauNamEnum {
 
     DU_THAO("00", "Dự Thảo", "Dự Thảo"),
 
-    BAN_HANH("11", "Ban Hành", "Ban Hành"),
+    BAN_HANH("29", "Ban Hành", "Ban Hành"),
     ;
 
     private final String id;
@@ -30,6 +30,15 @@ public enum GiaoKeHoachVonDauNamEnum {
 
     public String getTrangThaiDuyet() {
         return trangThaiDuyet;
+    }
+
+    public static String getTentById(String id){
+        for (GiaoKeHoachVonDauNamEnum status : GiaoKeHoachVonDauNamEnum.values()) {
+            if (status.getId().equals(id))
+                return status.getTen();
+        }
+
+        return null;
     }
 
     public static String getTrangThaiDuyetById(String id){

@@ -39,6 +39,9 @@ public class CnCtrinhNcuu extends BaseEntity implements Serializable {
     @Column(name="CAP_DT")
     private String capDt;
 
+    @Transient
+    private String tenCapDt;
+
     @Column(name="NAM_TU")
     private Long namTu;
 
@@ -65,6 +68,9 @@ public class CnCtrinhNcuu extends BaseEntity implements Serializable {
 
     @Column(name="TRANG_THAI")
     private String trangThai;
+
+    @Transient
+    private String tenTrangThai;
 
     @Column(name="NGAY_NGHIEM_THU")
     private LocalDate ngayNghiemThu;
