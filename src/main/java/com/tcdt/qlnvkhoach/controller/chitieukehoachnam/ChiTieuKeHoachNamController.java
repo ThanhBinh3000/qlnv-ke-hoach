@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.controller.chitieukehoachnam;
 
 import com.tcdt.qlnvkhoach.controller.BaseController;
+import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
@@ -12,7 +13,9 @@ import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamExportService;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamService;
+import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdBtcTcdtService;
 import com.tcdt.qlnvkhoach.util.Constants;
+import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.scanner.Constant;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +51,9 @@ public class ChiTieuKeHoachNamController extends BaseController {
 
     @Autowired
     private ChiTieuKeHoachNamExportService chiTieuKeHoachNamExportSv;
+
+    @Autowired
+    private KhQdBtcTcdtService khQdBtcTcdtService;
 
     @ApiOperation(value = "Tạo mới Chỉ tiêu kế hoạch năm", response = List.class)
     @PostMapping
@@ -460,6 +467,42 @@ public class ChiTieuKeHoachNamController extends BaseController {
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Danh sách quyết định BTC giao TCDT", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/qd-btc-giao-tcdt/{namKh}")
+    public final ResponseEntity<Resp> getQdBtcGiaoTcdt(@PathVariable("namKh") Integer namKh) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khQdBtcTcdtService.getQdBtcTcdtByNam(namKh));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+
+    @ApiOperation(value = "Danh sách chỉ tiêu kế hoạch năm Tổng cục giao các cục", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/ct-kh-tc/{namKh}")
+    public final ResponseEntity<Resp> getChiTieuKeHoach(@PathVariable("namKh") Long namKh) {
+        Resp resp = new Resp();
+        try {
+            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh);
+            if(chiTieuKeHoachNam != null && chiTieuKeHoachNam.getTrangThai().equals(Contains.BAN_HANH)){
+                resp.setData(chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh));
+            }
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
         }
         return ResponseEntity.ok(resp);
     }
