@@ -74,8 +74,10 @@ public class KhQdBtcBoNganhService extends BaseService {
             f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
             f.setTenBoNganh(StringUtils.isEmpty(f.getIdTtcpBoNganh()) ? null : hasMApTenBnganh.get(f.getIdTtcpBoNganh()));
             List<KhQdBtcBoNganhCtiet> muaTangList = f.getMuaTangList();
-            for (KhQdBtcBoNganhCtiet tenLoaiChi : muaTangList) {
-                tenLoaiChi.setTenLoaiChi(hasMapNd.get(tenLoaiChi.getLoaiChi()));
+            if(muaTangList != null){
+                for (KhQdBtcBoNganhCtiet tenLoaiChi : muaTangList) {
+                    tenLoaiChi.setTenLoaiChi(hasMapNd.get(tenLoaiChi.getLoaiChi()));
+                }
             }
         });
         return data;
