@@ -210,10 +210,13 @@ public class KhQdBtcBoNganhService extends BaseService {
     }
 
     @Transactional
-    public void delete(Long ids){
+    public void delete(Long ids) throws Exception{
         Optional<KhQdBtcBoNganh> qOptional=khQdBtcBoNganhRepository.findById(ids);
         if (!qOptional.isPresent()){
             throw new UnsupportedOperationException("ID không tồn tại");
+        }
+        if (!qOptional.get().getTrangThai().equals(Contains.DUTHAO)){
+            throw new Exception("Chỉ được xóa quyết định ở trạng thái Dự thảo");
         }
         for (KhQdBtcBoNganhCtiet bNganh : khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(ids)){
             khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganh(bNganh.getId());
