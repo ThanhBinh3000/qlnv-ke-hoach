@@ -22,19 +22,21 @@ public class KhQdBtcBoNganh implements Serializable {
     String idTtcpBoNganh;
     Integer namQd;
     String trichYeu;
+    @Temporal(TemporalType.DATE)
     Date ngayTao;
     String nguoiTao;
+
+    @Temporal(TemporalType.DATE)
     Date ngaySua;
     String nguoiSua;
     String trangThai;
     @Transient
     String tenTrangThai;
     String nguoiPduyet;
+    @Temporal(TemporalType.DATE)
     Date ngayPduyet;
     @Transient
     String tenBoNganh;
-
-
 
     @Transient
     List<KhQdBtcBoNganhCtiet> muaTangList;

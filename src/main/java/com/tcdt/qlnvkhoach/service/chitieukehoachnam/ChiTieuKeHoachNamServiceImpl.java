@@ -36,6 +36,7 @@ import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmVattu;
 import com.tcdt.qlnvkhoach.util.Constants;
+import com.tcdt.qlnvkhoach.util.Contains;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -211,8 +212,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		chiTieuKeHoachNam.setFileDinhKems(fileDinhKems);
 
-		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
-		chiTieuKeHoachNam.setCanCus(canCus);
+//		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
+//		chiTieuKeHoachNam.setca(canCus);
 
 		return this.buildDetailResponse(chiTieuKeHoachNam, namKeHoach);
 	}
@@ -399,8 +400,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), ctkhnId, ChiTieuKeHoachNam.TABLE_NAME);
 		ctkhn.setFileDinhKems(fileDinhKems);
 
-		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
-		ctkhn.setCanCus(canCus);
+//		List<FileDinhKemChung> canCus = fileDinhKemService.saveListFileDinhKem(req.getCanCus(), ctkhnId, ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU);
+//		ctkhn.setCanCus(canCus);
 		return this.buildDetailResponse(ctkhn, namKeHoach);
 	}
 
@@ -528,17 +529,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request.");
-
 		ChiTieuKeHoachNam item = chiTieuKeHoachNamRepository.findByIdAndLoaiQuyetDinh(id, ChiTieuKeHoachEnum.QD.getValue());
 		if (item == null)
 			throw new Exception("Không tìm thấy dữ liệu.");
-
 		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định đã ban hành");
-		} else if (ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
+		} else if (ChiTieuKeHoachNamStatusEnum.CHO_DUYET_LDC.getId().equals(item.getTrangThai()) || ChiTieuKeHoachNamStatusEnum.CHO_DUYET_LDV.getId().equals(item.getTrangThai()) || ChiTieuKeHoachNamStatusEnum.CHO_DUYET_TP.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định trình duyệt");
 		}
-
 		return this.delete(item);
 	}
 
@@ -555,7 +553,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định đã ban hành");
-		} else if (ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(item.getTrangThai())) {
+		} else if (ChiTieuKeHoachNamStatusEnum.CHO_DUYET_TP.getId().equals(item.getTrangThai()) || ChiTieuKeHoachNamStatusEnum.CHO_DUYET_LDC.getId().equals(item.getTrangThai()) || ChiTieuKeHoachNamStatusEnum.CHO_DUYET_LDV.getId().equals(item.getTrangThai())) {
 			throw new Exception("Không thể xóa quyết định trình duyệt");
 		}
 
@@ -638,9 +636,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		ctkhn.setFileDinhKems(fileDinhKemService.search(ctkhn.getId(), Collections.singleton(ChiTieuKeHoachNam.TABLE_NAME)));
 
-		if (ChiTieuKeHoachEnum.QD.getValue().equals(ctkhn.getLoaiQuyetDinh())) {
-			ctkhn.setCanCus(fileDinhKemService.search(ctkhn.getId(), Collections.singleton(ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU)));
-		}
+//		if (ChiTieuKeHoachEnum.QD.getValue().equals(ctkhn.getLoaiQuyetDinh())) {
+//			ctkhn.setCanCus(fileDinhKemService.search(ctkhn.getId(), Collections.singleton(ChiTieuKeHoachNam.FILE_DINH_KEM_DATA_TYPE_CAN_CU)));
+//		}
 		ChiTieuKeHoachNamRes response = buildDetailResponse(ctkhn, namKeHoach);
 		addEmptyDataToExport(response, namKeHoach);
 		return response;
@@ -747,7 +745,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	private void updateStatusDxDc(ChiTieuKeHoachNam dc, Integer namKeHoach) {
 		if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equalsIgnoreCase(dc.getTrangThai()) ||
-				ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(dc.getTrangThai())) {
+				ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDC.getId().equalsIgnoreCase(dc.getTrangThai()) ||
+				ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDV.getId().equalsIgnoreCase(dc.getTrangThai()) ||
+				ChiTieuKeHoachNamStatusEnum.TU_CHOI_TP.getId().equalsIgnoreCase(dc.getTrangThai())) {
 
 			this.retrieveDataChiTieuKeHoachNam(dc);
 			List<KeHoachVatTu> khVts = dc.getKhVatTuList();
@@ -925,40 +925,28 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	}
 
 	public boolean updateStatus(StatusReq req, ChiTieuKeHoachNam chiTieuKeHoachNam, UserInfo userInfo) throws Exception {
-		String trangThai = chiTieuKeHoachNam.getTrangThai();
-		if (ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equals(trangThai))
-				return false;
-
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId());
-			chiTieuKeHoachNam.setNguoiGuiDuyetId(userInfo.getId());
-			chiTieuKeHoachNam.setNgayGuiDuyet(LocalDate.now());
-
-		} else if (ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
-				return false;
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId());
-			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
-			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
-		} else if (ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equals(trangThai))
-				return false;
-
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.BAN_HANH.getId());
-			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
-			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
-		} else if (ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equals(req.getTrangThai())) {
-			if (!ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equals(trangThai))
-				return false;
-
-			chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId());
-			chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
-			chiTieuKeHoachNam.setNgayPheDuyet(LocalDate.now());
-			chiTieuKeHoachNam.setLyDoTuChoi(req.getLyDoTuChoi());
-		}  else {
-			throw new Exception("Bad request.");
+		String status = req.getTrangThai() + chiTieuKeHoachNam.getTrangThai();
+		switch (status) {
+			case Contains.CHODUYET_LDV + Contains.DUTHAO:
+			case Contains.CHODUYET_LDV + Contains.TUCHOI_LDV:
+			case Contains.CHODUYET_TP + Contains.DUTHAO:
+			case Contains.CHODUYET_LDC + Contains.CHODUYET_TP:
+			case Contains.CHODUYET_TP + Contains.TUCHOI_TP:
+			case Contains.CHODUYET_LDC + Contains.TUCHOI_LDC:
+				chiTieuKeHoachNam.setNguoiGuiDuyetId(userInfo.getId());
+				break;
+			case Contains.TUCHOI_LDV + Contains.CHODUYET_LDV:
+			case Contains.DADUYET_LDV + Contains.CHODUYET_LDV:
+			case Contains.BAN_HANH + Contains.DADUYET_LDV:
+			case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
+			case Contains.BAN_HANH + Contains.DADUYET_LDC:
+				chiTieuKeHoachNam.setNguoiPheDuyetId(userInfo.getId());
+				chiTieuKeHoachNam.setLyDoTuChoi(req.getLyDoTuChoi());
+				break;
+			default:
+				throw new Exception("Phê duyệt không thành công");
 		}
-
+		chiTieuKeHoachNam.setTrangThai(req.getTrangThai());
 		chiTieuKeHoachNamRepository.save(chiTieuKeHoachNam);
 		return true;
 	}
@@ -988,7 +976,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		response.setTrichYeu(chiTieuKeHoachNam.getTrichYeu());
 		response.setQdGocId(chiTieuKeHoachNam.getQdGocId());
 		response.setGhiChu(chiTieuKeHoachNam.getGhiChu());
-		response.setCanCus(chiTieuKeHoachNam.getCanCus());
+		response.setCanCu(chiTieuKeHoachNam.getCanCu());
 		response.setLyDoTuChoi(chiTieuKeHoachNam.getLyDoTuChoi());
 		response.setFileDinhKems(chiTieuKeHoachNam.getFileDinhKems());
 		response.setDcChiTieuId(chiTieuKeHoachNam.getDcChiTieuId());
@@ -1630,14 +1618,14 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		if (ChiTieuKeHoachEnum.QD.getValue().equals(loaiQd)) {
 			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
-						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDV.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
 				if (chiTieuId == null)
 					throw new Exception("Căn cứ không được để trống");
 
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndQdGocId(namKeHoach, true, loaiQd, dvql, chiTieuId)
-						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI.getId().equalsIgnoreCase(c.getTrangThai()))
+						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI_TP.getId().equalsIgnoreCase(c.getTrangThai()) && !ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDC.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			}
 		} else {
@@ -1645,14 +1633,15 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
-								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
-								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
+								|| ChiTieuKeHoachNamStatusEnum.CHO_DUYET_LDV.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.DA_DUYET_LDV.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(namKeHoach, true, loaiQd, dvql)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
-								|| ChiTieuKeHoachNamStatusEnum.DU_THAO_TRINH_DUYET.getId().equalsIgnoreCase(c.getTrangThai())
-								|| ChiTieuKeHoachNamStatusEnum.LANH_DAO_DUYET.getId().equalsIgnoreCase(c.getTrangThai()))
+								|| ChiTieuKeHoachNamStatusEnum.CHO_DUYET_LDC.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.CHO_DUYET_TP.getId().equalsIgnoreCase(c.getTrangThai())
+								|| ChiTieuKeHoachNamStatusEnum.DA_DUYET_LDC.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			}
 		}

@@ -6,7 +6,7 @@ import lombok.Data;
 public class KhQdBtcBoNganhCtietReq {
     private Long id;
 
-    private Long idDanhMuc;
+    private String loaiChi;
 
     private Long sluongDtoan;
 

@@ -42,5 +42,6 @@ public class ChiTieuKeHoachNamReq {
 	private List<FileDinhKemReq> fileDinhKemReqs = new ArrayList<>();
 
 	// Chi tieu ke hoach nam
-	private List<FileDinhKemReq> canCus = new ArrayList<>();
+	private String canCu;
+//	private List<FileDinhKemReq> canCus = new ArrayList<>();
 }

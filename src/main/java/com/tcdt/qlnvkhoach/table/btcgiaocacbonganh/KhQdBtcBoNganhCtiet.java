@@ -14,7 +14,9 @@ public class KhQdBtcBoNganhCtiet implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_QD_BTC_BO_NGANH_CTIET_SEQ")
     @SequenceGenerator(sequenceName = "KH_QD_BTC_BO_NGANH_CTIET_SEQ",allocationSize = 1,name = "KH_QD_BTC_BO_NGANH_CTIET_SEQ")
     private Long id;
-    Long idDanhMuc;
+    String loaiChi;
+    @Transient
+    String tenLoaiChi;
     Long sluongDtoan;
     String loaiVthh;
     String cloaiVthh;
