@@ -35,6 +35,7 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private Integer namKeHoach;
 	private String trichYeu;
 	private String trangThai;
+	private String canCu;
 	private Long donViId;
 	private LocalDate ngayGuiDuyet;
 	private Long nguoiGuiDuyetId;
@@ -76,6 +77,6 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	@Transient
 	private List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
 
-	@Transient
-	private List<FileDinhKemChung> canCus = new ArrayList<>();
+//	@Transient
+//	private List<FileDinhKemChung> canCus = new ArrayList<>();
 }
