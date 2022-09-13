@@ -221,10 +221,13 @@ public class KhQdTtcpService {
     }
 
     @Transactional
-    public void deleteTtcp(Long ids){
+    public void deleteTtcp(Long ids) throws Exception{
         Optional<KhQdTtcp> qOptional=khQdTtcpRepository.findById(ids);
         if (!qOptional.isPresent()){
             throw new UnsupportedOperationException("Id không tồn tại");
+        }
+        if (!qOptional.get().getTrangThai().equals(Contains.DUTHAO)){
+            throw new Exception("Chỉ được xóa quyết định ở trạng thái Dự thảo");
         }
 
         for (KhQdTtcpBoNganh bNganh : khQdTtcpBoNganhRepository.findAllByIdQdTtcp(ids)){
