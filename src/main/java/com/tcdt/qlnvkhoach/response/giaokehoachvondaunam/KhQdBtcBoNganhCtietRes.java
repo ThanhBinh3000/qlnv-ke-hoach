@@ -9,7 +9,7 @@ public class KhQdBtcBoNganhCtietRes {
 
     private Long id;
 
-    private Long idDanhMuc;
+    private String loaiChi;
 
     private Long sluongDtoan;
 

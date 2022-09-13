@@ -16,6 +16,7 @@ import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.KhQdBtcBoNganhReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.giaokehoachdaunam.KhQdBtBoNganhSearchReq;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
+import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
@@ -67,10 +68,15 @@ public class KhQdBtcBoNganhService extends BaseService {
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
                 pageable);
+        Map<String, String> hasMapNd = qlnvDmService.getListDanhMucChung( "DM_ND_DT");
         Map<String, String> hasMApTenBnganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
         data.getContent().forEach( f -> {
-                f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));
-                f.setTenBoNganh(StringUtils.isEmpty(f.getIdTtcpBoNganh()) ? null : hasMApTenBnganh.get(f.getIdTtcpBoNganh()));
+            f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTrangThaiDuyetById(f.getTrangThai()));
+            f.setTenBoNganh(StringUtils.isEmpty(f.getIdTtcpBoNganh()) ? null : hasMApTenBnganh.get(f.getIdTtcpBoNganh()));
+            List<KhQdBtcBoNganhCtiet> muaTangList = f.getMuaTangList();
+            for (KhQdBtcBoNganhCtiet tenLoaiChi : muaTangList) {
+                tenLoaiChi.setTenLoaiChi(hasMapNd.get(tenLoaiChi.getLoaiChi()));
+            }
         });
         return data;
     }
@@ -189,26 +195,28 @@ public class KhQdBtcBoNganhService extends BaseService {
             throw new Exception("Kế hoạch quyết định bộ tài chính giao bộ ngành không tồn tại");
         }
         KhQdBtcBoNganh data = qOptional.get();
-        List<KhQdBtcBoNganhCtiet> listBoNganh = khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(data.getId());
+        List<KhQdBtcBoNganhCtiet> listCtiet = khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(data.getId());
         data.setFileDinhkems(fileDinhKemService.search(data.getId(), Collections.singleton("KH_QD_BTC_BO_NGANH")));
         data.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(data.getTrangThai()));
 
-        if(listBoNganh.size() > 0){
-            data.setMuaTangList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_MUA_TANG)).collect(Collectors.toList()));
-            data.setXuatBanList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_BAN)).collect(Collectors.toList()));
-            data.setXuatGiamList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_XUAT_GIAM)).collect(Collectors.toList()));
-            data.setLuanPhienList(listBoNganh.stream().filter( item -> item.getType().equals(Contains.KH_LUAN_PHIEN_DOI_HANG)).collect(Collectors.toList()));
-        }
+        Map<String, String> hasMapNd = qlnvDmService.getListDanhMucChung("DM_ND_DT");
+        listCtiet.forEach( item -> {
+            item.setTenLoaiChi(hasMapNd.get(item.getLoaiChi()));
+        });
+        data.setMuaTangList(listCtiet);
 
         return data;
 
     }
 
     @Transactional
-    public void delete(Long ids){
+    public void delete(Long ids) throws Exception{
         Optional<KhQdBtcBoNganh> qOptional=khQdBtcBoNganhRepository.findById(ids);
         if (!qOptional.isPresent()){
             throw new UnsupportedOperationException("ID không tồn tại");
+        }
+        if (!qOptional.get().getTrangThai().equals(Contains.DUTHAO)){
+            throw new Exception("Chỉ được xóa quyết định ở trạng thái Dự thảo");
         }
         for (KhQdBtcBoNganhCtiet bNganh : khQdBtcBoNganhCtietRepository.findAllByIdQdBtcNganh(ids)){
             khQdBtcBoNganhCtietRepository.deleteAllByIdQdBtcNganh(bNganh.getId());

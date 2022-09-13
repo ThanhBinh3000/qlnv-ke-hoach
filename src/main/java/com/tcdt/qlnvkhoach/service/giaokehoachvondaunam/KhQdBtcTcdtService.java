@@ -182,6 +182,9 @@ public class KhQdBtcTcdtService {
         if(!qOptional.isPresent()){
             throw new UserPrincipalNotFoundException("Id không tồn tại");
         }
+        if (!qOptional.get().getTrangThai().equals(Contains.DUTHAO)){
+            throw new Exception("Chỉ được xóa quyết định ở trạng thái Dự thảo");
+        }
         khQdBtcTcdtCtietRepository.deleteAllByIdQdBtcTcdt(ids);
         fileDinhKemService.delete(qOptional.get().getId(), Lists.newArrayList("KH_QD_BTC_TCDT"));
         khQdBtcTcdtRepository.delete(qOptional.get());
