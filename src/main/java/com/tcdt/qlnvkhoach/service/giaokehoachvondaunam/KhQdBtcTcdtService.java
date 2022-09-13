@@ -268,4 +268,10 @@ public class KhQdBtcTcdtService {
         return createCheck;
     }
 
+    public KhQdBtcTcdt getQdBtcTcdtByNam(Integer nam){
+        Optional<KhQdBtcTcdt> optional = khQdBtcTcdtRepository.findByNamQd(nam);
+        return  optional.isPresent() ? (optional.get().getTrangThai().equals(Contains.BAN_HANH) ?  optional.get() : null )  : null;
+    }
+
+
 }
