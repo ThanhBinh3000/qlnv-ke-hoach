@@ -74,15 +74,12 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			}
 		}
 		builder.append("ORDER BY ct.NAM_KE_HOACH DESC");
-
 		Query query = em.createNativeQuery(builder.toString(), Tuple.class);
 
 		//Set params
 		this.setParameterSearchCtkhn(req, query);
-
 		//Set pageable
 		query.setFirstResult(req.getPaggingReq().getPage() * req.getPaggingReq().getLimit()).setMaxResults(req.getPaggingReq().getLimit());
-
 		List<?> data = query.getResultList();
 
 		List<ChiTieuKeHoachNamRes> response = data

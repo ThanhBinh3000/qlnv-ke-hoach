@@ -30,4 +30,10 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
     List<ChiTieuKeHoachNam> findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDvi(Integer namKh, boolean latest, String loaiQd, String maDvi);
 
     ChiTieuKeHoachNam findFristByQdGocIdAndLoaiQuyetDinhAndLatestIsTrue(Long qdGocId, String loaiQd);
+
+
+    @Query(value = "SELECT * FROM KH_CHI_TIEU_KE_HOACH_NAM CT WHERE CT.NAM_KE_HOACH = TO_NUMBER(:namKh) AND ( EXISTS (SELECT MUOI.ID FROM KH_CHI_TIEU_LT_MUOI MUOI WHERE MUOI.CTKHN_ID = CT.ID  AND MUOI.MA_DVI = :maDvi) \n" +
+            "  OR  EXISTS (SELECT VT.ID FROM KH_CHI_TIEU_VAT_TU VT WHERE VT.CTKHN_ID = CT.ID  AND VT.MA_DVI = :maDvi)\n" +
+            ") AND CT.LATEST = 1 ", nativeQuery = true)
+    ChiTieuKeHoachNam getChiTieuDxKhLcntByMadvi(Long namKh,String maDvi);
 }
