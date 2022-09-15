@@ -32,6 +32,7 @@ public class ChiTieuKeHoachNamReq {
 	private String trichYeu;
 
 	private String ghiChu;
+	private String trangThai;
 	private Long chiTieuId;
 	private List<Long> dxDcKhnIds = new ArrayList<>();
 	private Long dcChiTieuId;
