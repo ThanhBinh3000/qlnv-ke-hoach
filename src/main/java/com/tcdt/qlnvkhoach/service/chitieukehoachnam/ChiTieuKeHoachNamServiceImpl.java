@@ -161,7 +161,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDateTime.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
-		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
+		chiTieuKeHoachNam.setTrangThai(!StringUtils.isEmpty(req.getTrangThai()) ? req.getTrangThai() : ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLatest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
