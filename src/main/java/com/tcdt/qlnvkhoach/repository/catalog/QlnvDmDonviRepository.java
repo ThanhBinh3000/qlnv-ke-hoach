@@ -1,10 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.catalog;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
+import com.tcdt.qlnvkhoach.entities.catalog.QlnvDmDonviEntity;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,8 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tcdt.qlnvkhoach.entities.catalog.QlnvDmDonviEntity;
-import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
+import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 
 
@@ -45,4 +44,10 @@ public interface QlnvDmDonviRepository extends CrudRepository<QlnvDmDonvi, Long>
 	Iterable<QlnvDmDonvi> findByTrangThai(String trangThai);
 
 	List<QlnvDmDonvi> findByMaDviIn(Collection<String> maDvis);
+
+	@Query(value = "SELECT dv.maDvi FROM QlnvDmDonvi dv WHERE dv.parent.maDvi = ?1 AND dv.trangThai = ?2")
+	Set<String> findMaDviByMaDviChaAndTrangThai(String maDviCha, String trangThai);
+
+	@Query(value = "SELECT dv.parent.maDvi FROM QlnvDmDonvi dv WHERE dv.maDvi = ?1 AND dv.trangThai = ?2")
+	Set<String> findMaDviChaByMaDviAndTrangThai(String maDvi, String trangThai);
 }
