@@ -12,5 +12,4 @@ import java.util.List;
 public interface BaseRepository<E, PK extends Serializable> extends PagingAndSortingRepository<E, PK>, JpaSpecificationExecutor<E>, JpaRepository<E, PK> {
 	List<E> findAll();
 
-	Integer findMaxSo(String maDvi, Integer nam);
 }

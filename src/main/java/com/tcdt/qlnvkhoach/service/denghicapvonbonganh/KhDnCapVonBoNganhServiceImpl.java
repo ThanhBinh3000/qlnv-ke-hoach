@@ -257,15 +257,16 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			return true;
 
 		String[] rowsName = new String[]{ExcelHeaderConst.STT,
-				ExcelHeaderConst.SO_BIEN_BAN,
-				ExcelHeaderConst.NGAY_LAY_MAU,
-				ExcelHeaderConst.DIEM_KHO,
-				ExcelHeaderConst.NHA_KHO,
-				ExcelHeaderConst.NGAN_KHO,
-				ExcelHeaderConst.LO_KHO,
+				ExcelHeaderConst.SO_DE_NGHI,
+				ExcelHeaderConst.BO_NGHANH,
+				ExcelHeaderConst.NGAY_DE_NGHI,
+				ExcelHeaderConst.NAM,
+				ExcelHeaderConst.TONG_TIEN,
+				ExcelHeaderConst.KINH_PHI_DA_CAP,
+				ExcelHeaderConst.YEU_CAU_CAP_THEM,
 				ExcelHeaderConst.TRANG_THAI
 		};
-		String filename = "bien_ban_lay_mau.xlsx";
+		String filename = "de_nghi_cap_von_bo_nghanh.xlsx";
 
 		List<Object[]> dataList = new ArrayList<>();
 

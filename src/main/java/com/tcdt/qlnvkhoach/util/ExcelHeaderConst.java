@@ -26,7 +26,11 @@ public interface ExcelHeaderConst {
 	String NHA_KHO = "Nhà kho";
 	String NGAN_KHO = "Ngăn kho";
 	String LO_KHO = "Lô kho";
-
-
-
+	String SO_DE_NGHI = "Số đề nghị";
+	String BO_NGHANH = "Bộ ngành";
+	String NGAY_DE_NGHI = "Ngay de nghi";
+	String NAM = "Năm";
+	String TONG_TIEN = "Tổng tiền";
+	String KINH_PHI_DA_CAP = "Kinh phí đã cấp";
+	String YEU_CAU_CAP_THEM = "Yêu cầu cấp thêm";
 }

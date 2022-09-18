@@ -19,7 +19,7 @@ import com.tcdt.qlnvkhoach.request.HhDmDviLquanSearchReq;
 import com.tcdt.qlnvkhoach.request.QlnvDmDonviSearchReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.response.CommonResponse;
-import com.tcdt.qlnvkhoach.service.feign.CategoryServiceProxy;
+import com.tcdt.qlnvkhoach.service.client.QlnvDmClient;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.util.Contains;
@@ -53,7 +53,7 @@ import java.util.*;
 @Service
 public class BaseServiceImpl {
 	@Autowired
-	private CategoryServiceProxy categoryServiceProxy;
+	private QlnvDmClient categoryServiceProxy;
 
 	@Autowired
 	DanhMucRepository danhMucRepository;
