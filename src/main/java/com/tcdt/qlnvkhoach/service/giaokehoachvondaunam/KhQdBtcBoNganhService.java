@@ -88,7 +88,7 @@ public class KhQdBtcBoNganhService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw  new Exception("Bad request.");
-        Optional<KhQdBtcBoNganh> namQd= khQdBtcBoNganhRepository.findByNamQdAnAndIAndIdTtcpBoNganh(objReq.getNamQd(),objReq.getIdTtcpBoNganh());
+        Optional<KhQdBtcBoNganh> namQd= khQdBtcBoNganhRepository.findByNamQdAndIdTtcpBoNganh(objReq.getNamQd(),objReq.getIdTtcpBoNganh());
         if(namQd.isPresent()){
             throw new Exception("Năm "+objReq.getNamQd()+" đã tồn tại quyết định cho bộ ngành này!");
         }

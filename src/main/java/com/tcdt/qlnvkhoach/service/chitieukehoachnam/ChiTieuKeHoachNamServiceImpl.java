@@ -1619,9 +1619,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDV.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
-				if (chiTieuId == null)
-					throw new Exception("Căn cứ không được để trống");
-
+//				if (chiTieuId == null)
+//					throw new Exception("Căn cứ không được để trống");
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndQdGocId(namKeHoach, true, loaiQd, dvql, chiTieuId)
 						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI_TP.getId().equalsIgnoreCase(c.getTrangThai()) && !ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDC.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
