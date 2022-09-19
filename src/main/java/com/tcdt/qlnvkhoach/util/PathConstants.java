@@ -88,5 +88,7 @@ public class PathConstants {
 
 	public static final String URL_CN_CT_NC = "/cn-ct-nc";
 
+
+	public static final String TONG_HOP_DE_NGHI_CAP_VON = "/tong-hop-de-nghi-cap-von";
 }
 
