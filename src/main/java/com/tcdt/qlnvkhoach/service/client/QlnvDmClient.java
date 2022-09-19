@@ -1,5 +1,8 @@
 package com.tcdt.qlnvkhoach.service.client;
 
+import com.tcdt.qlnvkhoach.request.BaseRequest;
+import com.tcdt.qlnvkhoach.request.HhDmDviLquanSearchReq;
+import com.tcdt.qlnvkhoach.request.QlnvDmDonviSearchReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +44,34 @@ public interface QlnvDmClient {
 	@GetMapping(PathClientConstants.URL_DM_TCHUAN_HDR)
 	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
 	public ResponseEntity<String> getTchuanCluong(@PathVariable("maHh") String loai);
+
+	//Add new endpoints
+	@PostMapping("/dmuc-donvi/chi-tiet")
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getDetailByCode(
+			@RequestHeader(value = "Authorization", required = true) String authorizationHeader,
+			@RequestBody BaseRequest objReq);
+
+	@GetMapping("/dmuc-chung/danh-sach/{loai}")
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getDanhMucChung(
+			@RequestHeader(value = "Authorization", required = true) String authorizationHeader,
+			@PathVariable("loai") String loai);
+
+	@PostMapping("/dmuc-donvi/tat-ca")
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getDanhMucDvi(
+			@RequestHeader(value = "Authorization", required = true) String authorizationHeader,@RequestBody QlnvDmDonviSearchReq objReq);
+
+	@PostMapping("/dmuc-dvi-lquan/tat-ca")
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getDanhMucDviLquan(
+			@RequestHeader(value = "Authorization", required = true) String authorizationHeader,
+			@RequestBody HhDmDviLquanSearchReq objReq);
+
+	@GetMapping("/dm-hang/danh-sach/dvql")
+	@Headers({ "Accept: application/json; charset=utf-8", "Content-Type: application/x-www-form-urlencoded" })
+	public ResponseEntity<String> getDanhMucHangHoa(
+			@RequestHeader(value = "Authorization", required = true) String authorizationHeader);
 
 }
