@@ -25,5 +25,9 @@ public class KhDnCapVonBoNganhCtRequest {
 	private BigDecimal kinhPhiDaCap;
 	private BigDecimal ycCapThem;
 	private Long deNghiCapVonBoNganhId;
+	private String dvCungCapHang;
+	private String soTaiKhoan;
+	private String nganHang;
+	private String tenHangHoa;
 
 }
