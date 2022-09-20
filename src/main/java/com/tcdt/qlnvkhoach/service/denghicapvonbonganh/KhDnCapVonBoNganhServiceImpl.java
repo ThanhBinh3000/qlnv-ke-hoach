@@ -11,10 +11,6 @@ import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhResponseM
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtDiemKhoRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtNganKhoRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtNganLoRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtNhaKhoRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhRequest;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
@@ -55,11 +51,6 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 	private final QlnvDmVattuRepository dmVattuRepository;
 
 	private final KhDnCapVonBoNganhCtRepository ctRepository;
-
-	private final KtNganLoRepository ktNganLoRepository;
-	private final KtDiemKhoRepository ktDiemKhoRepository;
-	private final KtNhaKhoRepository ktNhaKhoRepository;
-	private final KtNganKhoRepository ktNganKhoRepository;
 
 	private static final String SHEET_NAME = "Đề nghị cấp vốn bộ ngành";
 
