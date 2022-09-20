@@ -17,13 +17,15 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TtDuyetYDuToanCtResponse extends CommonResponse {
-	private Long id;
-	private String maVatTuCha;
-	private String maVatTu;
-	private BigDecimal soLuong;
-	private String donViTinh;
-	private BigDecimal thanhTien;
-	private BigDecimal kinhPhiDaCap;
-	private BigDecimal ycCapThem;
-	private Long deNghiCapVonBoNganhId;
+    private Long id;
+
+    private String muc;
+
+    private String tieuMuc;
+
+    private BigDecimal soTien;
+
+    private String chuThich;
+
+    private Long idTtdydt;
 }

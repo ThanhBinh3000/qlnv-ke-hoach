@@ -17,7 +17,6 @@ public class TtDuyetYDuToanCt implements Serializable {
 	public static final String TABLE_NAME = "KH_TT_DUYET_Y_DU_TOAN_CT";
 	private static final long serialVersionUID = 6242326510650973156L;
 
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ")
 	@SequenceGenerator(sequenceName = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ", allocationSize = 1, name = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ")

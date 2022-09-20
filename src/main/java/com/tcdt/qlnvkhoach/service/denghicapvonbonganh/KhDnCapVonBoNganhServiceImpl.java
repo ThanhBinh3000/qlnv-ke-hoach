@@ -78,7 +78,6 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 		theEntity = khDnCapVonBoNganhRepository.save(theEntity);
 
-		log.info("Save file dinh kem");
 		List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKemReqs(), theEntity.getId(), KhDnCapVonBoNganh.TABLE_NAME);
 		theEntity.setFileDinhKems(fileDinhKems);
 

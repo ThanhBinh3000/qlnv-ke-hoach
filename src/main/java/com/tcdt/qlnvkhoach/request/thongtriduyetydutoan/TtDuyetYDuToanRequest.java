@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToanCt;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +36,6 @@ public class TtDuyetYDuToanRequest {
 
     private String khoan;
 
-    private List<TtDuyetYDuToanCt> chiTietList;
-    private List<FileDinhKemChung> fileDinhKems;
+    private List<TtDuyetYDuToanCtRequest> chiTietList;
+    private List<FileDinhKemReq> fileDinhKems;
 }
