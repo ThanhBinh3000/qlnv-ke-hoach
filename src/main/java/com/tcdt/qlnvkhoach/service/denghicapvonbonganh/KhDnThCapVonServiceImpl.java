@@ -3,7 +3,7 @@ package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVon;
-import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnThCapVonRepository;
@@ -65,7 +65,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         BeanUtils.copyProperties(req, item, "id", "maTongHop");
         item.setNgayTao(LocalDate.now());
         item.setNguoiTaoId(userInfo.getId());
-        item.setTrangThai(NhapXuatHangTrangThaiEnum.DUTHAO.getId());
+        item.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
         item.setMaDvi(userInfo.getDvql());
         item.setCapDvi(userInfo.getCapDvi());
         item.setNam(LocalDate.now().getYear());
@@ -136,8 +136,8 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private KhDnThCapVonResponse buildResponse(KhDnThCapVon item) throws Exception {
         KhDnThCapVonResponse res = new KhDnThCapVonResponse();
         BeanUtils.copyProperties(item, res);
-        res.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(item.getTrangThai()));
-        res.setTrangThaiDuyet(NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(item.getTrangThai()));
+        res.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
+        res.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(item.getTrangThai()));
 
         res.setCts(this.buildKhDnThCapVonCtResponse(item.getCts()));
 
@@ -190,7 +190,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
             throw new Exception("Tổng hợp đề nghị cấp vốn DTQG không tồn tại.");
 
         KhDnThCapVon item = optional.get();
-        if (NhapXuatHangTrangThaiEnum.BAN_HANH.getId().equals(item.getTrangThai())) {
+        if (TrangThaiDungChungEnum.BAN_HANH.getId().equals(item.getTrangThai())) {
             throw new Exception("Không thể xóa Tổng hợp đề nghị cấp vốn DTQG đã ban hành");
         }
         List<KhDnCapVonBoNganh> byKhDnThIdIn = khDnCapVonBoNganhRepository.findByKhDnThIdIn(Collections.singletonList(item.getId()));
@@ -215,7 +215,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
 
         KhDnThCapVon khDnThCapVon = optional.get();
         //validate Trạng Thái
-        String trangThai = NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(stReq.getTrangThai());
+        String trangThai = TrangThaiDungChungEnum.getTrangThaiDuyetById(stReq.getTrangThai());
         if (StringUtils.isEmpty(trangThai)) throw new Exception("Trạng thái không tồn tại");
         khDnThCapVon.setTrangThai(stReq.getTrangThai());
         khDnThCapVonRepository.save(khDnThCapVon);
@@ -242,8 +242,8 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         for (KhDnThCapVon item : data) {
             KhDnThCapVonResponse response = new KhDnThCapVonResponse();
             BeanUtils.copyProperties(item, response);
-            response.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(item.getTrangThai()));
-            response.setTrangThaiDuyet(NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(item.getTrangThai()));
+            response.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
+            response.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(item.getTrangThai()));
 
             List<KhDnThCapVonCtResponse> khDnThCapVonCtResponses = this.buildKhDnThCapVonCtResponse(chiTietMap.get(item.getId()));
 
