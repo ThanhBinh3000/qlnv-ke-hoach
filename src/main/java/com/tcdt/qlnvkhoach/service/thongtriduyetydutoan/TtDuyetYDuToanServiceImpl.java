@@ -1,8 +1,6 @@
 package com.tcdt.qlnvkhoach.service.thongtriduyetydutoan;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
-import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToan;
 import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToanCt;
 import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
@@ -11,20 +9,15 @@ import com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan.TtDuyetYDuToanCtRepos
 import com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan.TtDuyetYDuToanRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
-import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
 import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanCtRequest;
 import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanRequest;
 import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanSearchRequest;
-import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhResponse;
-import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhSearchResponse;
 import com.tcdt.qlnvkhoach.response.thongtriduyetydutoan.TtDuyetYDuToanCtResponse;
 import com.tcdt.qlnvkhoach.response.thongtriduyetydutoan.TtDuyetYDuToanResponse;
 import com.tcdt.qlnvkhoach.service.BaseServiceImpl;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
-import com.tcdt.qlnvkhoach.service.thongtriduyetydutoan.TtDuyetYDuToanService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
-import com.tcdt.qlnvkhoach.table.catalog.FileDinhKem;
 import com.tcdt.qlnvkhoach.util.ExcelHeaderConst;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import com.tcdt.qlnvkhoach.util.LocalDateTimeUtils;
@@ -38,12 +31,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -62,7 +53,7 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
     TtDuyetYDuToanCtRepository ctRepository;
     @Autowired
     QlnvDmDonviRepository qlnvDmDonviRepository;
-    private static final String SHEET_NAME = "Thông tri duệt y dự toán";
+    private static final String SHEET_NAME = "Thông tri duyệt y dự toán";
     private static final String FILE_NAME = "thong_tri_duyet_y_du_toan.xlsx";
 
     @Override
@@ -125,7 +116,7 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
         if (!optional.isPresent())
             throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
         TtDuyetYDuToan item = optional.get();
-        BeanUtils.copyProperties(req, optional.get(), "id", "trangThai");
+        BeanUtils.copyProperties(req, optional.get(), "id", "soThongTri", "trangThai");
         item.setNgaySua(LocalDate.now());
         item.setNguoiSuaId(userInfo.getId());
         ttDuyetYDuToanRepository.save(item);
@@ -221,13 +212,13 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
     @Override
     public TtDuyetYDuToanResponse detail(Long id) throws Exception {
-        Optional<TtDuyetYDuToan> phieuXuatKho = ttDuyetYDuToanRepository.findById(id);
+        Optional<TtDuyetYDuToan> ttDuyetYDuToan = ttDuyetYDuToanRepository.findById(id);
 
-        if (!phieuXuatKho.isPresent())
+        if (!ttDuyetYDuToan.isPresent())
             throw new Exception("Không tìm thấy dữ liệu.");
 
         TtDuyetYDuToanResponse item = new TtDuyetYDuToanResponse();
-        BeanUtils.copyProperties(phieuXuatKho, item);
+        BeanUtils.copyProperties(ttDuyetYDuToan.get(), item);
         item.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(item.getTrangThai()));
         item.setTenDvi(qlnvDmDonviRepository.findByMaDvi(item.getMaDvi()).getTenDvi());
 
@@ -253,27 +244,27 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
         TtDuyetYDuToan item = optional.get();
         String trangThai = item.getTrangThai();
-        if (NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId().equals(stReq.getTrangThai())) {
+        if (NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId().equals(stReq.getTrangThai())) {
             if (!NhapXuatHangTrangThaiEnum.DUTHAO.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId());
+            item.setTrangThai(NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId());
             item.setNguoiGuiDuyetId(userInfo.getId());
             item.setNgayGuiDuyet(LocalDate.now());
 
-        } else if (NhapXuatHangTrangThaiEnum.DADUYET_LDCC.getId().equals(stReq.getTrangThai())) {
-            if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId().equals(trangThai))
+        } else if (NhapXuatHangTrangThaiEnum.DADUYET_LDV.getId().equals(stReq.getTrangThai())) {
+            if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(NhapXuatHangTrangThaiEnum.DADUYET_LDCC.getId());
+            item.setTrangThai(NhapXuatHangTrangThaiEnum.DADUYET_LDV.getId());
             item.setNguoiPduyetId(userInfo.getId());
             item.setNgayPduyet(LocalDate.now());
 
-        } else if (NhapXuatHangTrangThaiEnum.TUCHOI_LDCC.getId().equals(stReq.getTrangThai())) {
-            if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId().equals(trangThai))
+        } else if (NhapXuatHangTrangThaiEnum.TUCHOI_LDV.getId().equals(stReq.getTrangThai())) {
+            if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(NhapXuatHangTrangThaiEnum.TUCHOI_LDCC.getId());
+            item.setTrangThai(NhapXuatHangTrangThaiEnum.TUCHOI_LDV.getId());
             item.setNguoiPduyetId(userInfo.getId());
             item.setNgayPduyet(LocalDate.now());
             item.setLyDoTuChoi(stReq.getLyDoTuChoi());
@@ -318,7 +309,6 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
                 objs[5] = item.getSoDnCapVon();
                 objs[6] = item.getTenDvi();
                 objs[7] = item.getTenTrangThai();
-                objs[8] = NhapXuatHangTrangThaiEnum.getTenById(item.getTrangThai());
                 dataList.add(objs);
             }
 

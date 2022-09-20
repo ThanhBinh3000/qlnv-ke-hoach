@@ -14,27 +14,27 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class TtDuyetYDuToanCt implements Serializable {
-	public static final String TABLE_NAME = "KH_TT_DUYET_Y_DU_TOAN_CT";
-	private static final long serialVersionUID = 6242326510650973156L;
+    public static final String TABLE_NAME = "KH_TT_DUYET_Y_DU_TOAN_CT";
+    private static final long serialVersionUID = 6242326510650973156L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ")
-	@SequenceGenerator(sequenceName = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ", allocationSize = 1, name = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ")
-	@Column(name = "ID")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ")
+    @SequenceGenerator(sequenceName = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ", allocationSize = 1, name = "KH_TT_DUYET_Y_DU_TOAN_CT_SEQ")
+    @Column(name = "ID")
+    private Long id;
 
-	@Column(name = "MUC")
-	private String muc;
+    @Column(name = "MUC")
+    private String muc;
 
-	@Column(name = "TIEU_MUC")
-	private String tieuMuc;
+    @Column(name = "TIEU_MUC")
+    private String tieuMuc;
 
-	@Column(name = "SO_TIEN")
-	private BigDecimal soTien;
+    @Column(name = "SO_TIEN")
+    private BigDecimal soTien;
 
-	@Column(name = "CHU_THICH")
-	private String chuThich;
+    @Column(name = "CHU_THICH")
+    private String chuThich;
 
-	@Column(name = "ID_TTDYDT")
-	private Long idTtdydt;
+    @Column(name = "ID_TTDYDT")
+    private Long idTtdydt;
 }

@@ -18,13 +18,13 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TtDuyetYDuToanSearchRequest extends BaseRequest {
-	private String soThongTri;
-	private Integer nam;
+    private String soThongTri;
+    private Integer nam;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private LocalDate tuNgay;
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private LocalDate denNgay;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate tuNgay;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate denNgay;
 
-	private String lyDoChi;
+    private String lyDoChi;
 }

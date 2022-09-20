@@ -2,14 +2,13 @@ package com.tcdt.qlnvkhoach.request.thongtriduyetydutoan;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToanCt;
 import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,8 +29,9 @@ public class TtDuyetYDuToanRequest {
 
     private String lyDoChi;
 
-    private Integer soDnCapVon;
+    private BigDecimal soDnCapVon;
 
+    private String maDvi;
     private String loai;
 
     private String khoan;

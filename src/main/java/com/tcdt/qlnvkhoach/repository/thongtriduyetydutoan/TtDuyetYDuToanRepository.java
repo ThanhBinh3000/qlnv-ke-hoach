@@ -13,11 +13,12 @@ import java.util.List;
 
 @Repository
 public interface TtDuyetYDuToanRepository extends BaseRepository<TtDuyetYDuToan, Long>, TtDuyetYDuToanRepositoryCustom {
-	@Transactional
-	@Modifying
-	void deleteAllByIdIn(Collection<Long> ids);
+    @Transactional
+    @Modifying
+    void deleteAllByIdIn(Collection<Long> ids);
 
-	List<TtDuyetYDuToan> findByIdIn(List<Long> ids);
-	@Query(value = "select max(id) from TtDuyetYDuToan")
-	Long getMaxId();
+    List<TtDuyetYDuToan> findByIdIn(List<Long> ids);
+
+    @Query(value = "select max(id) from TtDuyetYDuToan")
+    Long getMaxId();
 }

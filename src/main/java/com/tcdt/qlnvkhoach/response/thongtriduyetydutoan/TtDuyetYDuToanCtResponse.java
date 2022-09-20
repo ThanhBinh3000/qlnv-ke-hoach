@@ -2,7 +2,6 @@ package com.tcdt.qlnvkhoach.response.thongtriduyetydutoan;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tcdt.qlnvkhoach.response.CommonResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TtDuyetYDuToanCtResponse extends CommonResponse {
+public class TtDuyetYDuToanCtResponse {
     private Long id;
 
     private String muc;
