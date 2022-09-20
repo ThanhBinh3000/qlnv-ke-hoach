@@ -13,4 +13,6 @@ public interface KhDnCapVonBoNganhRepository extends BaseRepository<KhDnCapVonBo
 	void deleteAllByIdIn(Collection<Long> ids);
 
 	List<KhDnCapVonBoNganh> findByIdIn(List<Long> ids);
+
+	List<KhDnCapVonBoNganh> findByKhDnThIdIn(List<Long> khDnThIds);
 }
