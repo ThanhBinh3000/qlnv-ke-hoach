@@ -10,10 +10,13 @@ import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.QdDcChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SoLuongTruocDieuChinhSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
+import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamExportService;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamImportService;
 import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamService;
+import com.tcdt.qlnvkhoach.service.chitieukehoachnam.ChiTieuKeHoachNamServiceImpl;
 import com.tcdt.qlnvkhoach.service.giaokehoachvondaunam.KhQdBtcTcdtService;
+import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.Contains;
 import io.swagger.annotations.Api;
@@ -493,10 +496,11 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @GetMapping("/ct-kh-tc/{namKh}")
     public final ResponseEntity<Resp> getChiTieuKeHoach(@PathVariable("namKh") Long namKh) {
         Resp resp = new Resp();
+        UserInfo userInfo = SecurityContextService.getUser();
         try {
-            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh);
+            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuDxKhLcntByDvi(namKh,userInfo.getDvql());
             if(chiTieuKeHoachNam != null && chiTieuKeHoachNam.getTrangThai().equals(Contains.BAN_HANH)){
-                resp.setData(chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh));
+                resp.setData(chiTieuKeHoachNam);
             }
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");

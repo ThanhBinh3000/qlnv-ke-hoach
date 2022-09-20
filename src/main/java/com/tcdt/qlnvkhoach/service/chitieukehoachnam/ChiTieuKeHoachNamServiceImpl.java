@@ -161,7 +161,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDateTime.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
-		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
+		chiTieuKeHoachNam.setTrangThai(!StringUtils.isEmpty(req.getTrangThai()) ? req.getTrangThai() : ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLatest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
@@ -1426,14 +1426,12 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 	@Override
 	public Page<ChiTieuKeHoachNamRes> searchQd(SearchChiTieuKeHoachNamReq req) throws Exception {
-
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null)
 			throw new Exception("Bad request");
 
 		this.prepareSearchReq(req, userInfo, req.getCapDvi());
 		req.setLoaiQuyetDinh(ChiTieuKeHoachEnum.QD.getValue());
-
 		Page<ChiTieuKeHoachNamRes> page = chiTieuKeHoachNamRepository.search(req, userInfo.getCapDvi());
 		return this.buildListResponse(page, req);
 	}
@@ -1980,5 +1978,10 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		chiTieuKeHoachNam.setKhVatTuList(vatTu);
 
 		return chiTieuKeHoachNam;
+	}
+
+	@Override
+	public ChiTieuKeHoachNam getChiTieuDxKhLcntByDvi(Long namKh,String maDvi) throws Exception {
+		return chiTieuKeHoachNamRepository.getChiTieuDxKhLcntByMadvi(namKh,maDvi);
 	}
 }

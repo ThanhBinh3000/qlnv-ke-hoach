@@ -26,4 +26,5 @@ public class FileDinhKemChung implements Serializable {
 	String dataType;
 	Long dataId;
 	Date createDate;
+	String noiDung;
 }

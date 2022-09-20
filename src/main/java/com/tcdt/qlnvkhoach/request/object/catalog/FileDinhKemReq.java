@@ -15,4 +15,6 @@ public class FileDinhKemReq {
 
 	@NotNull(message = "Không được để trống")
 	String fileUrl;
+
+	String noiDung;
 }

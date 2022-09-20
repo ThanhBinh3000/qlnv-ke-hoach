@@ -41,7 +41,6 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		builder.append("ct.LY_DO_TU_CHOI as lyDoTuChoi, ");
 		builder.append("dv.MA_DVI as maDvi, ");
 		builder.append("dv.TEN_DVI as tenDvi ");
-
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(loaiQd)) {
 			builder.append(", qdGoc.ID as qdGocId, ");
 			builder.append("qdGoc.SO_QUYET_DINH as soQDGoc ");
@@ -74,15 +73,12 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			}
 		}
 		builder.append("ORDER BY ct.NAM_KE_HOACH DESC");
-
 		Query query = em.createNativeQuery(builder.toString(), Tuple.class);
 
 		//Set params
 		this.setParameterSearchCtkhn(req, query);
-
 		//Set pageable
 		query.setFirstResult(req.getPaggingReq().getPage() * req.getPaggingReq().getLimit()).setMaxResults(req.getPaggingReq().getLimit());
-
 		List<?> data = query.getResultList();
 
 		List<ChiTieuKeHoachNamRes> response = data
