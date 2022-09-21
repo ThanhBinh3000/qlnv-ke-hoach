@@ -1,21 +1,26 @@
 package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVon;
+import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVonCt1;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepository;
+import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnThCapVonCt1Repository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnThCapVonRepository;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
+import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonCt1Request;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonRequest;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonSearchRequest;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnThCapVonCtResponse;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnThCapVonResponse;
 import com.tcdt.qlnvkhoach.service.BaseServiceImpl;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
+import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
 import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import com.tcdt.qlnvkhoach.util.LocalDateTimeUtils;
@@ -44,6 +49,8 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private final KhDnThCapVonRepository khDnThCapVonRepository;
     private final KhDnCapVonBoNganhRepository khDnCapVonBoNganhRepository;
     private final KhDnCapVonBoNganhCtRepository khDnCapVonBoNganhCtRepository;
+    private final KhDnThCapVonCt1Repository khDnThCapVonCt1Repository;
+    private final FileDinhKemService fileDinhKemService;
 
     private static final String SHEET_TONG_HOP_DE_NGHI_CAP_VON_DTQG = "Tổng hợp đề nghị cấp vốn DTQG";
     private static final String STT = "STT";
@@ -52,7 +59,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private static final String NGAY_TONG_HOP = "Ngày Tổng Hợp";
     private static final String TONG_TIEN = "Tổng Tiền";
     private static final String KINH_PHI_DA_CAP = "Kinh Phí Đã Cấp";
-    private static final String YEU_CAU_CAP_THEM = "Yêu Cầu Cấp Thêm";
+    private static final String TONG_CUC_CAP_THEM = "Tổng Cục Cấp Thêm";
     private static final String TRANG_THAI = "Trạng Thái";
 
     @Override
@@ -69,14 +76,18 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         item.setMaDvi(userInfo.getDvql());
         item.setCapDvi(userInfo.getCapDvi());
         item.setNam(LocalDate.now().getYear());
+
         khDnThCapVonRepository.save(item);
 
-        List<KhDnCapVonBoNganh> khDnCapVonBoNganhList = this.saveListChiTiet(item.getId(), req.getKhDnCapVonIds(), false);
-        item.setCts(khDnCapVonBoNganhList);
+        item.setCts(this.saveCts(item.getId(), req.getKhDnCapVonIds(), false));
+        item.setCt1s(this.saveCt1s(item, req.getCt1s(), false));
+
+        List<FileDinhKemChung> fileDinhKemChungs = fileDinhKemService.saveListFileDinhKem(Collections.singletonList(req.getFileDinhKem()), item.getId(), KhDnThCapVon.TABLE_NAME);
+        item.setFileDinhKem(fileDinhKemChungs.stream().findFirst().orElse(null));
         return this.buildResponse(item);
     }
 
-    private List<KhDnCapVonBoNganh> saveListChiTiet(Long khThId, List<Long> khDnIds, boolean update) {
+    private List<KhDnCapVonBoNganh> saveCts(Long khThId, List<Long> khDnIds, boolean update) {
 
         if (update) {
             List<KhDnCapVonBoNganh> olds = khDnCapVonBoNganhRepository.findByKhDnThIdIn(Collections.singletonList(khThId));
@@ -92,6 +103,40 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
             if (!CollectionUtils.isEmpty(updates))
                 khDnCapVonBoNganhRepository.saveAll(updates);
             return updates;
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<KhDnThCapVonCt1> saveCt1s(KhDnThCapVon item, List<KhDnThCapVonCt1Request> ct1Requests, boolean update) {
+
+        if (update) {
+            List<KhDnThCapVonCt1> olds = khDnThCapVonCt1Repository.findByKhDnThIdIn(Collections.singletonList(item.getId()));
+            if (!CollectionUtils.isEmpty(olds))
+                khDnThCapVonCt1Repository.deleteAll(olds);
+        }
+
+        if (!CollectionUtils.isEmpty(ct1Requests)) {
+            List<KhDnCapVonBoNganh> khDnCapVons = khDnCapVonBoNganhRepository.findByIdIn(ct1Requests.stream().map(KhDnThCapVonCt1Request::getKhDnCapVonId).collect(Collectors.toList()));
+            List<KhDnThCapVonCtResponse> cts = this.buildKhDnThCapVonCtResponse(khDnCapVons);
+            item.setTongTien(cts.stream().map(KhDnThCapVonCtResponse::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add));
+            item.setTongTien(cts.stream().map(KhDnThCapVonCtResponse::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add));
+            item.setTongTien(cts.stream().map(KhDnThCapVonCtResponse::getTcCapThem).reduce(BigDecimal.ZERO, BigDecimal::add));
+            item.setYcCapThem(cts.stream().map(KhDnThCapVonCtResponse::getYcCapThem).reduce(BigDecimal.ZERO, BigDecimal::add));
+
+            List<KhDnThCapVonCt1> ct1s = new ArrayList<>();
+            for (KhDnThCapVonCt1Request ct1Request : ct1Requests) {
+                KhDnThCapVonCt1 ct1 = new KhDnThCapVonCt1();
+                ct1.setKhDnThId(item.getId());
+                ct1.setKhDnCapVonId(ct1Request.getKhDnCapVonId());
+                ct1.setTcCapThem(ct1Request.getTcCapThem());
+            }
+
+            if (!CollectionUtils.isEmpty(ct1s)) {
+                khDnThCapVonCt1Repository.saveAll(ct1s);
+                khDnThCapVonRepository.save(item);
+            }
+            return ct1s;
         }
 
         return Collections.emptyList();
@@ -141,6 +186,16 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
 
         res.setCts(this.buildKhDnThCapVonCtResponse(item.getCts()));
 
+        List<Long> khDnCapVonIds = item.getCt1s().stream().map(KhDnThCapVonCt1::getKhDnCapVonId).collect(Collectors.toList());
+
+        List<KhDnCapVonBoNganh> khDnCapVons = khDnCapVonBoNganhRepository.findByIdIn(khDnCapVonIds);
+        List<KhDnThCapVonCtResponse> ct1s = this.buildKhDnThCapVonCtResponse(khDnCapVons);
+        ct1s.forEach(c -> {
+            item.getCt1s().stream()
+                    .filter(t -> c.getId().equals(t.getKhDnCapVonId())).findFirst()
+                    .ifPresent(t -> c.setTcCapThem(t.getTcCapThem()));
+        });
+        res.setCt1s(ct1s);
         this.setThongTinDonVi(res, item.getMaDvi());
         return res;
     }
@@ -161,9 +216,11 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         item.setNguoiSuaId(userInfo.getId());
 
         khDnThCapVonRepository.save(item);
-        List<KhDnCapVonBoNganh> khDnCapVonBoNganhList = this.saveListChiTiet(item.getId(), req.getKhDnCapVonIds(), true);
-        item.setCts(khDnCapVonBoNganhList);
+        item.setCts(this.saveCts(item.getId(), req.getKhDnCapVonIds(), true));
+        item.setCt1s(this.saveCt1s(item, req.getCt1s(), true));
 
+        List<FileDinhKemChung> fileDinhKemChungs = fileDinhKemService.saveListFileDinhKem(Collections.singletonList(req.getFileDinhKem()), item.getId(), KhDnThCapVon.TABLE_NAME);
+        item.setFileDinhKem(fileDinhKemChungs.stream().findFirst().orElse(null));
         return this.buildResponse(item);
     }
 
@@ -177,6 +234,10 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
 
         KhDnThCapVon item = optional.get();
         item.setCts(khDnCapVonBoNganhRepository.findByKhDnThIdIn(Collections.singletonList(item.getId())));
+        item.setCt1s(khDnThCapVonCt1Repository.findByKhDnThIdIn(Collections.singletonList(item.getId())));
+
+        List<FileDinhKemChung> fileDinhKemChungs = fileDinhKemService.search(item.getId(), Collections.singletonList(KhDnThCapVon.TABLE_NAME));
+        item.setFileDinhKem(fileDinhKemChungs.stream().findFirst().orElse(null));
         return this.buildResponse(item);
     }
 
@@ -200,6 +261,8 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         if (!CollectionUtils.isEmpty(byKhDnThIdIn))
             khDnCapVonBoNganhRepository.saveAll(byKhDnThIdIn);
 
+        khDnThCapVonCt1Repository.deleteByKhDnThIdIn(Collections.singletonList(item.getId()));
+        fileDinhKemService.delete(id, Collections.singleton(KhDnThCapVon.TABLE_NAME));
         khDnThCapVonRepository.delete(item);
         return true;
     }
@@ -230,37 +293,13 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         this.prepareSearchReq(req, userInfo, req.getCapDvis(), req.getTrangThais());
         Pageable pageable = PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit());
         List<KhDnThCapVon> data = khDnThCapVonRepository.search(req, pageable);
-        List<Long> ids = data.stream().map(KhDnThCapVon::getId).collect(Collectors.toList());
 
-        Map<Long, List<KhDnCapVonBoNganh>> chiTietMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(ids)) {
-            //group chi tiết : key = KhDnThId, value = List<KhDnCapVonBoNganh>
-            chiTietMap =  khDnCapVonBoNganhRepository.findByKhDnThIdIn(ids)
-                    .stream().collect(Collectors.groupingBy(KhDnCapVonBoNganh::getKhDnThId));
-        }
         List<KhDnThCapVonResponse> responses = new ArrayList<>();
         for (KhDnThCapVon item : data) {
             KhDnThCapVonResponse response = new KhDnThCapVonResponse();
             BeanUtils.copyProperties(item, response);
             response.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
             response.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(item.getTrangThai()));
-
-            List<KhDnThCapVonCtResponse> khDnThCapVonCtResponses = this.buildKhDnThCapVonCtResponse(chiTietMap.get(item.getId()));
-
-            BigDecimal tongTien = khDnThCapVonCtResponses.stream()
-                    .map(KhDnThCapVonCtResponse::getTongTien)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            response.setTongTien(tongTien);
-
-            BigDecimal kinhPhiDaCap = khDnThCapVonCtResponses.stream()
-                    .map(KhDnThCapVonCtResponse::getKinhPhiDaCap)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            response.setKinhPhiDaCap(kinhPhiDaCap);
-
-            BigDecimal ycCapThem = khDnThCapVonCtResponses.stream()
-                    .map(KhDnThCapVonCtResponse::getYcCapThem)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            response.setYcCapThem(ycCapThem);
             responses.add(response);
         }
 
@@ -280,6 +319,8 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         if (!CollectionUtils.isEmpty(byKhDnThIdIn))
             khDnCapVonBoNganhRepository.saveAll(byKhDnThIdIn);
 
+        khDnThCapVonCt1Repository.deleteByKhDnThIdIn(req.getIds());
+        fileDinhKemService.deleteMultiple(req.getIds(), Collections.singleton(KhDnThCapVon.TABLE_NAME));
         khDnThCapVonRepository.deleteByIdIn(req.getIds());
         return true;
     }
@@ -295,8 +336,8 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         if (CollectionUtils.isEmpty(list))
             return true;
 
-        String[] rowsName = new String[] { STT, MA_TONG_HOP, NGAY_TONG_HOP, TONG_TIEN,
-                KINH_PHI_DA_CAP, YEU_CAU_CAP_THEM, TRANG_THAI};
+        String[] rowsName = new String[] { STT, MA_TONG_HOP, NAM, NGAY_TONG_HOP, TONG_TIEN,
+                KINH_PHI_DA_CAP, TONG_CUC_CAP_THEM, TRANG_THAI};
         String filename = "Danh_sach_tong_hop_de_nghie_cap_von_DTQG.xlsx";
 
         List<Object[]> dataList = new ArrayList<Object[]>();
@@ -308,11 +349,12 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
                 objs = new Object[rowsName.length];
                 objs[0] = i;
                 objs[1] = item.getMaTongHop();
-                objs[2] = LocalDateTimeUtils.localDateToString(item.getNgayTongHop());
-                objs[3] = item.getTongTien();
-                objs[4] = item.getKinhPhiDaCap();
-                objs[5] = item.getYcCapThem();
-                objs[6] = item.getTrangThai();
+                objs[2] = item.getNam();
+                objs[3] = LocalDateTimeUtils.localDateToString(item.getNgayTongHop());
+                objs[4] = item.getTongTien();
+                objs[5] = item.getKinhPhiDaCap();
+                objs[6] = item.getTcCapThem();
+                objs[7] = item.getTrangThai();
                 dataList.add(objs);
             }
 
