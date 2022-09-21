@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc;
 import com.tcdt.qlnvkhoach.entities.TrangThaiBaseEntity;
 import com.tcdt.qlnvkhoach.enums.EnumResponse;
-import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.jwt.CustomUserDetails;
 import com.tcdt.qlnvkhoach.jwt.TokenAuthenticationService;
 import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
@@ -388,24 +388,24 @@ public class BaseServiceImpl {
 	public <T extends TrangThaiBaseEntity> boolean updateStatus(T item, StatusReq stReq, UserInfo userInfo) throws Exception {
 
 		String trangThai = item.getTrangThai();
-		if (NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId().equals(stReq.getTrangThai())) {
-			if (!NhapXuatHangTrangThaiEnum.DUTHAO.getId().equals(trangThai))
+		if (TrangThaiDungChungEnum.CHODUYET_LDCC.getId().equals(stReq.getTrangThai())) {
+			if (!TrangThaiDungChungEnum.DUTHAO.getId().equals(trangThai))
 				return false;
 
-			item.setTrangThai(NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId());
+			item.setTrangThai(TrangThaiDungChungEnum.CHODUYET_LDCC.getId());
 			item.setNguoiGuiDuyetId(userInfo.getId());
 			item.setNgayGuiDuyet(LocalDate.now());
-		} else if (NhapXuatHangTrangThaiEnum.DADUYET_LDCC.getId().equals(stReq.getTrangThai())) {
-			if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId().equals(trangThai))
+		} else if (TrangThaiDungChungEnum.DADUYET_LDCC.getId().equals(stReq.getTrangThai())) {
+			if (!TrangThaiDungChungEnum.CHODUYET_LDCC.getId().equals(trangThai))
 				return false;
-			item.setTrangThai(NhapXuatHangTrangThaiEnum.DADUYET_LDCC.getId());
+			item.setTrangThai(TrangThaiDungChungEnum.DADUYET_LDCC.getId());
 			item.setNguoiPduyetId(userInfo.getId());
 			item.setNgayPduyet(LocalDate.now());
-		} else if (NhapXuatHangTrangThaiEnum.TUCHOI_LDCC.getId().equals(stReq.getTrangThai())) {
-			if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDCC.getId().equals(trangThai))
+		} else if (TrangThaiDungChungEnum.TUCHOI_LDCC.getId().equals(stReq.getTrangThai())) {
+			if (!TrangThaiDungChungEnum.CHODUYET_LDCC.getId().equals(trangThai))
 				return false;
 
-			item.setTrangThai(NhapXuatHangTrangThaiEnum.TUCHOI_LDCC.getId());
+			item.setTrangThai(TrangThaiDungChungEnum.TUCHOI_LDCC.getId());
 			item.setNguoiPduyetId(userInfo.getId());
 			item.setNgayPduyet(LocalDate.now());
 		} else {

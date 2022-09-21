@@ -4,17 +4,13 @@ package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
-import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhCtRequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhRequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhResponseMapper;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtDiemKhoRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtNganKhoRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtNganLoRepository;
-import com.tcdt.qlnvkhoach.repository.khotang.KtNhaKhoRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhRequest;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
@@ -56,11 +52,6 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 	private final KhDnCapVonBoNganhCtRepository ctRepository;
 
-	private final KtNganLoRepository ktNganLoRepository;
-	private final KtDiemKhoRepository ktDiemKhoRepository;
-	private final KtNhaKhoRepository ktNhaKhoRepository;
-	private final KtNganKhoRepository ktNganKhoRepository;
-
 	private static final String SHEET_NAME = "Đề nghị cấp vốn bộ ngành";
 
 	@Override
@@ -70,7 +61,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null) throw new Exception("Bad request.");
 		KhDnCapVonBoNganh theEntity = khDnCapVonBoNganhRequestMapper.toEntity(req);
-		theEntity.setTrangThai(NhapXuatHangTrangThaiEnum.DUTHAO.getId());
+		theEntity.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
 		theEntity.setNgayTao(LocalDate.now());
 		theEntity.setNguoiTaoId(userInfo.getId());
 		theEntity.setMaDvi(userInfo.getDvql());
@@ -190,8 +181,8 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 		KhDnCapVonBoNganhResponse response = khDnCapVonBoNganhResponseMapper.toDto(khDnCapVonBoNganh);
 		//Trạng thái
-		response.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(khDnCapVonBoNganh.getTrangThai()));
-		response.setTrangThaiDuyet(NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(khDnCapVonBoNganh.getTrangThai()));
+		response.setTenTrangThai(TrangThaiDungChungEnum.getTenById(khDnCapVonBoNganh.getTrangThai()));
+		response.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(khDnCapVonBoNganh.getTrangThai()));
 
 		//Đơn vị
 		if (!StringUtils.isEmpty(response.getMaBoNganh())) {
@@ -238,7 +229,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
 		KhDnCapVonBoNganh khDnCapVonBoNganh = optional.get();
 		//validate Trạng Thái
-		String trangThai = NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(trangThaiId);
+		String trangThai = TrangThaiDungChungEnum.getTrangThaiDuyetById(trangThaiId);
 		if (StringUtils.isEmpty(trangThai)) throw new Exception("Trạng thái không tồn tại");
 		khDnCapVonBoNganh.setTrangThai(trangThaiId);
 		khDnCapVonBoNganh = khDnCapVonBoNganhRepository.save(khDnCapVonBoNganh);

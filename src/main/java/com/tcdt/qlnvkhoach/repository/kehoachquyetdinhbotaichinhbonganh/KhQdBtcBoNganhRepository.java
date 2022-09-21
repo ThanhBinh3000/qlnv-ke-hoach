@@ -1,7 +1,6 @@
 package com.tcdt.qlnvkhoach.repository.kehoachquyetdinhbotaichinhbonganh;
 
 import com.tcdt.qlnvkhoach.table.btcgiaocacbonganh.KhQdBtcBoNganh;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;

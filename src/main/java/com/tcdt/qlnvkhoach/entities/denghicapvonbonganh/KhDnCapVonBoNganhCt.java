@@ -47,4 +47,19 @@ public class KhDnCapVonBoNganhCt implements Serializable {
 
 	@Column(name = "KH_DN_CAP_VON_BO_NGANH_ID")
 	private Long deNghiCapVonBoNganhId;
+
+	@Column(name = "DV_CUNG_CAP_HANG")
+	private String dvCungCapHang;
+
+	@Column(name = "SO_TAI_KHOAN")
+	private String soTaiKhoan;
+
+	@Column(name = "NGAN_HANG")
+	private String nganHang;
+
+	@Column(name = "TEN_HANG_HOA")
+	private String tenHangHoa;
+
+	@Column(name = "DON_GIA")
+	private BigDecimal donGia;
 }
