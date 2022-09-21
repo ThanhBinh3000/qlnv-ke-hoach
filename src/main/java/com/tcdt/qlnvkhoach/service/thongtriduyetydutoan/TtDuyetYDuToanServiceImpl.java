@@ -3,7 +3,8 @@ package com.tcdt.qlnvkhoach.service.thongtriduyetydutoan;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToan;
 import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToanCt;
-import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan.TtDuyetYDuToanCtRepository;
 import com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan.TtDuyetYDuToanRepository;
@@ -70,7 +71,7 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
         if (count == null) count = 1L;
         item.setSoThongTri(count.intValue() + 1 + "/" + LocalDate.now().getYear() + MA_DS);
 
-        item.setTrangThai(NhapXuatHangTrangThaiEnum.DUTHAO.getId());
+        item.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
         item.setNgayTao(LocalDate.now());
         item.setNguoiTaoId(userInfo.getId());
         ttDuyetYDuToanRepository.save(item);
@@ -219,7 +220,7 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
         TtDuyetYDuToanResponse item = new TtDuyetYDuToanResponse();
         BeanUtils.copyProperties(ttDuyetYDuToan.get(), item);
-        item.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(item.getTrangThai()));
+        item.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
         item.setTenDvi(qlnvDmDonviRepository.findByMaDvi(item.getMaDvi()).getTenDvi());
 
         // chi tiết
@@ -244,27 +245,27 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
         TtDuyetYDuToan item = optional.get();
         String trangThai = item.getTrangThai();
-        if (NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId().equals(stReq.getTrangThai())) {
-            if (!NhapXuatHangTrangThaiEnum.DUTHAO.getId().equals(trangThai))
+        if (TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(stReq.getTrangThai())) {
+            if (!TrangThaiDungChungEnum.DUTHAO.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId());
+            item.setTrangThai(TrangThaiDungChungEnum.CHODUYET_LDV.getId());
             item.setNguoiGuiDuyetId(userInfo.getId());
             item.setNgayGuiDuyet(LocalDate.now());
 
-        } else if (NhapXuatHangTrangThaiEnum.DADUYET_LDV.getId().equals(stReq.getTrangThai())) {
-            if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId().equals(trangThai))
+        } else if (TrangThaiDungChungEnum.DADUYET_LDV.getId().equals(stReq.getTrangThai())) {
+            if (!TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(NhapXuatHangTrangThaiEnum.DADUYET_LDV.getId());
+            item.setTrangThai(TrangThaiDungChungEnum.DADUYET_LDV.getId());
             item.setNguoiPduyetId(userInfo.getId());
             item.setNgayPduyet(LocalDate.now());
 
-        } else if (NhapXuatHangTrangThaiEnum.TUCHOI_LDV.getId().equals(stReq.getTrangThai())) {
-            if (!NhapXuatHangTrangThaiEnum.CHODUYET_LDV.getId().equals(trangThai))
+        } else if (TrangThaiDungChungEnum.TUCHOI_LDV.getId().equals(stReq.getTrangThai())) {
+            if (!TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(NhapXuatHangTrangThaiEnum.TUCHOI_LDV.getId());
+            item.setTrangThai(TrangThaiDungChungEnum.TUCHOI_LDV.getId());
             item.setNguoiPduyetId(userInfo.getId());
             item.setNgayPduyet(LocalDate.now());
             item.setLyDoTuChoi(stReq.getLyDoTuChoi());

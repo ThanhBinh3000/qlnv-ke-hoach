@@ -1,7 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan;
 
 
-import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanSearchRequest;
 import com.tcdt.qlnvkhoach.response.thongtriduyetydutoan.TtDuyetYDuToanResponse;
 import com.tcdt.qlnvkhoach.util.QueryUtils;
@@ -59,7 +59,7 @@ public class TtDuyetYDuToanRepositoryCustomImpl implements TtDuyetYDuToanReposit
             kh.setMaDvi(item.get("MA_DVI", String.class));
 
             kh.setTrangThai(item.get("TRANG_THAI", String.class));
-            kh.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(kh.getTrangThai()));
+            kh.setTenTrangThai(TrangThaiDungChungEnum.getTenById(kh.getTrangThai()));
 
             return kh;
         }).collect(Collectors.toList());
