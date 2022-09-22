@@ -32,7 +32,5 @@ public class VonTongHopTheoDoiResponse {
     private String khoan;
     private String chuong;
 
-    private List<VonTtDuyetYDuToanCtResponse> chiTietList;
-
     private List<FileDinhKemChung> fileDinhKems;
 }
