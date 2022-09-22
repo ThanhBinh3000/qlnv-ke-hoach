@@ -30,8 +30,6 @@ public class KhDnThCapVon extends TrangThaiBaseEntity implements Serializable {
     private Long id;
 
     @Column(name = "MA_TONG_HOP")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_DN_TH_CAP_VON_MTH_SEQ")
-    @SequenceGenerator(sequenceName = "KH_DN_TH_CAP_VON_MTH_SEQ", allocationSize = 1, name = "KH_DN_TH_CAP_VON_MTH_SEQ")
     private String maTongHop;
 
     @Column(name = "NAM")

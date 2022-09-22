@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "KH_DN_TH_CAP_VON_CT1")
 @EqualsAndHashCode(callSuper = false)
-public class KhDnThCapVonCt1 extends TrangThaiBaseEntity implements Serializable {
+public class KhDnThCapVonCt1 implements Serializable {
 
     private static final long serialVersionUID = 6532917948914821538L;
     
