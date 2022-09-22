@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -20,17 +20,23 @@ import java.util.List;
 public class VonTongHopTheoDoiResponse {
     private Long id;
     private String soThongTri;
-    private Integer nam;
-    private LocalDate ngayLap;
-    private String lyDoChi;
-    private Long soDnCapVon;
-    private String maDvi;
-    private String tenDvi;
-    private String trangThai;
-    private String tenTrangThai;
+    private String maDviDuocDuyet;
+    private String tenDviDuocDuyet;
+    private Long soLenhChiTien;
+    private String chuong;
     private String loai;
     private String khoan;
-    private String chuong;
+    private String lyDoChi;
+    private BigDecimal soTien;
+    private String maDviThuHuong;
+    private String tenDviThuHuong;
+    private String trangThai;
+    private String tenTrangThai;
+
+    private String taiKhoan;
+    private String nganHang;
+    private String canCu;
+    private String dotTToan;
 
     private List<FileDinhKemChung> fileDinhKems;
 }

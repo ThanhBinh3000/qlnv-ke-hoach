@@ -1,7 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.vontonghoptheodoi;
 
 
-import com.tcdt.qlnvkhoach.entities.vontonghoptheodoicapvon.VonTongHopTheoDoi;
+import com.tcdt.qlnvkhoach.entities.vontonghoptheodoi.VonTongHopTheoDoi;
 import com.tcdt.qlnvkhoach.repository.BaseRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

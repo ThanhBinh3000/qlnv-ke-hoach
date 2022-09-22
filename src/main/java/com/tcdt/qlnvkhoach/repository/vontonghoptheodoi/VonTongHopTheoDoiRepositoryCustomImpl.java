@@ -15,9 +15,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,10 +27,10 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
     @Override
     public List<VonTongHopTheoDoiResponse> search(VonTongHopTheoDoiSearchRequest req) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT d.id,d.SO_THONG_TRI,d.MA_DVI,dv.TEN_DVI,d.SO_LENH_CHI_TIEN,d.CHUONG,d.LOAI,d.KHOAN, ");
+        builder.append("SELECT d.id,d.SO_THONG_TRI,d.MA_DVI_DUOC_DUYET,dv.TEN_DVI as TEN_DVI_DUOC_DUYET,d.SO_LENH_CHI_TIEN,d.CHUONG,d.LOAI,d.KHOAN, ");
         builder.append("d.LY_DO_CHI,d.SO_TIEN,d.MA_DVI_THU_HUONG,d.TRANG_THAI ");
-        builder.append("FROM KH_VON_TT_DY_DTOAN d ");
-        builder.append("INNER JOIN KH_DN_CAP_VON_BO_NGANH n ON n.ID = d.SO_DN_CAP_VON ");
+        builder.append("FROM KH_VON_TH_TDOI d ");
+
         builder.append("INNER JOIN DM_DONVI dv on dv.MA_DVI = d.MA_DVI ");
         setConditionSearch(req, builder);
 
@@ -49,15 +46,14 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
             VonTongHopTheoDoiResponse kh = new VonTongHopTheoDoiResponse();
             kh.setId(item.get("id", BigDecimal.class).longValue());
             kh.setSoThongTri(item.get("SO_THONG_TRI", String.class));
-            kh.setNam(item.get("NAM", BigDecimal.class).intValue());
-
-            Timestamp x = item.get("NGAY_LAP", Timestamp.class);
-            kh.setNgayLap(LocalDate.parse(x.toLocalDateTime().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE)));
-
+            kh.setMaDviDuocDuyet(item.get("MA_DVI_DUOC_DUYET", String.class));
+            kh.setTenDviDuocDuyet(item.get("MA_DVI_DUOC_DUYET", String.class));
+            kh.setSoLenhChiTien(item.get("SO_LENH_CHI_TIEN", BigDecimal.class).longValue());
+            kh.setChuong(item.get("CHUONG", String.class));
+            kh.setLoai(item.get("LOAI", String.class));
+            kh.setKhoan(item.get("KHOAN", String.class));
             kh.setLyDoChi(item.get("LY_DO_CHI", String.class));
-            kh.setSoDnCapVon(item.get("SO_DN_CAP_VON", BigDecimal.class).longValue());
-            kh.setTenDvi(item.get("TEN_DVI", String.class));
-            kh.setMaDvi(item.get("MA_DVI", String.class));
+            kh.setMaDviThuHuong(item.get("MA_DVI_THU_HUONG", String.class));
 
             kh.setTrangThai(item.get("TRANG_THAI", String.class));
             kh.setTenTrangThai(TrangThaiDungChungEnum.getTenById(kh.getTrangThai()));
@@ -67,8 +63,7 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
 
         return response;
     }
-
-
+    
     private void setConditionSearch(VonTongHopTheoDoiSearchRequest req, StringBuilder builder) {
         QueryUtils.buildWhereClause(builder);
         if (!StringUtils.isEmpty(req.getSoThongTri())) {

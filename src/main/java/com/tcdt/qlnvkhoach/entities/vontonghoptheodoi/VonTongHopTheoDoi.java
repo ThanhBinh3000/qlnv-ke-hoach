@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.entities.vontonghoptheodoicapvon;
+package com.tcdt.qlnvkhoach.entities.vontonghoptheodoi;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.TrangThaiBaseEntity;
