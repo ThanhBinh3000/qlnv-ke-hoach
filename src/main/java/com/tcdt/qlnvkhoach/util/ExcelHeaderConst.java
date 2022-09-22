@@ -33,4 +33,9 @@ public interface ExcelHeaderConst {
 	String TONG_TIEN = "Tổng tiền";
 	String KINH_PHI_DA_CAP = "Kinh phí đã cấp";
 	String YEU_CAU_CAP_THEM = "Yêu cầu cấp thêm";
+	String SO_THONG_TRI = "Số thông tri";
+	String NGAY_LAP = "Ngày lập";
+	String LY_DO_CHI = "Lý do chi";
+	String SO_DE_NGHI_CAP_VON = "Số đề nghị cấp vốn";
+	String DON_VI = "Đơn vị";
 }
