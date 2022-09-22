@@ -378,7 +378,7 @@ public class BaseServiceImpl {
 	}
 
 	public <T extends CommonResponse> void setThongTinDonVi(T res, String maDvi) throws Exception {
-		QlnvDmDonvi donvi = getDviByMa(maDvi, request);
+		QlnvDmDonvi donvi = this.getMapDvi().get(maDvi);
 		res.setMaDvi(donvi.getMaDvi());
 		res.setTenDvi(donvi.getTenDvi());
 		res.setMaQhns(donvi.getMaQhns());
