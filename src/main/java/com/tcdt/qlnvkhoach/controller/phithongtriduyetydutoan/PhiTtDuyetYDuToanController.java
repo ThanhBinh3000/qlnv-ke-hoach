@@ -1,15 +1,15 @@
-package com.tcdt.qlnvkhoach.controller.thongtriduyetydutoan;
+package com.tcdt.qlnvkhoach.controller.phithongtriduyetydutoan;
 
 
 import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.enums.EnumResponse;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
-import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanRequest;
-import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanSearchRequest;
+import com.tcdt.qlnvkhoach.request.phithongtriduyetydutoan.PhiTtDuyetYDuToanRequest;
+import com.tcdt.qlnvkhoach.request.phithongtriduyetydutoan.PhiTtDuyetYDuToanSearchRequest;
 import com.tcdt.qlnvkhoach.response.Resp;
-import com.tcdt.qlnvkhoach.response.thongtriduyetydutoan.TtDuyetYDuToanResponse;
-import com.tcdt.qlnvkhoach.service.thongtriduyetydutoan.TtDuyetYDuToanService;
+import com.tcdt.qlnvkhoach.response.phithongtriduyetydutoan.PhiTtDuyetYDuToanResponse;
+import com.tcdt.qlnvkhoach.service.phithongtriduyetydutoan.PhiTtDuyetYDuToanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +25,19 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/thong-tri-duyet-y-du-toan")
+@RequestMapping(value = "/phi-thong-tri-duyet-y-du-toan")
 @Slf4j
-@Api(tags = "Thông tri duyệt y dự toán")
+@Api(tags = "Phí Thông tri duyệt y dự toán")
 @RequiredArgsConstructor
-public class TtDuyetYDuToanController extends BaseController {
-    private final TtDuyetYDuToanService service;
+public class PhiTtDuyetYDuToanController extends BaseController {
+    private final PhiTtDuyetYDuToanService service;
 
-    @ApiOperation(value = "Tạo mới Thông tri duyệt y dự toán", response = List.class)
+    @ApiOperation(value = "Tạo mới Phí Thông tri duyệt y dự toán", response = List.class)
     @PostMapping()
-    public ResponseEntity<Resp> create(@RequestBody TtDuyetYDuToanRequest req) {
+    public ResponseEntity<Resp> create(@RequestBody PhiTtDuyetYDuToanRequest req) {
         Resp resp = new Resp();
         try {
-            TtDuyetYDuToanResponse res = service.create(req);
+            PhiTtDuyetYDuToanResponse res = service.create(req);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -49,12 +49,12 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Sửa Thông tri duyệt y dự toán", response = List.class)
+    @ApiOperation(value = "Sửa Phí Thông tri duyệt y dự toán", response = List.class)
     @PutMapping()
-    public ResponseEntity<Resp> update(@Valid @RequestBody TtDuyetYDuToanRequest req) {
+    public ResponseEntity<Resp> update(@Valid @RequestBody PhiTtDuyetYDuToanRequest req) {
         Resp resp = new Resp();
         try {
-            TtDuyetYDuToanResponse res = service.update(req);
+            PhiTtDuyetYDuToanResponse res = service.update(req);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -66,7 +66,7 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Xoá Thông tri duyệt y dự toán", response = Boolean.class)
+    @ApiOperation(value = "Xoá Phí Thông tri duyệt y dự toán", response = Boolean.class)
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> delete(@PathVariable("id") Long id) {
         Resp resp = new Resp();
@@ -83,7 +83,7 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Xoá danh sách Thông tri duyệt y dự toán", response = Boolean.class)
+    @ApiOperation(value = "Xoá danh sách Phí Thông tri duyệt y dự toán", response = Boolean.class)
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/delete/multiple")
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
@@ -101,12 +101,12 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Search Thông tri duyệt y dự toán", response = Page.class)
+    @ApiOperation(value = "Search Phí Thông tri duyệt y dự toán", response = Page.class)
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resp> search(@Valid @RequestBody TtDuyetYDuToanSearchRequest req) {
+    public ResponseEntity<Resp> search(@Valid @RequestBody PhiTtDuyetYDuToanSearchRequest req) {
         Resp resp = new Resp();
         try {
-            Page<TtDuyetYDuToanResponse> res = service.search(req);
+            Page<PhiTtDuyetYDuToanResponse> res = service.search(req);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -118,12 +118,12 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Thông tin chi tiết Thông tri duyệt y dự toán", response = List.class)
+    @ApiOperation(value = "Thông tin chi tiết Phí Thông tri duyệt y dự toán", response = List.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> detail(@PathVariable("id") Long id) {
         Resp resp = new Resp();
         try {
-            TtDuyetYDuToanResponse res = service.detail(id);
+            PhiTtDuyetYDuToanResponse res = service.detail(id);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -135,7 +135,7 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Update trạng thái Thông tri duyệt y dự toán", response = List.class)
+    @ApiOperation(value = "Update trạng thái Phí Thông tri duyệt y dự toán", response = List.class)
     @PutMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> updateTrangThai(@Valid @RequestBody StatusReq req) {
         Resp resp = new Resp();
@@ -152,10 +152,10 @@ public class TtDuyetYDuToanController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Export danh sách Thông tri duyệt y dự toán", response = List.class)
+    @ApiOperation(value = "Export danh sách Phí Thông tri duyệt y dự toán", response = List.class)
     @PostMapping(value = "/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void exportToExcel(HttpServletResponse response, @RequestBody TtDuyetYDuToanSearchRequest req) {
+    public void exportToExcel(HttpServletResponse response, @RequestBody PhiTtDuyetYDuToanSearchRequest req) {
         try {
             service.exportToExcel(req, response);
         } catch (Exception e) {

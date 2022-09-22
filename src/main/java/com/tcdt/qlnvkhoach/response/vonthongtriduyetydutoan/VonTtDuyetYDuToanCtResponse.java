@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.request.thongtriduyetydutoan;
+package com.tcdt.qlnvkhoach.response.vonthongtriduyetydutoan;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,12 +15,16 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TtDuyetYDuToanCtRequest {
+public class VonTtDuyetYDuToanCtResponse {
     private Long id;
-    private String muc;
-    private String tieuMuc;
-    private BigDecimal soTien;
-    private String chuThich;
-    private Long idTtdydt;
 
+    private String muc;
+
+    private String tieuMuc;
+
+    private BigDecimal soTien;
+
+    private String chuThich;
+
+    private Long idTtdydt;
 }

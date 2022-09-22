@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan;
+package com.tcdt.qlnvkhoach.entities.vonthongtriduyetydutoan;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.TrangThaiBaseEntity;
@@ -14,19 +14,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = TtDuyetYDuToan.TABLE_NAME)
+@Table(name = VonTtDuyetYDuToan.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TtDuyetYDuToan extends TrangThaiBaseEntity implements Serializable {
-
-    public static final String TABLE_NAME = "KH_TT_DUYET_Y_DU_TOAN";
+public class VonTtDuyetYDuToan extends TrangThaiBaseEntity implements Serializable {
+    // Cấp vốn thông tri duyệt y dự toán
+    public static final String TABLE_NAME = "KH_VON_TT_DY_DTOAN";
     private static final long serialVersionUID = -4074438189820672619L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_TT_DUYET_Y_DU_TOAN_SEQ")
-    @SequenceGenerator(sequenceName = "KH_TT_DUYET_Y_DU_TOAN_SEQ", allocationSize = 1, name = "KH_TT_DUYET_Y_DU_TOAN_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_VON_TT_DY_DTOAN_SEQ")
+    @SequenceGenerator(sequenceName = "KH_VON_TT_DY_DTOAN_SEQ", allocationSize = 1, name = "KH_VON_TT_DY_DTOAN_SEQ")
     @Column(name = "ID")
     private Long id;
 
@@ -43,7 +43,7 @@ public class TtDuyetYDuToan extends TrangThaiBaseEntity implements Serializable 
     private String lyDoChi;
 
     @Column(name = "SO_DN_CAP_VON")
-    private BigDecimal soDnCapVon;
+    private Long soDnCapVon;
 
     @Column(name = "LOAI")
     private String loai;
@@ -51,11 +51,14 @@ public class TtDuyetYDuToan extends TrangThaiBaseEntity implements Serializable 
     @Column(name = "KHOAN")
     private String khoan;
 
+    @Column(name = "CHUONG")
+    private String chuong;
+
     @Column(name = "MA_DVI")
     private String maDvi;
 
     @Transient
-    private List<TtDuyetYDuToanCt> chiTietList;
+    private List<VonTtDuyetYDuToanCt> chiTietList;
 
     @Transient
     private List<FileDinhKemChung> fileDinhKems;

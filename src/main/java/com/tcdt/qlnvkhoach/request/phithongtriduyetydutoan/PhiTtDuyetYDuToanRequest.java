@@ -1,14 +1,13 @@
-package com.tcdt.qlnvkhoach.response.thongtriduyetydutoan;
+package com.tcdt.qlnvkhoach.request.phithongtriduyetydutoan;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,21 +17,25 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TtDuyetYDuToanResponse {
+public class PhiTtDuyetYDuToanRequest {
     private Long id;
-    private String soThongTri;
+
     private Integer nam;
+
+    private String soThongTri;
+
     private LocalDate ngayLap;
+
     private String lyDoChi;
-    private BigDecimal soDnCapVon;
+
+    private Long soDnCapPhi;
+
     private String maDvi;
-    private String tenDvi;
-    private String trangThai;
-    private String tenTrangThai;
     private String loai;
+
     private String khoan;
+    private String chuong;
 
-    private List<TtDuyetYDuToanCtResponse> chiTietList;
-
-    private List<FileDinhKemChung> fileDinhKems;
+    private List<PhiTtDuyetYDuToanCtRequest> chiTietList;
+    private List<FileDinhKemReq> fileDinhKems;
 }

@@ -1,20 +1,19 @@
-package com.tcdt.qlnvkhoach.service.thongtriduyetydutoan;
+package com.tcdt.qlnvkhoach.service.vonthongtriduyetydutoan;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToan;
-import com.tcdt.qlnvkhoach.entities.thongtriduyetydutoan.TtDuyetYDuToanCt;
-import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
+import com.tcdt.qlnvkhoach.entities.vonthongtriduyetydutoan.VonTtDuyetYDuToan;
+import com.tcdt.qlnvkhoach.entities.vonthongtriduyetydutoan.VonTtDuyetYDuToanCt;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
-import com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan.TtDuyetYDuToanCtRepository;
-import com.tcdt.qlnvkhoach.repository.thongtriduyetydutoan.TtDuyetYDuToanRepository;
+import com.tcdt.qlnvkhoach.repository.vonthongtriduyetydutoan.VonTtDuyetYDuToanCtRepository;
+import com.tcdt.qlnvkhoach.repository.vonthongtriduyetydutoan.VonTtDuyetYDuToanRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
-import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanCtRequest;
-import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanRequest;
-import com.tcdt.qlnvkhoach.request.thongtriduyetydutoan.TtDuyetYDuToanSearchRequest;
-import com.tcdt.qlnvkhoach.response.thongtriduyetydutoan.TtDuyetYDuToanCtResponse;
-import com.tcdt.qlnvkhoach.response.thongtriduyetydutoan.TtDuyetYDuToanResponse;
+import com.tcdt.qlnvkhoach.request.vonthongtriduyetydutoan.VonTtDuyetYDuToanCtRequest;
+import com.tcdt.qlnvkhoach.request.vonthongtriduyetydutoan.VonTtDuyetYDuToanRequest;
+import com.tcdt.qlnvkhoach.request.vonthongtriduyetydutoan.VonTtDuyetYDuToanSearchRequest;
+import com.tcdt.qlnvkhoach.response.vonthongtriduyetydutoan.VonTtDuyetYDuToanCtResponse;
+import com.tcdt.qlnvkhoach.response.vonthongtriduyetydutoan.VonTtDuyetYDuToanResponse;
 import com.tcdt.qlnvkhoach.service.BaseServiceImpl;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
@@ -42,16 +41,16 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Service
-public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuyetYDuToanService {
+public class VonTtDuyetYDuToanServiceImpl extends BaseServiceImpl implements VonTtDuyetYDuToanService {
 
     private static final String SHEET_THONG_TRI_DUYET_Y_DU_TOAN = "Thông tri duyệt y dự toán";
     private final String MA_DS = "/JDF";
     @Autowired
     FileDinhKemService fileDinhKemService;
     @Autowired
-    TtDuyetYDuToanRepository ttDuyetYDuToanRepository;
+    VonTtDuyetYDuToanRepository vonTtDuyetYDuToanRepository;
     @Autowired
-    TtDuyetYDuToanCtRepository ctRepository;
+    VonTtDuyetYDuToanCtRepository ctRepository;
     @Autowired
     QlnvDmDonviRepository qlnvDmDonviRepository;
     private static final String SHEET_NAME = "Thông tri duyệt y dự toán";
@@ -59,92 +58,92 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public TtDuyetYDuToanResponse create(TtDuyetYDuToanRequest req) throws Exception {
+    public VonTtDuyetYDuToanResponse create(VonTtDuyetYDuToanRequest req) throws Exception {
         if (req == null) return null;
 
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-        TtDuyetYDuToan item = new TtDuyetYDuToan();
+        VonTtDuyetYDuToan item = new VonTtDuyetYDuToan();
 
         BeanUtils.copyProperties(req, item, "id");
-        Long count = ttDuyetYDuToanRepository.getMaxId();
+        Long count = vonTtDuyetYDuToanRepository.getMaxId();
         if (count == null) count = 1L;
         item.setSoThongTri(count.intValue() + 1 + "/" + LocalDate.now().getYear() + MA_DS);
 
         item.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
         item.setNgayTao(LocalDate.now());
         item.setNguoiTaoId(userInfo.getId());
-        ttDuyetYDuToanRepository.save(item);
+        vonTtDuyetYDuToanRepository.save(item);
 
 
-        List<TtDuyetYDuToanCt> ds = req.getChiTietList().stream()
+        List<VonTtDuyetYDuToanCt> ds = req.getChiTietList().stream()
                 .map(d -> {
                     d.setIdTtdydt(item.getId());
                     return d;
                 })
                 .map(d -> {
-                    TtDuyetYDuToanCt xuatKhoCt = new TtDuyetYDuToanCt();
-                    BeanUtils.copyProperties(d, xuatKhoCt, "id");
-                    return xuatKhoCt;
+                    VonTtDuyetYDuToanCt ct = new VonTtDuyetYDuToanCt();
+                    BeanUtils.copyProperties(d, ct, "id");
+                    return ct;
                 })
                 .collect(Collectors.toList());
 
         ctRepository.saveAll(ds);
-        TtDuyetYDuToanResponse result = new TtDuyetYDuToanResponse();
+        VonTtDuyetYDuToanResponse result = new VonTtDuyetYDuToanResponse();
         BeanUtils.copyProperties(item, result, "id");
 
-        List<TtDuyetYDuToanCtResponse> dsRes = ds
+        List<VonTtDuyetYDuToanCtResponse> dsRes = ds
                 .stream()
-                .map(user -> new ModelMapper().map(user, TtDuyetYDuToanCtResponse.class))
+                .map(user -> new ModelMapper().map(user, VonTtDuyetYDuToanCtResponse.class))
                 .collect(Collectors.toList());
 
         result.setChiTietList(dsRes);
 
-        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), TtDuyetYDuToan.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), VonTtDuyetYDuToan.TABLE_NAME);
         item.setFileDinhKems(fileDinhKems);
         return result;
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public TtDuyetYDuToanResponse update(TtDuyetYDuToanRequest req) throws Exception {
+    public VonTtDuyetYDuToanResponse update(VonTtDuyetYDuToanRequest req) throws Exception {
         if (req == null) return null;
 
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
 
-        Optional<TtDuyetYDuToan> optional = ttDuyetYDuToanRepository.findById(req.getId());
+        Optional<VonTtDuyetYDuToan> optional = vonTtDuyetYDuToanRepository.findById(req.getId());
         if (!optional.isPresent())
             throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
-        TtDuyetYDuToan item = optional.get();
+        VonTtDuyetYDuToan item = optional.get();
         BeanUtils.copyProperties(req, optional.get(), "id", "soThongTri", "trangThai");
         item.setNgaySua(LocalDate.now());
         item.setNguoiSuaId(userInfo.getId());
-        ttDuyetYDuToanRepository.save(item);
+        vonTtDuyetYDuToanRepository.save(item);
 
-        Map<Long, TtDuyetYDuToanCt> mapChiTiet = ctRepository.findByIdTtdydtIn(Collections.singleton(item.getId()))
-                .stream().collect(Collectors.toMap(TtDuyetYDuToanCt::getId, Function.identity()));
+        Map<Long, VonTtDuyetYDuToanCt> mapChiTiet = ctRepository.findByIdTtdydtIn(Collections.singleton(item.getId()))
+                .stream().collect(Collectors.toMap(VonTtDuyetYDuToanCt::getId, Function.identity()));
 
-        List<TtDuyetYDuToanCt> chiTiets = this.saveListChiTiet(item.getId(), req.getChiTietList(), mapChiTiet);
+        List<VonTtDuyetYDuToanCt> chiTiets = this.saveListChiTiet(item.getId(), req.getChiTietList(), mapChiTiet);
         item.setChiTietList(chiTiets);
         if (!CollectionUtils.isEmpty(mapChiTiet.values()))
             ctRepository.deleteAll(mapChiTiet.values());
 
-        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), TtDuyetYDuToan.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), VonTtDuyetYDuToan.TABLE_NAME);
         item.setFileDinhKems(fileDinhKems);
-        TtDuyetYDuToanResponse res = new TtDuyetYDuToanResponse();
+        VonTtDuyetYDuToanResponse res = new VonTtDuyetYDuToanResponse();
         BeanUtils.copyProperties(item, res);
 
         return res;
     }
 
-    private List<TtDuyetYDuToanCt> saveListChiTiet(Long parentId,
-                                                   List<TtDuyetYDuToanCtRequest> chiTietReqs,
-                                                   Map<Long, TtDuyetYDuToanCt> mapChiTiet) throws Exception {
-        List<TtDuyetYDuToanCt> chiTiets = new ArrayList<>();
-        for (TtDuyetYDuToanCtRequest req : chiTietReqs) {
+    private List<VonTtDuyetYDuToanCt> saveListChiTiet(Long parentId,
+                                                      List<VonTtDuyetYDuToanCtRequest> chiTietReqs,
+                                                      Map<Long, VonTtDuyetYDuToanCt> mapChiTiet) throws Exception {
+        List<VonTtDuyetYDuToanCt> chiTiets = new ArrayList<>();
+        for (VonTtDuyetYDuToanCtRequest req : chiTietReqs) {
             Long id = req.getId();
-            TtDuyetYDuToanCt chiTiet = new TtDuyetYDuToanCt();
+            VonTtDuyetYDuToanCt chiTiet = new VonTtDuyetYDuToanCt();
 
             if (id != null && id > 0) {
                 chiTiet = mapChiTiet.get(id);
@@ -174,25 +173,25 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
     public boolean deleteMultiple(List<Long> ids) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-        List<TtDuyetYDuToan> lstTtDuyetYDuToans = ttDuyetYDuToanRepository.findByIdIn(ids);
-        if (CollectionUtils.isEmpty(lstTtDuyetYDuToans)) {
+        List<VonTtDuyetYDuToan> lstVonTtDuyetYDuToans = vonTtDuyetYDuToanRepository.findByIdIn(ids);
+        if (CollectionUtils.isEmpty(lstVonTtDuyetYDuToans)) {
             throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
         }
 
         if (CollectionUtils.isEmpty(ids)) throw new Exception("Bad request.");
 
-        fileDinhKemService.deleteMultiple(ids, Collections.singleton(TtDuyetYDuToan.TABLE_NAME));
+        fileDinhKemService.deleteMultiple(ids, Collections.singleton(VonTtDuyetYDuToan.TABLE_NAME));
 
 
-        this.deleteChiTiets(lstTtDuyetYDuToans.stream().map(TtDuyetYDuToan::getId).collect(Collectors.toSet()));
+        this.deleteChiTiets(lstVonTtDuyetYDuToans.stream().map(VonTtDuyetYDuToan::getId).collect(Collectors.toSet()));
 
 
-        ttDuyetYDuToanRepository.deleteAll(lstTtDuyetYDuToans);
+        vonTtDuyetYDuToanRepository.deleteAll(lstVonTtDuyetYDuToans);
         return true;
     }
 
     private void deleteChiTiets(Set<Long> ids) {
-        List<TtDuyetYDuToanCt> ctList = ctRepository.findByIdTtdydtIn(ids);
+        List<VonTtDuyetYDuToanCt> ctList = ctRepository.findByIdTtdydtIn(ids);
         if (!CollectionUtils.isEmpty(ctList)) {
             ctRepository.deleteAll(ctList);
         }
@@ -200,37 +199,37 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
 
     @Override
-    public Page<TtDuyetYDuToanResponse> search(TtDuyetYDuToanSearchRequest req) throws Exception {
+    public Page<VonTtDuyetYDuToanResponse> search(VonTtDuyetYDuToanSearchRequest req) throws Exception {
         Pageable pageable = PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit());
-        List<TtDuyetYDuToanResponse> list = ttDuyetYDuToanRepository.search(req);
+        List<VonTtDuyetYDuToanResponse> list = vonTtDuyetYDuToanRepository.search(req);
         list.forEach(item -> {
-            item.setFileDinhKems(fileDinhKemService.search(item.getId(), Collections.singleton(TtDuyetYDuToan.TABLE_NAME)));
+            item.setFileDinhKems(fileDinhKemService.search(item.getId(), Collections.singleton(VonTtDuyetYDuToan.TABLE_NAME)));
         });
-        Page<TtDuyetYDuToanResponse> page = new PageImpl<>(list, pageable, list.size());
+        Page<VonTtDuyetYDuToanResponse> page = new PageImpl<>(list, pageable, list.size());
 
         return page;
     }
 
     @Override
-    public TtDuyetYDuToanResponse detail(Long id) throws Exception {
-        Optional<TtDuyetYDuToan> ttDuyetYDuToan = ttDuyetYDuToanRepository.findById(id);
+    public VonTtDuyetYDuToanResponse detail(Long id) throws Exception {
+        Optional<VonTtDuyetYDuToan> ttDuyetYDuToan = vonTtDuyetYDuToanRepository.findById(id);
 
         if (!ttDuyetYDuToan.isPresent())
             throw new Exception("Không tìm thấy dữ liệu.");
 
-        TtDuyetYDuToanResponse item = new TtDuyetYDuToanResponse();
+        VonTtDuyetYDuToanResponse item = new VonTtDuyetYDuToanResponse();
         BeanUtils.copyProperties(ttDuyetYDuToan.get(), item);
         item.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
         item.setTenDvi(qlnvDmDonviRepository.findByMaDvi(item.getMaDvi()).getTenDvi());
 
         // chi tiết
-        List<TtDuyetYDuToanCt> lstDs = ctRepository.findByIdTtdydtIn(Collections.singleton(id));
-        List<TtDuyetYDuToanCtResponse> dsRes = lstDs.stream()
-                .map(user -> new ModelMapper().map(user, TtDuyetYDuToanCtResponse.class))
+        List<VonTtDuyetYDuToanCt> lstDs = ctRepository.findByIdTtdydtIn(Collections.singleton(id));
+        List<VonTtDuyetYDuToanCtResponse> dsRes = lstDs.stream()
+                .map(user -> new ModelMapper().map(user, VonTtDuyetYDuToanCtResponse.class))
                 .collect(Collectors.toList());
         item.setChiTietList(dsRes);
         // đính kèm
-        item.setFileDinhKems(fileDinhKemService.search(id, Collections.singleton(TtDuyetYDuToan.TABLE_NAME)));
+        item.setFileDinhKems(fileDinhKemService.search(id, Collections.singleton(VonTtDuyetYDuToan.TABLE_NAME)));
 
         return item;
     }
@@ -239,11 +238,11 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
     @Transactional(rollbackOn = Exception.class)
     public boolean updateStatus(StatusReq stReq) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
-        Optional<TtDuyetYDuToan> optional = ttDuyetYDuToanRepository.findById(stReq.getId());
+        Optional<VonTtDuyetYDuToan> optional = vonTtDuyetYDuToanRepository.findById(stReq.getId());
         if (!optional.isPresent())
             throw new Exception("Thông tri duyệt y dự toán không tồn tại.");
 
-        TtDuyetYDuToan item = optional.get();
+        VonTtDuyetYDuToan item = optional.get();
         String trangThai = item.getTrangThai();
         if (TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(stReq.getTrangThai())) {
             if (!TrangThaiDungChungEnum.DUTHAO.getId().equals(trangThai))
@@ -278,9 +277,9 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
     }
 
     @Override
-    public boolean exportToExcel(TtDuyetYDuToanSearchRequest req, HttpServletResponse response) throws Exception {
+    public boolean exportToExcel(VonTtDuyetYDuToanSearchRequest req, HttpServletResponse response) throws Exception {
         req.setPaggingReq(new PaggingReq(Integer.MAX_VALUE, 0));
-        List<TtDuyetYDuToanResponse> list = this.search(req).get().collect(Collectors.toList());
+        List<VonTtDuyetYDuToanResponse> list = this.search(req).get().collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(list))
             return true;
@@ -300,7 +299,7 @@ public class TtDuyetYDuToanServiceImpl extends BaseServiceImpl implements TtDuye
 
         try {
             for (int i = 0; i < list.size(); i++) {
-                TtDuyetYDuToanResponse item = list.get(i);
+                VonTtDuyetYDuToanResponse item = list.get(i);
                 objs = new Object[rowsName.length];
                 objs[0] = i;
                 objs[1] = item.getSoThongTri();

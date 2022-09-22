@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.request.thongtriduyetydutoan;
+package com.tcdt.qlnvkhoach.request.vonthongtriduyetydutoan;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TtDuyetYDuToanSearchRequest extends BaseRequest {
+public class VonTtDuyetYDuToanSearchRequest extends BaseRequest {
     private String soThongTri;
     private Integer nam;
 
