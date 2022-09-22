@@ -1,10 +1,12 @@
 package com.tcdt.qlnvkhoach.entities.denghicapvonbonganh;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.TrangThaiBaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KH_DN_TH_CAP_VON")
+@Table(name = KhDnThCapVon.TABLE_NAME)
 @EqualsAndHashCode(callSuper = false)
 public class KhDnThCapVon extends TrangThaiBaseEntity implements Serializable {
 
+    public static final String TABLE_NAME = "KH_DN_TH_CAP_VON";
     private static final long serialVersionUID = 6532917948914821538L;
     
     @Id
@@ -49,6 +52,24 @@ public class KhDnThCapVon extends TrangThaiBaseEntity implements Serializable {
     @Column(name = "CAP_DVI")
     private String capDvi;
 
+    @Column(name = "TONG_TIEN")
+    private BigDecimal tongTien;
+
+    @Column(name = "KINH_PHI_DA_CAP")
+    private BigDecimal kinhPhiDaCap;
+
+    @Column(name = "YC_CAP_THEM")
+    private BigDecimal ycCapThem;
+
+    @Column(name = "TC_CAP_THEM")
+    private BigDecimal tcCapThem;
+
     @Transient
     private List<KhDnCapVonBoNganh> cts = new ArrayList<>();
+
+    @Transient
+    private List<KhDnThCapVonCt1> ct1s = new ArrayList<>();
+
+    @Transient
+    private FileDinhKemChung fileDinhKem;
 }

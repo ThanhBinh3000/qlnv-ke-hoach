@@ -4,7 +4,7 @@ package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
-import com.tcdt.qlnvkhoach.enums.NhapXuatHangTrangThaiEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhCtRequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhRequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhResponseMapper;
@@ -61,7 +61,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null) throw new Exception("Bad request.");
 		KhDnCapVonBoNganh theEntity = khDnCapVonBoNganhRequestMapper.toEntity(req);
-		theEntity.setTrangThai(NhapXuatHangTrangThaiEnum.DUTHAO.getId());
+		theEntity.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
 		theEntity.setNgayTao(LocalDate.now());
 		theEntity.setNguoiTaoId(userInfo.getId());
 		theEntity.setMaDvi(userInfo.getDvql());
@@ -182,8 +182,8 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 		KhDnCapVonBoNganhResponse response = khDnCapVonBoNganhResponseMapper.toDto(khDnCapVonBoNganh);
 		//Trạng thái
-		response.setTenTrangThai(NhapXuatHangTrangThaiEnum.getTenById(khDnCapVonBoNganh.getTrangThai()));
-		response.setTrangThaiDuyet(NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(khDnCapVonBoNganh.getTrangThai()));
+		response.setTenTrangThai(TrangThaiDungChungEnum.getTenById(khDnCapVonBoNganh.getTrangThai()));
+		response.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(khDnCapVonBoNganh.getTrangThai()));
 
 		//Đơn vị
 		if (!StringUtils.isEmpty(response.getMaBoNganh())) {
@@ -230,7 +230,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
 		KhDnCapVonBoNganh khDnCapVonBoNganh = optional.get();
 		//validate Trạng Thái
-		String trangThai = NhapXuatHangTrangThaiEnum.getTrangThaiDuyetById(trangThaiId);
+		String trangThai = TrangThaiDungChungEnum.getTrangThaiDuyetById(trangThaiId);
 		if (StringUtils.isEmpty(trangThai)) throw new Exception("Trạng thái không tồn tại");
 		khDnCapVonBoNganh.setTrangThai(trangThaiId);
 		khDnCapVonBoNganh = khDnCapVonBoNganhRepository.save(khDnCapVonBoNganh);

@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.response.denghicapvonbonganh;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.response.CommonResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,5 +37,11 @@ public class KhDnThCapVonResponse extends CommonResponse {
 
     private BigDecimal ycCapThem;
 
+    private BigDecimal tcCapThem;
+
     private List<KhDnThCapVonCtResponse> cts = new ArrayList<>();
+
+    private List<KhDnThCapVonCtResponse> ct1s = new ArrayList<>();
+
+    private FileDinhKemChung fileDinhKem;
 }

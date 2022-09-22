@@ -59,4 +59,7 @@ public class KhDnCapVonBoNganhCt implements Serializable {
 
 	@Column(name = "TEN_HANG_HOA")
 	private String tenHangHoa;
+
+	@Column(name = "DON_GIA")
+	private BigDecimal donGia;
 }

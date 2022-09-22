@@ -30,4 +30,5 @@ public class KhDnCapVonBoNganhCtResponse extends CommonResponse {
 	private String soTaiKhoan;
 	private String nganHang;
 	private String tenHangHoa;
+	private BigDecimal donGia;
 }
