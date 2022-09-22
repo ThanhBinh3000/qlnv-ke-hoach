@@ -64,6 +64,9 @@ public class KhDnThCapVon extends TrangThaiBaseEntity implements Serializable {
     @Column(name = "TC_CAP_THEM")
     private BigDecimal tcCapThem;
 
+    @Column(name = "MA_TO_TRINH")
+    private String maToTrinh;
+
     @Transient
     private List<KhDnCapVonBoNganh> cts = new ArrayList<>();
 
