@@ -3,6 +3,7 @@ package com.tcdt.qlnvkhoach.service.phitonghoptheodoi;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phitonghoptheodoi.PhiTongHopTheoDoi;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
+import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phitonghoptheodoi.PhiTongHopTheoDoiRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
@@ -45,7 +46,7 @@ public class PhiTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Phi
     @Autowired
     PhiTongHopTheoDoiRepository repository;
     @Autowired
-    QlnvDmDonviRepository qlnvDmDonviRepository;
+    DanhMucRepository danhMucRepository;
     private static final String SHEET_NAME = "Tổng hợp theo dõi cấp phí";
     private static final String FILE_NAME = "tong_hop_theo_doi_cap_Phi.xlsx";
 
@@ -146,7 +147,7 @@ public class PhiTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Phi
         PhiTongHopTheoDoiResponse item = new PhiTongHopTheoDoiResponse();
         BeanUtils.copyProperties(ttDuyetYDuToan.get(), item);
         item.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
-        item.setTenDviDuocDuyet(qlnvDmDonviRepository.findByMaDvi(item.getMaDviDuocDuyet()).getTenDvi());
+        item.setTenDviDuocDuyet(danhMucRepository.findByMa(item.getMaDviDuocDuyet()).getGiaTri());
 
         // đính kèm
         item.setFileDinhKems(fileDinhKemService.search(id, Collections.singleton(PhiTongHopTheoDoi.TABLE_NAME)));
@@ -226,7 +227,7 @@ public class PhiTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Phi
                 objs = new Object[rowsName.length];
                 objs[0] = i;
                 objs[1] = item.getSoThongTri();
-                objs[2] = qlnvDmDonviRepository.findByMaDvi(item.getMaDviDuocDuyet()).getTenDvi();
+                objs[2] = danhMucRepository.findByMa(item.getMaDviDuocDuyet()).getGiaTri();
                 objs[3] = item.getSoLenhChiTien();
                 objs[4] = item.getChuong();
                 objs[5] = item.getLoai();

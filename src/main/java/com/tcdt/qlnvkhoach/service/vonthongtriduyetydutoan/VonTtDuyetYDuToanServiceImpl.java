@@ -4,6 +4,7 @@ import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.vonthongtriduyetydutoan.VonTtDuyetYDuToan;
 import com.tcdt.qlnvkhoach.entities.vonthongtriduyetydutoan.VonTtDuyetYDuToanCt;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
+import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.vonthongtriduyetydutoan.VonTtDuyetYDuToanCtRepository;
 import com.tcdt.qlnvkhoach.repository.vonthongtriduyetydutoan.VonTtDuyetYDuToanRepository;
@@ -52,7 +53,7 @@ public class VonTtDuyetYDuToanServiceImpl extends BaseServiceImpl implements Von
     @Autowired
     VonTtDuyetYDuToanCtRepository ctRepository;
     @Autowired
-    QlnvDmDonviRepository qlnvDmDonviRepository;
+    DanhMucRepository danhMucRepository;
     private static final String SHEET_NAME = "Thông tri duyệt y dự toán";
     private static final String FILE_NAME = "thong_tri_duyet_y_du_toan.xlsx";
 
@@ -220,7 +221,7 @@ public class VonTtDuyetYDuToanServiceImpl extends BaseServiceImpl implements Von
         VonTtDuyetYDuToanResponse item = new VonTtDuyetYDuToanResponse();
         BeanUtils.copyProperties(ttDuyetYDuToan.get(), item);
         item.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
-        item.setTenDvi(qlnvDmDonviRepository.findByMaDvi(item.getMaDvi()).getTenDvi());
+        item.setTenDvi(danhMucRepository.findByMa(item.getMaDvi()).getGiaTri());
 
         // chi tiết
         List<VonTtDuyetYDuToanCt> lstDs = ctRepository.findByIdTtdydtIn(Collections.singleton(id));

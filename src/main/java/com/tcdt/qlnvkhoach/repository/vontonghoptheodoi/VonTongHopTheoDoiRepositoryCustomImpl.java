@@ -27,11 +27,11 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
     @Override
     public List<VonTongHopTheoDoiResponse> search(VonTongHopTheoDoiSearchRequest req) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT d.id,d.SO_THONG_TRI,d.MA_DVI_DUOC_DUYET,dv.TEN_DVI as TEN_DVI_DUOC_DUYET,d.SO_LENH_CHI_TIEN,d.CHUONG,d.LOAI,d.KHOAN, ");
+        builder.append("SELECT d.id,d.SO_THONG_TRI,d.MA_DVI_DUOC_DUYET,dv.GIA_TRI as TEN_DVI_DUOC_DUYET,d.SO_LENH_CHI_TIEN,d.CHUONG,d.LOAI,d.KHOAN, ");
         builder.append("d.LY_DO_CHI,d.SO_TIEN,d.DVI_THU_HUONG,d.TRANG_THAI ");
         builder.append("FROM KH_VON_TH_TDOI d ");
 
-        builder.append("INNER JOIN DM_DONVI dv on dv.MA_DVI = d.MA_DVI_DUOC_DUYET ");
+        builder.append("INNER JOIN DM_DUNG_CHUNG dv on dv.MA = d.MA_DVI_DUOC_DUYET ");
         setConditionSearch(req, builder);
 
         Query query = em.createNativeQuery(builder.toString(), Tuple.class);

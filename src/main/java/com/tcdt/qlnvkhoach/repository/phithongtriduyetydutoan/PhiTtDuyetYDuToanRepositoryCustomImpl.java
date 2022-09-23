@@ -30,10 +30,10 @@ public class PhiTtDuyetYDuToanRepositoryCustomImpl implements PhiTtDuyetYDuToanR
     @Override
     public List<PhiTtDuyetYDuToanResponse> search(PhiTtDuyetYDuToanSearchRequest req) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT d.id,d.SO_THONG_TRI,d.NAM,d.NGAY_LAP,d.LY_DO_CHI,d.SO_DN_CAP_PHI,d.MA_DVI,dv.TEN_DVI,d.TRANG_THAI ");
+        builder.append("SELECT d.id,d.SO_THONG_TRI,d.NAM,d.NGAY_LAP,d.LY_DO_CHI,d.SO_DN_CAP_PHI,d.MA_DVI,dv.GIA_TRI as TEN_DVI,d.TRANG_THAI ");
         builder.append("FROM KH_PHI_TT_DY_DTOAN d ");
-        builder.append("INNER JOIN KH_DN_CAP_PHI_BO_NGHANH n ON n.ID = d.SO_DN_CAP_PHI ");
-        builder.append("INNER JOIN DM_DONVI dv on dv.MA_DVI = d.MA_DVI ");
+        builder.append("INNER JOIN KH_DN_CAP_PHI_BO_NGANH n ON n.ID = d.SO_DN_CAP_PHI ");
+        builder.append("INNER JOIN DM_DUNG_CHUNG dv on dv.MA = d.MA_DVI ");
         setConditionSearch(req, builder);
 
         Query query = em.createNativeQuery(builder.toString(), Tuple.class);
