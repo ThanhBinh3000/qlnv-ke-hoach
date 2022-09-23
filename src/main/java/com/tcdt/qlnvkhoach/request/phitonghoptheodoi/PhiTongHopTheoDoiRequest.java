@@ -1,8 +1,8 @@
-package com.tcdt.qlnvkhoach.response.vontonghoptheodoi;
+package com.tcdt.qlnvkhoach.request.phitonghoptheodoi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,11 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VonTongHopTheoDoiResponse {
+public class PhiTongHopTheoDoiRequest {
     private Long id;
     private String soThongTri;
     private String maDviDuocDuyet;
-    private String tenDviDuocDuyet;
     private Long soLenhChiTien;
     private String chuong;
     private String loai;
@@ -29,13 +28,9 @@ public class VonTongHopTheoDoiResponse {
     private String lyDoChi;
     private BigDecimal soTien;
     private String dviThuHuong;
-    private String trangThai;
-    private String tenTrangThai;
-
     private String taiKhoan;
     private String nganHang;
     private String canCu;
     private String dotTToan;
-
-    private List<FileDinhKemChung> fileDinhKems;
+    private List<FileDinhKemReq> fileDinhKems;
 }

@@ -1,4 +1,4 @@
-package com.tcdt.qlnvkhoach.entities.vontonghoptheodoi;
+package com.tcdt.qlnvkhoach.entities.phitonghoptheodoi;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.TrangThaiBaseEntity;
@@ -13,19 +13,19 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = VonTongHopTheoDoi.TABLE_NAME)
+@Table(name = PhiTongHopTheoDoi.TABLE_NAME)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VonTongHopTheoDoi extends TrangThaiBaseEntity implements Serializable {
+public class PhiTongHopTheoDoi extends TrangThaiBaseEntity implements Serializable {
     // Cấp vốn thông tri duyệt y dự toán
-    public static final String TABLE_NAME = "KH_VON_TH_TDOI";
+    public static final String TABLE_NAME = "KH_PHI_TH_TDOI";
     private static final long serialVersionUID = -4074438189820672619L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_VON_TH_TDOI_SEQ")
-    @SequenceGenerator(sequenceName = "KH_VON_TH_TDOI_SEQ", allocationSize = 1, name = "KH_VON_TH_TDOI_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_PHI_TH_TDOI_SEQ")
+    @SequenceGenerator(sequenceName = "KH_PHI_TH_TDOI_SEQ", allocationSize = 1, name = "KH_PHI_TH_TDOI_SEQ")
     @Column(name = "ID")
     private Long id;
 

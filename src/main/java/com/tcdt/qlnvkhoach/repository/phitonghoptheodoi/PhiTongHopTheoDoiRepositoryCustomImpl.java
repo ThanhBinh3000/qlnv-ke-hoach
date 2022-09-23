@@ -1,9 +1,9 @@
-package com.tcdt.qlnvkhoach.repository.vontonghoptheodoi;
+package com.tcdt.qlnvkhoach.repository.phitonghoptheodoi;
 
 
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
-import com.tcdt.qlnvkhoach.request.vontonghoptheodoi.VonTongHopTheoDoiSearchRequest;
-import com.tcdt.qlnvkhoach.response.vontonghoptheodoi.VonTongHopTheoDoiResponse;
+import com.tcdt.qlnvkhoach.request.phitonghoptheodoi.PhiTongHopTheoDoiSearchRequest;
+import com.tcdt.qlnvkhoach.response.phitonghoptheodoi.PhiTongHopTheoDoiResponse;
 import com.tcdt.qlnvkhoach.util.QueryUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
@@ -19,17 +19,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Log4j2
-public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiRepositoryCustom {
+public class PhiTongHopTheoDoiRepositoryCustomImpl implements PhiTongHopTheoDoiRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public List<VonTongHopTheoDoiResponse> search(VonTongHopTheoDoiSearchRequest req) {
+    public List<PhiTongHopTheoDoiResponse> search(PhiTongHopTheoDoiSearchRequest req) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT d.id,d.SO_THONG_TRI,d.MA_DVI_DUOC_DUYET,dv.TEN_DVI as TEN_DVI_DUOC_DUYET,d.SO_LENH_CHI_TIEN,d.CHUONG,d.LOAI,d.KHOAN, ");
         builder.append("d.LY_DO_CHI,d.SO_TIEN,d.DVI_THU_HUONG,d.TRANG_THAI ");
-        builder.append("FROM KH_VON_TH_TDOI d ");
+        builder.append("FROM KH_Phi_TH_TDOI d ");
 
         builder.append("INNER JOIN DM_DONVI dv on dv.MA_DVI = d.MA_DVI_DUOC_DUYET ");
         setConditionSearch(req, builder);
@@ -41,9 +41,9 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
 
         List<?> data = query.getResultList();
-        List<VonTongHopTheoDoiResponse> response = data.stream().map(res -> {
+        List<PhiTongHopTheoDoiResponse> response = data.stream().map(res -> {
             Tuple item = (Tuple) res;
-            VonTongHopTheoDoiResponse kh = new VonTongHopTheoDoiResponse();
+            PhiTongHopTheoDoiResponse kh = new PhiTongHopTheoDoiResponse();
             kh.setId(item.get("id", BigDecimal.class).longValue());
             kh.setSoThongTri(item.get("SO_THONG_TRI", String.class));
             kh.setMaDviDuocDuyet(item.get("MA_DVI_DUOC_DUYET", String.class));
@@ -65,7 +65,7 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
         return response;
     }
 
-    private void setConditionSearch(VonTongHopTheoDoiSearchRequest req, StringBuilder builder) {
+    private void setConditionSearch(PhiTongHopTheoDoiSearchRequest req, StringBuilder builder) {
         QueryUtils.buildWhereClause(builder);
         if (!StringUtils.isEmpty(req.getSoThongTri())) {
             builder.append("AND ").append("d.SO_THONG_TRI like :soThongTri ");
@@ -87,7 +87,7 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
         }
     }
 
-    private void setParameterSearch(VonTongHopTheoDoiSearchRequest req, Query query) {
+    private void setParameterSearch(PhiTongHopTheoDoiSearchRequest req, Query query) {
         if (!StringUtils.isEmpty(req.getSoThongTri())) {
             query.setParameter("soThongTri", "%" + req.getSoThongTri() + "%");
         }

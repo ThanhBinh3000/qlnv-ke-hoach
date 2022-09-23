@@ -39,7 +39,7 @@ public interface ExcelHeaderConst {
 	String SO_DE_NGHI_CAP_VON = "Số đề nghị cấp vốn";
 	String SO_DE_NGHI_CAP_PHI = "Số đề nghị cấp phí";
 	String DON_VI = "Đơn vị";
-	String DON_VI_DUOC_DUYET = "Đơn vị dược duyệt";
+	String DON_VI_DUOC_DUYET = "Đơn vị được duyệt";
 	String SO_LENH_CHI_TIEN = "Số lệnh chi tiền";
 	String CHUONG = "Chương";
 	String LOAI = "Loại";

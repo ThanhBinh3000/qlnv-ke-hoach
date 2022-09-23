@@ -1,15 +1,15 @@
-package com.tcdt.qlnvkhoach.service.vontonghoptheodoi;
+package com.tcdt.qlnvkhoach.service.phitonghoptheodoi;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
-import com.tcdt.qlnvkhoach.entities.vontonghoptheodoi.VonTongHopTheoDoi;
+import com.tcdt.qlnvkhoach.entities.phitonghoptheodoi.PhiTongHopTheoDoi;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
-import com.tcdt.qlnvkhoach.repository.vontonghoptheodoi.VonTongHopTheoDoiRepository;
+import com.tcdt.qlnvkhoach.repository.phitonghoptheodoi.PhiTongHopTheoDoiRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
-import com.tcdt.qlnvkhoach.request.vontonghoptheodoi.VonTongHopTheoDoiRequest;
-import com.tcdt.qlnvkhoach.request.vontonghoptheodoi.VonTongHopTheoDoiSearchRequest;
-import com.tcdt.qlnvkhoach.response.vontonghoptheodoi.VonTongHopTheoDoiResponse;
+import com.tcdt.qlnvkhoach.request.phitonghoptheodoi.PhiTongHopTheoDoiRequest;
+import com.tcdt.qlnvkhoach.request.phitonghoptheodoi.PhiTongHopTheoDoiSearchRequest;
+import com.tcdt.qlnvkhoach.response.phitonghoptheodoi.PhiTongHopTheoDoiResponse;
 import com.tcdt.qlnvkhoach.service.BaseServiceImpl;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
 import com.tcdt.qlnvkhoach.service.filedinhkem.FileDinhKemService;
@@ -37,26 +37,26 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Service
-public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements VonTongHopTheoDoiService {
+public class PhiTongHopTheoDoiServiceImpl extends BaseServiceImpl implements PhiTongHopTheoDoiService {
 
     private final String MA_DS = "/TCDT";
     @Autowired
     FileDinhKemService fileDinhKemService;
     @Autowired
-    VonTongHopTheoDoiRepository repository;
+    PhiTongHopTheoDoiRepository repository;
     @Autowired
     QlnvDmDonviRepository qlnvDmDonviRepository;
-    private static final String SHEET_NAME = "Tổng hợp theo dõi cấp vốn";
-    private static final String FILE_NAME = "tong_hop_theo_doi_cap_von.xlsx";
+    private static final String SHEET_NAME = "Tổng hợp theo dõi cấp phí";
+    private static final String FILE_NAME = "tong_hop_theo_doi_cap_Phi.xlsx";
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public VonTongHopTheoDoiResponse create(VonTongHopTheoDoiRequest req) throws Exception {
+    public PhiTongHopTheoDoiResponse create(PhiTongHopTheoDoiRequest req) throws Exception {
         if (req == null) return null;
 
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-        VonTongHopTheoDoi item = new VonTongHopTheoDoi();
+        PhiTongHopTheoDoi item = new PhiTongHopTheoDoi();
 
         BeanUtils.copyProperties(req, item, "id");
         Long count = repository.getMaxId();
@@ -68,34 +68,34 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
         item.setNguoiTaoId(userInfo.getId());
         repository.save(item);
 
-        VonTongHopTheoDoiResponse result = new VonTongHopTheoDoiResponse();
+        PhiTongHopTheoDoiResponse result = new PhiTongHopTheoDoiResponse();
         BeanUtils.copyProperties(item, result, "id");
 
-        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), VonTongHopTheoDoi.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), PhiTongHopTheoDoi.TABLE_NAME);
         result.setFileDinhKems(fileDinhKems);
         return result;
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public VonTongHopTheoDoiResponse update(VonTongHopTheoDoiRequest req) throws Exception {
+    public PhiTongHopTheoDoiResponse update(PhiTongHopTheoDoiRequest req) throws Exception {
         if (req == null) return null;
 
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
 
-        Optional<VonTongHopTheoDoi> optional = repository.findById(req.getId());
+        Optional<PhiTongHopTheoDoi> optional = repository.findById(req.getId());
         if (!optional.isPresent())
-            throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
-        VonTongHopTheoDoi item = optional.get();
+            throw new Exception("Đề nghị cấp phí bộ ngành không tồn tại");
+        PhiTongHopTheoDoi item = optional.get();
         BeanUtils.copyProperties(req, optional.get(), "id", "soThongTri", "trangThai");
         item.setNgaySua(LocalDate.now());
         item.setNguoiSuaId(userInfo.getId());
         repository.save(item);
 
-        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), VonTongHopTheoDoi.TABLE_NAME);
+        List<FileDinhKemChung> fileDinhKems = fileDinhKemService.saveListFileDinhKem(req.getFileDinhKems(), item.getId(), PhiTongHopTheoDoi.TABLE_NAME);
         item.setFileDinhKems(fileDinhKems);
-        VonTongHopTheoDoiResponse res = new VonTongHopTheoDoiResponse();
+        PhiTongHopTheoDoiResponse res = new PhiTongHopTheoDoiResponse();
         BeanUtils.copyProperties(item, res);
 
         return res;
@@ -111,45 +111,45 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
     public boolean deleteMultiple(List<Long> ids) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
-        List<VonTongHopTheoDoi> lstVonTongHopTheoDois = repository.findByIdIn(ids);
-        if (CollectionUtils.isEmpty(lstVonTongHopTheoDois)) {
-            throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
+        List<PhiTongHopTheoDoi> lstPhiTongHopTheoDois = repository.findByIdIn(ids);
+        if (CollectionUtils.isEmpty(lstPhiTongHopTheoDois)) {
+            throw new Exception("Đề nghị cấp phí bộ ngành không tồn tại");
         }
 
         if (CollectionUtils.isEmpty(ids)) throw new Exception("Bad request.");
 
-        fileDinhKemService.deleteMultiple(ids, Collections.singleton(VonTongHopTheoDoi.TABLE_NAME));
+        fileDinhKemService.deleteMultiple(ids, Collections.singleton(PhiTongHopTheoDoi.TABLE_NAME));
 
-        repository.deleteAll(lstVonTongHopTheoDois);
+        repository.deleteAll(lstPhiTongHopTheoDois);
         return true;
     }
 
     @Override
-    public Page<VonTongHopTheoDoiResponse> search(VonTongHopTheoDoiSearchRequest req) throws Exception {
+    public Page<PhiTongHopTheoDoiResponse> search(PhiTongHopTheoDoiSearchRequest req) throws Exception {
         Pageable pageable = PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit());
-        List<VonTongHopTheoDoiResponse> list = repository.search(req);
+        List<PhiTongHopTheoDoiResponse> list = repository.search(req);
         list.forEach(item -> {
-            item.setFileDinhKems(fileDinhKemService.search(item.getId(), Collections.singleton(VonTongHopTheoDoi.TABLE_NAME)));
+            item.setFileDinhKems(fileDinhKemService.search(item.getId(), Collections.singleton(PhiTongHopTheoDoi.TABLE_NAME)));
         });
-        Page<VonTongHopTheoDoiResponse> page = new PageImpl<>(list, pageable, list.size());
+        Page<PhiTongHopTheoDoiResponse> page = new PageImpl<>(list, pageable, list.size());
 
         return page;
     }
 
     @Override
-    public VonTongHopTheoDoiResponse detail(Long id) throws Exception {
-        Optional<VonTongHopTheoDoi> ttDuyetYDuToan = repository.findById(id);
+    public PhiTongHopTheoDoiResponse detail(Long id) throws Exception {
+        Optional<PhiTongHopTheoDoi> ttDuyetYDuToan = repository.findById(id);
 
         if (!ttDuyetYDuToan.isPresent())
             throw new Exception("Không tìm thấy dữ liệu.");
 
-        VonTongHopTheoDoiResponse item = new VonTongHopTheoDoiResponse();
+        PhiTongHopTheoDoiResponse item = new PhiTongHopTheoDoiResponse();
         BeanUtils.copyProperties(ttDuyetYDuToan.get(), item);
         item.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
         item.setTenDviDuocDuyet(qlnvDmDonviRepository.findByMaDvi(item.getMaDviDuocDuyet()).getTenDvi());
 
         // đính kèm
-        item.setFileDinhKems(fileDinhKemService.search(id, Collections.singleton(VonTongHopTheoDoi.TABLE_NAME)));
+        item.setFileDinhKems(fileDinhKemService.search(id, Collections.singleton(PhiTongHopTheoDoi.TABLE_NAME)));
 
         return item;
     }
@@ -158,11 +158,11 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
     @Transactional(rollbackOn = Exception.class)
     public boolean updateStatus(StatusReq stReq) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
-        Optional<VonTongHopTheoDoi> optional = repository.findById(stReq.getId());
+        Optional<PhiTongHopTheoDoi> optional = repository.findById(stReq.getId());
         if (!optional.isPresent())
             throw new Exception("Thông tri duyệt y dự toán không tồn tại.");
 
-        VonTongHopTheoDoi item = optional.get();
+        PhiTongHopTheoDoi item = optional.get();
         String trangThai = item.getTrangThai();
         if (TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(stReq.getTrangThai())) {
             if (!TrangThaiDungChungEnum.DUTHAO.getId().equals(trangThai))
@@ -197,9 +197,9 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
     }
 
     @Override
-    public boolean exportToExcel(VonTongHopTheoDoiSearchRequest req, HttpServletResponse response) throws Exception {
+    public boolean exportToExcel(PhiTongHopTheoDoiSearchRequest req, HttpServletResponse response) throws Exception {
         req.setPaggingReq(new PaggingReq(Integer.MAX_VALUE, 0));
-        List<VonTongHopTheoDoiResponse> list = this.search(req).get().collect(Collectors.toList());
+        List<PhiTongHopTheoDoiResponse> list = this.search(req).get().collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(list))
             return true;
@@ -222,7 +222,7 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
 
         try {
             for (int i = 0; i < list.size(); i++) {
-                VonTongHopTheoDoiResponse item = list.get(i);
+                PhiTongHopTheoDoiResponse item = list.get(i);
                 objs = new Object[rowsName.length];
                 objs[0] = i;
                 objs[1] = item.getSoThongTri();

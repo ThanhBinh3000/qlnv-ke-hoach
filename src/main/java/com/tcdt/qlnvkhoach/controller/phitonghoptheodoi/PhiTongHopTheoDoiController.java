@@ -1,15 +1,15 @@
-package com.tcdt.qlnvkhoach.controller.vontonghoptheodoi;
+package com.tcdt.qlnvkhoach.controller.phitonghoptheodoi;
 
 
 import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.enums.EnumResponse;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
-import com.tcdt.qlnvkhoach.request.vontonghoptheodoi.VonTongHopTheoDoiRequest;
-import com.tcdt.qlnvkhoach.request.vontonghoptheodoi.VonTongHopTheoDoiSearchRequest;
+import com.tcdt.qlnvkhoach.request.phitonghoptheodoi.PhiTongHopTheoDoiRequest;
+import com.tcdt.qlnvkhoach.request.phitonghoptheodoi.PhiTongHopTheoDoiSearchRequest;
 import com.tcdt.qlnvkhoach.response.Resp;
-import com.tcdt.qlnvkhoach.response.vontonghoptheodoi.VonTongHopTheoDoiResponse;
-import com.tcdt.qlnvkhoach.service.vontonghoptheodoi.VonTongHopTheoDoiService;
+import com.tcdt.qlnvkhoach.response.phitonghoptheodoi.PhiTongHopTheoDoiResponse;
+import com.tcdt.qlnvkhoach.service.phitonghoptheodoi.PhiTongHopTheoDoiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +25,19 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/von-tong-hop-theo-doi")
+@RequestMapping(value = "/phi-tong-hop-theo-doi")
 @Slf4j
-@Api(tags = "Tổng hợp theo dõi cấp vốn ")
+@Api(tags = "Tổng hợp theo dõi cấp phí ")
 @RequiredArgsConstructor
-public class VonTongHopTheoDoiController extends BaseController {
-    private final VonTongHopTheoDoiService service;
+public class PhiTongHopTheoDoiController extends BaseController {
+    private final PhiTongHopTheoDoiService service;
 
-    @ApiOperation(value = "Tạo mới Tổng hợp theo dõi cấp vốn ", response = List.class)
+    @ApiOperation(value = "Tạo mới Tổng hợp theo dõi cấp phí ", response = List.class)
     @PostMapping()
-    public ResponseEntity<Resp> create(@RequestBody VonTongHopTheoDoiRequest req) {
+    public ResponseEntity<Resp> create(@RequestBody PhiTongHopTheoDoiRequest req) {
         Resp resp = new Resp();
         try {
-            VonTongHopTheoDoiResponse res = service.create(req);
+            PhiTongHopTheoDoiResponse res = service.create(req);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -49,12 +49,12 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Sửa Tổng hợp theo dõi cấp vốn ", response = List.class)
+    @ApiOperation(value = "Sửa Tổng hợp theo dõi cấp phí ", response = List.class)
     @PutMapping()
-    public ResponseEntity<Resp> update(@Valid @RequestBody VonTongHopTheoDoiRequest req) {
+    public ResponseEntity<Resp> update(@Valid @RequestBody PhiTongHopTheoDoiRequest req) {
         Resp resp = new Resp();
         try {
-            VonTongHopTheoDoiResponse res = service.update(req);
+            PhiTongHopTheoDoiResponse res = service.update(req);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -66,7 +66,7 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Xoá Tổng hợp theo dõi cấp vốn ", response = Boolean.class)
+    @ApiOperation(value = "Xoá Tổng hợp theo dõi cấp phí ", response = Boolean.class)
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> delete(@PathVariable("id") Long id) {
         Resp resp = new Resp();
@@ -83,7 +83,7 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Xoá danh sách Tổng hợp theo dõi cấp vốn ", response = Boolean.class)
+    @ApiOperation(value = "Xoá danh sách Tổng hợp theo dõi cấp phí ", response = Boolean.class)
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/delete/multiple")
     public ResponseEntity<Resp> deleteMultiple(@RequestBody @Valid DeleteReq req) {
@@ -101,12 +101,12 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Search Tổng hợp theo dõi cấp vốn ", response = Page.class)
+    @ApiOperation(value = "Search Tổng hợp theo dõi cấp phí ", response = Page.class)
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resp> search(@Valid @RequestBody VonTongHopTheoDoiSearchRequest req) {
+    public ResponseEntity<Resp> search(@Valid @RequestBody PhiTongHopTheoDoiSearchRequest req) {
         Resp resp = new Resp();
         try {
-            Page<VonTongHopTheoDoiResponse> res = service.search(req);
+            Page<PhiTongHopTheoDoiResponse> res = service.search(req);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -118,12 +118,12 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Thông tin chi tiết Tổng hợp theo dõi cấp vốn ", response = List.class)
+    @ApiOperation(value = "Thông tin chi tiết Tổng hợp theo dõi cấp phí ", response = List.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> detail(@PathVariable("id") Long id) {
         Resp resp = new Resp();
         try {
-            VonTongHopTheoDoiResponse res = service.detail(id);
+            PhiTongHopTheoDoiResponse res = service.detail(id);
             resp.setData(res);
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -135,7 +135,7 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Update trạng thái Tổng hợp theo dõi cấp vốn ", response = List.class)
+    @ApiOperation(value = "Update trạng thái Tổng hợp theo dõi cấp phí ", response = List.class)
     @PutMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resp> updateTrangThai(@Valid @RequestBody StatusReq req) {
         Resp resp = new Resp();
@@ -152,10 +152,10 @@ public class VonTongHopTheoDoiController extends BaseController {
         return ResponseEntity.ok(resp);
     }
 
-    @ApiOperation(value = "Export danh sách Tổng hợp theo dõi cấp vốn ", response = List.class)
+    @ApiOperation(value = "Export danh sách Tổng hợp theo dõi cấp phí ", response = List.class)
     @PostMapping(value = "/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void exportToExcel(HttpServletResponse response, @RequestBody VonTongHopTheoDoiSearchRequest req) {
+    public void exportToExcel(HttpServletResponse response, @RequestBody PhiTongHopTheoDoiSearchRequest req) {
         try {
             service.exportToExcel(req, response);
         } catch (Exception e) {
