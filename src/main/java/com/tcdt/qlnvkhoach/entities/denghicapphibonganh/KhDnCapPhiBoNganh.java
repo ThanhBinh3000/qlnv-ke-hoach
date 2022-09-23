@@ -20,16 +20,16 @@ import java.util.List;
 @AllArgsConstructor
 public class KhDnCapPhiBoNganh extends TrangThaiBaseEntity implements Serializable {
 
-    public static final String TABLE_NAME = "KH_DN_CAP_PHI_BO_NGHANH";
+    public static final String TABLE_NAME = "KH_DN_CAP_PHI_BO_NGANH";
     private static final long serialVersionUID = 1963436555088361827L;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_DN_CAP_PHI_BO_NGHANH_SEQ")
-    @SequenceGenerator(sequenceName = "KH_DN_CAP_VON_BO_NGANH_SEQ", allocationSize = 1, name = "KH_DN_CAP_PHI_BO_NGHANH_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_DN_CAP_PHI_BO_NGANH_SEQ")
+    @SequenceGenerator(sequenceName = "KH_DN_CAP_VON_BO_NGANH_SEQ", allocationSize = 1, name = "KH_DN_CAP_PHI_BO_NGANH_SEQ")
     @Column(name = "ID")
     private Long id;
 
     @Column(name = "NAM")
-    private Long nam;
+    private Integer nam;
 
     @Column(name = "MA_BO_NGANH")
     private String maBoNganh;

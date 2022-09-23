@@ -20,7 +20,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KhDnCapPhiBoNganhResponse extends CommonResponse {
     private Long id;
-    private Long nam;
     private String maBoNganh;
     private String soDeNghi;
     private LocalDate ngayDeNghi;

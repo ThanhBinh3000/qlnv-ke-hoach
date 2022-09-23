@@ -124,24 +124,32 @@ public class KhDnCapPhiBoNganhRepositoryCustomImpl implements KhDnCapPhiBoNganhR
 		List<KhDnCapPhiBoNganhCt1> ct1List = ct1Repository.findByDnCapPhiIdIn(ids);
 		if (CollectionUtils.isEmpty(ct1List)) return;
 
+		Set<Long> ct1Ids = ct1List.stream().map(KhDnCapPhiBoNganhCt1::getId).collect(Collectors.toSet());
+		List<KhDnCapPhiBoNganhCt2> ct2List = ct2Repository.findByCapPhiBoNghanhCt1IdIn(ct1Ids);
+
+		Map<Long, List<KhDnCapPhiBoNganhCt2>> chiTiet2Map = ct2List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt2::getCapPhiBoNghanhCt1Id));
+
+
+
 		//group chi tiết : key = deNghiCapVonBoNganhId, value = List<KhDnCapPhiBoNganhCt>
 		Map<Long, List<KhDnCapPhiBoNganhCt1>> chiTietMap = ct1List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt1::getDnCapPhiId));
+
 
 		responses.forEach(item -> {
 			List<KhDnCapPhiBoNganhCt1> ctList = chiTietMap.get(item.getId());
 			if (CollectionUtils.isEmpty(ctList)) return;
 			BigDecimal tongTien = ctList.stream()
-					.map(ct1 -> ct1.getCt2List().stream().map(KhDnCapPhiBoNganhCt2::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add))
+					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add))
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			item.setTongTien(tongTien);
 
 			BigDecimal kinhPhiDaCap = ctList.stream()
-					.map(ct1 -> ct1.getCt2List().stream().map(KhDnCapPhiBoNganhCt2::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add))
+					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add))
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			item.setKinhPhiDaCap(kinhPhiDaCap);
 
 			BigDecimal ycCapThem = ctList.stream()
-					.map(ct1 -> ct1.getCt2List().stream().map(KhDnCapPhiBoNganhCt2::getYeuCauCapThem).reduce(BigDecimal.ZERO, BigDecimal::add))
+					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getYeuCauCapThem).reduce(BigDecimal.ZERO, BigDecimal::add))
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			item.setYcCapThem(ycCapThem);
 		});

@@ -21,7 +21,6 @@ public class KhDnCapPhiBoNganhCt1Response {
     private String tenDvCungCap;
     private Long soTaiKhoan;
     private String nganHang;
-    private String tenHangHoa;
     private Long dnCapPhiId;
     private BigDecimal ycCapThemPhi;
     private List<KhDnCapPhiBoNganhCt2Response> ct2List;

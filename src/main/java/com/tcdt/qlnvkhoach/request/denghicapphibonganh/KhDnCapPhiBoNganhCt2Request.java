@@ -25,4 +25,5 @@ public class KhDnCapPhiBoNganhCt2Request {
 	private Long capPhiBoNghanhCt1Id;
 	private String maVatTuCha;
 	private String maVatTu;
+	private String tenHangHoa;
 }

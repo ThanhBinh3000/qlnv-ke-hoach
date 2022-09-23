@@ -125,7 +125,7 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 		//Save chi tiết
 		List<KhDnCapPhiBoNganhCt1Response> chiTietList = req.getCt1List().stream().map(entry -> {
 			KhDnCapPhiBoNganhCt1 ct1 = ct1RequestMapper.toEntity(entry);
-			entry.setDnCapPhiId(theEntity.getId());
+			ct1.setDnCapPhiId(theEntity.getId());
 			ct1 = ct1Repository.save(ct1);
 			KhDnCapPhiBoNganhCt1Response ct1Response = ct1ResponseMapper.toDto(ct1);
 			List<KhDnCapPhiBoNganhCt2Response> ct2List = saveCt2(entry.getCt2List(), ct1, vattuMap);

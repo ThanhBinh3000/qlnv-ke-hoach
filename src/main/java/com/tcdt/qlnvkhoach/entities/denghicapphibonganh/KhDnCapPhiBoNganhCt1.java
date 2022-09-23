@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KhDnCapPhiBoNganhCt1 implements Serializable {
-    public static final String TABLE_NAME = "KH_DN_CAP_PHI_BO_NGHANH_CT1";
+    public static final String TABLE_NAME = "KH_DN_CAP_PHI_BO_NGANH_CT1";
     private static final long serialVersionUID = 5239008888150962416L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_DN_CP_BN_CT1_SEQ")
@@ -33,15 +33,6 @@ public class KhDnCapPhiBoNganhCt1 implements Serializable {
 
     @Column(name = "NGAN_HANG")
     private String nganHang;
-
-    @Column(name = "MA_VAT_TU_CHA")
-    private String maVatTuCha;
-
-    @Column(name = "MA_VAT_TU")
-    private String maVatTu;
-
-    @Column(name = "TEN_HANG_HOA")
-    private String tenHangHoa;
 
     @Column(name = "DN_CAP_PHI_ID")
     private Long dnCapPhiId;

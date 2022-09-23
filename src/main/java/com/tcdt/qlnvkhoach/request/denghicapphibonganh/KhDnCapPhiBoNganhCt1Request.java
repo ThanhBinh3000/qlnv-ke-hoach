@@ -21,9 +21,6 @@ public class KhDnCapPhiBoNganhCt1Request {
     private String tenDvCungCap;
     private Long soTaiKhoan;
     private String nganHang;
-    private String maVatTuCha;
-    private String maVatTu;
-    private String tenHangHoa;
     private Long dnCapPhiId;
     private BigDecimal ycCapThemPhi;
     private List<KhDnCapPhiBoNganhCt2Request> ct2List;

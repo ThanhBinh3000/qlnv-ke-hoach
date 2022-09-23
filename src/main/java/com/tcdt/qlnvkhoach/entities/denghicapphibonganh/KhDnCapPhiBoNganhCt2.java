@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class KhDnCapPhiBoNganhCt2 implements Serializable {
 
-    public static final String TABLE_NAME = "KH_DN_CAP_PHI_BO_NGHANH_CT2";
+    public static final String TABLE_NAME = "KH_DN_CAP_PHI_BO_NGANH_CT2";
     private static final long serialVersionUID = -3759121884935806124L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KH_DN_CAP_PHI_BN_CT2_SEQ")
@@ -48,4 +48,7 @@ public class KhDnCapPhiBoNganhCt2 implements Serializable {
 
     @Column(name = "MA_VAT_TU")
     private String maVatTu;
+
+    @Column(name = "TEN_HANG_HOA")
+    private String tenHangHoa;
 }
