@@ -61,7 +61,7 @@ public class KhDnCapPhiBoNganhRepositoryCustomImpl implements KhDnCapPhiBoNganhR
 				.append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDungChung, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
 
 		log.debug("Set Condition search");
-		this.setConditionSearch(req, builder, khDnCapPhiBoNganh);
+		this.setConditionSearch(req, builder, khDnCapPhiBoNganh, dmDungChung);
 
 		log.debug("Set sort");
 		QueryUtils.buildSort(pageable, builder);
@@ -70,7 +70,7 @@ public class KhDnCapPhiBoNganhRepositoryCustomImpl implements KhDnCapPhiBoNganhR
 		TypedQuery<Object[]> query = em.createQuery(QueryUtils.buildQuery(builder), Object[].class);
 
 		log.debug("Set params");
-		this.setParameterSearch(req, query, khDnCapPhiBoNganh);
+		this.setParameterSearch(req, query, khDnCapPhiBoNganh, dmDungChung);
 		query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
 
 		log.info("Build response");
@@ -84,39 +84,43 @@ public class KhDnCapPhiBoNganhRepositoryCustomImpl implements KhDnCapPhiBoNganhR
 	}
 
 
-	private void setConditionSearch(KhDnCapPhiBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapPhiBoNganh) {
+	private void setConditionSearch(KhDnCapPhiBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
 		QueryUtils.buildWhereClause(builder);
 		khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.SO_DE_NGHI, req.getSoDeNghi(), builder);
 		khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.MA_BO_NGANH, req.getMaBoNganh(), builder);
 		khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.NAM, req.getNam(), builder);
 		khDnCapPhiBoNganh.start(Operator.AND, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay(), builder);
 		khDnCapPhiBoNganh.end(Operator.AND, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay(), builder);
+		dmDungChung.eq(Operator.AND, QlnvDanhMuc_.LOAI, "BO_NGANH", builder);
+
 	}
 
-	private int count(KhDnCapPhiBoNganhSearchRequest req, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDonVi) {
+	private int count(KhDnCapPhiBoNganhSearchRequest req, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
 		log.debug("Build count query");
 		StringBuilder builder = khDnCapPhiBoNganh.countBy(KhDnCapPhiBoNganh_.ID);
 
-		builder.append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDonVi, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
+		builder.append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDungChung, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
 
 		log.debug("Set condition search");
-		this.setConditionSearch(req, builder, khDnCapPhiBoNganh);
+		this.setConditionSearch(req, builder, khDnCapPhiBoNganh, dmDungChung);
 
 		log.debug("Create query");
 		TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
 
 		log.debug("Set parameter");
-		this.setParameterSearch(req, query, khDnCapPhiBoNganh);
+		this.setParameterSearch(req, query, khDnCapPhiBoNganh, dmDungChung);
 
 		return query.getSingleResult().intValue();
 	}
 
-	private void setParameterSearch(KhDnCapPhiBoNganhSearchRequest req, Query query, QueryUtils khDnCapPhiBoNganh) {
+	private void setParameterSearch(KhDnCapPhiBoNganhSearchRequest req, Query query, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
 		khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.SO_DE_NGHI, req.getSoDeNghi());
 		khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.MA_BO_NGANH, req.getMaBoNganh());
 		khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.NAM, req.getNam());
 		khDnCapPhiBoNganh.setParamStart(query, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay());
 		khDnCapPhiBoNganh.setParamEnd(query, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
+		dmDungChung.setParam(query, QlnvDanhMuc_.LOAI, "BO_NGANH");
+
 	}
 
 	private void buildSearchResponse (List<KhDnCapPhiBoNganhSearchResponse> responses) {
