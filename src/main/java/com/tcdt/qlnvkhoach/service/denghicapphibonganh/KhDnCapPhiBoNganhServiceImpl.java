@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.service.denghicapphibonganh;
 
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc;
 import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnCapPhiBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnCapPhiBoNganhCt1;
 import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnCapPhiBoNganhCt2;
@@ -12,6 +13,7 @@ import com.tcdt.qlnvkhoach.mapper.denghicapphibonganh.ct1.KhDnCapPhiBoNganhCt1Re
 import com.tcdt.qlnvkhoach.mapper.denghicapphibonganh.ct1.KhDnCapPhiBoNganhCt1ResponseMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapphibonganh.ct2.KhDnCapPhiBoNganhCt2RequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapphibonganh.ct2.KhDnCapPhiBoNganhCt2ResponseMapper;
+import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmVattuRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapphibonganh.KhDnCapPhiBoNganhCt1Repository;
 import com.tcdt.qlnvkhoach.repository.denghicapphibonganh.KhDnCapPhiBoNganhCt2Repository;
@@ -62,6 +64,7 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 	private final FileDinhKemService fileDinhKemService;
 	private final QlnvDmVattuRepository dmVattuRepository;
+	private final DanhMucRepository danhMucRepository;
 
 	private final KhDnCapPhiBoNganhCt1Repository ct1Repository;
 	private final KhDnCapPhiBoNganhCt2Repository ct2Repository;
@@ -238,29 +241,57 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			throw new Exception("Đề nghị cấp phí bộ ngành không tồn tại");
 		KhDnCapPhiBoNganh khDnCapPhiBoNganh = optional.get();
 
-		//Chi tiết
-		List<KhDnCapPhiBoNganhCt1> ctList = ct1Repository.findByDnCapPhiIdIn(Collections.singleton(khDnCapPhiBoNganh.getId()));
-		if (!CollectionUtils.isEmpty(ctList)) {
-			khDnCapPhiBoNganh.setChiTietList(ctList);
-		}
+		//Chi tiết 1
+		List<KhDnCapPhiBoNganhCt1> ct1List = ct1Repository.findByDnCapPhiIdIn(Collections.singleton(khDnCapPhiBoNganh.getId()));
+
+		//Chi tiết 2
+		List<KhDnCapPhiBoNganhCt2> ct2List =
+				ct2Repository.findByCapPhiBoNghanhCt1IdIn(ct1List.stream().map(KhDnCapPhiBoNganhCt1::getId).collect(Collectors.toSet()));
+		//Map ct2 key = ct1Id, value = List<KhDnCapPhiBoNganhCt2>
+		Map<Long, List<KhDnCapPhiBoNganhCt2>> ct2Map = ct2List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt2::getCapPhiBoNghanhCt1Id));
+
+		//Get mã vật tư
+		Set<String> maVatTuList = new HashSet<>();
+		ct2List.forEach(entry -> {
+			maVatTuList.add(entry.getMaVatTu());
+			maVatTuList.add(entry.getMaVatTuCha());
+		});
+
+		Map<String, QlnvDmVattu> vatTuMap = qlnvDmService.getMapVatTu(maVatTuList);
+
+		List<KhDnCapPhiBoNganhCt1Response> ct1Responses = ct1List.stream().map(item -> {
+			KhDnCapPhiBoNganhCt1Response ct1Response = ct1ResponseMapper.toDto(item);
+			if (ct2Map.get(ct1Response.getId()) != null) {
+				ct1Response.setCt2List(createCt2Response(ct2Map, vatTuMap, ct1Response));
+			}
+			return ct1Response;
+		}).collect(Collectors.toList());
+
 
 		KhDnCapPhiBoNganhResponse response = khDnCapPhiBoNganhResponseMapper.toDto(khDnCapPhiBoNganh);
+		response.setCt1List(ct1Responses);
 		//Trạng thái
 		response.setTenTrangThai(TrangThaiDungChungEnum.getTenById(khDnCapPhiBoNganh.getTrangThai()));
 		response.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(khDnCapPhiBoNganh.getTrangThai()));
 
-		//Đơn vị
+		//Bộ nghành
 		if (!StringUtils.isEmpty(response.getMaBoNganh())) {
-			response.setTenBoNganh(this.getMapTenDvi().get(response.getMaBoNganh()));
-		}
-
-		if (!CollectionUtils.isEmpty(response.getChiTietList())) {
-			this.buildChiTietResponse(response.getChiTietList());
+			QlnvDanhMuc danhMuc = danhMucRepository.findByMa(response.getMaBoNganh());
+			response.setTenBoNganh(danhMuc != null ? danhMuc.getGiaTri() : null);
 		}
 
 		response.setFileDinhKems(fileDinhKemService.search(khDnCapPhiBoNganh.getId(), Collections.singleton(KhDnCapPhiBoNganh.TABLE_NAME)));
 
 		return response;
+	}
+
+	private List<KhDnCapPhiBoNganhCt2Response> createCt2Response(Map<Long, List<KhDnCapPhiBoNganhCt2>> ct2Map, Map<String, QlnvDmVattu> vatTuMap, KhDnCapPhiBoNganhCt1Response ct1Response) {
+		List<KhDnCapPhiBoNganhCt2Response> ct2ResponseList = ct2ResponseMapper.toDto(ct2Map.get(ct1Response.getId()));
+		ct2ResponseList.forEach(ct2 -> {
+			ct2.setTenVatTu(Optional.ofNullable(vatTuMap.get(ct2.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
+			ct2.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(ct2.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
+		});
+		return ct2ResponseList;
 	}
 
 

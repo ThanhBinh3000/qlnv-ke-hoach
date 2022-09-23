@@ -29,4 +29,5 @@ public class KhDnCapPhiBoNganhResponse extends CommonResponse {
     private String capDvi;
     private List<FileDinhKemChung> fileDinhKems;
     private List<KhDnCapPhiBoNganhCt1Response> ct1List;
+    private String tenBoNganh;
 }

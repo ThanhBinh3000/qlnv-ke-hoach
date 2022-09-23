@@ -4,7 +4,9 @@ package com.tcdt.qlnvkhoach.repository.denghicapphibonganh;
 import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc;
 import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc_;
 import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnCapPhiBoNganh;
+import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnCapPhiBoNganhCt2;
 import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnCapPhiBoNganh_;
+import com.tcdt.qlnvkhoach.enums.Operator;
 import com.tcdt.qlnvkhoach.request.denghicapphibonganh.KhDnCapPhiBoNganhSearchRequest;
 import com.tcdt.qlnvkhoach.response.denghicapphibonganh.KhDnCapPhiBoNganhSearchResponse;
 import com.tcdt.qlnvkhoach.util.QueryUtils;
@@ -118,27 +120,27 @@ public class KhDnCapPhiBoNganhRepositoryCustomImpl implements KhDnCapPhiBoNganhR
 
 	private void buildSearchResponse (List<KhDnCapPhiBoNganhSearchResponse> responses) {
 		Set<Long> ids = responses.stream().map(KhDnCapPhiBoNganhSearchResponse::getId).collect(Collectors.toSet());
-		List<KhDnCapPhiBoNganhCt> chiTietList = chiTietRepository.findByDeNghiCapVonBoNganhIdIn(ids);
+		List<KhDnCapPhiBoNganhCt2> chiTietList = ct2Repository.findByCapPhiBoNghanhCt1IdIn(ids);
 		if (CollectionUtils.isEmpty(chiTietList)) return;
 
 		//group chi tiết : key = deNghiCapVonBoNganhId, value = List<KhDnCapPhiBoNganhCt>
-		Map<Long, List<KhDnCapPhiBoNganhCt>> chiTietMap = chiTietList.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt::getDeNghiCapVonBoNganhId));
+		Map<Long, List<KhDnCapPhiBoNganhCt2>> chiTietMap = chiTietList.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt::getDeNghiCapVonBoNganhId));
 
 		responses.forEach(item -> {
-			List<KhDnCapPhiBoNganhCt> ctList = chiTietMap.get(item.getId());
+			List<KhDnCapPhiBoNganhCt2> ctList = chiTietMap.get(item.getId());
 			if (CollectionUtils.isEmpty(ctList)) return;
 			BigDecimal tongTien = ctList.stream()
-					.map(KhDnCapPhiBoNganhCt::getThanhTien)
+					.map(KhDnCapPhiBoNganhCt2::getThanhTien)
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			item.setTongTien(tongTien);
 
 			BigDecimal kinhPhiDaCap = ctList.stream()
-					.map(KhDnCapPhiBoNganhCt::getKinhPhiDaCap)
+					.map(KhDnCapPhiBoNganhCt2::getKinhPhiDaCap)
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			item.setKinhPhiDaCap(kinhPhiDaCap);
 
 			BigDecimal ycCapThem = ctList.stream()
-					.map(KhDnCapPhiBoNganhCt::getYcCapThem)
+					.map(KhDnCapPhiBoNganhCt2::getYcCapThem)
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
 			item.setYcCapThem(ycCapThem);
 		});
