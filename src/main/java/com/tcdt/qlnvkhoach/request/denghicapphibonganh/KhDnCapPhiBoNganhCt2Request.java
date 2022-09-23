@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,9 +19,9 @@ public class KhDnCapPhiBoNganhCt2Request {
 	private Long id;
 	private String loaiChiPhi;
 	private Long namPhatSinh;
-	private Long tongChiPhi;
-	private Long kinhPhiDaCap;
-	private Long yeuCauCapThem;
+	private BigDecimal tongTien;
+	private BigDecimal kinhPhiDaCap;
+	private BigDecimal yeuCauCapThem;
 	private Long capPhiBoNghanhCt1Id;
 	private String maVatTuCha;
 	private String maVatTu;

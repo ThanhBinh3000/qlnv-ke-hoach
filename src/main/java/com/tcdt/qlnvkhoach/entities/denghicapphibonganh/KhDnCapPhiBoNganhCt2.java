@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = KhDnCapPhiBoNganhCt2.TABLE_NAME)
@@ -30,14 +31,14 @@ public class KhDnCapPhiBoNganhCt2 implements Serializable {
     @Column(name = "NAM_PHAT_SINH")
     private Long namPhatSinh;
 
-    @Column(name = "TONG_CHI_PHI")
-    private Long tongChiPhi;
+    @Column(name = "TONG_TIEN")
+    private BigDecimal tongTien;
 
     @Column(name = "KINH_PHI_DA_CAP")
-    private Long kinhPhiDaCap;
+    private BigDecimal kinhPhiDaCap;
 
     @Column(name = "YEU_CAU_CAP_THEM")
-    private Long yeuCauCapThem;
+    private BigDecimal yeuCauCapThem;
 
     @Column(name = "CAP_PHI_BO_NGHANH_CT1_ID")
     private Long capPhiBoNghanhCt1Id;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -46,7 +47,8 @@ public class KhDnCapPhiBoNganhCt1 implements Serializable {
     private Long dnCapPhiId;
 
     @Column(name = "YC_CAP_THEM_PHI")
-    private String ycCapThemPhi;
+    private BigDecimal ycCapThemPhi;
+
     @Transient
     private List<KhDnCapPhiBoNganhCt2> ct2List;
 }

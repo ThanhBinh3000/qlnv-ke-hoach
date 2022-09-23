@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -22,6 +23,6 @@ public class KhDnCapPhiBoNganhCt1Response {
     private String nganHang;
     private String tenHangHoa;
     private Long dnCapPhiId;
-    private String ycCapThemPhi;
+    private BigDecimal ycCapThemPhi;
     private List<KhDnCapPhiBoNganhCt2Response> ct2List;
 }
