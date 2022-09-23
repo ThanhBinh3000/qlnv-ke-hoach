@@ -11,4 +11,5 @@ public class KhDnThCapVonCtResponse extends KhDnCapVonBoNganhResponse{
     private BigDecimal tongTien;
     private BigDecimal kinhPhiDaCap;
     private BigDecimal ycCapThem;
+    private BigDecimal tcCapThem;
 }

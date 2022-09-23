@@ -29,5 +29,6 @@ public class KhDnCapVonBoNganhCtRequest {
 	private String soTaiKhoan;
 	private String nganHang;
 	private String tenHangHoa;
+	private BigDecimal donGia;
 
 }

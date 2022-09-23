@@ -1,5 +1,7 @@
 package com.tcdt.qlnvkhoach.request.denghicapvonbonganh;
 
+import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.request.object.catalog.FileDinhKemReq;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,5 +29,11 @@ public class KhDnThCapVonRequest {
 
     private String capDvi;
 
+    private String maToTrinh;
+
     private List<Long> khDnCapVonIds = new ArrayList<>();
+
+    private List<KhDnThCapVonCt1Request> ct1s = new ArrayList<>();
+
+    private FileDinhKemReq fileDinhKem;
 }

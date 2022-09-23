@@ -1,14 +1,14 @@
 package com.tcdt.qlnvkhoach.repository.denghicapvonbonganh;
 
 
+import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc;
+import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc_;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh_;
 import com.tcdt.qlnvkhoach.enums.Operator;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhSearchResponse;
-import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
-import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi_;
 import com.tcdt.qlnvkhoach.util.QueryUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,21 +40,21 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
 	public Page<KhDnCapVonBoNganhSearchResponse> search(KhDnCapVonBoNganhSearchRequest req, Pageable pageable) {
 		StringBuilder builder = new StringBuilder();
 		QueryUtils khDnCapVonBoNganh = QueryUtils.builder().clazz(KhDnCapVonBoNganh.class).alias("khDnCapVonBoNganh").build();
-		QueryUtils dmDonVi = QueryUtils.builder().clazz(QlnvDmDonvi.class).alias("dmDonVi").build();
+		QueryUtils dmDungChung = QueryUtils.builder().clazz(QlnvDanhMuc.class).alias("dmDungChung").build();
 
 
 		log.debug("Build select query");
 		builder.append(QueryUtils.SELECT);
 		QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.ID);
 		QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.SO_DE_NGHI);
-		QueryUtils.selectFields(builder, dmDonVi, QlnvDmDonvi_.TEN_DVI);
+		QueryUtils.selectFields(builder, dmDungChung, QlnvDanhMuc_.GIA_TRI);
 		QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.NGAY_DE_NGHI);
 		QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.NAM);
 		QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.TRANG_THAI);
 
 		builder.append(QueryUtils.FROM)
 				.append(khDnCapVonBoNganh.buildAliasName())
-				.append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDonVi, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDmDonvi_.MA_DVI));
+				.append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDungChung, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
 
 		log.debug("Set Condition search");
 		this.setConditionSearch(req, builder, khDnCapVonBoNganh);
@@ -76,7 +76,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
 		//Build thông tin tổng tiền, kinh phí đã cấp, yêu cầu cấp thêm
 		this.buildSearchResponse(responses);
 
-		return new PageImpl<>(responses, pageable, this.count(req, khDnCapVonBoNganh, dmDonVi));
+		return new PageImpl<>(responses, pageable, this.count(req, khDnCapVonBoNganh, dmDungChung));
 	}
 
 
@@ -93,7 +93,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
 		log.debug("Build count query");
 		StringBuilder builder = khDnCapVonBoNganh.countBy(KhDnCapVonBoNganh_.ID);
 
-		builder.append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDonVi, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDmDonvi_.MA_DVI));
+		builder.append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDonVi, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
 
 		log.debug("Set condition search");
 		this.setConditionSearch(req, builder, khDnCapVonBoNganh);
