@@ -30,6 +30,8 @@ public class FileDinhKemServiceImpl implements FileDinhKemService {
 
         List<FileDinhKemChung> fileDinhKems = new ArrayList<>();
         for (FileDinhKemReq dinhKemReq : fileDinhKemReqs) {
+            if (dinhKemReq == null)
+                continue;
             FileDinhKemChung dinhKem = new ModelMapper().map(dinhKemReq, FileDinhKemChung.class);
             dinhKem.setCreateDate(new Date());
             dinhKem.setDataType(dataType);
