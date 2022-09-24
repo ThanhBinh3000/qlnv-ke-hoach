@@ -21,7 +21,7 @@ public class KhDnThCapPhiRepositoryCustomImpl implements KhDnThCapPhiRepositoryC
     @Override
     public List<KhDnThCapPhi> search(KhDnThCapPhiSearchRequest req, Pageable pageable) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT bb FROM KhDnThCapVon bb ");
+        builder.append("SELECT bb FROM KhDnThCapPhi bb ");
         setConditionSearchCtkhn(req, builder);
 
         //Sort
@@ -72,7 +72,7 @@ public class KhDnThCapPhiRepositoryCustomImpl implements KhDnThCapPhiRepositoryC
     @Override
     public int count(KhDnThCapPhiSearchRequest req) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT COUNT(DISTINCT bb.id) FROM KhDnThCapVon bb ");
+        builder.append("SELECT COUNT(DISTINCT bb.id) FROM KhDnThCapPhi bb ");
         this.setConditionSearchCtkhn(req, builder);
 
         TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
