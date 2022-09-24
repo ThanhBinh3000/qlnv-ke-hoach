@@ -32,6 +32,7 @@ public class VonTtDuyetYDuToanResponse {
     private String loai;
     private String khoan;
     private String chuong;
+    private String nhanXet;
 
     private List<VonTtDuyetYDuToanCtResponse> chiTietList;
 

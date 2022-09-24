@@ -57,6 +57,9 @@ public class VonTtDuyetYDuToan extends TrangThaiBaseEntity implements Serializab
     @Column(name = "MA_DVI")
     private String maDvi;
 
+    @Column(name = "NHAN_XET")
+    private String nhanXet;
+
     @Transient
     private List<VonTtDuyetYDuToanCt> chiTietList;
 

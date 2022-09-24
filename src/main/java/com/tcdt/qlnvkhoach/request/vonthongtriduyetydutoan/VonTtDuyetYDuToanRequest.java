@@ -39,6 +39,8 @@ public class VonTtDuyetYDuToanRequest {
     private String khoan;
     @NotNull(message = "Không được để trống")
     private String chuong;
+    @NotNull(message = "Không được để trống")
+    private String nhanXet;
 
     private List<VonTtDuyetYDuToanCtRequest> chiTietList;
     private List<FileDinhKemReq> fileDinhKems;

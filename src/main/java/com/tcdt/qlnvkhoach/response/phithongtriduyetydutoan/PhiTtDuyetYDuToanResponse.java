@@ -31,6 +31,7 @@ public class PhiTtDuyetYDuToanResponse {
     private String loai;
     private String khoan;
     private String chuong;
+    private String nhanXet;
 
     private List<PhiTtDuyetYDuToanCtResponse> chiTietList;
 
