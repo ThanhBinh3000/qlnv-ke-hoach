@@ -160,7 +160,7 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
         UserInfo userInfo = SecurityContextService.getUser();
         Optional<VonTongHopTheoDoi> optional = repository.findById(stReq.getId());
         if (!optional.isPresent())
-            throw new Exception("Thông tri duyệt y dự toán không tồn tại.");
+            throw new Exception("Tổng hợp theo dõi cấp vốn không tồn tại.");
 
         VonTongHopTheoDoi item = optional.get();
         String trangThai = item.getTrangThai();

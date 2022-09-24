@@ -160,7 +160,7 @@ public class PhiTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Phi
         UserInfo userInfo = SecurityContextService.getUser();
         Optional<PhiTongHopTheoDoi> optional = repository.findById(stReq.getId());
         if (!optional.isPresent())
-            throw new Exception("Thông tri duyệt y dự toán không tồn tại.");
+            throw new Exception("Tổng hợp theo dõi cấp phí không tồn tại.");
 
         PhiTongHopTheoDoi item = optional.get();
         String trangThai = item.getTrangThai();
