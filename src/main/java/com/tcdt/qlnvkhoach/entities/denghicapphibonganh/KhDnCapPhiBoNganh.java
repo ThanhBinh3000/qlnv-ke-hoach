@@ -49,6 +49,9 @@ public class KhDnCapPhiBoNganh extends TrangThaiBaseEntity implements Serializab
     @Column(name = "CAP_DVI")
     private String capDvi;
 
+    @Column(name = "KH_DN_TH_CAP_PHI_ID")
+    private Long khDnThCapPhiId;
+
     @Transient
     private List<FileDinhKemChung> fileDinhKems;
 

@@ -14,4 +14,5 @@ public interface KhDnCapPhiBoNganhRepository extends BaseRepository<KhDnCapPhiBo
 
 	List<KhDnCapPhiBoNganh> findByIdIn(List<Long> ids);
 
+	List<KhDnCapPhiBoNganh> findByKhDnThCapPhiIdIn(List<Long> ids);
 }

@@ -1,11 +1,13 @@
 package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVon;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVonCt1;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
+import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnThCapVonCt1Repository;
@@ -51,6 +53,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private final KhDnCapVonBoNganhCtRepository khDnCapVonBoNganhCtRepository;
     private final KhDnThCapVonCt1Repository khDnThCapVonCt1Repository;
     private final FileDinhKemService fileDinhKemService;
+    private final DanhMucRepository danhMucRepository;
 
     private static final String SHEET_TONG_HOP_DE_NGHI_CAP_VON_DTQG = "Tổng hợp đề nghị cấp vốn DTQG";
     private static final String STT = "STT";
@@ -151,18 +154,23 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private List<KhDnThCapVonCtResponse> buildKhDnThCapVonCtResponse(List<KhDnCapVonBoNganh> khDnCapVonBoNganhs) {
         Set<Long> ids = khDnCapVonBoNganhs.stream().map(KhDnCapVonBoNganh::getId).collect(Collectors.toSet());
         List<KhDnCapVonBoNganhCt> chiTietList = khDnCapVonBoNganhCtRepository.findByDeNghiCapVonBoNganhIdIn(ids);
-        if (CollectionUtils.isEmpty(chiTietList)) return Collections.emptyList();
 
         //group chi tiết : key = deNghiCapVonBoNganhId, value = List<KhDnCapVonBoNganhCt>
         Map<Long, List<KhDnCapVonBoNganhCt>> chiTietMap = chiTietList.stream().collect(Collectors.groupingBy(KhDnCapVonBoNganhCt::getDeNghiCapVonBoNganhId));
 
         List<KhDnThCapVonCtResponse> responses = new ArrayList<>();
 
+        //Bộ ngành
+        List<QlnvDanhMuc> danhMucs = danhMucRepository.findByMaIn(khDnCapVonBoNganhs.stream().map(KhDnCapVonBoNganh::getMaBoNganh).filter(Objects::nonNull).collect(Collectors.toList()));
+
         for (KhDnCapVonBoNganh khDnCapVonBoNganh : khDnCapVonBoNganhs) {
             KhDnThCapVonCtResponse response = new KhDnThCapVonCtResponse();
             BeanUtils.copyProperties(khDnCapVonBoNganh, response);
+            danhMucs.stream().filter(d -> d.getMa().equals(khDnCapVonBoNganh.getMaBoNganh())).findFirst()
+                    .ifPresent(d -> response.setTenBoNganh(d.getGiaTri()));
 
             List<KhDnCapVonBoNganhCt> ctList = chiTietMap.get(khDnCapVonBoNganh.getId());
+
 
             BigDecimal tongTien = ctList.stream()
                     .map(KhDnCapVonBoNganhCt::getThanhTien)

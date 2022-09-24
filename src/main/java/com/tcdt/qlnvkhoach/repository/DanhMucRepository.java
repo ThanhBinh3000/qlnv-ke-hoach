@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface DanhMucRepository extends CrudRepository<QlnvDanhMuc, Long> {
 
 	Iterable<QlnvDanhMuc> findByTrangThai(String trangThai);
@@ -16,5 +19,7 @@ public interface DanhMucRepository extends CrudRepository<QlnvDanhMuc, Long> {
 	void updateVal(String ma, Long shgtNext);
 
 	QlnvDanhMuc findByMa(String ma);
+
+	List<QlnvDanhMuc> findByMaIn(Collection<String> mas);
 
 }
