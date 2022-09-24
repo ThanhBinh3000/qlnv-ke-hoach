@@ -36,7 +36,7 @@ public class PhiTongHopTheoDoi extends TrangThaiBaseEntity implements Serializab
     private String maDviDuocDuyet;
 
     @Column(name = "SO_LENH_CHI_TIEN")
-    private Long soLenhChiTien;
+    private String soLenhChiTien;
 
     @Column(name = "CHUONG")
     private String chuong;

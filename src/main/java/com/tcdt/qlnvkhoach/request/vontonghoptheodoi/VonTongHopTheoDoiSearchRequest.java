@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class VonTongHopTheoDoiSearchRequest extends BaseRequest {
     private String soThongTri;
     private String maDviDuocDuyet;
-    private Long soLenhChiTien;
+    private String soLenhChiTien;
     private String chuong;
     private String loai;
     private String khoan;

@@ -48,7 +48,7 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
             kh.setSoThongTri(item.get("SO_THONG_TRI", String.class));
             kh.setMaDviDuocDuyet(item.get("MA_DVI_DUOC_DUYET", String.class));
             kh.setTenDviDuocDuyet(item.get("MA_DVI_DUOC_DUYET", String.class));
-            kh.setSoLenhChiTien(item.get("SO_LENH_CHI_TIEN", BigDecimal.class).longValue());
+            kh.setSoLenhChiTien(item.get("SO_LENH_CHI_TIEN", String.class));
             kh.setChuong(item.get("CHUONG", String.class));
             kh.setLoai(item.get("LOAI", String.class));
             kh.setKhoan(item.get("KHOAN", String.class));
