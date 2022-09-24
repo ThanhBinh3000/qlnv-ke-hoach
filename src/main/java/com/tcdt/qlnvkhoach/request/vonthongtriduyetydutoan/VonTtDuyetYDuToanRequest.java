@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,21 +21,23 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VonTtDuyetYDuToanRequest {
     private Long id;
-
+    @NotNull(message = "Không được để trống")
     private Integer nam;
-
+    @NotNull(message = "Không được để trống")
     private String soThongTri;
-
+    @NotNull(message = "Không được để trống")
     private LocalDate ngayLap;
-
+    @NotNull(message = "Không được để trống")
     private String lyDoChi;
-
+    @NotNull(message = "Không được để trống")
     private Long soDnCapVon;
-
+    @NotNull(message = "Không được để trống")
     private String maDvi;
+    @NotNull(message = "Không được để trống")
     private String loai;
-
+    @NotNull(message = "Không được để trống")
     private String khoan;
+    @NotNull(message = "Không được để trống")
     private String chuong;
 
     private List<VonTtDuyetYDuToanCtRequest> chiTietList;

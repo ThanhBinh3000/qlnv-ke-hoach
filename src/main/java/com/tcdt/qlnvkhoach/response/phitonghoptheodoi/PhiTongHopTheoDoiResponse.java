@@ -22,7 +22,7 @@ public class PhiTongHopTheoDoiResponse {
     private String soThongTri;
     private String maDviDuocDuyet;
     private String tenDviDuocDuyet;
-    private Long soLenhChiTien;
+    private String soLenhChiTien;
     private String chuong;
     private String loai;
     private String khoan;
