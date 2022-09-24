@@ -4,7 +4,6 @@ import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.phitonghoptheodoi.PhiTongHopTheoDoi;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
-import com.tcdt.qlnvkhoach.repository.catalog.QlnvDmDonviRepository;
 import com.tcdt.qlnvkhoach.repository.phitonghoptheodoi.PhiTongHopTheoDoiRepository;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
@@ -161,34 +160,17 @@ public class PhiTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Phi
         UserInfo userInfo = SecurityContextService.getUser();
         Optional<PhiTongHopTheoDoi> optional = repository.findById(stReq.getId());
         if (!optional.isPresent())
-            throw new Exception("Thông tri duyệt y dự toán không tồn tại.");
+            throw new Exception("Tổng hợp theo dõi cấp phí không tồn tại.");
 
         PhiTongHopTheoDoi item = optional.get();
         String trangThai = item.getTrangThai();
-        if (TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(stReq.getTrangThai())) {
+        if (TrangThaiDungChungEnum.BAN_HANH.getId().equals(stReq.getTrangThai())) {
             if (!TrangThaiDungChungEnum.DUTHAO.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(TrangThaiDungChungEnum.CHODUYET_LDV.getId());
-            item.setNguoiGuiDuyetId(userInfo.getId());
-            item.setNgayGuiDuyet(LocalDate.now());
-
-        } else if (TrangThaiDungChungEnum.DADUYET_LDV.getId().equals(stReq.getTrangThai())) {
-            if (!TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(trangThai))
-                return false;
-
-            item.setTrangThai(TrangThaiDungChungEnum.DADUYET_LDV.getId());
+            item.setTrangThai(TrangThaiDungChungEnum.BAN_HANH.getId());
             item.setNguoiPduyetId(userInfo.getId());
             item.setNgayPduyet(LocalDate.now());
-
-        } else if (TrangThaiDungChungEnum.TUCHOI_LDV.getId().equals(stReq.getTrangThai())) {
-            if (!TrangThaiDungChungEnum.CHODUYET_LDV.getId().equals(trangThai))
-                return false;
-
-            item.setTrangThai(TrangThaiDungChungEnum.TUCHOI_LDV.getId());
-            item.setNguoiPduyetId(userInfo.getId());
-            item.setNgayPduyet(LocalDate.now());
-            item.setLyDoTuChoi(stReq.getLyDoTuChoi());
 
         } else {
             throw new Exception("Bad request.");
