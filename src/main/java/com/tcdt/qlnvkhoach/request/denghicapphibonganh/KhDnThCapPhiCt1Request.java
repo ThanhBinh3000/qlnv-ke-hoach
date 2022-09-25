@@ -10,7 +10,12 @@ import java.util.List;
 @NoArgsConstructor
 public class KhDnThCapPhiCt1Request {
     private Integer stt;
-    private String loai;
     private String maBoNganh;
+    private String maVatTuCha;
+    private String maVatTu;
+    private String tenHangHoa;
+    private String soTaiKhoan;
+    private String nganHang;
+    private String tenDvCungCap;
     private List<KhDnThCapPhiCt2Request> ct2s = new ArrayList<>();
 }

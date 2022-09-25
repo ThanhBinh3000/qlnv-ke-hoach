@@ -142,6 +142,7 @@ public class KhDnThCapPhiServiceImpl extends BaseServiceImpl implements KhDnThCa
                 for (KhDnThCapPhiCt2Request ct2Request : ct2Requests) {
                     KhDnThCapPhiCt2 ct2 = new KhDnThCapPhiCt2();
                     BeanUtils.copyProperties(ct2Request, ct2, "id");
+                    ct2.setKhDnThCapPhiCt1Id(ct1.getId());
                     ct2s.add(ct2);
                     if (ct2.getYeuCauCapThem() != null)
                         ycCapThemPhi = ycCapThemPhi.add(ct2.getYeuCauCapThem());
@@ -212,7 +213,7 @@ public class KhDnThCapPhiServiceImpl extends BaseServiceImpl implements KhDnThCa
 
         //Get mã vật tư
         Set<String> maVatTuList = new HashSet<>();
-        ct2s.forEach(entry -> {
+        khDnThCapPhiCt1s.forEach(entry -> {
             maVatTuList.add(entry.getMaVatTu());
             maVatTuList.add(entry.getMaVatTuCha());
         });
@@ -228,17 +229,17 @@ public class KhDnThCapPhiServiceImpl extends BaseServiceImpl implements KhDnThCa
             danhMucs.stream().filter(d -> d.getMa().equals(khDnThCapPhiCt1.getMaBoNganh())).findFirst()
                     .ifPresent(d -> response.setTenBoNganh(d.getGiaTri()));
 
+            response.setTenVatTu(Optional.ofNullable(vatTuMap.get(khDnThCapPhiCt1.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
+            response.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(khDnThCapPhiCt1.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
+
             List<KhDnThCapPhiCt2> ctList = chiTietMap.get(khDnThCapPhiCt1.getId());
             List<KhDnCapPhiBoNganhCt2Response> ct2Responses = ctList.stream().map(c -> {
                 KhDnCapPhiBoNganhCt2Response ct2Response = new KhDnCapPhiBoNganhCt2Response();
                 BeanUtils.copyProperties(c, ct2Response);
-
-//                ct2Response.setTenVatTu(Optional.ofNullable(vatTuMap.get(c.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
-//                ct2Response.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(c.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
                 return ct2Response;
             }).collect(Collectors.toList());
 
-            response.setCt2List(ct2Responses);
+            response.setCt2s(ct2Responses);
             responses.add(response);
         }
         return responses;
@@ -251,7 +252,7 @@ public class KhDnThCapPhiServiceImpl extends BaseServiceImpl implements KhDnThCa
         res.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(item.getTrangThai()));
 
         res.setCts(this.buildKhDnThCt1Response(item.getCts()));
-        res.setCts(this.buildKhDnThCt1Response(item.getCt1s()));
+        res.setCt1s(this.buildKhDnThCt1Response(item.getCt1s()));
         this.setThongTinDonVi(res, item.getMaDvi());
 
 

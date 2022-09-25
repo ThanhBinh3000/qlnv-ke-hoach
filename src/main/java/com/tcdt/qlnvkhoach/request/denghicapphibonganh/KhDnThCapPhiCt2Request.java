@@ -23,7 +23,4 @@ public class KhDnThCapPhiCt2Request {
 	private BigDecimal kinhPhiDaCap;
 	private BigDecimal yeuCauCapThem;
 	private Long capPhiBoNghanhCt1Id;
-	private String maVatTuCha;
-	private String maVatTu;
-	private String tenHangHoa;
 }

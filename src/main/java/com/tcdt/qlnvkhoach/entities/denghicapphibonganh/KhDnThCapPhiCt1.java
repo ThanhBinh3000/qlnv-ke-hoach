@@ -52,6 +52,15 @@ public class KhDnThCapPhiCt1 implements Serializable {
     @Column(name = "MA_BO_NGANH")
     private String maBoNganh;
 
+    @Column(name = "MA_VAT_TU_CHA")
+    private String maVatTuCha;
+
+    @Column(name = "MA_VAT_TU")
+    private String maVatTu;
+
+    @Column(name = "TEN_HANG_HOA")
+    private String tenHangHoa;
+
     @Transient
     private List<KhDnThCapPhiCt2> ct2s;
 }

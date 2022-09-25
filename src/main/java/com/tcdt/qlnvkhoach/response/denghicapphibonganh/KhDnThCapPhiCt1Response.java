@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +22,5 @@ public class KhDnThCapPhiCt1Response extends KhDnCapPhiBoNganhCt1Response{
     private String loai;
     private String maBoNganh;
     private String tenBoNganh;
+    private List<KhDnCapPhiBoNganhCt2Response> ct2s;
 }

@@ -23,5 +23,5 @@ public class KhDnCapPhiBoNganhCt2Response {
 	private BigDecimal kinhPhiDaCap;
 	private BigDecimal yeuCauCapThem;
 	private Long capPhiBoNghanhCt1Id;
-
+	private Long khDnThCapPhiCt1Id;
 }
