@@ -233,8 +233,8 @@ public class KhDnThCapPhiServiceImpl extends BaseServiceImpl implements KhDnThCa
                 KhDnCapPhiBoNganhCt2Response ct2Response = new KhDnCapPhiBoNganhCt2Response();
                 BeanUtils.copyProperties(c, ct2Response);
 
-                ct2Response.setTenVatTu(Optional.ofNullable(vatTuMap.get(c.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
-                ct2Response.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(c.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
+//                ct2Response.setTenVatTu(Optional.ofNullable(vatTuMap.get(c.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
+//                ct2Response.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(c.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
                 return ct2Response;
             }).collect(Collectors.toList());
 

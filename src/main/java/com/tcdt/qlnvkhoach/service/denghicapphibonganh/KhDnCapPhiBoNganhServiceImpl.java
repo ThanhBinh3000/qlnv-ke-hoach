@@ -104,11 +104,8 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 	private Map<String, QlnvDmVattu> createMapVatTu(KhDnCapPhiBoNganhRequest req) {
 		Set<String> maVatTuIds = new HashSet<>();
 		req.getCt1List().forEach(v -> {
-			if (CollectionUtils.isEmpty(v.getCt2List())) return;
-			v.getCt2List().forEach(item -> {
-				maVatTuIds.add(item.getMaVatTu());
-				maVatTuIds.add(item.getMaVatTuCha());
-			});
+			maVatTuIds.add(v.getMaVatTu());
+			maVatTuIds.add(v.getMaVatTuCha());
 		});
 
 		if (CollectionUtils.isEmpty(maVatTuIds)) return null;
@@ -120,7 +117,7 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 		//Clean data before save
 		this.deleteChiTiets(Collections.singleton(theEntity.getId()));
 
-		Map<String, QlnvDmVattu> vattuMap = this.createMapVatTu(req);
+		Map<String, QlnvDmVattu> mapVatTu = this.createMapVatTu(req);
 
 		//Save chi tiết
 		List<KhDnCapPhiBoNganhCt1Response> chiTietList = req.getCt1List().stream().map(entry -> {
@@ -128,7 +125,10 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			ct1.setDnCapPhiId(theEntity.getId());
 			ct1 = ct1Repository.save(ct1);
 			KhDnCapPhiBoNganhCt1Response ct1Response = ct1ResponseMapper.toDto(ct1);
-			List<KhDnCapPhiBoNganhCt2Response> ct2List = saveCt2(entry.getCt2List(), ct1, vattuMap);
+			ct1Response.setTenVatTu(Optional.ofNullable(mapVatTu.get(ct1Response.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
+			ct1Response.setTenVatTuCha(Optional.ofNullable(mapVatTu.get(ct1Response.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
+
+			List<KhDnCapPhiBoNganhCt2Response> ct2List = saveCt2(entry.getCt2List(), ct1, mapVatTu);
 			ct1Response.setCt2List(ct2List);
 			return ct1Response;
 		}).collect(Collectors.toList());
@@ -143,8 +143,6 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			ct2.setCapPhiBoNghanhCt1Id(ct1.getId());
 			ct2 = ct2Repository.save(ct2);
 			KhDnCapPhiBoNganhCt2Response ct2Response = ct2ResponseMapper.toDto(ct2);
-			ct2Response.setTenVatTu(Optional.ofNullable(vattuMap.get(ct2Response.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
-			ct2Response.setTenVatTuCha(Optional.ofNullable(vattuMap.get(ct2Response.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
 			return ct2Response;
 		}).collect(Collectors.toList());
 		return chiTietList;
@@ -252,7 +250,7 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 		//Get mã vật tư
 		Set<String> maVatTuList = new HashSet<>();
-		ct2List.forEach(entry -> {
+		ct1List.forEach(entry -> {
 			maVatTuList.add(entry.getMaVatTu());
 			maVatTuList.add(entry.getMaVatTuCha());
 		});
@@ -261,6 +259,8 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 		List<KhDnCapPhiBoNganhCt1Response> ct1Responses = ct1List.stream().map(item -> {
 			KhDnCapPhiBoNganhCt1Response ct1Response = ct1ResponseMapper.toDto(item);
+			ct1Response.setTenVatTu(Optional.ofNullable(vatTuMap.get(ct1Response.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
+			ct1Response.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(ct1Response.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
 			if (ct2Map.get(ct1Response.getId()) != null) {
 				ct1Response.setCt2List(createCt2Response(ct2Map, vatTuMap, ct1Response));
 			}
@@ -287,10 +287,6 @@ public class KhDnCapPhiBoNganhServiceImpl extends BaseServiceImpl implements KhD
 
 	private List<KhDnCapPhiBoNganhCt2Response> createCt2Response(Map<Long, List<KhDnCapPhiBoNganhCt2>> ct2Map, Map<String, QlnvDmVattu> vatTuMap, KhDnCapPhiBoNganhCt1Response ct1Response) {
 		List<KhDnCapPhiBoNganhCt2Response> ct2ResponseList = ct2ResponseMapper.toDto(ct2Map.get(ct1Response.getId()));
-		ct2ResponseList.forEach(ct2 -> {
-			ct2.setTenVatTu(Optional.ofNullable(vatTuMap.get(ct2.getMaVatTu())).map(QlnvDmVattu::getTen).orElse(null));
-			ct2.setTenVatTuCha(Optional.ofNullable(vatTuMap.get(ct2.getMaVatTuCha())).map(QlnvDmVattu::getTen).orElse(null));
-		});
 		return ct2ResponseList;
 	}
 

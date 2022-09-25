@@ -42,13 +42,4 @@ public class KhDnCapPhiBoNganhCt2 implements Serializable {
 
     @Column(name = "CAP_PHI_BO_NGHANH_CT1_ID")
     private Long capPhiBoNghanhCt1Id;
-
-    @Column(name = "MA_VAT_TU_CHA")
-    private String maVatTuCha;
-
-    @Column(name = "MA_VAT_TU")
-    private String maVatTu;
-
-    @Column(name = "TEN_HANG_HOA")
-    private String tenHangHoa;
 }

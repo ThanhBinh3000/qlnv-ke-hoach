@@ -42,4 +42,13 @@ public class KhDnCapPhiBoNganhCt1 implements Serializable {
 
     @Transient
     private List<KhDnCapPhiBoNganhCt2> ct2List;
+
+    @Column(name = "MA_VAT_TU_CHA")
+    private String maVatTuCha;
+
+    @Column(name = "MA_VAT_TU")
+    private String maVatTu;
+
+    @Column(name = "TEN_HANG_HOA")
+    private String tenHangHoa;
 }
