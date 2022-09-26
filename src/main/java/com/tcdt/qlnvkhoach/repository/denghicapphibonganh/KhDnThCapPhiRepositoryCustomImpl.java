@@ -1,7 +1,7 @@
-package com.tcdt.qlnvkhoach.repository.denghicapvonbonganh;
+package com.tcdt.qlnvkhoach.repository.denghicapphibonganh;
 
-import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVon;
-import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonSearchRequest;
+import com.tcdt.qlnvkhoach.entities.denghicapphibonganh.KhDnThCapPhi;
+import com.tcdt.qlnvkhoach.request.denghicapphibonganh.KhDnThCapPhiSearchRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,14 +14,14 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class KhDnThCapVonRepositoryCustomImpl implements KhDnThCapVonRepositoryCustom {
+public class KhDnThCapPhiRepositoryCustomImpl implements KhDnThCapPhiRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public List<KhDnThCapVon> search(KhDnThCapVonSearchRequest req, Pageable pageable) {
+    public List<KhDnThCapPhi> search(KhDnThCapPhiSearchRequest req, Pageable pageable) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT bb FROM KhDnThCapVon bb ");
+        builder.append("SELECT bb FROM KhDnThCapPhi bb ");
         setConditionSearchCtkhn(req, builder);
 
         //Sort
@@ -31,7 +31,7 @@ public class KhDnThCapVonRepositoryCustomImpl implements KhDnThCapVonRepositoryC
                     .map(o -> o.getProperty() + " " + o.getDirection()).collect(Collectors.joining(", ")));
         }
 
-        TypedQuery<KhDnThCapVon> query = em.createQuery(builder.toString(), KhDnThCapVon.class);
+        TypedQuery<KhDnThCapPhi> query = em.createQuery(builder.toString(), KhDnThCapPhi.class);
 
         //Set params
         this.setParameterSearchCtkhn(req, query);
@@ -42,7 +42,7 @@ public class KhDnThCapVonRepositoryCustomImpl implements KhDnThCapVonRepositoryC
     }
 
 
-    private void setConditionSearchCtkhn(KhDnThCapVonSearchRequest req, StringBuilder builder) {
+    private void setConditionSearchCtkhn(KhDnThCapPhiSearchRequest req, StringBuilder builder) {
         builder.append("WHERE 1 = 1 ");
 
         if (!StringUtils.isEmpty(req.getMaTongHop())) {
@@ -70,9 +70,9 @@ public class KhDnThCapVonRepositoryCustomImpl implements KhDnThCapVonRepositoryC
     }
 
     @Override
-    public int count(KhDnThCapVonSearchRequest req) {
+    public int count(KhDnThCapPhiSearchRequest req) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT COUNT(DISTINCT bb.id) FROM KhDnThCapVon bb ");
+        builder.append("SELECT COUNT(DISTINCT bb.id) FROM KhDnThCapPhi bb ");
         this.setConditionSearchCtkhn(req, builder);
 
         TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
@@ -81,7 +81,7 @@ public class KhDnThCapVonRepositoryCustomImpl implements KhDnThCapVonRepositoryC
         return query.getSingleResult().intValue();
     }
 
-    private void setParameterSearchCtkhn(KhDnThCapVonSearchRequest req, Query query) {
+    private void setParameterSearchCtkhn(KhDnThCapPhiSearchRequest req, Query query) {
 
         if (!StringUtils.isEmpty(req.getMaTongHop())) {
             query.setParameter("maTongHop", "%" + req.getMaTongHop().toLowerCase() + "%");
