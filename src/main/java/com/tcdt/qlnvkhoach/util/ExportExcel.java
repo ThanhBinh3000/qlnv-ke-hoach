@@ -113,7 +113,6 @@ public class ExportExcel {
                     sheet.setColumnWidth(colNum, (columnWidth + 4) * 256);
                 }
             }
-
             if (workbook != null) {
                 try {
                     String headStr = "attachment; filename=\"" + fileName + "\"";

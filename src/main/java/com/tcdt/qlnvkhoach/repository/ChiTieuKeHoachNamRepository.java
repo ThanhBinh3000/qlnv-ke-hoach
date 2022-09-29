@@ -36,4 +36,5 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
             "  OR  EXISTS (SELECT VT.ID FROM KH_CHI_TIEU_VAT_TU VT WHERE VT.CTKHN_ID = CT.ID  AND VT.MA_DVI = :maDvi)\n" +
             ") AND CT.LATEST = 1 ", nativeQuery = true)
     ChiTieuKeHoachNam getChiTieuDxKhLcntByMadvi(Long namKh,String maDvi);
+
 }
