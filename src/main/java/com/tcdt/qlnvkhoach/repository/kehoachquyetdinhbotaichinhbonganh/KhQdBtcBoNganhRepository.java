@@ -23,7 +23,7 @@ public interface KhQdBtcBoNganhRepository extends CrudRepository<KhQdBtcBoNganh,
             , nativeQuery = true)
     Page<KhQdBtcBoNganh> selectPage(Integer namQd, String soQd, String ngayQdTu, String ngayQdDen, String trichYeu, String trangThai,  Pageable pageable);
 
-    Optional<KhQdBtcBoNganh> findByNamQd(Integer namQd);
+    Optional<KhQdBtcBoNganh> findByNamQdAndIdTtcpBoNganh(Integer namQd,String idTtcpBoNganh);
     Optional<KhQdBtcBoNganh> findBySoQd (String soQd);
 
     @Transactional
