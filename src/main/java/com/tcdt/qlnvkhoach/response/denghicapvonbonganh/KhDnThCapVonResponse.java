@@ -39,6 +39,8 @@ public class KhDnThCapVonResponse extends CommonResponse {
 
     private BigDecimal tcCapThem;
 
+    private String maToTrinh;
+
     private List<KhDnThCapVonCtResponse> cts = new ArrayList<>();
 
     private List<KhDnThCapVonCtResponse> ct1s = new ArrayList<>();

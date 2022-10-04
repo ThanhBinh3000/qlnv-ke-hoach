@@ -29,6 +29,8 @@ public class KhDnThCapVonRequest {
 
     private String capDvi;
 
+    private String maToTrinh;
+
     private List<Long> khDnCapVonIds = new ArrayList<>();
 
     private List<KhDnThCapVonCt1Request> ct1s = new ArrayList<>();

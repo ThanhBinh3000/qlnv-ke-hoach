@@ -46,7 +46,7 @@ public class KhDnThCapVonRepositoryCustomImpl implements KhDnThCapVonRepositoryC
         builder.append("WHERE 1 = 1 ");
 
         if (!StringUtils.isEmpty(req.getMaTongHop())) {
-            builder.append("AND ").append("LOWER(bb.soBienBan) LIKE :soBienBan ");
+            builder.append("AND ").append("LOWER(bb.maTongHop) LIKE :maTongHop ");
         }
 
         if (req.getNgayTongHopTuNgay() != null) {

@@ -1,11 +1,13 @@
 package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
+import com.tcdt.qlnvkhoach.entities.QlnvDanhMuc;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVon;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVonCt1;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
+import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnThCapVonCt1Repository;
@@ -51,6 +53,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private final KhDnCapVonBoNganhCtRepository khDnCapVonBoNganhCtRepository;
     private final KhDnThCapVonCt1Repository khDnThCapVonCt1Repository;
     private final FileDinhKemService fileDinhKemService;
+    private final DanhMucRepository danhMucRepository;
 
     private static final String SHEET_TONG_HOP_DE_NGHI_CAP_VON_DTQG = "Tổng hợp đề nghị cấp vốn DTQG";
     private static final String STT = "STT";
@@ -78,9 +81,11 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         item.setNam(LocalDate.now().getYear());
 
         khDnThCapVonRepository.save(item);
-
+        item.setMaTongHop(String.valueOf(item.getId()));
         item.setCts(this.saveCts(item.getId(), req.getKhDnCapVonIds(), false));
         item.setCt1s(this.saveCt1s(item, req.getCt1s(), false));
+
+        khDnThCapVonRepository.save(item);
 
         List<FileDinhKemChung> fileDinhKemChungs = fileDinhKemService.saveListFileDinhKem(Collections.singletonList(req.getFileDinhKem()), item.getId(), KhDnThCapVon.TABLE_NAME);
         item.setFileDinhKem(fileDinhKemChungs.stream().findFirst().orElse(null));
@@ -120,21 +125,25 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
             List<KhDnCapVonBoNganh> khDnCapVons = khDnCapVonBoNganhRepository.findByIdIn(ct1Requests.stream().map(KhDnThCapVonCt1Request::getKhDnCapVonId).collect(Collectors.toList()));
             List<KhDnThCapVonCtResponse> cts = this.buildKhDnThCapVonCtResponse(khDnCapVons);
             item.setTongTien(cts.stream().map(KhDnThCapVonCtResponse::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add));
-            item.setTongTien(cts.stream().map(KhDnThCapVonCtResponse::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add));
-            item.setTongTien(cts.stream().map(KhDnThCapVonCtResponse::getTcCapThem).reduce(BigDecimal.ZERO, BigDecimal::add));
+            item.setKinhPhiDaCap(cts.stream().map(KhDnThCapVonCtResponse::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add));
             item.setYcCapThem(cts.stream().map(KhDnThCapVonCtResponse::getYcCapThem).reduce(BigDecimal.ZERO, BigDecimal::add));
 
+            BigDecimal tcCapThem = BigDecimal.ZERO;
             List<KhDnThCapVonCt1> ct1s = new ArrayList<>();
             for (KhDnThCapVonCt1Request ct1Request : ct1Requests) {
                 KhDnThCapVonCt1 ct1 = new KhDnThCapVonCt1();
                 ct1.setKhDnThId(item.getId());
                 ct1.setKhDnCapVonId(ct1Request.getKhDnCapVonId());
                 ct1.setTcCapThem(ct1Request.getTcCapThem());
+                ct1s.add(ct1);
+                if (ct1.getTcCapThem() != null) {
+                    tcCapThem = tcCapThem.add(ct1Request.getTcCapThem());
+                }
             }
 
             if (!CollectionUtils.isEmpty(ct1s)) {
                 khDnThCapVonCt1Repository.saveAll(ct1s);
-                khDnThCapVonRepository.save(item);
+                item.setTcCapThem(tcCapThem);
             }
             return ct1s;
         }
@@ -145,18 +154,23 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
     private List<KhDnThCapVonCtResponse> buildKhDnThCapVonCtResponse(List<KhDnCapVonBoNganh> khDnCapVonBoNganhs) {
         Set<Long> ids = khDnCapVonBoNganhs.stream().map(KhDnCapVonBoNganh::getId).collect(Collectors.toSet());
         List<KhDnCapVonBoNganhCt> chiTietList = khDnCapVonBoNganhCtRepository.findByDeNghiCapVonBoNganhIdIn(ids);
-        if (CollectionUtils.isEmpty(chiTietList)) return Collections.emptyList();
 
         //group chi tiết : key = deNghiCapVonBoNganhId, value = List<KhDnCapVonBoNganhCt>
         Map<Long, List<KhDnCapVonBoNganhCt>> chiTietMap = chiTietList.stream().collect(Collectors.groupingBy(KhDnCapVonBoNganhCt::getDeNghiCapVonBoNganhId));
 
         List<KhDnThCapVonCtResponse> responses = new ArrayList<>();
 
+        //Bộ ngành
+        List<QlnvDanhMuc> danhMucs = danhMucRepository.findByMaIn(khDnCapVonBoNganhs.stream().map(KhDnCapVonBoNganh::getMaBoNganh).filter(Objects::nonNull).collect(Collectors.toList()));
+
         for (KhDnCapVonBoNganh khDnCapVonBoNganh : khDnCapVonBoNganhs) {
             KhDnThCapVonCtResponse response = new KhDnThCapVonCtResponse();
             BeanUtils.copyProperties(khDnCapVonBoNganh, response);
+            danhMucs.stream().filter(d -> d.getMa().equals(khDnCapVonBoNganh.getMaBoNganh())).findFirst()
+                    .ifPresent(d -> response.setTenBoNganh(d.getGiaTri()));
 
             List<KhDnCapVonBoNganhCt> ctList = chiTietMap.get(khDnCapVonBoNganh.getId());
+
 
             BigDecimal tongTien = ctList.stream()
                     .map(KhDnCapVonBoNganhCt::getThanhTien)
@@ -219,6 +233,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         item.setCts(this.saveCts(item.getId(), req.getKhDnCapVonIds(), true));
         item.setCt1s(this.saveCt1s(item, req.getCt1s(), true));
 
+        khDnThCapVonRepository.save(item);
         List<FileDinhKemChung> fileDinhKemChungs = fileDinhKemService.saveListFileDinhKem(Collections.singletonList(req.getFileDinhKem()), item.getId(), KhDnThCapVon.TABLE_NAME);
         item.setFileDinhKem(fileDinhKemChungs.stream().findFirst().orElse(null));
         return this.buildResponse(item);

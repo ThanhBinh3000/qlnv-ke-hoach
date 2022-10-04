@@ -311,7 +311,7 @@ public class DxDcKeHoachNamServiceImpl implements DxDcKeHoachNamService {
             response.setTrangThaiDuyet(DxDcKeHoachNamStatusTongCucEnum.getTenById(dxDc.getTrangThaiTongCuc()));
         } else {
             response.setTenTrangThai(DxDcKeHoachNamStatusEnum.getTenById(dxDc.getTrangThai()));
-            response.setTrangThaiDuyet(DxDcKeHoachNamStatusEnum.getTrangThaiDuyetById(dxDc.getTrangThai()));
+            response.setTrangThaiDuyet(DxDcKeHoachNamStatusTongCucEnum.getTenById(dxDc.getTrangThai()));
         }
 
         response.setKeHoachNamId(qdGoc != null ? qdGoc.getId() : null);

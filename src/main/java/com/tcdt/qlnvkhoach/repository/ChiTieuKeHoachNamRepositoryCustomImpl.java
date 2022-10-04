@@ -77,6 +77,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 
 		//Set params
 		this.setParameterSearchCtkhn(req, query);
+
 		//Set pageable
 		query.setFirstResult(req.getPaggingReq().getPage() * req.getPaggingReq().getLimit()).setMaxResults(req.getPaggingReq().getLimit());
 		List<?> data = query.getResultList();
