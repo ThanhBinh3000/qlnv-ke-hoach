@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -249,6 +250,14 @@ public class KhQdBtcTcdtService {
         Optional<KhQdBtcTcdt> optional = khQdBtcTcdtRepository.findById(Long.valueOf(stReq.getId()));
         if (!optional.isPresent()){
             throw new Exception("Không tìm thấy dữ liệu");
+        }
+        Date date = new Date();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        simpleDateFormat.applyPattern("yyyy");
+        String format = simpleDateFormat.format(date);
+        if(optional.get().getNamQd() < Integer.valueOf(format)){
+            throw new Exception("Không thể ban hành đối với quyết định nhỏ hơn năm hiện tại");
         }
 
         String status = stReq.getTrangThai() + optional.get().getTrangThai();

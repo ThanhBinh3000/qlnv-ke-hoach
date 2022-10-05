@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class KhQdBtBoNganhSearchReq extends BaseRequest {
+
     Integer namQd;
 
     String soQd;

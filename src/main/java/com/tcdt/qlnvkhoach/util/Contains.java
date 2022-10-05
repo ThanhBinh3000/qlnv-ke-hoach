@@ -14,6 +14,9 @@ import java.util.Objects;
 
 public class Contains {
     public static final String FORMAT_DATE_STR = "yyyy-MM-dd";
+
+    public static final String FORMAT_DATE_TIME_STR = "yyyy-MM-dd HH:mm";
+
     public static String convertDateToString(Date date) throws Exception {
         if (Objects.isNull(date)) {
             return null;
@@ -198,6 +201,11 @@ public class Contains {
                 .put(Contains.LANHDAO_DUYET, "Lãnh đạo duyệt")
                 .get();
     }
+
+    // Cap trang don vi
+    public static final String CAP_TONG_CUC = "1";
+    public static final String CAP_CUC = "2";
+    public static final String CAP_CHI_CUC = "3";
 
 
 }

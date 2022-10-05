@@ -161,7 +161,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		BeanUtils.copyProperties(req, chiTieuKeHoachNam, "id");
 		chiTieuKeHoachNam.setNgayTao(LocalDateTime.now());
 		chiTieuKeHoachNam.setNguoiTaoId(userInfo.getId());
-		chiTieuKeHoachNam.setTrangThai(ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
+		chiTieuKeHoachNam.setTrangThai(!StringUtils.isEmpty(req.getTrangThai()) ? req.getTrangThai() : ChiTieuKeHoachNamStatusEnum.DU_THAO.getId());
 		chiTieuKeHoachNam.setLoaiQuyetDinh(loaiQd);
 		chiTieuKeHoachNam.setLatest(true);
 		chiTieuKeHoachNam.setQdGocId(qdGocId);
@@ -1619,15 +1619,13 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDV.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			} else {
-				if (chiTieuId == null)
-					throw new Exception("Căn cứ không được để trống");
-
+//				if (chiTieuId == null)
+//					throw new Exception("Căn cứ không được để trống");
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndMaDviAndQdGocId(namKeHoach, true, loaiQd, dvql, chiTieuId)
 						.stream().filter(c -> !ChiTieuKeHoachNamStatusEnum.TU_CHOI_TP.getId().equalsIgnoreCase(c.getTrangThai()) && !ChiTieuKeHoachNamStatusEnum.TU_CHOI_LDC.getId().equalsIgnoreCase(c.getTrangThai()))
 						.findFirst().orElse(null);
 			}
 		} else {
-
 			if (Constants.TONG_CUC.equalsIgnoreCase(capDvi)) {
 				return chiTieuKeHoachNamRepository.findByNamKeHoachAndLatestAndLoaiQuyetDinhAndCapDvi(namKeHoach, true, loaiQd, capDvi)
 						.stream().filter(c -> ChiTieuKeHoachNamStatusEnum.DU_THAO.getId().equalsIgnoreCase(c.getTrangThai())
