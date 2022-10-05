@@ -10,6 +10,7 @@ import com.tcdt.qlnvkhoach.entities.phuongangia.*;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiEnum;
 import com.tcdt.qlnvkhoach.enums.PAGTrangThaiTHEnum;
 import com.tcdt.qlnvkhoach.enums.PhuongAnGiaEnum;
+import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.FileDinhKemChungRepository;
 import com.tcdt.qlnvkhoach.repository.phuongangia.*;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
@@ -107,7 +108,7 @@ public class KhLtPagService extends BaseService {
         Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         try {
             data.getContent().forEach(f -> {
-                f.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(f.getTrangThai()));
                 f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
                 f.setTenLoaiVthh(StringUtils.isEmpty(f.getLoaiVthh()) ? null : hashMapHh.get(f.getLoaiVthh()));
                 f.setTenLoaiGia(StringUtils.isEmpty(f.getLoaiGia()) ? null : hashMapLoaiGia.get(f.getLoaiGia()));
