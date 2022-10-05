@@ -450,11 +450,14 @@ public class KhLtPagService extends BaseService {
         Collection dataType = new ArrayList();
         dataType.add(KhPhuongAnGia.TABLE_NAME);
         List<FileDinhKemChung> fileDinhKems = fileDinhKemChungRepository.findByDataIdAndDataTypeIn(data.getId(), dataType);
-//        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
         //Thông tin chung,can cu xac dinh gia (loại Vật tư)
         List<KhPagTtChung> listPagTtChungs = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
+        for (KhPagTtChung ttChung:listPagTtChungs){
+            ttChung.setTenCloaiVthh(StringUtils.isEmpty(data.getLoaiVthh()) ? null : hashMapHh.get(data.getLoaiVthh()));
+        }
         data.setPagTtChungs(listPagTtChungs);
         List<KhPagPpXacDinhGia> listPpXacDinhGia = khPagPpXacDinhGiaRepository.findByPhuongAnGiaIdIn(ids);
         data.setPagPpXacDinhGias(listPpXacDinhGia);
@@ -497,7 +500,7 @@ public class KhLtPagService extends BaseService {
         if (fileDinhKems.size() > 0) {
             data.setListFileCCs(fileDinhKems);
         }
-        data.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(data.getTrangThai()));
+        data.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(data.getTrangThai()));
         return data;
     }
 
