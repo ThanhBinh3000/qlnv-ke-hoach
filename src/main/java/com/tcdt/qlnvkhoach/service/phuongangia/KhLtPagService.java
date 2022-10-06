@@ -420,6 +420,7 @@ public class KhLtPagService extends BaseService {
             case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
             case Contains.CHODUYET_TP + Contains.TUCHOI_LDC:
             case Contains.CHODUYET_LDV + Contains.DUTHAO:
+            case Contains.CHODUYET_LDV + Contains.TUCHOI_LDV:
                 opPag.get().setNguoiGuiDuyet(userInfo.getId());
                 break;
             case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
