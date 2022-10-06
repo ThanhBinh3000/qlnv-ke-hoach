@@ -108,7 +108,7 @@ public class KhLtPagService extends BaseService {
         Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         try {
             data.getContent().forEach(f -> {
-                f.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(TrangThaiDungChungEnum.getTenById(f.getTrangThai()));
                 f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
                 f.setTenLoaiVthh(StringUtils.isEmpty(f.getLoaiVthh()) ? null : hashMapHh.get(f.getLoaiVthh()));
                 f.setTenLoaiGia(StringUtils.isEmpty(f.getLoaiGia()) ? null : hashMapLoaiGia.get(f.getLoaiGia()));
@@ -500,7 +500,7 @@ public class KhLtPagService extends BaseService {
         if (fileDinhKems.size() > 0) {
             data.setListFileCCs(fileDinhKems);
         }
-        data.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(data.getTrangThai()));
+        data.setTenTrangThai(TrangThaiDungChungEnum.getTenById(data.getTrangThai()));
         return data;
     }
 
