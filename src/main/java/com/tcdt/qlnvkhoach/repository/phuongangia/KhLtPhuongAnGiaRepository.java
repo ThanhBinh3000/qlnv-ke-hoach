@@ -54,7 +54,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 
   @Query("SELECT c FROM KhPhuongAnGia c WHERE 1=1 " +
 			"AND (c.trangThai in :#{#param.dsTrangThai})"+
-			"AND (c.type in :#{#param.type})"+
+			"AND (:#{#param.type} IS NULL OR c.type = :#{#param.type}) " +
       "AND (c.loaiVthh like '02%')"+
       "ORDER BY c.ngaySua desc , c.ngayTao desc")
   List<KhPhuongAnGia> DsToTrinhDeXuat(
