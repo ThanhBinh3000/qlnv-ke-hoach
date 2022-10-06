@@ -59,7 +59,7 @@ public class KhPagGctQdTcdtnnController extends BaseController {
     public final ResponseEntity<Resp> create(@Valid @RequestBody KhPagGctQdTcdtnnReq objReq) {
         Resp resp = new Resp();
         try {
-            resp.setData(khPagGctQdTcdtnnService.craete(objReq));
+            resp.setData(khPagGctQdTcdtnnService.create(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

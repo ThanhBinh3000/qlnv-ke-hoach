@@ -85,7 +85,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public KhPagGctQdTcdtnn craete(KhPagGctQdTcdtnnReq req) throws Exception {
+    public KhPagGctQdTcdtnn create(KhPagGctQdTcdtnnReq req) throws Exception {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");

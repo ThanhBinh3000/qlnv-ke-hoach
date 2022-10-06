@@ -288,6 +288,11 @@ public class KhLtTongHopPagService extends BaseService {
         ids.add(data.getId());
         List<KhPagTongHopCTiet> listPagTHChiTiets = khLtPagTongHopCTietRepository.findByPagThIdIn(ids);
         if (listPagTHChiTiets.size() > 0) {
+            List<String> maDvis = listPagTHChiTiets.stream().map(KhPagTongHopCTiet::getMaDvi).collect(Collectors.toList());
+            Map<String, QlnvDmDonvi> listDvi = qlnvDmService.getMapDonVi(maDvis);
+            listPagTHChiTiets.forEach(f -> {
+                f.setTenDvi(listDvi.get(f.getMaDvi()).getTenDvi());
+            });
             data.setPagChiTiets(listPagTHChiTiets);
         }
         data.setMaDvis(data.getLDonVi() != null ? new ArrayList<String>(Arrays.asList(data.getLDonVi().split(","))) : null);
