@@ -31,6 +31,7 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
     Optional<KhPagTongHop> findBySoToTrinh(String soToTrinh);
 
     @Query("SELECT c FROM KhPagTongHop c WHERE 1=1 " +
+            "AND (:#{#param.type} IS NULL OR c.type = :#{#param.type}) " +
             "AND (c.trangThaiTt in :#{#param.dsTrangThai})" +
             "ORDER BY c.ngaySua desc , c.ngayTao desc")
     List<KhPagTongHop> DsToTrinhDeXuat(

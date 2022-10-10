@@ -108,7 +108,7 @@ public class KhLtPagService extends BaseService {
         Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         try {
             data.getContent().forEach(f -> {
-                f.setTenTrangThai(TrangThaiDungChungEnum.getTrangThaiDuyetById(f.getTrangThai()));
+                f.setTenTrangThai(TrangThaiDungChungEnum.getTenById(f.getTrangThai()));
                 f.setTenTrangThaiTh(Contains.getThTongHop(f.getTrangThaiTh()));
                 f.setTenLoaiVthh(StringUtils.isEmpty(f.getLoaiVthh()) ? null : hashMapHh.get(f.getLoaiVthh()));
                 f.setTenLoaiGia(StringUtils.isEmpty(f.getLoaiGia()) ? null : hashMapLoaiGia.get(f.getLoaiGia()));
@@ -453,9 +453,6 @@ public class KhLtPagService extends BaseService {
 //        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
-        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
-        Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
-
         //Thông tin chung,can cu xac dinh gia (loại Vật tư)
         List<KhPagTtChung> listPagTtChungs = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
         data.setPagTtChungs(listPagTtChungs);
@@ -501,9 +498,6 @@ public class KhLtPagService extends BaseService {
             data.setListFileCCs(fileDinhKems);
         }
         data.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(data.getTrangThai()));
-        data.setTenLoaiVthh(hashMapHh.get(data.getLoaiVthh()));
-        data.setTenCloaiVthh(hashMapHh.get(data.getCloaiVthh()));
-        data.setTenLoaiGia(hashMapHh.get(data.getLoaiGia()));
         return data;
     }
 
