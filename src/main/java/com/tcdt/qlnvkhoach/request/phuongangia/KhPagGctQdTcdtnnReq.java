@@ -55,7 +55,7 @@ public class KhPagGctQdTcdtnnReq{
 
     private BigDecimal giaMtdbttVatBtc;
 
-    private List<Object> thongTinGia;
+    private List<KhPagTongHopCTiet> thongTinGia;
 
     private String pagType;
 
