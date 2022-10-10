@@ -450,7 +450,6 @@ public class KhLtPagService extends BaseService {
         Collection dataType = new ArrayList();
         dataType.add(KhPhuongAnGia.TABLE_NAME);
         List<FileDinhKemChung> fileDinhKems = fileDinhKemChungRepository.findByDataIdAndDataTypeIn(data.getId(), dataType);
-//        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
         //Thông tin chung,can cu xac dinh gia (loại Vật tư)
@@ -497,7 +496,12 @@ public class KhLtPagService extends BaseService {
         if (fileDinhKems.size() > 0) {
             data.setListFileCCs(fileDinhKems);
         }
+        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
         data.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(data.getTrangThai()));
+        data.setTenLoaiGia(hashMapLoaiGia.get(data.getLoaiGia()));
+        data.setTenLoaiVthh(hashMapHh.get(data.getLoaiVthh()));
+        data.setTenCloaiVthh(hashMapHh.get(data.getCloaiVthh()));
         return data;
     }
 
