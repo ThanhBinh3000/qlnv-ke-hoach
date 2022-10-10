@@ -420,7 +420,6 @@ public class KhLtPagService extends BaseService {
             case Contains.DADUYET_LDC + Contains.CHODUYET_LDC:
             case Contains.CHODUYET_TP + Contains.TUCHOI_LDC:
             case Contains.CHODUYET_LDV + Contains.DUTHAO:
-            case Contains.CHODUYET_LDV + Contains.TUCHOI_LDV:
                 opPag.get().setNguoiGuiDuyet(userInfo.getId());
                 break;
             case Contains.TUCHOI_TP + Contains.CHODUYET_TP:
@@ -451,14 +450,10 @@ public class KhLtPagService extends BaseService {
         Collection dataType = new ArrayList();
         dataType.add(KhPhuongAnGia.TABLE_NAME);
         List<FileDinhKemChung> fileDinhKems = fileDinhKemChungRepository.findByDataIdAndDataTypeIn(data.getId(), dataType);
-        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhPagDiaDiemDeHang> diaDiemDeHangs = khLtPagDiaDiemDeHangRepository.findByPagIdIn(ids);
         List<KhPagCcPhapLy> listPagCCPhapLy = khPagCcPhapLyRepository.findByPhuongAnGiaIdIn(ids);
         //Thông tin chung,can cu xac dinh gia (loại Vật tư)
         List<KhPagTtChung> listPagTtChungs = khPagTtChungRepository.findByPhuongAnGiaIdIn(ids);
-        for (KhPagTtChung ttChung:listPagTtChungs){
-            ttChung.setTenCloaiVthh(StringUtils.isEmpty(data.getLoaiVthh()) ? null : hashMapHh.get(data.getLoaiVthh()));
-        }
         data.setPagTtChungs(listPagTtChungs);
         List<KhPagPpXacDinhGia> listPpXacDinhGia = khPagPpXacDinhGiaRepository.findByPhuongAnGiaIdIn(ids);
         data.setPagPpXacDinhGias(listPpXacDinhGia);
@@ -501,7 +496,12 @@ public class KhLtPagService extends BaseService {
         if (fileDinhKems.size() > 0) {
             data.setListFileCCs(fileDinhKems);
         }
-        data.setTenTrangThai(TrangThaiDungChungEnum.getTenById(data.getTrangThai()));
+        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> hashMapLoaiGia = qlnvDmService.getListDanhMucChung("LOAI_GIA");
+        data.setTenTrangThai(PAGTrangThaiEnum.getTrangThaiDuyetById(data.getTrangThai()));
+        data.setTenLoaiGia(hashMapLoaiGia.get(data.getLoaiGia()));
+        data.setTenLoaiVthh(hashMapHh.get(data.getLoaiVthh()));
+        data.setTenCloaiVthh(hashMapHh.get(data.getCloaiVthh()));
         return data;
     }
 
