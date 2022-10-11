@@ -78,4 +78,6 @@ public class KhPagTongHopCTiet {
 
     @Transient
     private BigDecimal giaTdttBtcVat;
+    @Transient
+    private Long phuongAnGiaId;
 }
