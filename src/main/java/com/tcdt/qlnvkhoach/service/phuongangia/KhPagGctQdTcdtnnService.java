@@ -120,7 +120,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             });
             if (listThongTinGiaDeXuat != null) {
                 listThongTinGiaDeXuat.forEach(s -> {
-                    s.setQdBtcId(data.getId());
+                    s.setQdTcdtnnId(data.getId());
                 });
             }
             khPagTtChungRepository.saveAll(listThongTinGiaDeXuat);
