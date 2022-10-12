@@ -31,6 +31,12 @@ public class KhPagQdDcTcdtnnCTiet {
 
     @Column(name = "TEN_DVI")
     private String tenDvi;
+    @Column(name = "CLOAI_VTHH")
+    private String cloaiVthh;
+    @Column(name = "DVI_TINH")
+    private String dviTinh;
+    @Column(name = "TCHUAN_CLUONG")
+    private String tchuanCluong;
 
     @Column(name = "SO_LUONG")
     private Long soLuong;
