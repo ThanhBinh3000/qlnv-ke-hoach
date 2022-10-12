@@ -297,7 +297,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         Map<Long, List<KhPagTongHopCTiet>> mapListChitiet = lChitiets.stream().collect(Collectors.groupingBy(item -> item.getQdTcdtnnId()));
         data.forEach(item -> {
             if (item.getLoaiVthh().startsWith("02")) {
-                item.setThongTinGiaVt(khPagTtChungRepository.findByQdTcdtnnId(item.getId()));
+                List<KhPagTtChung> thongTinChungVt = khPagTtChungRepository.findByQdTcdtnnId(Long.valueOf(item.getId()));
+                item.setThongTinGiaVt(thongTinChungVt);
             } else {
                 item.setTchuanCluong(qlnvDmService.getTieuChuanCluongByMaLoaiVthh(item.getLoaiVthh()));
                 item.setThongTinGiaLt(mapListChitiet.get(item.getId()));
