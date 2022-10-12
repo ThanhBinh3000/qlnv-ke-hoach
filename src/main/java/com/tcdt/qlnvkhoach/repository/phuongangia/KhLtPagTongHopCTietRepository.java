@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,6 @@ public interface KhLtPagTongHopCTietRepository extends JpaRepository<KhPagTongHo
 	List<KhPagTongHopCTiet> findByPagThIdIn(List<Long> ids);
 
 	List<KhPagTongHopCTiet> findAllByQdTcdtnnId(Long idQd);
-
 	List<KhPagTongHopCTiet> findAllByQdTcdtnnIdIn(List<Long> idsQd);
 
 	@Transactional
