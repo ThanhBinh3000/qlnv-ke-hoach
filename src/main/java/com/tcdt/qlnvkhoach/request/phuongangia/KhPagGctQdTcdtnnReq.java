@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.request.phuongangia;
 
 import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTongHopCTiet;
+import com.tcdt.qlnvkhoach.entities.phuongangia.KhPagTtChung;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +56,9 @@ public class KhPagGctQdTcdtnnReq{
 
     private BigDecimal giaMtdbttVatBtc;
 
-    private List<KhPagTongHopCTiet> thongTinGia;
+    private List<KhPagTongHopCTiet> thongTinGiaLt;
+
+    private List<KhPagTtChung> thongTinGiaVt;
 
     private String pagType;
 

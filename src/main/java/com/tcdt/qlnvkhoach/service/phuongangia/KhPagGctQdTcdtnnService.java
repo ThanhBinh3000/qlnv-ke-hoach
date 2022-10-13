@@ -89,9 +89,16 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null)
             throw new Exception("Bad request.");
-        if (req.getThongTinGia() == null || req.getThongTinGia().size() == 0) {
-            throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
+        if (req.getLoaiVthh().startsWith("02")) {
+            if (req.getThongTinGiaVt() == null || req.getThongTinGiaVt().size() == 0) {
+                throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
+            }
+        } else {
+            if (req.getThongTinGiaLt() == null || req.getThongTinGiaLt().size() == 0) {
+                throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
+            }
         }
+
         Optional<KhPagGctQdTcdtnn> optional = khPagGctQdTcdtnnRepository.findBySoQd(req.getSoQd());
         if (optional.isPresent())
             throw new Exception("số quyết định đã tồn tại");
@@ -105,10 +112,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         data.setCapDvi(userInfo.getCapDvi());
         KhPagGctQdTcdtnn save = khPagGctQdTcdtnnRepository.save(data);
         //lưu thong tin giá
-        String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (!req.getLoaiVthh().startsWith("02")) {
-            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
-            });
+            List<KhPagTongHopCTiet> listThongTinGiaTongHop = req.getThongTinGiaLt();
             if (listThongTinGiaTongHop != null) {
                 listThongTinGiaTongHop.forEach(s -> {
                     s.setQdTcdtnnId(data.getId());
@@ -116,8 +121,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             }
             khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
         } else {
-            List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
-            });
+            List<KhPagTtChung> listThongTinGiaDeXuat = req.getThongTinGiaVt();
             if (listThongTinGiaDeXuat != null) {
                 listThongTinGiaDeXuat.forEach(s -> {
                     s.setQdTcdtnnId(data.getId());
@@ -148,11 +152,8 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         KhPagGctQdTcdtnn data = optional.get();
         BeanUtils.copyProperties(req, data, "id");
         KhPagGctQdTcdtnn update = khPagGctQdTcdtnnRepository.save(data);
-        //lưu thong tin giá
-        String strThongTinGia = objectMapper.writeValueAsString(req.getThongTinGia());
         if (!req.getLoaiVthh().startsWith("02")) {
-            List<KhPagTongHopCTiet> listThongTinGiaTongHop = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTongHopCTiet>>() {
-            });
+            List<KhPagTongHopCTiet> listThongTinGiaTongHop = req.getThongTinGiaLt();
             if (listThongTinGiaTongHop != null) {
                 listThongTinGiaTongHop.forEach(s -> {
                     s.setQdTcdtnnId(data.getId());
@@ -160,11 +161,10 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             }
             khLtPagTongHopCTietRepository.saveAll(listThongTinGiaTongHop);
         } else {
-            List<KhPagTtChung> listThongTinGiaDeXuat = objectMapper.readValue(strThongTinGia, new TypeReference<List<KhPagTtChung>>() {
-            });
+            List<KhPagTtChung> listThongTinGiaDeXuat = req.getThongTinGiaVt();
             if (listThongTinGiaDeXuat != null) {
                 listThongTinGiaDeXuat.forEach(s -> {
-                    s.setQdBtcId(data.getId());
+                    s.setQdTcdtnnId(data.getId());
                 });
             }
             khPagTtChungRepository.saveAll(listThongTinGiaDeXuat);
@@ -174,23 +174,43 @@ public class KhPagGctQdTcdtnnService extends BaseService {
 
     public KhPagGctQdTcdtnn detail(String id) throws Exception {
         Optional<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.findById(Long.valueOf(id));
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         if (!data.isPresent()) {
             throw new Exception("Không tìm thấy dữ liệu");
         }
-        List<KhPagTongHopCTiet> thongTinGia = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(Long.valueOf(id));
-        data.get().setThongTinGia(thongTinGia);
-        return data.get();
+        KhPagGctQdTcdtnn detail = data.get();
+        detail.setTenLoaiVthh(hashMapHh.get(detail.getLoaiVthh()));
+        if (detail.getLoaiVthh().startsWith("02")) {
+            List<KhPagTtChung> thongTinChungVt = khPagTtChungRepository.findByQdTcdtnnId(Long.valueOf(id));
+            detail.setThongTinGiaVt(thongTinChungVt);
+            thongTinChungVt.forEach(item -> {
+                item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
+            });
+        } else  {
+            List<KhPagTongHopCTiet> thongTinGiaLt = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(Long.valueOf(id));
+            detail.setThongTinGiaLt(thongTinGiaLt);
+        }
+        return detail;
     }
 
     @Transactional(rollbackOn = Exception.class)
     public void delete(Long id) {
         Optional<KhPagGctQdTcdtnn> optional = khPagGctQdTcdtnnRepository.findById(id);
         if (!optional.isPresent()) throw new UnsupportedOperationException("id không tồn tại");
-        List<KhPagTongHopCTiet> listCTiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(id);
-        listCTiets.forEach(item -> {
-            item.setQdTcdtnnId(null);
-        });
-        khLtPagTongHopCTietRepository.saveAll(listCTiets);
+        if (optional.get().getLoaiVthh().startsWith("02")) {
+            List<KhPagTtChung> ttChungs = khPagTtChungRepository.findByQdTcdtnnId(id);
+            ttChungs.forEach(item -> {
+                item.setQdTcdtnnId(null);
+            });
+            khPagTtChungRepository.saveAll(ttChungs);
+        } else {
+            List<KhPagTongHopCTiet> listCTiets = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(id);
+            listCTiets.forEach(item -> {
+                item.setQdTcdtnnId(null);
+            });
+            khLtPagTongHopCTietRepository.saveAll(listCTiets);
+        }
+
         khPagGctQdTcdtnnRepository.delete(optional.get());
     }
 
@@ -276,11 +296,16 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         });
         Map<Long, List<KhPagTongHopCTiet>> mapListChitiet = lChitiets.stream().collect(Collectors.groupingBy(item -> item.getQdTcdtnnId()));
         data.forEach(item -> {
-            item.setTchuanCluong(qlnvDmService.getTieuChuanCluongByMaLoaiVthh(item.getLoaiVthh()));
-            item.setThongTinGia(mapListChitiet.get(item.getId()));
-            item.setTenLoaiGia(mapLoaiGia.get(item.getLoaiGia()));
-            item.setTenLoaiVthh(mapHh.get(item.getLoaiVthh()));
-            item.setTenCloaiVthh(mapHh.get(item.getCloaiVthh()));
+            if (item.getLoaiVthh().startsWith("02")) {
+                List<KhPagTtChung> thongTinChungVt = khPagTtChungRepository.findByQdTcdtnnId(Long.valueOf(item.getId()));
+                item.setThongTinGiaVt(thongTinChungVt);
+            } else {
+                item.setTchuanCluong(qlnvDmService.getTieuChuanCluongByMaLoaiVthh(item.getLoaiVthh()));
+                item.setThongTinGiaLt(mapListChitiet.get(item.getId()));
+                item.setTenLoaiGia(mapLoaiGia.get(item.getLoaiGia()));
+                item.setTenLoaiVthh(mapHh.get(item.getLoaiVthh()));
+                item.setTenCloaiVthh(mapHh.get(item.getCloaiVthh()));
+            }
         });
         return data;
     }
