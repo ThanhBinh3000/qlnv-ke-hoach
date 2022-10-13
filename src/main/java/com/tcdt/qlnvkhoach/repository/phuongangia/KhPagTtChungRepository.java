@@ -16,4 +16,5 @@ public interface KhPagTtChungRepository extends JpaRepository<KhPagTtChung, Long
 
 
 	List<KhPagTtChung> findByQdTcdtnnId(Long ids);
+	List<KhPagTtChung> findALlByQdBtcId(Long ids);
 }

@@ -54,6 +54,9 @@ public class  KhPagQuyetDinhBtc extends BaseEntity implements Serializable {
   @Transient
   private List<KhPagQdBtcCtiet> thongTinGia;
 
+  @Transient
+  private List<KhPagTtChung> thongTinGiaVt;
+
   public String getTenTrangThai() {
     return KhPagQuyetDinhBtcEnum.getLabelById(trangThai);
   }
