@@ -206,7 +206,12 @@ public class KhPagQuyetDinhBtcService extends BaseService {
         if (!data.isPresent()) {
             throw new Exception("Bản ghi không tồn tại");
         }
-        data.get().setThongTinGia(khPagQdBtcCtietRepository.findAllByQdBtcId(Long.valueOf(id)));
+        if (data.get().getLoaiVthh().startsWith("02")) {
+            data.get().setThongTinGiaVt(khPagTtChungRepository.findALlByQdBtcId(Long.valueOf(id)));
+        } else {
+            data.get().setThongTinGia(khPagQdBtcCtietRepository.findAllByQdBtcId(Long.valueOf(id)));
+
+        }
         return data.get();
 
     }
