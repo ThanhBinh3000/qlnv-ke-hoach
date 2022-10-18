@@ -58,6 +58,9 @@ public class KhPhuongAnGia extends BaseEntity implements Serializable {
     @Column(name = "NGAY_KY")
     private LocalDate ngayKy;
 
+    @Column(name = "TGIAN_NHANG")
+    private LocalDate tgianNhang;
+
     @Column(name = "TRICH_YEU")
     private String trichYeu;
 

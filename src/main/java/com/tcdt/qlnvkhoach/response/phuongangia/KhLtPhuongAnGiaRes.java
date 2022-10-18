@@ -37,6 +37,8 @@ public class KhLtPhuongAnGiaRes {
 
 	private LocalDate ngayKy;
 
+	private LocalDate tgianNhang;
+
 	private String trichYeu;
 
 	private Long canCuId;

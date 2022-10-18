@@ -38,6 +38,9 @@ public class KhPagKetQua implements Serializable {
 	@Column(name = "TEN_DVI_BAO_GIA")
 	private String tenDviBaoGia;
 
+	@Column(name = "TEN_DVI_THAM_DINH")
+	private String tenDviThamDinh;
+
 	@Column(name = "DON_GIA")
 	private BigDecimal donGia;
 
