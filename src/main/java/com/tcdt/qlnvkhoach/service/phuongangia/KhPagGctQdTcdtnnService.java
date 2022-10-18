@@ -100,7 +100,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         }
 
         Optional<KhPagGctQdTcdtnn> optional = khPagGctQdTcdtnnRepository.findBySoQd(req.getSoQd());
-        if (optional.isPresent())
+        if (optional.isPresent() && optional.get().getLoaiVthh().equals(req.getLoaiVthh()))
             throw new Exception("số quyết định đã tồn tại");
         Optional<KhPagGctQdTcdtnn> soToTrinh = khPagGctQdTcdtnnRepository.findBySoToTrinh(req.getSoToTrinh());
         if (soToTrinh.isPresent())

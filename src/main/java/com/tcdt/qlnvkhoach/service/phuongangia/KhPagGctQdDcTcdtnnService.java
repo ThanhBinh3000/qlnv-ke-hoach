@@ -93,7 +93,7 @@ public class KhPagGctQdDcTcdtnnService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         Optional<KhPagGctQdDcTcdtnn> optional = khPagGctQdDcTcdtnnRepository.findBySoQd(req.getSoQd());
-        if (optional.isPresent()) throw new Exception("số quyết định đã tồn tại");
+        if (optional.isPresent() && optional.get().getLoaiVthh().equals(req.getLoaiVthh())) throw new Exception("số quyết định đã tồn tại");
         KhPagGctQdDcTcdtnn data = new ModelMapper().map(req, KhPagGctQdDcTcdtnn.class);
         data.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
         data.setMaDvi(userInfo.getDvql());
