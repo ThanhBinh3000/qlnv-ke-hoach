@@ -42,7 +42,7 @@ public class KhVonPhiBoNganhController extends BaseController {
     private KhVonPhiBoNganhService khVonPhiBoNganhService;
 
 
-    @ApiOperation(value = "Tra cứu đề xuất phương án giá", response = List.class)
+    @ApiOperation(value = "Tra cứu kế hoạch vốn phí bộ ngành", response = List.class)
     @PostMapping(value=  PathConstants.VON_PHI_BO_NGANH + PathConstants.URL_TRA_CUU, produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Resp> search(@Valid @RequestBody KhVonPhiBnSearchReq objReq) {
         Resp resp = new Resp();
