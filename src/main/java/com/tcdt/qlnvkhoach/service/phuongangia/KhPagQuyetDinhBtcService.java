@@ -105,7 +105,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
             throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
         }
         Optional<KhPagQuyetDinhBtc> optional = khPagLtQuyetDinhBtcRepository.findBySoToTrinh(req.getSoToTrinh());
-        if(optional.isPresent() && optional.get().getCloaiVthh().equals(req.getCloaiVthh())){
+        if(optional.isPresent() && optional.get().getLoaiVthh().equals(req.getLoaiVthh())){
             throw new Exception("Số tờ trình đã tồn tại");
         }
         KhPagQuyetDinhBtc newRow = new KhPagQuyetDinhBtc();
@@ -206,11 +206,14 @@ public class KhPagQuyetDinhBtcService extends BaseService {
         if (!data.isPresent()) {
             throw new Exception("Bản ghi không tồn tại");
         }
+        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         if (data.get().getLoaiVthh().startsWith("02")) {
             data.get().setThongTinGiaVt(khPagTtChungRepository.findALlByQdBtcId(Long.valueOf(id)));
+            data.get().getThongTinGiaVt().forEach(item -> {
+                item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
+            });
         } else {
             data.get().setThongTinGia(khPagQdBtcCtietRepository.findAllByQdBtcId(Long.valueOf(id)));
-
         }
         return data.get();
 
