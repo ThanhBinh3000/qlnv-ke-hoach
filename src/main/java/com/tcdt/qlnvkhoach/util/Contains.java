@@ -83,7 +83,7 @@ public class Contains {
     public static final Map<String, String> mpTrangThaiTt;
     static {
         mpTrangThaiTt = com.tcdt.qlnvhang.util.Maps.<String, String>buildMap().put(Contains.DUTHAO, "Dự thảo").put(Contains.CHODUYET_LDV, "Chờ duyệt - Lãnh đạo Vụ")
-                .put(Contains.TUCHOI_LDV, "Từ chối - Lãnh đạo Vụ").put(Contains.DADUYET_LDV, "Đã duyệt - Lãnh đạo Vụ").get();
+                .put(Contains.TUCHOI_LDV, "Từ chối - Lãnh đạo Vụ").put(Contains.DADUYET_LDV, "Đã duyệt - Lãnh đạo Vụ").put(Contains.DABANHANH_QD, "Đã ban hành quyết định").get();
     }
     public static String getTrangThaiTt(String key) {
         return Contains.mpTrangThaiTt.get(key);
