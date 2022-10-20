@@ -29,7 +29,7 @@ public class KhDnCapPhiBoNganhCt1 implements Serializable {
     private String tenDvCungCap;
 
     @Column(name = "SO_TAI_KHOAN")
-    private Long soTaiKhoan;
+    private String soTaiKhoan;
 
     @Column(name = "NGAN_HANG")
     private String nganHang;
