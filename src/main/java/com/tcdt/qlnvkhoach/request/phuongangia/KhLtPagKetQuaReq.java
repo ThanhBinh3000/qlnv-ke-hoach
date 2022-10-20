@@ -20,6 +20,7 @@ public class KhLtPagKetQuaReq {
 	private Long stt;
 
 	private String tenDviBaoGia;
+	private String tenDviThamDinh;
 
 	private BigDecimal donGia;
 

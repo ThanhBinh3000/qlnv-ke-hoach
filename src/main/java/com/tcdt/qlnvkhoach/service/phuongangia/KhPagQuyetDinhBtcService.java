@@ -105,7 +105,7 @@ public class KhPagQuyetDinhBtcService extends BaseService {
             throw new Exception("Thông tin giá thiếu hoặc không hợp lệ.");
         }
         Optional<KhPagQuyetDinhBtc> optional = khPagLtQuyetDinhBtcRepository.findBySoToTrinh(req.getSoToTrinh());
-        if(optional.isPresent()){
+        if(optional.isPresent() && optional.get().getCloaiVthh().equals(req.getCloaiVthh())){
             throw new Exception("Số tờ trình đã tồn tại");
         }
         KhPagQuyetDinhBtc newRow = new KhPagQuyetDinhBtc();

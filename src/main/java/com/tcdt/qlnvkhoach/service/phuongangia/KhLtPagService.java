@@ -129,13 +129,13 @@ public class KhLtPagService extends BaseService {
                 List<KhPagKetQua> khPagKetQuaThamDinhs = new ArrayList<>();
                 if (!CollectionUtils.isEmpty(ketquaTDs)) {
                     ketquaTDs.forEach(c -> {
-                        khPagKetQuaThamDinhs.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3], (BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
+                        khPagKetQuaThamDinhs.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2],(String) c[2], (BigDecimal) c[3], (BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                     });
                 }
                 List<KhPagKetQua> khPagKetQuaKhaoSats = new ArrayList<>();
                 if (!CollectionUtils.isEmpty(ketquaKSs)) {
                     ketquaKSs.forEach(c -> {
-                        khPagKetQuaKhaoSats.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (BigDecimal) c[3], (BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
+                        khPagKetQuaKhaoSats.add(new KhPagKetQua((Long) c[0], (Long) c[1], (String) c[2], (String) c[2], (BigDecimal) c[3], (BigDecimal) c[4], (String) c[5], (String) c[6], (String) c[7], null, (String) c[9], (Long) c[8]));
                     });
                 }
                 List<KhPagCcPhapLy> khPagCcPhapLIES = new ArrayList<>();
@@ -159,7 +159,8 @@ public class KhLtPagService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         log.info("Save: thông tin phương án giá");
-        if (khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat()).isPresent()) {
+        Optional<KhPhuongAnGia> phuongAnGiaOptional  = khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat());
+        if (phuongAnGiaOptional.isPresent() &&phuongAnGiaOptional.get().getLoaiVthh().equals(req.getLoaiVthh()) && phuongAnGiaOptional.get().getType().equals(req.getType())) {
             throw new Exception("Số đề xuất đã tồn tại trong hệ thống!");
         }
         KhPhuongAnGia phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
@@ -169,7 +170,7 @@ public class KhLtPagService extends BaseService {
         phuongAnGia.setCapDvi(userInfo.getCapDvi());
         phuongAnGia.setNguoiTaoId(userInfo.getId());
         phuongAnGia.setNgayTao(LocalDateTime.now());
-
+        phuongAnGia.setTgianNhang(req.getTgianNhang());
         phuongAnGia = khLtPhuongAnGiaRepository.save(phuongAnGia);
         log.info("Save: Căn cứ, phương pháp xác định giá: Căn cứ pháp lý");
         KhPhuongAnGia finalPhuongAnGia = phuongAnGia;
