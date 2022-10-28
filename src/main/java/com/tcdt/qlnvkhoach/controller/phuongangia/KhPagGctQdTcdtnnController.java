@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhGctQdTcdtnnDetailReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
@@ -196,6 +197,23 @@ public class KhPagGctQdTcdtnnController extends BaseController {
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Lấy thông tin giá cụ thể theo quyết định gias của TCDTNN", response = List.class)
+    @PostMapping(value= PathConstants.URL_QD_GIA_TCDTNN + "/thong-tin-gia", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> detailTTgia(@RequestBody KhGctQdTcdtnnDetailReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khPagGctQdTcdtnnService.getKhQdTcdtnnTtgDetail(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error(e.getMessage());
