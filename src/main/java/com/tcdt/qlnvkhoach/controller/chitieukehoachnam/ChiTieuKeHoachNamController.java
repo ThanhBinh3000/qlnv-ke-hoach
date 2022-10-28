@@ -462,8 +462,12 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @GetMapping("/dxkh-lcnt/{namKh}")
     public final ResponseEntity<Resp> searchChiTieuDxKhLcnt(@PathVariable("namKh") Long namKh) {
         Resp resp = new Resp();
+        UserInfo userInfo = SecurityContextService.getUser();
         try {
-            resp.setData(chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh));
+            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuDxKhLcntByDvi(namKh,userInfo.getDvql());
+            if(chiTieuKeHoachNam != null && chiTieuKeHoachNam.getTrangThai().equals(Contains.BAN_HANH)){
+                resp.setData(chiTieuKeHoachNam);
+            }
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
