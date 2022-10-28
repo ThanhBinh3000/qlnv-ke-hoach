@@ -1956,7 +1956,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			throw new Exception("Bad request.");
 		}
 		ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamRepository.getChiTieuDxKhLcnt(namKh,userInfo.getDvql());
-
+		if(chiTieuKeHoachNam == null){
+			throw new Exception("Không tìm thấy chỉ tiêu kế hoạch năm.");
+		}
 		Map<String, String> dataMap = qlnvDmService.getListDanhMucDonVi("3");
 		Map<String,String> hashMapDmHh = qlnvDmService.getListDanhMucHangHoa();
 
@@ -1977,7 +1979,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 		return chiTieuKeHoachNam;
 	}
-
+	@Transactional(rollbackOn = Exception.class)
 	@Override
 	public ChiTieuKeHoachNam getChiTieuDxKhLcntByDvi(Long namKh,String maDvi) throws Exception {
 		return chiTieuKeHoachNamRepository.getChiTieuDxKhLcntByMadvi(namKh,maDvi);

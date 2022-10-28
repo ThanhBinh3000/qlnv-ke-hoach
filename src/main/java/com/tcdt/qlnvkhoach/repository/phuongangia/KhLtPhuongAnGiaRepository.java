@@ -27,7 +27,8 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			+" AND (:type IS NULL OR KLPAG.type =  :type)"
 			+" AND (:ngayKyTu IS NULL OR KLPAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd'))"
 			+" AND (:ngayKyDen IS NULL OR KLPAG.NGAY_KY <= TO_DATE(:ngayKyDen,'yyyy-MM-dd'))"
-			+" AND (:trichYeu IS NULL  OR LOWER(KLPAG.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
+			+" AND (:trichYeu IS NULL  OR LOWER(KLPAG.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) ) " +
+			"ORDER BY KLPAG.NGAY_TAO desc,  KLPAG.NGAY_SUA desc "
 			, nativeQuery = true)
 	Page<KhPhuongAnGia> selectPage(Integer namKh, String soDx, String loaiHh, String ngayKyTu, String ngayKyDen, String trichYeu , String dvql,String type,String pagType, Pageable pageable);
 
@@ -68,4 +69,8 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			" AND (TT.TRANG_THAI in (:dsTrangThai) or :dsTrangThai is NULL)",
 			nativeQuery = true)
 	List<KhPhuongAnGia> dsSoDeXuatPag(String type, List<String> dsTrangThai, String pagType);
+
+	List<KhPhuongAnGia> findAllByMaDviAndLoaiVthhAndCloaiVthhAndNamKeHoach(String maDvi, String loaiVthh, String cloaiVthh, Long namKeHoach);
+
+
 }

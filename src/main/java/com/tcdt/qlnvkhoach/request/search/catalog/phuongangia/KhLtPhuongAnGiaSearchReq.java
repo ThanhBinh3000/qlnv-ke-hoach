@@ -33,4 +33,6 @@ public class KhLtPhuongAnGiaSearchReq extends BaseRequest {
     String pagType;
 
     List<String> dsTrangThai;
+
+    String maDvi;
 }

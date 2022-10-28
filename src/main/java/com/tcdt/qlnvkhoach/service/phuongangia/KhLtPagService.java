@@ -160,8 +160,11 @@ public class KhLtPagService extends BaseService {
         if (userInfo == null) throw new Exception("Bad request.");
         log.info("Save: thông tin phương án giá");
         Optional<KhPhuongAnGia> phuongAnGiaOptional  = khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat());
-        if (phuongAnGiaOptional.isPresent() &&phuongAnGiaOptional.get().getLoaiVthh().equals(req.getLoaiVthh()) && phuongAnGiaOptional.get().getType().equals(req.getType())) {
+        if (phuongAnGiaOptional.isPresent() && phuongAnGiaOptional.get().getLoaiVthh().equals(req.getLoaiVthh()) && phuongAnGiaOptional.get().getType().equals(req.getType())) {
             throw new Exception("Số đề xuất đã tồn tại trong hệ thống!");
+        }
+        if (this.checkValidateStatus(req)) {
+            throw new Exception("Đã có quyết định tương tự đang được gửi duyệt, mời kiểm tra lại!");
         }
         KhPhuongAnGia phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
         phuongAnGia.setTrangThai(PAGTrangThaiEnum.DU_THAO.getId());
@@ -570,6 +573,23 @@ public class KhLtPagService extends BaseService {
             dt.setPagTtChungs(mapListTTChung.get(dt.getId()));
         });
         return data;
+    }
+
+    public boolean checkValidateStatus(KhLtPhuongAnGiaReq req) {
+        Boolean check = false;
+        List<KhPhuongAnGia> listPags = khLtPhuongAnGiaRepository.findAllByMaDviAndLoaiVthhAndCloaiVthhAndNamKeHoach(req.getMaDvi(), req.getLoaiVthh(), req.getCloaiVthh(), req.getNamKeHoach());
+        if (!CollectionUtils.isEmpty(listPags)) {
+            return true;
+        } else {
+            for (KhPhuongAnGia item : listPags){
+                if (!(item.getTrangThai().equals(TrangThaiDungChungEnum.DUTHAO) || item.getTrangThai().equals(TrangThaiDungChungEnum.DADUYET_LDC) ||item.getTrangThai().equals(TrangThaiDungChungEnum.DADUYET_LDV))) {
+                    break;
+                } else {
+                    check = true;
+                }
+            }
+        }
+        return check;
     }
 
 

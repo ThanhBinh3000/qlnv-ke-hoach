@@ -19,7 +19,7 @@ public interface KhPagGctQdTcdtnnRepository extends JpaRepository<KhPagGctQdTcdt
             + " AND (:ngayKyTu IS NULL OR KLPAG.NGAY_KY >=  TO_DATE(:ngayKyTu,'yyyy-MM-dd'))"
             + " AND (:ngayKyDen IS NULL OR KLPAG.NGAY_KY <= TO_DATE(:ngayKyDen,'yyyy-MM-dd'))"
             + " AND (( :pagType IS NULL AND (KLPAG.LOAI_VTHH LIKE '01%' OR KLPAG.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND KLPAG.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )"
-            + " AND (:trichYeu IS NULL  OR LOWER(KLPAG.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
+            + " AND (:trichYeu IS NULL  OR LOWER(KLPAG.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )" + "ORDER BY KLPAG.NGAY_TAO desc,  KLPAG.NGAY_SUA desc "
             , nativeQuery = true)
     Page<KhPagGctQdTcdtnn> selectPage(Integer namKh, String soQd, String ngayKyTu, String ngayKyDen, String trichYeu, String pagType, Pageable pageable);
 
