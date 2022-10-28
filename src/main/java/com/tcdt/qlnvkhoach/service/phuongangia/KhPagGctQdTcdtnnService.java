@@ -8,9 +8,11 @@ import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.phuongangia.*;
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhGctQdTcdtnnDetailReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
+import com.tcdt.qlnvkhoach.response.phuongangia.KhQdTcdtnnDetailTtgRes;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
 import com.tcdt.qlnvkhoach.service.SecurityContextService;
@@ -308,6 +310,30 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             }
         });
         return data;
+    }
+
+    public KhQdTcdtnnDetailTtgRes getKhQdTcdtnnTtgDetail(KhGctQdTcdtnnDetailReq req){
+        KhQdTcdtnnDetailTtgRes res= new KhQdTcdtnnDetailTtgRes();
+        res.setNamKh(req.getNamKeHoach());
+        res.setMaDvi(req.getMaDvi());
+        if(req.getLoaiVthh().startsWith("02")){
+            KhPagTtChung detailVt =   khPagTtChungRepository.getKhPagTtcDetail(req.getTrangThai(),req.getMaDvi(),req.getNamKeHoach(),req.getLoaiVthh(),req.getCloaiVthh());
+          if(detailVt != null ){
+              res.setGiaDn(detailVt.getGiaDn());
+              res.setGiaDnVat(detailVt.getGiaDnVat());
+              res.setGiaQd(detailVt.getGiaQd());
+              res.setGiaQdVat(detailVt.getGiaQdVat());
+          }
+        }else {
+            KhPagTongHopCTiet detailLT =   khLtPagTongHopCTietRepository.getKhPagTtcDetail(req.getTrangThai(),req.getMaDvi(),req.getNamKeHoach(),req.getLoaiVthh(),req.getCloaiVthh());
+            if(detailLT != null){
+                res.setGiaDn(detailLT.getGiaDn());
+                res.setGiaDnVat(detailLT.getGiaDnVat());
+                res.setGiaQd(detailLT.getGiaQd());
+                res.setGiaQdVat(detailLT.getGiaQdVat());
+            }
+        }
+        return res;
     }
 
 }
