@@ -70,7 +70,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 			nativeQuery = true)
 	List<KhPhuongAnGia> dsSoDeXuatPag(String type, List<String> dsTrangThai, String pagType);
 
-	List<KhPhuongAnGia> findAllByMaDviAndLoaiVthhAndCloaiVthhAndNamKeHoach(String maDvi, String loaiVthh, String cloaiVthh, Long namKeHoach);
+	List<KhPhuongAnGia> findAllByMaDviAndLoaiVthhAndCloaiVthhAndNamKeHoachAndType(String maDvi, String loaiVthh, String cloaiVthh, Long namKeHoach, String type);
 
 
 }
