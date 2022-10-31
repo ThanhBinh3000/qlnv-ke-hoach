@@ -163,7 +163,7 @@ public class KhLtPagService extends BaseService {
         if (phuongAnGiaOptional.isPresent() && phuongAnGiaOptional.get().getLoaiVthh().equals(req.getLoaiVthh()) && phuongAnGiaOptional.get().getType().equals(req.getType())) {
             throw new Exception("Số đề xuất đã tồn tại trong hệ thống!");
         }
-        if (this.checkValidateStatus(req)) {
+        if (!this.checkValidateStatus(req)) {
             throw new Exception("Đã có quyết định tương tự đang được gửi duyệt, mời kiểm tra lại!");
         }
         KhPhuongAnGia phuongAnGia = mapper.map(req, KhPhuongAnGia.class);
@@ -583,6 +583,7 @@ public class KhLtPagService extends BaseService {
         } else {
             for (KhPhuongAnGia item : listPags){
                 if (!(item.getTrangThai().equals(TrangThaiDungChungEnum.DUTHAO) || item.getTrangThai().equals(TrangThaiDungChungEnum.DADUYET_LDC) ||item.getTrangThai().equals(TrangThaiDungChungEnum.DADUYET_LDV))) {
+                    check = false;
                     break;
                 } else {
                     check = true;

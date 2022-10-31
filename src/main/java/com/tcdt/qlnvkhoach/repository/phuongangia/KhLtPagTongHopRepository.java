@@ -22,7 +22,7 @@ public interface KhLtPagTongHopRepository extends JpaRepository<KhPagTongHop, Lo
             + "AND (:dvql IS NULL OR LOWER(PAG_TH.MA_DVI) LIKE LOWER(CONCAT(:dvql,'%' ) ) )"
             + "AND (:ngayThTu IS NULL OR PAG_TH.NGAY_TONG_HOP >=  TO_DATE(:ngayThTu,'yyyy-MM-dd'))"
             + "AND (:ngayThDen IS NULL OR PAG_TH.NGAY_TONG_HOP <= TO_DATE(:ngayThDen,'yyyy-MM-dd'))"
-            + "AND (:noiDung IS NULL  OR LOWER(PAG_TH.NOI_DUNG) LIKE LOWER(CONCAT(CONCAT('%',:noiDung),'%' ) ) )"  + "ORDER BY KLPAG.NGAY_TAO desc,  KLPAG.NGAY_SUA desc "
+            + "AND (:noiDung IS NULL  OR LOWER(PAG_TH.NOI_DUNG) LIKE LOWER(CONCAT(CONCAT('%',:noiDung),'%' ) ) )"  + "ORDER BY PAG_TH.NGAY_TAO desc,  PAG_TH.NGAY_SUA desc "
             , nativeQuery = true)
     Page<KhPagTongHop> selectPage(Integer namKh, String loaiHh, String ngayThTu, String ngayThDen, String noiDung, String dvql, String trangThai, String type, Pageable pageable);
 
