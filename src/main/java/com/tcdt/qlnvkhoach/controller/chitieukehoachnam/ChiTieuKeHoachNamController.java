@@ -462,12 +462,8 @@ public class ChiTieuKeHoachNamController extends BaseController {
     @GetMapping("/dxkh-lcnt/{namKh}")
     public final ResponseEntity<Resp> searchChiTieuDxKhLcnt(@PathVariable("namKh") Long namKh) {
         Resp resp = new Resp();
-        UserInfo userInfo = SecurityContextService.getUser();
         try {
-            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getChiTieuDxKhLcntByDvi(namKh,userInfo.getDvql());
-            if(chiTieuKeHoachNam != null && chiTieuKeHoachNam.getTrangThai().equals(Contains.BAN_HANH)){
-                resp.setData(chiTieuKeHoachNam);
-            }
+            resp.setData(chiTieuKeHoachNamService.getChiTieuDxKhLcnt(namKh));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
@@ -476,6 +472,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
             log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);
         }
         return ResponseEntity.ok(resp);
+
     }
 
     @ApiOperation(value = "Danh sách quyết định BTC giao TCDT", response = List.class)
