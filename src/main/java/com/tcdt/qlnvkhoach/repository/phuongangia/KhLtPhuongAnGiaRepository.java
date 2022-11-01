@@ -51,7 +51,7 @@ public interface KhLtPhuongAnGiaRepository extends JpaRepository<KhPhuongAnGia, 
 	@Query("SELECT min(kq.donGia), max(kq.donGia),min(kq.donGiaVat), max(kq.donGiaVat) from KhPhuongAnGia pag,KhPagKetQua kq,KhPagCcPhapLy cc where pag.id= kq.phuongAnGiaId and pag.id = cc.phuongAnGiaId and kq.type = ?1 and pag.id in ?2")
 	List<Object[]> listPagWithDonGia(String type, Collection<Long> pagIds);
 
-  Optional<KhPhuongAnGia> findBySoDeXuat(String soDeXuat);
+  Optional<KhPhuongAnGia> findBySoDeXuatAndTypeAndLoaiVthh(String soDeXuat, String type, String loaiVthh);
 
   @Query("SELECT c FROM KhPhuongAnGia c WHERE 1=1 " +
 			"AND (c.trangThai in :#{#param.dsTrangThai})"+
