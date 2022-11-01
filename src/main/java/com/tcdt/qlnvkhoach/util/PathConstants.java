@@ -94,6 +94,6 @@ public class PathConstants {
 
 	public static final String VON_PHI_HANG = "/von-phi-hang";
 
-	public static final String VON_PHI_BO_NGANH = "/von-phi-bo-nghanh";
+	public static final String VON_PHI_BO_NGANH = "/von-phi-bo-nganh";
 }
 
