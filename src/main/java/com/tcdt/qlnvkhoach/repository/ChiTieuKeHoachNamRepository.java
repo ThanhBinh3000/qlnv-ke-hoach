@@ -37,4 +37,6 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
             ") AND CT.LATEST = 1 ", nativeQuery = true)
     ChiTieuKeHoachNam getChiTieuDxKhLcntByMadvi(Long namKh,String maDvi);
 
+
+
 }
