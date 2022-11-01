@@ -159,7 +159,7 @@ public class KhLtPagService extends BaseService {
         UserInfo userInfo = SecurityContextService.getUser();
         if (userInfo == null) throw new Exception("Bad request.");
         log.info("Save: thông tin phương án giá");
-        Optional<KhPhuongAnGia> phuongAnGiaOptional  = khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat());
+        Optional<KhPhuongAnGia> phuongAnGiaOptional  = khLtPhuongAnGiaRepository.findBySoDeXuatAndTypeAndLoaiVthh(req.getSoDeXuat(), req.getType(), req.getLoaiVthh());
         if (phuongAnGiaOptional.isPresent() && phuongAnGiaOptional.get().getLoaiVthh().equals(req.getLoaiVthh()) && phuongAnGiaOptional.get().getType().equals(req.getType())) {
             throw new Exception("Số đề xuất đã tồn tại trong hệ thống!");
         }
@@ -273,7 +273,7 @@ public class KhLtPagService extends BaseService {
 
         Optional<KhPhuongAnGia> optional = khLtPhuongAnGiaRepository.findById(req.getId());
         if (!optional.isPresent()) throw new Exception("Đề xuất phương án giá không tồn tại");
-        Optional<KhPhuongAnGia> optionalCheckUnique = khLtPhuongAnGiaRepository.findBySoDeXuat(req.getSoDeXuat());
+        Optional<KhPhuongAnGia> optionalCheckUnique = khLtPhuongAnGiaRepository.findBySoDeXuatAndTypeAndLoaiVthh(req.getSoDeXuat(), req.getType(), req.getLoaiVthh());
         if (optionalCheckUnique.isPresent() && req.getId() != optionalCheckUnique.get().getId()) {
             throw new Exception("Số đề xuất đã tồn tại");
         }
