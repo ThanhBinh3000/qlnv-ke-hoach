@@ -1984,4 +1984,131 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 	public ChiTieuKeHoachNam getChiTieuDxKhLcntByDvi(Long namKh,String maDvi) throws Exception {
 		return chiTieuKeHoachNamRepository.getChiTieuDxKhLcntByMadvi(namKh,maDvi);
 	}
+
+	@Transactional(rollbackOn = Exception.class)
+	@Override
+	public Object getDetailKhByDonVi(Long namKh,String maDvi,String loaiVthh) throws Exception {
+		KeHoachLuongThucDuTruRes keHoachLuongThucDuTruRes = null;
+		KeHoachMuoiDuTruRes keHoachMuoiDuTruRes = null;
+		KeHoachVatTuRes keHoachVatTuRes = null;
+		QlnvDmDonvi donVi = qlnvDmDonviRepository.findByMaDvi(maDvi);
+		if (donVi == null)
+			throw new Exception("Đơn vị không tồn tại");
+		if(loaiVthh.startsWith("02")){
+
+		}else{
+			KeHoachLuongThucMuoi keHoachLuongThucMuoi = keHoachLuongThucMuoiRepository.getKhLTMuoi(namKh,maDvi,loaiVthh);
+			if(keHoachLuongThucMuoi == null){
+				throw new Exception("Không tìm thấy dữ liệu");
+			}
+			if(loaiVthh.startsWith("04")){
+				keHoachMuoiDuTruRes = this.buildMuoiRes(keHoachLuongThucMuoi,donVi);
+				return keHoachMuoiDuTruRes;
+			}else{
+				keHoachLuongThucDuTruRes = this.buildLuongThucRes(keHoachLuongThucMuoi,donVi);
+				return keHoachLuongThucDuTruRes;
+			}
+		}
+		return null;
+	}
+
+	private KeHoachLuongThucDuTruRes buildLuongThucRes(KeHoachLuongThucMuoi keHoachLuongThucMuoi,QlnvDmDonvi donVi ){
+		KeHoachLuongThucDuTruRes keHoachLuongThucDuTruRes = new  KeHoachLuongThucDuTruRes();
+		if(keHoachLuongThucMuoi != null){
+			Long vatTuId = keHoachLuongThucMuoi.getVatTuId();
+			keHoachLuongThucDuTruRes.setStt(keHoachLuongThucMuoi.getStt());
+			keHoachLuongThucDuTruRes.setDonViId(donVi.getId());
+			keHoachLuongThucDuTruRes.setTenDonvi(donVi.getTenDvi());
+			keHoachLuongThucDuTruRes.setMaDonVi(donVi.getMaDvi());
+			keHoachLuongThucDuTruRes.setDonViTinh(keHoachLuongThucMuoi.getDonViTinh());
+			double ntnTongSoQuyThoc = Optional.ofNullable(keHoachLuongThucDuTruRes.getNtnTongSoQuyThoc()).orElse(0d);
+			if (Constants.LuongThucMuoiConst.GAO_ID.equals(vatTuId)) {
+				keHoachLuongThucDuTruRes.setNtnGao(keHoachLuongThucMuoi.getSoLuongNhap());
+				ntnTongSoQuyThoc = ntnTongSoQuyThoc + (keHoachLuongThucMuoi.getSoLuongNhap() * 2);
+				keHoachLuongThucDuTruRes.setKhGaoId(keHoachLuongThucMuoi.getId());
+			} else if (Constants.LuongThucMuoiConst.THOC_ID.equals(vatTuId)) {
+				keHoachLuongThucDuTruRes.setNtnThoc(keHoachLuongThucMuoi.getSoLuongNhap());
+				ntnTongSoQuyThoc = ntnTongSoQuyThoc + keHoachLuongThucMuoi.getSoLuongNhap();
+				keHoachLuongThucDuTruRes.setKhThocId(keHoachLuongThucMuoi.getId());
+			}
+			keHoachLuongThucDuTruRes.setNtnTongSoQuyThoc(ntnTongSoQuyThoc);
+			// Xuat Trong nam
+			List<KeHoachXuatLuongThucMuoi> khxltms = keHoachLuongThucMuoi.getKhxltms();
+			double xtnTongSoQuyThoc = Optional.ofNullable(keHoachLuongThucDuTruRes.getXtnTongSoQuyThoc()).orElse(0d);
+			double xtnTongThoc = Optional.ofNullable(keHoachLuongThucDuTruRes.getXtnTongThoc()).orElse(0d);
+			double xtnTongGao = Optional.ofNullable(keHoachLuongThucDuTruRes.getXtnTongGao()).orElse(0d);
+
+			List<VatTuNhapRes> xtnGao = new ArrayList<>();
+			List<VatTuNhapRes> xtnThoc = new ArrayList<>();
+
+			for (KeHoachXuatLuongThucMuoi khxltm : khxltms) {
+				VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
+				vatTuNhapRes.setId(khxltm.getId());
+				vatTuNhapRes.setNam(khxltm.getNamKeHoach());
+				vatTuNhapRes.setSoLuong(khxltm.getSoLuongXuat());
+				vatTuNhapRes.setVatTuId(vatTuId);
+				if (Constants.LuongThucMuoiConst.GAO_ID.equals(vatTuId)) {
+					xtnGao.add(vatTuNhapRes);
+					xtnTongGao = xtnTongGao + khxltm.getSoLuongXuat();
+					xtnTongSoQuyThoc = xtnTongSoQuyThoc + (khxltm.getSoLuongXuat() * 2);
+				} else if (Constants.LuongThucMuoiConst.THOC_ID.equals(vatTuId)) {
+					xtnThoc.add(vatTuNhapRes);
+					xtnTongThoc = xtnTongThoc + khxltm.getSoLuongXuat();
+					xtnTongSoQuyThoc = xtnTongSoQuyThoc + khxltm.getSoLuongXuat();
+				}
+			}
+
+			if (!CollectionUtils.isEmpty(xtnGao)) {
+				keHoachLuongThucDuTruRes.setXtnGao(xtnGao);
+			}
+			if (!CollectionUtils.isEmpty(xtnThoc)) {
+				keHoachLuongThucDuTruRes.setXtnThoc(xtnThoc);
+			}
+			keHoachLuongThucDuTruRes.setXtnTongSoQuyThoc(xtnTongSoQuyThoc);
+			keHoachLuongThucDuTruRes.setXtnTongThoc(xtnTongThoc);
+			keHoachLuongThucDuTruRes.setXtnTongGao(xtnTongGao);
+		}
+		return keHoachLuongThucDuTruRes;
+	}
+
+	private KeHoachMuoiDuTruRes buildMuoiRes(KeHoachLuongThucMuoi keHoachLuongThucMuoi,QlnvDmDonvi donVi ){
+		KeHoachMuoiDuTruRes keHoachMuoiDuTruRes = new  KeHoachMuoiDuTruRes();
+		if(keHoachLuongThucMuoi != null){
+			List<KeHoachMuoiDuTruRes> khMuoiResList = new ArrayList<>();
+				Long vatTuId = keHoachLuongThucMuoi.getVatTuId();
+				KeHoachMuoiDuTruRes res = khMuoiResList.stream()
+						.filter(kh -> kh.getDonViId().equals(keHoachLuongThucMuoi.getDonViId()))
+						.findFirst().orElse(null);
+				if (res == null) {
+					res = new KeHoachMuoiDuTruRes();
+					khMuoiResList.add(res);
+				}
+				res.setId(keHoachLuongThucMuoi.getId());
+				res.setStt(keHoachLuongThucMuoi.getStt());
+				// set donvi
+				res.setDonViId(donVi.getId());
+				res.setTenDonVi(donVi.getTenDvi());
+				res.setMaDonVi(donVi.getMaDvi());
+				res.setDonViTinh(keHoachLuongThucMuoi.getDonViTinh());
+				// Nhap trong nam
+				res.setNtnTongSoMuoi(keHoachLuongThucMuoi.getSoLuongNhap());
+				// Xuat Trong nam
+				List<KeHoachXuatLuongThucMuoi> khxltms = keHoachLuongThucMuoi.getKhxltms();
+				double xtnTongSoMuoi = Optional.ofNullable(res.getXtnTongSoMuoi()).orElse(0d);
+				List<VatTuNhapRes> xtnMuoi = new ArrayList<>();
+				for (KeHoachXuatLuongThucMuoi khxltm : khxltms) {
+					VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
+					vatTuNhapRes.setId(khxltm.getId());
+					vatTuNhapRes.setNam(khxltm.getNamKeHoach());
+					vatTuNhapRes.setSoLuong(khxltm.getSoLuongXuat());
+					vatTuNhapRes.setVatTuId(vatTuId);
+					xtnMuoi.add(vatTuNhapRes);
+					xtnTongSoMuoi = xtnTongSoMuoi + khxltm.getSoLuongXuat();
+				}
+				if (!CollectionUtils.isEmpty(xtnMuoi)) {
+					res.setXtnMuoi(xtnMuoi);
+				}
+		}
+		return keHoachMuoiDuTruRes;
+	}
 }
