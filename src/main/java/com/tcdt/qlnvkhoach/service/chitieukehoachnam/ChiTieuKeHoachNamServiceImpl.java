@@ -1996,7 +1996,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
         QlnvDmDonvi donVi = qlnvDmDonviRepository.findByMaDvi(maDvi);
         if (donVi == null)
             throw new Exception("Đơn vị không tồn tại");
-        if (loaiVthh.startsWith("02")) {
+        if (loaiVthh.startsWith("02") || loaiVthh.startsWith("03")) {
             KeHoachVatTu keHoachVatTu = keHoachVatTuRepository.getKhVatTu(namKh, maDvi, loaiVthh);
             if (keHoachVatTu == null) {
                 throw new Exception("Không tìm thấy dữ liệu");
