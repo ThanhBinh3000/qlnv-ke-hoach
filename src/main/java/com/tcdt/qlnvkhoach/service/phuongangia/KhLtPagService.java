@@ -577,9 +577,9 @@ public class KhLtPagService extends BaseService {
 
     public boolean checkValidateStatus(KhLtPhuongAnGiaReq req) {
         Boolean check = false;
-        List<KhPhuongAnGia> listPags = khLtPhuongAnGiaRepository.findAllByMaDviAndLoaiVthhAndCloaiVthhAndNamKeHoach(req.getMaDvi(), req.getLoaiVthh(), req.getCloaiVthh(), req.getNamKeHoach());
-        if (!CollectionUtils.isEmpty(listPags)) {
-            return true;
+        List<KhPhuongAnGia> listPags = khLtPhuongAnGiaRepository.findAllByMaDviAndLoaiVthhAndCloaiVthhAndNamKeHoachAndType(req.getMaDvi(), req.getLoaiVthh(), req.getCloaiVthh(), req.getNamKeHoach(), req.getType());
+        if (listPags.isEmpty()) {
+            check = true;
         } else {
             for (KhPhuongAnGia item : listPags){
                 if (!(item.getTrangThai().equals(TrangThaiDungChungEnum.DUTHAO) || item.getTrangThai().equals(TrangThaiDungChungEnum.DADUYET_LDC) ||item.getTrangThai().equals(TrangThaiDungChungEnum.DADUYET_LDV))) {
