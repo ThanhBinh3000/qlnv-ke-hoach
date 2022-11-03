@@ -2043,10 +2043,8 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
             double xtnTongSoQuyThoc = Optional.ofNullable(keHoachLuongThucDuTruRes.getXtnTongSoQuyThoc()).orElse(0d);
             double xtnTongThoc = Optional.ofNullable(keHoachLuongThucDuTruRes.getXtnTongThoc()).orElse(0d);
             double xtnTongGao = Optional.ofNullable(keHoachLuongThucDuTruRes.getXtnTongGao()).orElse(0d);
-
             List<VatTuNhapRes> xtnGao = new ArrayList<>();
             List<VatTuNhapRes> xtnThoc = new ArrayList<>();
-
             for (KeHoachXuatLuongThucMuoi khxltm : khxltms) {
                 VatTuNhapRes vatTuNhapRes = new VatTuNhapRes();
                 vatTuNhapRes.setId(khxltm.getId());
@@ -2061,9 +2059,9 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
                     xtnThoc.add(vatTuNhapRes);
                     xtnTongThoc = xtnTongThoc + khxltm.getSoLuongXuat();
                     xtnTongSoQuyThoc = xtnTongSoQuyThoc + khxltm.getSoLuongXuat();
+
                 }
             }
-
             if (!CollectionUtils.isEmpty(xtnGao)) {
                 keHoachLuongThucDuTruRes.setXtnGao(xtnGao);
             }
