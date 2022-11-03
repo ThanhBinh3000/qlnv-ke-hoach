@@ -31,132 +31,144 @@ import java.util.stream.Collectors;
 @Log4j2
 public class KhDnCapPhiBoNganhRepositoryCustomImpl implements KhDnCapPhiBoNganhRepositoryCustom {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
-	@Autowired
-	private KhDnCapPhiBoNganhCt1Repository ct1Repository;
+    @Autowired
+    private KhDnCapPhiBoNganhCt1Repository ct1Repository;
 
-	@Autowired
-	private KhDnCapPhiBoNganhCt2Repository ct2Repository;
+    @Autowired
+    private KhDnCapPhiBoNganhCt2Repository ct2Repository;
 
-	@Override
-	public Page<KhDnCapPhiBoNganhSearchResponse> search(KhDnCapPhiBoNganhSearchRequest req, Pageable pageable) {
-		StringBuilder builder = new StringBuilder();
-		QueryUtils khDnCapPhiBoNganh = QueryUtils.builder().clazz(KhDnCapPhiBoNganh.class).alias("khDnCapPhiBoNganh").build();
-		QueryUtils dmDungChung = QueryUtils.builder().clazz(QlnvDanhMuc.class).alias("dmDungChung").build();
-
-
-		log.debug("Build select query");
-		builder.append(QueryUtils.SELECT);
-		QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.ID);
-		QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.SO_DE_NGHI);
-		QueryUtils.selectFields(builder, dmDungChung, QlnvDanhMuc_.GIA_TRI);
-		QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.NGAY_DE_NGHI);
-		QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.NAM);
-		QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.TRANG_THAI);
-
-		builder.append(QueryUtils.FROM)
-				.append(khDnCapPhiBoNganh.buildAliasName())
-				.append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDungChung, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
-
-		log.debug("Set Condition search");
-		this.setConditionSearch(req, builder, khDnCapPhiBoNganh, dmDungChung);
-
-		log.debug("Set sort");
-		QueryUtils.buildSort(pageable, builder);
-
-		log.debug("Create query");
-		TypedQuery<Object[]> query = em.createQuery(QueryUtils.buildQuery(builder), Object[].class);
-
-		log.debug("Set params");
-		this.setParameterSearch(req, query, khDnCapPhiBoNganh, dmDungChung);
-		query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
-
-		log.info("Build response");
-		List<Object[]> result = query.getResultList();
-		List<KhDnCapPhiBoNganhSearchResponse> responses = result.stream()
-				.map(KhDnCapPhiBoNganhSearchResponse::new).collect(Collectors.toList());
-		//Build thông tin tổng tiền, kinh phí đã cấp, yêu cầu cấp thêm
-		this.buildSearchResponse(responses);
-
-		return new PageImpl<>(responses, pageable, this.count(req, khDnCapPhiBoNganh, dmDungChung));
-	}
+    @Override
+    public Page<KhDnCapPhiBoNganhSearchResponse> search(KhDnCapPhiBoNganhSearchRequest req, Pageable pageable) {
+        StringBuilder builder = new StringBuilder();
+        QueryUtils khDnCapPhiBoNganh = QueryUtils.builder().clazz(KhDnCapPhiBoNganh.class).alias("khDnCapPhiBoNganh").build();
+        QueryUtils dmDungChung = QueryUtils.builder().clazz(QlnvDanhMuc.class).alias("dmDungChung").build();
 
 
-	private void setConditionSearch(KhDnCapPhiBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
-		QueryUtils.buildWhereClause(builder);
-		khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.SO_DE_NGHI, req.getSoDeNghi(), builder);
-		khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.MA_BO_NGANH, req.getMaBoNganh(), builder);
-		khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.NAM, req.getNam(), builder);
-		khDnCapPhiBoNganh.start(Operator.AND, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay(), builder);
-		khDnCapPhiBoNganh.end(Operator.AND, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay(), builder);
-		dmDungChung.eq(Operator.AND, QlnvDanhMuc_.LOAI, "BO_NGANH", builder);
+        log.debug("Build select query");
+        builder.append(QueryUtils.SELECT);
+        QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.ID);
+        QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.SO_DE_NGHI);
+        QueryUtils.selectFields(builder, dmDungChung, QlnvDanhMuc_.GIA_TRI);
+        QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.NGAY_DE_NGHI);
+        QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.NAM);
+        QueryUtils.selectFields(builder, khDnCapPhiBoNganh, KhDnCapPhiBoNganh_.TRANG_THAI);
 
-	}
+        builder.append(QueryUtils.FROM)
+                .append(khDnCapPhiBoNganh.buildAliasName())
+                .append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDungChung, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
 
-	private int count(KhDnCapPhiBoNganhSearchRequest req, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
-		log.debug("Build count query");
-		StringBuilder builder = khDnCapPhiBoNganh.countBy(KhDnCapPhiBoNganh_.ID);
+        log.debug("Set Condition search");
+        this.setConditionSearch(req, builder, khDnCapPhiBoNganh, dmDungChung);
 
-		builder.append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDungChung, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
+        log.debug("Set sort");
+        QueryUtils.buildSort(pageable, builder);
 
-		log.debug("Set condition search");
-		this.setConditionSearch(req, builder, khDnCapPhiBoNganh, dmDungChung);
+        log.debug("Create query");
+        TypedQuery<Object[]> query = em.createQuery(QueryUtils.buildQuery(builder), Object[].class);
 
-		log.debug("Create query");
-		TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
+        log.debug("Set params");
+        this.setParameterSearch(req, query, khDnCapPhiBoNganh, dmDungChung);
+        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
 
-		log.debug("Set parameter");
-		this.setParameterSearch(req, query, khDnCapPhiBoNganh, dmDungChung);
+        log.info("Build response");
+        List<Object[]> result = query.getResultList();
+        List<KhDnCapPhiBoNganhSearchResponse> responses = result.stream()
+                .map(KhDnCapPhiBoNganhSearchResponse::new).collect(Collectors.toList());
+        //Build thông tin tổng tiền, kinh phí đã cấp, yêu cầu cấp thêm
+        this.buildSearchResponse(responses);
 
-		return query.getSingleResult().intValue();
-	}
-
-	private void setParameterSearch(KhDnCapPhiBoNganhSearchRequest req, Query query, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
-		khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.SO_DE_NGHI, req.getSoDeNghi());
-		khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.MA_BO_NGANH, req.getMaBoNganh());
-		khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.NAM, req.getNam());
-		khDnCapPhiBoNganh.setParamStart(query, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay());
-		khDnCapPhiBoNganh.setParamEnd(query, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
-		dmDungChung.setParam(query, QlnvDanhMuc_.LOAI, "BO_NGANH");
-
-	}
-
-	private void buildSearchResponse (List<KhDnCapPhiBoNganhSearchResponse> responses) {
-		Set<Long> ids = responses.stream().map(KhDnCapPhiBoNganhSearchResponse::getId).collect(Collectors.toSet());
-		List<KhDnCapPhiBoNganhCt1> ct1List = ct1Repository.findByDnCapPhiIdIn(ids);
-		if (CollectionUtils.isEmpty(ct1List)) return;
-
-		Set<Long> ct1Ids = ct1List.stream().map(KhDnCapPhiBoNganhCt1::getId).collect(Collectors.toSet());
-		List<KhDnCapPhiBoNganhCt2> ct2List = ct2Repository.findByCapPhiBoNghanhCt1IdIn(ct1Ids);
-
-		Map<Long, List<KhDnCapPhiBoNganhCt2>> chiTiet2Map = ct2List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt2::getCapPhiBoNghanhCt1Id));
+        return new PageImpl<>(responses, pageable, this.count(req, khDnCapPhiBoNganh, dmDungChung));
+    }
 
 
+    private void setConditionSearch(KhDnCapPhiBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
+        QueryUtils.buildWhereClause(builder);
+        khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.SO_DE_NGHI, req.getSoDeNghi(), builder);
+        khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.MA_BO_NGANH, req.getMaBoNganh(), builder);
+        khDnCapPhiBoNganh.eq(Operator.AND, KhDnCapPhiBoNganh_.NAM, req.getNam(), builder);
+        khDnCapPhiBoNganh.start(Operator.AND, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay(), builder);
+        khDnCapPhiBoNganh.end(Operator.AND, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay(), builder);
+        dmDungChung.eq(Operator.AND, QlnvDanhMuc_.LOAI, "BO_NGANH", builder);
 
-		//group chi tiết : key = deNghiCapVonBoNganhId, value = List<KhDnCapPhiBoNganhCt>
-		Map<Long, List<KhDnCapPhiBoNganhCt1>> chiTietMap = ct1List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt1::getDnCapPhiId));
+    }
+
+    private int count(KhDnCapPhiBoNganhSearchRequest req, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
+        log.debug("Build count query");
+        StringBuilder builder = khDnCapPhiBoNganh.countBy(KhDnCapPhiBoNganh_.ID);
+
+        builder.append(QueryUtils.buildInnerJoin(khDnCapPhiBoNganh, dmDungChung, KhDnCapPhiBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
+
+        log.debug("Set condition search");
+        this.setConditionSearch(req, builder, khDnCapPhiBoNganh, dmDungChung);
+
+        log.debug("Create query");
+        TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
+
+        log.debug("Set parameter");
+        this.setParameterSearch(req, query, khDnCapPhiBoNganh, dmDungChung);
+
+        return query.getSingleResult().intValue();
+    }
+
+    private void setParameterSearch(KhDnCapPhiBoNganhSearchRequest req, Query query, QueryUtils khDnCapPhiBoNganh, QueryUtils dmDungChung) {
+        khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.SO_DE_NGHI, req.getSoDeNghi());
+        khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.MA_BO_NGANH, req.getMaBoNganh());
+        khDnCapPhiBoNganh.setParam(query, KhDnCapPhiBoNganh_.NAM, req.getNam());
+        khDnCapPhiBoNganh.setParamStart(query, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay());
+        khDnCapPhiBoNganh.setParamEnd(query, KhDnCapPhiBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
+        dmDungChung.setParam(query, QlnvDanhMuc_.LOAI, "BO_NGANH");
+
+    }
+
+    private void buildSearchResponse(List<KhDnCapPhiBoNganhSearchResponse> responses) {
+        Set<Long> ids = responses.stream().map(KhDnCapPhiBoNganhSearchResponse::getId).collect(Collectors.toSet());
+        List<KhDnCapPhiBoNganhCt1> ct1List = ct1Repository.findByDnCapPhiIdIn(ids);
+        if (CollectionUtils.isEmpty(ct1List)) return;
+
+        Set<Long> ct1Ids = ct1List.stream().map(KhDnCapPhiBoNganhCt1::getId).collect(Collectors.toSet());
+        List<KhDnCapPhiBoNganhCt2> ct2List = ct2Repository.findByCapPhiBoNghanhCt1IdIn(ct1Ids);
+
+        Map<Long, List<KhDnCapPhiBoNganhCt2>> chiTiet2Map = ct2List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt2::getCapPhiBoNghanhCt1Id));
 
 
-		responses.forEach(item -> {
-			List<KhDnCapPhiBoNganhCt1> ctList = chiTietMap.get(item.getId());
-			if (CollectionUtils.isEmpty(ctList)) return;
-			BigDecimal tongTien = ctList.stream()
-					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add))
-					.reduce(BigDecimal.ZERO, BigDecimal::add);
-			item.setTongTien(tongTien);
+        //group chi tiết : key = deNghiCapVonBoNganhId, value = List<KhDnCapPhiBoNganhCt>
+        Map<Long, List<KhDnCapPhiBoNganhCt1>> chiTietMap = ct1List.stream().collect(Collectors.groupingBy(KhDnCapPhiBoNganhCt1::getDnCapPhiId));
 
-			BigDecimal kinhPhiDaCap = ctList.stream()
-					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add))
-					.reduce(BigDecimal.ZERO, BigDecimal::add);
-			item.setKinhPhiDaCap(kinhPhiDaCap);
 
-			BigDecimal ycCapThem = ctList.stream()
-					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getYeuCauCapThem).reduce(BigDecimal.ZERO, BigDecimal::add))
-					.reduce(BigDecimal.ZERO, BigDecimal::add);
-			item.setYcCapThem(ycCapThem);
-		});
+        responses.forEach(item -> {
+            List<KhDnCapPhiBoNganhCt1> ctList = chiTietMap.get(item.getId());
+            if (CollectionUtils.isEmpty(ctList)) return;
+            BigDecimal tongTien = BigDecimal.ZERO;
+            BigDecimal kinhPhiDaCap = BigDecimal.ZERO;
+            BigDecimal ycCapThem = BigDecimal.ZERO;
+            for (KhDnCapPhiBoNganhCt1 ct1 : ctList) {
+                List<KhDnCapPhiBoNganhCt2> listCt2 = chiTiet2Map.get(ct1.getId());
+                if (!CollectionUtils.isEmpty(listCt2)) {
+                    tongTien = listCt2.stream().map(KhDnCapPhiBoNganhCt2::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    kinhPhiDaCap = listCt2.stream().map(KhDnCapPhiBoNganhCt2::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    ycCapThem = listCt2.stream().map(KhDnCapPhiBoNganhCt2::getYeuCauCapThem).reduce(BigDecimal.ZERO, BigDecimal::add);
+                }
+            }
+            item.setTongTien(tongTien);
+            item.setKinhPhiDaCap(kinhPhiDaCap);
+            item.setYcCapThem(ycCapThem);
+//			BigDecimal tongTien =
+//					ctList.stream()
+//					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add))
+//					.reduce(BigDecimal.ZERO, BigDecimal::add);
+//			BigDecimal kinhPhiDaCap = ctList.stream()
+//					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add))
+//					.reduce(BigDecimal.ZERO, BigDecimal::add);
+//			item.setKinhPhiDaCap(kinhPhiDaCap);
+//
+//			BigDecimal ycCapThem = ctList.stream()
+//					.map(ct1 -> chiTiet2Map.get(ct1.getId()).stream().map(KhDnCapPhiBoNganhCt2::getYeuCauCapThem).reduce(BigDecimal.ZERO, BigDecimal::add))
+//					.reduce(BigDecimal.ZERO, BigDecimal::add);
+//			item.setYcCapThem(ycCapThem);
+        });
 
-	}
+    }
 }

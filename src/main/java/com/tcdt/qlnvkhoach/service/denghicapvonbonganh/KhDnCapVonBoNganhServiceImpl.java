@@ -4,6 +4,7 @@ package com.tcdt.qlnvkhoach.service.denghicapvonbonganh;
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
+import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh_;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhCtRequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhRequestMapper;
@@ -27,6 +28,9 @@ import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -63,6 +67,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 		KhDnCapVonBoNganh theEntity = khDnCapVonBoNganhRequestMapper.toEntity(req);
 		theEntity.setTrangThai(TrangThaiDungChungEnum.DUTHAO.getId());
 		theEntity.setNgayTao(LocalDate.now());
+		theEntity.setNgaySua(LocalDate.now());
 		theEntity.setNguoiTaoId(userInfo.getId());
 		theEntity.setMaDvi(userInfo.getDvql());
 		theEntity.setCapDvi(userInfo.getCapDvi());
@@ -159,6 +164,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 	public Page<KhDnCapVonBoNganhSearchResponse> search(KhDnCapVonBoNganhSearchRequest req) throws Exception {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null) throw new Exception("Bad request.");
+//		Pageable pageable =  PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit(), Sort.by("ngay_sua").descending());
 		return khDnCapVonBoNganhRepository.search(req, req.getPageable());
 	}
 

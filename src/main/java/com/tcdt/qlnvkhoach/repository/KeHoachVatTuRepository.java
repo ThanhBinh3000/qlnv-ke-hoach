@@ -1,5 +1,6 @@
 package com.tcdt.qlnvkhoach.repository;
 
+import com.tcdt.qlnvkhoach.entities.KeHoachLuongThucMuoi;
 import com.tcdt.qlnvkhoach.entities.KeHoachVatTu;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,4 +27,12 @@ public interface KeHoachVatTuRepository extends CrudRepository<KeHoachVatTu, Lon
 	@Transactional
 	@Modifying
 	void deleteByCtkhnIdIn(Collection<Long> ctkhnIds);
+
+
+	@Query(value = "select dtl.* from KH_CHI_TIEU_VAT_TU dtl, KH_CHI_TIEU_KE_HOACH_NAM  ct where " +
+			" ct.id = dtl.CTKHN_ID and ct.NAM_KE_HOACH = :namKh " +
+			" and dtl.MA_DVI = :maDvi " +
+			" and dtl.ma_vat_tu = :loaiVthh " +
+			" and ct.latest = 1", nativeQuery = true)
+	KeHoachVatTu getKhVatTu(Long namKh, String maDvi, String loaiVthh);
 }

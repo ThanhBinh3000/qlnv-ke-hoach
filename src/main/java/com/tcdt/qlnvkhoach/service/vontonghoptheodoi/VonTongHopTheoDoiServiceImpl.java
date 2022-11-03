@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.service.vontonghoptheodoi;
 
 import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.vontonghoptheodoi.VonTongHopTheoDoi;
+import com.tcdt.qlnvkhoach.enums.TrangThaiAllEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.vontonghoptheodoi.VonTongHopTheoDoiRepository;
@@ -164,11 +165,11 @@ public class VonTongHopTheoDoiServiceImpl extends BaseServiceImpl implements Von
 
         VonTongHopTheoDoi item = optional.get();
         String trangThai = item.getTrangThai();
-        if (TrangThaiDungChungEnum.BAN_HANH.getId().equals(stReq.getTrangThai())) {
-            if (!TrangThaiDungChungEnum.DUTHAO.getId().equals(trangThai))
+        if (TrangThaiAllEnum.HOAN_THANH_CAP_NHAT.getId().equals(stReq.getTrangThai())) {
+            if (!TrangThaiAllEnum.DU_THAO.getId().equals(trangThai))
                 return false;
 
-            item.setTrangThai(TrangThaiDungChungEnum.BAN_HANH.getId());
+            item.setTrangThai(TrangThaiAllEnum.HOAN_THANH_CAP_NHAT.getId());
             item.setNguoiPduyetId(userInfo.getId());
             item.setNgayPduyet(LocalDate.now());
 
