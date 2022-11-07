@@ -19,7 +19,7 @@ import java.util.List;
 public class KhDnCapPhiBoNganhCt1Request {
     private Long id;
     private String tenDvCungCap;
-    private Long soTaiKhoan;
+    private String soTaiKhoan;
     private String nganHang;
     private Long dnCapPhiId;
     private BigDecimal ycCapThemPhi;
