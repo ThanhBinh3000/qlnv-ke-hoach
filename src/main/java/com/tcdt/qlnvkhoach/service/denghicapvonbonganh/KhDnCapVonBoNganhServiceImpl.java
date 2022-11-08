@@ -5,6 +5,7 @@ import com.tcdt.qlnvkhoach.entities.FileDinhKemChung;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh_;
+import com.tcdt.qlnvkhoach.enums.TrangThaiAllEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhCtRequestMapper;
 import com.tcdt.qlnvkhoach.mapper.denghicapvonbonganh.KhDnCapVonBoNganhRequestMapper;
@@ -235,7 +236,7 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 			throw new Exception("Đề nghị cấp vốn bộ ngành không tồn tại");
 		KhDnCapVonBoNganh khDnCapVonBoNganh = optional.get();
 		//validate Trạng Thái
-		String trangThai = TrangThaiDungChungEnum.getTrangThaiDuyetById(trangThaiId);
+		String trangThai = TrangThaiAllEnum.getLabelById(trangThaiId);
 		if (StringUtils.isEmpty(trangThai)) throw new Exception("Trạng thái không tồn tại");
 		khDnCapVonBoNganh.setTrangThai(trangThaiId);
 		khDnCapVonBoNganh = khDnCapVonBoNganhRepository.save(khDnCapVonBoNganh);

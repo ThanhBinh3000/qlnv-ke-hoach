@@ -2,6 +2,7 @@ package com.tcdt.qlnvkhoach.response.denghicapvonbonganh;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tcdt.qlnvkhoach.enums.TrangThaiAllEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.util.DataUtils;
 import com.tcdt.qlnvkhoach.util.LocalDateTimeUtils;
@@ -43,7 +44,7 @@ public class KhDnCapVonBoNganhSearchResponse {
 
 		if (Objects.nonNull(rawData[5])) {
 			this.trangThaiId = (String) rawData[5];
-			this.tenTrangThai = TrangThaiDungChungEnum.getTenById(this.trangThaiId);
+			this.tenTrangThai = TrangThaiAllEnum.getLabelById(this.trangThaiId);
 		}
 	}
 
