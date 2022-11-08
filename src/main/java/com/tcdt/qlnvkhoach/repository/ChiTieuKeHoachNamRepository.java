@@ -42,4 +42,6 @@ public interface ChiTieuKeHoachNamRepository extends JpaRepository<ChiTieuKeHoac
             ")", nativeQuery = true)
     List<ChiTieuKeHoachNam> getChiTieuDxKhLcntByPag(Long namKh,String maDvi);
 
+
+
 }

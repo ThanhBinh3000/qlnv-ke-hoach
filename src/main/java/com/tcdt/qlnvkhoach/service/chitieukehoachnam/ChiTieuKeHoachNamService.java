@@ -80,4 +80,6 @@ public interface ChiTieuKeHoachNamService {
 
 	ChiTieuKeHoachNam getCtkhNamPag(Long namKh,String maDvi) throws Exception;
 
+
+	Object getDetailKhByDonVi(Long namKh,String maDvi,String loaiVthh) throws Exception;
 }

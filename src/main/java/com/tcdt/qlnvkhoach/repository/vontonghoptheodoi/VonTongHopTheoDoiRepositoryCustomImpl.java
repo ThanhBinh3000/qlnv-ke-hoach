@@ -1,6 +1,7 @@
 package com.tcdt.qlnvkhoach.repository.vontonghoptheodoi;
 
 
+import com.tcdt.qlnvkhoach.enums.TrangThaiAllEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.request.vontonghoptheodoi.VonTongHopTheoDoiSearchRequest;
 import com.tcdt.qlnvkhoach.response.vontonghoptheodoi.VonTongHopTheoDoiResponse;
@@ -57,7 +58,7 @@ public class VonTongHopTheoDoiRepositoryCustomImpl implements VonTongHopTheoDoiR
             kh.setSoTien(item.get("SO_TIEN", BigDecimal.class));
 
             kh.setTrangThai(item.get("TRANG_THAI", String.class));
-            kh.setTenTrangThai(TrangThaiDungChungEnum.getTenById(kh.getTrangThai()));
+            kh.setTenTrangThai(TrangThaiAllEnum.getLabelById(kh.getTrangThai()));
 
             return kh;
         }).collect(Collectors.toList());

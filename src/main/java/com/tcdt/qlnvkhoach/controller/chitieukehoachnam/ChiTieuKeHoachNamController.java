@@ -4,6 +4,7 @@ import com.tcdt.qlnvkhoach.controller.BaseController;
 import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
 import com.tcdt.qlnvkhoach.enums.ChiTieuKeHoachEnum;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
+import com.tcdt.qlnvkhoach.request.object.dexuatdieuchinhkehoachnam.CtKhNamChiTietDviReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.object.chitieukehoachnam.ChiTieuKeHoachNamReq;
@@ -358,7 +359,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
     public void downloadTemplateImportCtkhn(HttpServletResponse response) throws IOException {
 
         String folder = "excel";
-        String filename = "CHI_TIEU_KE_HOACH_NAM_import.xlsx";
+        String filename = "chi_tieu_ke_hoach_nam_import.xlsx";
         InputStream inputStream = new ClassPathResource(folder + "/" + filename).getInputStream();
 
         try {
@@ -528,6 +529,23 @@ public class ChiTieuKeHoachNamController extends BaseController {
         } catch (Exception e) {
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Lấy chi tiết số chỉ tiêu kế hoạch theo đơn vị", response = List.class)
+    @PostMapping("/chi-tiet-kehoach-donvi")
+    public final ResponseEntity<Resp> detailKhNamDvi(@Valid @RequestBody CtKhNamChiTietDviReq req) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(chiTieuKeHoachNamService.getDetailKhByDonVi(req.getNamKh(),req.getMaDvi(),req.getLoaiVthh()));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
         }
         return ResponseEntity.ok(resp);
     }
