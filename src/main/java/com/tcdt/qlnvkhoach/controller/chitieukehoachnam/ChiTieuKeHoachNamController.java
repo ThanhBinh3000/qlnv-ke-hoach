@@ -511,4 +511,24 @@ public class ChiTieuKeHoachNamController extends BaseController {
         }
         return ResponseEntity.ok(resp);
     }
+
+    @ApiOperation(value = "Danh sách chỉ tiêu kế hoạch phương án giá", response = List.class)
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/ct-kh-tc-pag/{namKh}")
+    public final ResponseEntity<Resp> getCtkhPag(@PathVariable("namKh") Long namKh) {
+        Resp resp = new Resp();
+        UserInfo userInfo = SecurityContextService.getUser();
+        try {
+            ChiTieuKeHoachNam chiTieuKeHoachNam = chiTieuKeHoachNamService.getCtkhNamPag(namKh,userInfo.getDvql());
+            if(chiTieuKeHoachNam != null && chiTieuKeHoachNam.getTrangThai().equals(Contains.BAN_HANH)){
+                resp.setData(chiTieuKeHoachNam);
+            }
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
 }

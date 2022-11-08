@@ -77,4 +77,7 @@ public interface ChiTieuKeHoachNamService {
 
 
 	ChiTieuKeHoachNam getChiTieuDxKhLcntByDvi(Long namKh,String maDvi) throws Exception;
+
+	ChiTieuKeHoachNam getCtkhNamPag(Long namKh,String maDvi) throws Exception;
+
 }
