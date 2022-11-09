@@ -2112,4 +2112,24 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		}
 		return keHoachMuoiDuTruRes;
 	}
+
+	@Override
+	public ChiTieuKeHoachNam getCtkhNamPag(Long namKh, String maDvi) throws Exception {
+		ChiTieuKeHoachNam  chiTieuKeHoachNam = null;
+		List<ChiTieuKeHoachNam> ct = chiTieuKeHoachNamRepository.getChiTieuDxKhLcntByPag(namKh,maDvi);
+		if (ct.isEmpty()) {
+			throw new Exception("Không tìm thấy chỉ tiêu kế hoạch năm ");
+		}
+		for (int i = 0 ; i < ct.size(); i++){
+			if (ct.get(i).getTrangThai().equals(Contains.BAN_HANH) && ct.get(i).getLoaiQuyetDinh().equals("01")) {
+					chiTieuKeHoachNam = ct.get(i);
+					break;
+			}
+		}
+		if (chiTieuKeHoachNam != null) {
+			return chiTieuKeHoachNam;
+		} else {
+			return ct.get(0);
+		}
+	}
 }
