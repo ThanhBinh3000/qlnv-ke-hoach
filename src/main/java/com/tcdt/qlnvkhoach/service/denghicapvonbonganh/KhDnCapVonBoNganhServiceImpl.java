@@ -165,7 +165,6 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 	public Page<KhDnCapVonBoNganhSearchResponse> search(KhDnCapVonBoNganhSearchRequest req) throws Exception {
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null) throw new Exception("Bad request.");
-//		Pageable pageable =  PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit(), Sort.by("ngay_sua").descending());
 		return khDnCapVonBoNganhRepository.search(req, req.getPageable());
 	}
 

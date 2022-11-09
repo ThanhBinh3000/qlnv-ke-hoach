@@ -20,6 +20,8 @@ import java.time.LocalDate;
 public class KhDnCapVonBoNganhSearchRequest extends BaseRequest {
 	private String soDeNghi;
 	private String maBoNganh;
+	private String trangThaiTh;
+	private String trangThai;
 	private Integer nam;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayDeNghiTuNgay;

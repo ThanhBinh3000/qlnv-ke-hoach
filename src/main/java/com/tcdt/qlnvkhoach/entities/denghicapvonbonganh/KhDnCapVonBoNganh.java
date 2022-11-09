@@ -54,6 +54,12 @@ public class KhDnCapVonBoNganh extends TrangThaiBaseEntity implements Serializab
 	@Column(name = "KH_DN_TH_ID")
 	private Long khDnThId;
 
+	@Column(name = "TRANG_THAI_TH")
+	private String trangThaiTh;
+
+	@Transient
+	private String tenTrangThaiTh;
+
 	@Transient
 	private List<KhDnCapVonBoNganhCt> chiTietList;
 

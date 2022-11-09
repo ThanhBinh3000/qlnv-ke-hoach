@@ -87,6 +87,8 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.SO_DE_NGHI, req.getSoDeNghi(), builder);
         khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.MA_BO_NGANH, req.getMaBoNganh(), builder);
         khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.NAM, req.getNam(), builder);
+        khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.TRANG_THAI, req.getTrangThai(), builder);
+        khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.TRANG_THAI_TH, req.getTrangThaiTh(), builder);
         khDnCapVonBoNganh.start(Operator.AND, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay(), builder);
         khDnCapVonBoNganh.end(Operator.AND, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay(), builder);
         dmDungChung.eq(Operator.AND, QlnvDanhMuc_.LOAI, "BO_NGANH", builder);
@@ -115,6 +117,8 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.SO_DE_NGHI, req.getSoDeNghi());
         khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.MA_BO_NGANH, req.getMaBoNganh());
         khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.NAM, req.getNam());
+        khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.TRANG_THAI, req.getTrangThai());
+        khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.TRANG_THAI_TH, req.getTrangThaiTh());
         khDnCapVonBoNganh.setParamStart(query, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay());
         khDnCapVonBoNganh.setParamEnd(query, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
         khDnCapVonBoNganh.setParamEnd(query, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
