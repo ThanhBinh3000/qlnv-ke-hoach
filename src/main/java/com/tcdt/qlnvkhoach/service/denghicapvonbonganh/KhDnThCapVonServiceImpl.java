@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVon;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnThCapVonCt1;
+import com.tcdt.qlnvkhoach.enums.TrangThaiAllEnum;
 import com.tcdt.qlnvkhoach.enums.TrangThaiDungChungEnum;
 import com.tcdt.qlnvkhoach.repository.DanhMucRepository;
 import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhCtRepository;
@@ -105,6 +106,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
             List<KhDnCapVonBoNganh> updates = khDnCapVonBoNganhRepository.findByIdIn(khDnIds);
 
             updates.forEach(o -> o.setKhDnThId(khThId));
+            updates.forEach(o -> o.setTrangThaiTh(TrangThaiAllEnum.DA_TONG_HOP.getId()));
             if (!CollectionUtils.isEmpty(updates))
                 khDnCapVonBoNganhRepository.saveAll(updates);
             return updates;
