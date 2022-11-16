@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -29,11 +30,23 @@ public class KhDnCapVonBoNganhSearchResponse {
 	private Integer nam;
 	private String trangThaiId;
 	private String tenTrangThai;
-
 	private BigDecimal tongTien;
 	private BigDecimal kinhPhiDaCap;
 	private BigDecimal ycCapThem;
 
+	private String parentName;
+
+	private Boolean isSum;
+
+	//Loại để phân biệt là bộ TC (TCDT) hay bộ ngành khác
+	private String loaiBn;
+
+	//Loại để phân biệt loai hàng là LT ,VT hay loại khác
+	private String loaiHang;
+
+	private String maBn;
+
+	private List<KhDnCapVonBoNganhSearchResponse> listDetail;
 
 	public KhDnCapVonBoNganhSearchResponse(Object[] rawData) {
 		if (Objects.nonNull(rawData[0])) this.id = (Long) rawData[0];
@@ -41,11 +54,14 @@ public class KhDnCapVonBoNganhSearchResponse {
 		if (Objects.nonNull(rawData[2])) this.tenBoNganh = (String) rawData[2];
 		if (Objects.nonNull(rawData[3])) this.ngayDeNghi = (LocalDate) rawData[3];
 		if (Objects.nonNull(rawData[4])) this.nam = (Integer) rawData[4];
-
+		//bộ ngành khác = BN
+		this.loaiBn = "BN";
+		this.isSum = Boolean.FALSE;
 		if (Objects.nonNull(rawData[5])) {
 			this.trangThaiId = (String) rawData[5];
 			this.tenTrangThai = TrangThaiAllEnum.getLabelById(this.trangThaiId);
 		}
+		this.loaiHang = "OTHER";
 	}
 
 	public Object[] toExcel(String[] rowsName, Integer stt) {

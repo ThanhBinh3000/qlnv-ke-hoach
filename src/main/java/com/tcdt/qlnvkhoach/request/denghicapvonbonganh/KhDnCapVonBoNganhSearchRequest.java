@@ -23,6 +23,8 @@ public class KhDnCapVonBoNganhSearchRequest extends BaseRequest {
 	private String trangThaiTh;
 	private String trangThai;
 	private Integer nam;
+	//Type đánh dấu là search màn list hay màn tổng hợp
+	private String type;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayDeNghiTuNgay;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

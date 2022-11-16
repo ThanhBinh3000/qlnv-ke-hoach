@@ -16,12 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +35,6 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
 
     @PersistenceContext
     private EntityManager em;
-
     @Autowired
     private KhDnCapVonBoNganhCtRepository chiTietRepository;
 
@@ -77,6 +79,11 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
                 .map(KhDnCapVonBoNganhSearchResponse::new).collect(Collectors.toList());
         //Build thông tin tổng tiền, kinh phí đã cấp, yêu cầu cấp thêm
         this.buildSearchResponse(responses);
+        //Build thêm data của TCDT NN khi tổng hợp
+        if (!StringUtils.isEmpty(req.getType()) && req.getType().equals("TH")) {
+            List<Object[]> abcd = chiTietRepository.getDnCapVonDonViByNam(req.getNam());
+            this.addResponseDataBtc(responses, abcd, req.getNam());
+        }
 
         return new PageImpl<>(responses, pageable, this.count(req, khDnCapVonBoNganh, dmDungChung));
     }
@@ -152,5 +159,45 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
             item.setYcCapThem(ycCapThem);
         });
 
+    }
+
+    private void addResponseDataBtc(List<KhDnCapVonBoNganhSearchResponse> responses, List<Object[]> dataBtc, Integer nam) {
+        KhDnCapVonBoNganhSearchResponse btc = new KhDnCapVonBoNganhSearchResponse();
+        BigDecimal tongTien = BigDecimal.ZERO;
+        BigDecimal kpDaCap = BigDecimal.ZERO;
+        BigDecimal ycCapThem = BigDecimal.ZERO;
+        List<KhDnCapVonBoNganhSearchResponse> arrayDetail = new ArrayList<>();
+        Integer i = 0;
+        if (!CollectionUtils.isEmpty(dataBtc)) {
+            btc.setTenBoNganh("Tổng cục Dự Trữ");
+            for (Object[] item : dataBtc) {
+                KhDnCapVonBoNganhSearchResponse itemDetail = new KhDnCapVonBoNganhSearchResponse();
+                itemDetail.setTenBoNganh((String) item[4]);
+                itemDetail.setTongTien((BigDecimal) item[0]);
+                itemDetail.setKinhPhiDaCap((BigDecimal) item[1]);
+                itemDetail.setYcCapThem((BigDecimal) item[2]);
+                itemDetail.setTenBoNganh((String) item[4]);
+                itemDetail.setNgayDeNghi(LocalDate.parse((String) item[6]));
+                itemDetail.setNam(nam);
+                itemDetail.setMaBn("BTC");
+                itemDetail.setLoaiHang((String) item[5]);
+                itemDetail.setIsSum(Boolean.FALSE);
+                itemDetail.setLoaiBn("TCDT");
+                itemDetail.setParentName("Tổng cục Dự Trữ");
+                itemDetail.setSoDeNghi((String) item[3]);
+                responses.add(i,itemDetail);
+                tongTien = tongTien.add((BigDecimal) item[0]);
+                kpDaCap = kpDaCap.add((BigDecimal) item[1]);
+                ycCapThem = ycCapThem.add((BigDecimal) item[2]);
+                i++;
+            }
+            btc.setKinhPhiDaCap(kpDaCap);
+            btc.setTongTien(tongTien);
+            btc.setYcCapThem(ycCapThem);
+            btc.setListDetail(arrayDetail);
+            btc.setIsSum(Boolean.TRUE);
+            btc.setLoaiBn("TCDT");
+            responses.add(0, btc);
+        }
     }
 }
