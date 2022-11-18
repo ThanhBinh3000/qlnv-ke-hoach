@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.enums.EnumResponse;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhRequest;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
+import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonSearchRequest;
 import com.tcdt.qlnvkhoach.response.Resp;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhResponse;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhSearchResponse;
@@ -116,6 +117,24 @@ public class KhDnCapVonBoNganhController extends BaseController {
 		}
 		return ResponseEntity.ok(resp);
 	}
+
+	@ApiOperation(value = "Load data tổng hợp từ nguồn BTC (TCDT)", response = List.class)
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping("/tong-hop/TCDT")
+	public final ResponseEntity<Resp> loadTongHopTCDT(@RequestBody @Valid KhDnThCapVonSearchRequest req) {
+		Resp resp = new Resp();
+		try {
+			resp.setData(khDnCapVonBoNganhService.loadDataThTCDT(req));
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
+		} catch (Exception e) {
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
+			resp.setMsg(e.getMessage());
+			resp.setMsg(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
 
 	@ApiOperation(value = "Thông tin chi tiết Đề nghị cấp vốn bộ ngành", response = Boolean.class)
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

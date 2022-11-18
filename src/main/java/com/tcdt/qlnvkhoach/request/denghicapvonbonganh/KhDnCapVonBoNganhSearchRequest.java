@@ -29,4 +29,6 @@ public class KhDnCapVonBoNganhSearchRequest extends BaseRequest {
 	private LocalDate ngayDeNghiTuNgay;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayDeNghiDenNgay;
+	//Dùng cho tổng hợp, loại tổng hợp (All, BTC,BN khác)
+	private String loaiTh;
 }

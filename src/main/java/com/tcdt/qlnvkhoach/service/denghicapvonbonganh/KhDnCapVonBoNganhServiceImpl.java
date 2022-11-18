@@ -16,6 +16,7 @@ import com.tcdt.qlnvkhoach.repository.denghicapvonbonganh.KhDnCapVonBoNganhRepos
 import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhRequest;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
+import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonSearchRequest;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhCtResponse;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhResponse;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhSearchResponse;
@@ -166,6 +167,12 @@ public class KhDnCapVonBoNganhServiceImpl extends BaseServiceImpl implements KhD
 		UserInfo userInfo = SecurityContextService.getUser();
 		if (userInfo == null) throw new Exception("Bad request.");
 		return khDnCapVonBoNganhRepository.search(req, req.getPageable());
+	}
+
+
+	@Override
+	public List<KhDnCapVonBoNganhSearchResponse> loadDataThTCDT(KhDnThCapVonSearchRequest req) throws Exception {
+		return khDnCapVonBoNganhRepository.loadDataThTCDT(req);
 	}
 
 	@Override

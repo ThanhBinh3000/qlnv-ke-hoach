@@ -20,6 +20,7 @@ import java.time.LocalDate;
 public class KhDnThCapVonSearchRequest extends BaseRequest {
 	private String maTongHop;
 	private Integer nam;
+	private String nguonTongHop;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate ngayTongHopTuNgay;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

@@ -8,6 +8,7 @@ import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganhCt;
 import com.tcdt.qlnvkhoach.entities.denghicapvonbonganh.KhDnCapVonBoNganh_;
 import com.tcdt.qlnvkhoach.enums.Operator;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
+import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonSearchRequest;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhSearchResponse;
 import com.tcdt.qlnvkhoach.util.QueryUtils;
 import lombok.extern.log4j.Log4j2;
@@ -80,7 +81,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         //Build thông tin tổng tiền, kinh phí đã cấp, yêu cầu cấp thêm
         this.buildSearchResponse(responses);
         //Build thêm data của TCDT NN khi tổng hợp
-        if (!StringUtils.isEmpty(req.getType()) && req.getType().equals("TH")) {
+        if (!StringUtils.isEmpty(req.getType()) && req.getType().equals("TH") && req.getLoaiTh().equals("ALL")) {
             List<Object[]> abcd = chiTietRepository.getDnCapVonDonViByNam(req.getNam());
             this.addResponseDataBtc(responses, abcd, req.getNam());
         }
@@ -88,6 +89,16 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         return new PageImpl<>(responses, pageable, this.count(req, khDnCapVonBoNganh, dmDungChung));
     }
 
+
+    @Override
+    public List<KhDnCapVonBoNganhSearchResponse> loadDataThTCDT(KhDnThCapVonSearchRequest req) {
+        List<KhDnCapVonBoNganhSearchResponse> responseList = new ArrayList<>();
+        if(!StringUtils.isEmpty(req.getNguonTongHop()) && req.getNguonTongHop().equals("TCDT") ){
+            List<Object[]> abcd = chiTietRepository.getDnCapVonDonViByNam(req.getNam());
+            this.addResponseDataBtc(responseList, abcd, req.getNam());
+        }
+        return responseList;
+    }
 
     private void setConditionSearch(KhDnCapVonBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapVonBoNganh, QueryUtils dmDungChung) {
         QueryUtils.buildWhereClause(builder);
@@ -185,7 +196,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
                 itemDetail.setLoaiBn("TCDT");
                 itemDetail.setParentName("Tổng cục Dự Trữ");
                 itemDetail.setSoDeNghi((String) item[3]);
-                responses.add(i,itemDetail);
+                responses.add(i, itemDetail);
                 tongTien = tongTien.add((BigDecimal) item[0]);
                 kpDaCap = kpDaCap.add((BigDecimal) item[1]);
                 ycCapThem = ycCapThem.add((BigDecimal) item[2]);
