@@ -30,6 +30,7 @@ public class KhQdBtcTcdtReq {
     @Size(max = 2, message = "Trạng thái không được vượt quá 2 ký tự")
     @ApiModelProperty(example = "00")
     String trangThai;
+    String ghiChu;
 
     private KhQdBtcTcdtCtietReq keHoachNhapXuat;
 
