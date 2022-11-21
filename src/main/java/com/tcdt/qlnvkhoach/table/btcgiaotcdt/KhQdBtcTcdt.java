@@ -32,6 +32,7 @@ public class KhQdBtcTcdt implements Serializable {
     String tenTrangThai;
     String nguoiPduyet;
     Date ngayPduyet;
+    String ghiChu;
 
     @Transient
     KhQdBtcTcdtCtiet keHoachNhapXuat;
