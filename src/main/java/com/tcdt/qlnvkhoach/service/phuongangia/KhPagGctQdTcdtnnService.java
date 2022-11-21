@@ -10,8 +10,10 @@ import com.tcdt.qlnvkhoach.request.PaggingReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhGctQdTcdtnnDetailReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhQdKhlcntHdrReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
+import com.tcdt.qlnvkhoach.response.phuongangia.KhQdKhlcntHDRRes;
 import com.tcdt.qlnvkhoach.response.phuongangia.KhQdTcdtnnDetailTtgRes;
 import com.tcdt.qlnvkhoach.service.BaseService;
 import com.tcdt.qlnvkhoach.service.QlnvDmService;
@@ -21,6 +23,7 @@ import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import lombok.extern.log4j.Log4j2;
+import org.apache.lucene.util.CollectionUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,10 +31,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -176,7 +181,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
 
     public KhPagGctQdTcdtnn detail(String id) throws Exception {
         Optional<KhPagGctQdTcdtnn> data = khPagGctQdTcdtnnRepository.findById(Long.valueOf(id));
-        Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
+        Map<String, String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         if (!data.isPresent()) {
             throw new Exception("Không tìm thấy dữ liệu");
         }
@@ -188,7 +193,7 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             thongTinChungVt.forEach(item -> {
                 item.setTenCloaiVthh(hashMapHh.get(item.getCloaiVthh()));
             });
-        } else  {
+        } else {
             List<KhPagTongHopCTiet> thongTinGiaLt = khLtPagTongHopCTietRepository.findAllByQdTcdtnnId(Long.valueOf(id));
             detail.setThongTinGiaLt(thongTinGiaLt);
         }
@@ -312,21 +317,21 @@ public class KhPagGctQdTcdtnnService extends BaseService {
         return data;
     }
 
-    public KhQdTcdtnnDetailTtgRes getKhQdTcdtnnTtgDetail(KhGctQdTcdtnnDetailReq req){
-        KhQdTcdtnnDetailTtgRes res= new KhQdTcdtnnDetailTtgRes();
+    public KhQdTcdtnnDetailTtgRes getKhQdTcdtnnTtgDetail(KhGctQdTcdtnnDetailReq req) {
+        KhQdTcdtnnDetailTtgRes res = new KhQdTcdtnnDetailTtgRes();
         res.setNamKh(req.getNamKeHoach());
         res.setMaDvi(req.getMaDvi());
-        if(req.getLoaiVthh().startsWith("02")){
-            KhPagTtChung detailVt =   khPagTtChungRepository.getKhPagTtcDetail(req.getTrangThai(),req.getMaDvi(),req.getNamKeHoach(),req.getLoaiVthh(),req.getCloaiVthh());
-          if(detailVt != null ){
-              res.setGiaDn(detailVt.getGiaDn());
-              res.setGiaDnVat(detailVt.getGiaDnVat());
-              res.setGiaQd(detailVt.getGiaQd());
-              res.setGiaQdVat(detailVt.getGiaQdVat());
-          }
-        }else {
-            KhPagTongHopCTiet detailLT =   khLtPagTongHopCTietRepository.getKhPagTtcDetail(req.getTrangThai(),req.getMaDvi(),req.getNamKeHoach(),req.getLoaiVthh(),req.getCloaiVthh());
-            if(detailLT != null){
+        if (req.getLoaiVthh().startsWith("02")) {
+            KhPagTtChung detailVt = khPagTtChungRepository.getKhPagTtcDetail(req.getTrangThai(), req.getMaDvi(), req.getNamKeHoach(), req.getLoaiVthh(), req.getCloaiVthh());
+            if (detailVt != null) {
+                res.setGiaDn(detailVt.getGiaDn());
+                res.setGiaDnVat(detailVt.getGiaDnVat());
+                res.setGiaQd(detailVt.getGiaQd());
+                res.setGiaQdVat(detailVt.getGiaQdVat());
+            }
+        } else {
+            KhPagTongHopCTiet detailLT = khLtPagTongHopCTietRepository.getKhPagTtcDetail(req.getTrangThai(), req.getMaDvi(), req.getNamKeHoach(), req.getLoaiVthh(), req.getCloaiVthh());
+            if (detailLT != null) {
                 res.setGiaDn(detailLT.getGiaDn());
                 res.setGiaDnVat(detailLT.getGiaDnVat());
                 res.setGiaQd(detailLT.getGiaQd());
@@ -334,6 +339,20 @@ public class KhPagGctQdTcdtnnService extends BaseService {
             }
         }
         return res;
+    }
+
+    public List<KhQdKhlcntHDRRes> listQdKhlcntHdr(KhQdKhlcntHdrReq req) {
+        List<KhQdKhlcntHDRRes> listData = new ArrayList<>();
+        List<Object[]> listQd = khPagGctQdTcdtnnRepository.getListQdKhLcnt(req.getTrangThai(), req.getMaDvi(), req.getLoaiVthh(), req.getCloaiVthh(), req.getNamKeHoach());
+        if (!CollectionUtils.isEmpty(listQd)) {
+            listQd.forEach(item -> {
+                KhQdKhlcntHDRRes qdKhlcnt = new KhQdKhlcntHDRRes();
+                qdKhlcnt.setId(((BigDecimal) item[0]).longValue());
+                qdKhlcnt.setSoQd((String) item[1]);
+                listData.add(qdKhlcnt);
+            });
+        }
+        return listData;
     }
 
 }

@@ -6,6 +6,7 @@ import com.tcdt.qlnvkhoach.request.DeleteRecordReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhGctQdTcdtnnDetailReq;
 import com.tcdt.qlnvkhoach.request.phuongangia.KhPagGctQdTcdtnnReq;
+import com.tcdt.qlnvkhoach.request.phuongangia.KhQdKhlcntHdrReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhLtPagTongHopSearchReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.phuongangia.KhPagGctQdTcdtnnSearchReq;
 import com.tcdt.qlnvkhoach.response.Resp;
@@ -210,6 +211,23 @@ public class KhPagGctQdTcdtnnController extends BaseController {
         Resp resp = new Resp();
         try {
             resp.setData(khPagGctQdTcdtnnService.getKhQdTcdtnnTtgDetail(objReq));
+            resp.setStatusCode(Constants.RESP_SUCC);
+            resp.setMsg("Thành công");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatusCode(Constants.RESP_FAIL);
+            resp.setMsg(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.ok(resp);
+    }
+
+    @ApiOperation(value = "Lấy danh sách quyết định pd kh lcnt hdr", response = List.class)
+    @PostMapping(value="/ds-qd-khlcnt", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Resp> listQdKhlcnt(@RequestBody KhQdKhlcntHdrReq objReq) {
+        Resp resp = new Resp();
+        try {
+            resp.setData(khPagGctQdTcdtnnService.listQdKhlcntHdr(objReq));
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {

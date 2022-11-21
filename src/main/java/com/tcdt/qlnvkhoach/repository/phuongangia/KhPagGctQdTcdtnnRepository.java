@@ -38,4 +38,13 @@ public interface KhPagGctQdTcdtnnRepository extends JpaRepository<KhPagGctQdTcdt
             " AND (( :pagType IS NULL AND (QD_TCDTCC.LOAI_VTHH LIKE '01%' OR QD_TCDTCC.LOAI_VTHH LIKE '04%')) OR (:pagType IS NOT NULL AND QD_TCDTCC.LOAI_VTHH LIKE CONCAT(:pagType,'%' )) )" ,
             nativeQuery = true)
     List<KhPagGctQdTcdtnn> dsToTrinhTh(String trangThai,String pagType);
+
+
+    @Query(value = "select hdr.id,hdr.so_qd from HH_QD_KHLCNT_HDR hdr,HH_QD_KHLCNT_DTL dtl where hdr.id =dtl.id_qd_hdr \n" +
+            " and hdr.TRANG_THAI = :trangThai " +
+            " and hdr.LOAI_VTHH = :loaiVthh " +
+            " and (hdr.CLOAI_VTHH = :cloaiVthh or :cloaiVthh is null ) " +
+            " and dtl.ma_dvi = :maDvi and hdr.NAM_KHOACH = to_number(:namKh) and hdr.LASTEST =1" ,
+            nativeQuery = true)
+    List<Object[]> getListQdKhLcnt(String trangThai,String maDvi,String loaiVthh,String cloaiVthh,Integer namKh);
 }
