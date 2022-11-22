@@ -121,6 +121,7 @@ public class KhDnThCapVonController {
             resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
             resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
             resp.setMsg(e.getMessage());
             log.error("Tra cứu Quản lý Tổng hợp đề nghị cấp vốn DTQG lỗi: {}", e);

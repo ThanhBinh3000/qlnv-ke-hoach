@@ -206,13 +206,13 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         res.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
         res.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(item.getTrangThai()));
         List<KhDnThCapVonCt1> ctBtcs = item.getCt1s().stream().filter(it -> it.getMaBn().equals("BTC")).collect(Collectors.toList());
-        if(!CollectionUtils.isEmpty(ctBtcs)){
+        if (!CollectionUtils.isEmpty(ctBtcs)) {
             KhDnThCapVonCt1 ct1Res = new KhDnThCapVonCt1();
             ct1Res.setTenBoNganh("Tổng cục Dự Trữ");
             BigDecimal tongTien = BigDecimal.ZERO;
             BigDecimal kpDaCap = BigDecimal.ZERO;
             BigDecimal ycCapThem = BigDecimal.ZERO;
-            for (KhDnThCapVonCt1 ct1 :ctBtcs){
+            for (KhDnThCapVonCt1 ct1 : ctBtcs) {
                 tongTien = tongTien.add(ct1.getTongTien());
                 kpDaCap = kpDaCap.add(ct1.getKinhPhiDaCap());
                 ycCapThem = ycCapThem.add(ct1.getYcCapThem());
@@ -223,7 +223,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
             ct1Res.setYcCapThem(ycCapThem);
             ct1Res.setKinhPhiDaCap(kpDaCap);
             ct1Res.setIsSum(Boolean.TRUE);
-            item.getCt1s().add(0,ct1Res);
+            item.getCt1s().add(0, ct1Res);
         }
 //        res.setCts(this.buildKhDnThCapVonCtResponse(item.getCts()));
 
@@ -335,18 +335,21 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         this.prepareSearchReq(req, userInfo, req.getCapDvis(), req.getTrangThais());
         Pageable pageable = PageRequest.of(req.getPaggingReq().getPage(), req.getPaggingReq().getLimit());
         List<KhDnThCapVon> data = khDnThCapVonRepository.search(req, pageable);
-        List<Long> idsThs  = data.stream().map(KhDnThCapVon::getId).collect(Collectors.toList());
+        List<Long> idsThs = data.stream().map(KhDnThCapVon::getId).collect(Collectors.toList());
         List<KhDnThCapVonCt1> listCt1 = khDnThCapVonCt1Repository.findByKhDnThIdIn(idsThs);
-        Map<Long, List<KhDnThCapVonCt1>> mapListCt1 = listCt1.stream().collect(Collectors.groupingBy(o ->o.getKhDnThId()));
+        Map<Long, List<KhDnThCapVonCt1>> mapListCt1 = listCt1.stream().collect(Collectors.groupingBy(o -> o.getKhDnThId()));
         List<KhDnThCapVonResponse> responses = new ArrayList<>();
         for (KhDnThCapVon item : data) {
             KhDnThCapVonResponse response = new KhDnThCapVonResponse();
             BeanUtils.copyProperties(item, response);
             response.setTenTrangThai(TrangThaiDungChungEnum.getTenById(item.getTrangThai()));
             response.setTrangThaiDuyet(TrangThaiDungChungEnum.getTrangThaiDuyetById(item.getTrangThai()));
-            response.setKinhPhiDaCap(mapListCt1.get(item.getId()).stream().map(KhDnThCapVonCt1::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add));
-            response.setTongTien(mapListCt1.get(item.getId()).stream().map(KhDnThCapVonCt1::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add));
-            response.setYcCapThem(mapListCt1.get(item.getId()).stream().map(KhDnThCapVonCt1::getYcCapThem).reduce(BigDecimal.ZERO, BigDecimal::add));
+            List<KhDnThCapVonCt1> lCtiet = mapListCt1.get(item.getId());
+            if (!CollectionUtils.isEmpty(lCtiet)) {
+                response.setKinhPhiDaCap(lCtiet.stream().map(KhDnThCapVonCt1::getKinhPhiDaCap).reduce(BigDecimal.ZERO, BigDecimal::add));
+                response.setTongTien(lCtiet.stream().map(KhDnThCapVonCt1::getTongTien).reduce(BigDecimal.ZERO, BigDecimal::add));
+                response.setYcCapThem(lCtiet.stream().map(KhDnThCapVonCt1::getYcCapThem).reduce(BigDecimal.ZERO, BigDecimal::add));
+            }
             responses.add(response);
         }
         return new PageImpl<>(responses, pageable, khDnThCapVonRepository.count(req));
@@ -382,7 +385,7 @@ public class KhDnThCapVonServiceImpl extends BaseServiceImpl implements KhDnThCa
         if (CollectionUtils.isEmpty(list))
             return true;
 
-        String[] rowsName = new String[] { STT, MA_TONG_HOP, NAM, NGAY_TONG_HOP, TONG_TIEN,
+        String[] rowsName = new String[]{STT, MA_TONG_HOP, NAM, NGAY_TONG_HOP, TONG_TIEN,
                 KINH_PHI_DA_CAP, TONG_CUC_CAP_THEM, TRANG_THAI};
         String filename = "Danh_sach_tong_hop_de_nghie_cap_von_DTQG.xlsx";
 
