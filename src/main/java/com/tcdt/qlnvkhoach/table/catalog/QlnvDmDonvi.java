@@ -42,6 +42,7 @@ public class QlnvDmDonvi implements Serializable {
 	String maKtbq;
 	String maTckt;
 	String maQhns;
+	String code;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "maDviCha", referencedColumnName = "maDvi")

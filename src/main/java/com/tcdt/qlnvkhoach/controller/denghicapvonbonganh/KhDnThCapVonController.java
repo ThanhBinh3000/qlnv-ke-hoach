@@ -150,7 +150,6 @@ public class KhDnThCapVonController {
     @PostMapping(value = "/export/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void exportListQdDcToExcel(HttpServletResponse response, @RequestBody KhDnThCapVonSearchRequest req) {
-
         try {
             service.exportToExcel(req, response);
         } catch (Exception e) {

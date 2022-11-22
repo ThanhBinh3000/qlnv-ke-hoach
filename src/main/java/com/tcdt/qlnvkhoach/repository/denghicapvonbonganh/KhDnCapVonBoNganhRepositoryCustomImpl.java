@@ -10,6 +10,8 @@ import com.tcdt.qlnvkhoach.enums.Operator;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnCapVonBoNganhSearchRequest;
 import com.tcdt.qlnvkhoach.request.denghicapvonbonganh.KhDnThCapVonSearchRequest;
 import com.tcdt.qlnvkhoach.response.denghicapvonbonganh.KhDnCapVonBoNganhSearchResponse;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi;
+import com.tcdt.qlnvkhoach.table.catalog.QlnvDmDonvi_;
 import com.tcdt.qlnvkhoach.util.QueryUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +45,14 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
     public Page<KhDnCapVonBoNganhSearchResponse> search(KhDnCapVonBoNganhSearchRequest req, Pageable pageable) {
         StringBuilder builder = new StringBuilder();
         QueryUtils khDnCapVonBoNganh = QueryUtils.builder().clazz(KhDnCapVonBoNganh.class).alias("khDnCapVonBoNganh").build();
-        QueryUtils dmDungChung = QueryUtils.builder().clazz(QlnvDanhMuc.class).alias("dmDungChung").build();
+        QueryUtils dmDonVi = QueryUtils.builder().clazz(QlnvDmDonvi.class).alias("dmDonVi").build();
 
 
         log.debug("Build select query");
         builder.append(QueryUtils.SELECT);
         QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.ID);
         QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.SO_DE_NGHI);
-        QueryUtils.selectFields(builder, dmDungChung, QlnvDanhMuc_.GIA_TRI);
+        QueryUtils.selectFields(builder, dmDonVi, QlnvDmDonvi_.TEN_DVI);
         QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.NGAY_DE_NGHI);
         QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.NAM);
         QueryUtils.selectFields(builder, khDnCapVonBoNganh, KhDnCapVonBoNganh_.TRANG_THAI);
@@ -58,10 +60,10 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
 
         builder.append(QueryUtils.FROM)
                 .append(khDnCapVonBoNganh.buildAliasName())
-                .append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDungChung, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
+                .append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDonVi, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDmDonvi_.CODE));
 
         log.debug("Set Condition search");
-        this.setConditionSearch(req, builder, khDnCapVonBoNganh, dmDungChung);
+        this.setConditionSearch(req, builder, khDnCapVonBoNganh, dmDonVi);
 
         log.debug("Set sort");
 //		QueryUtils.buildSort(pageable, builder);
@@ -71,7 +73,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         TypedQuery<Object[]> query = em.createQuery(QueryUtils.buildQuery(builder), Object[].class);
 
         log.debug("Set params");
-        this.setParameterSearch(req, query, khDnCapVonBoNganh, dmDungChung);
+        this.setParameterSearch(req, query, khDnCapVonBoNganh, dmDonVi);
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
 
         log.info("Build response");
@@ -86,7 +88,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
             this.addResponseDataBtc(responses, abcd, req.getNam());
         }
 
-        return new PageImpl<>(responses, pageable, this.count(req, khDnCapVonBoNganh, dmDungChung));
+        return new PageImpl<>(responses, pageable, this.count(req, khDnCapVonBoNganh, dmDonVi));
     }
 
 
@@ -100,7 +102,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         return responseList;
     }
 
-    private void setConditionSearch(KhDnCapVonBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapVonBoNganh, QueryUtils dmDungChung) {
+    private void setConditionSearch(KhDnCapVonBoNganhSearchRequest req, StringBuilder builder, QueryUtils khDnCapVonBoNganh, QueryUtils dmDonVi) {
         QueryUtils.buildWhereClause(builder);
         khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.SO_DE_NGHI, req.getSoDeNghi(), builder);
         khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.MA_BO_NGANH, req.getMaBoNganh(), builder);
@@ -109,29 +111,29 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         khDnCapVonBoNganh.eq(Operator.AND, KhDnCapVonBoNganh_.TRANG_THAI_TH, req.getTrangThaiTh(), builder);
         khDnCapVonBoNganh.start(Operator.AND, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay(), builder);
         khDnCapVonBoNganh.end(Operator.AND, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay(), builder);
-        dmDungChung.eq(Operator.AND, QlnvDanhMuc_.LOAI, "BO_NGANH", builder);
+        dmDonVi.eq(Operator.AND, QlnvDmDonvi_.CAP_DVI, "0", builder);
 
     }
 
-    private int count(KhDnCapVonBoNganhSearchRequest req, QueryUtils khDnCapVonBoNganh, QueryUtils dmDungChung) {
+    private int count(KhDnCapVonBoNganhSearchRequest req, QueryUtils khDnCapVonBoNganh, QueryUtils dmDonVi) {
         log.debug("Build count query");
         StringBuilder builder = khDnCapVonBoNganh.countBy(KhDnCapVonBoNganh_.ID);
 
-        builder.append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDungChung, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDanhMuc_.MA));
+        builder.append(QueryUtils.buildInnerJoin(khDnCapVonBoNganh, dmDonVi, KhDnCapVonBoNganh_.MA_BO_NGANH, QlnvDmDonvi_.CODE));
 
         log.debug("Set condition search");
-        this.setConditionSearch(req, builder, khDnCapVonBoNganh, dmDungChung);
+        this.setConditionSearch(req, builder, khDnCapVonBoNganh, dmDonVi);
 
         log.debug("Create query");
         TypedQuery<Long> query = em.createQuery(builder.toString(), Long.class);
 
         log.debug("Set parameter");
-        this.setParameterSearch(req, query, khDnCapVonBoNganh, dmDungChung);
+        this.setParameterSearch(req, query, khDnCapVonBoNganh, dmDonVi);
 
         return query.getSingleResult().intValue();
     }
 
-    private void setParameterSearch(KhDnCapVonBoNganhSearchRequest req, Query query, QueryUtils khDnCapVonBoNganh, QueryUtils dmDungChung) {
+    private void setParameterSearch(KhDnCapVonBoNganhSearchRequest req, Query query, QueryUtils khDnCapVonBoNganh, QueryUtils dmDonVi) {
         khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.SO_DE_NGHI, req.getSoDeNghi());
         khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.MA_BO_NGANH, req.getMaBoNganh());
         khDnCapVonBoNganh.setParam(query, KhDnCapVonBoNganh_.NAM, req.getNam());
@@ -140,7 +142,7 @@ public class KhDnCapVonBoNganhRepositoryCustomImpl implements KhDnCapVonBoNganhR
         khDnCapVonBoNganh.setParamStart(query, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiTuNgay());
         khDnCapVonBoNganh.setParamEnd(query, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
         khDnCapVonBoNganh.setParamEnd(query, KhDnCapVonBoNganh_.NGAY_DE_NGHI, req.getNgayDeNghiDenNgay());
-        dmDungChung.setParam(query, QlnvDanhMuc_.LOAI, "BO_NGANH");
+        dmDonVi.setParam(query, QlnvDmDonvi_.CAP_DVI, "0");
     }
 
     private void buildSearchResponse(List<KhDnCapVonBoNganhSearchResponse> responses) {
