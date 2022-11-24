@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="startLapThamDinh" name="My process" isExecutable="true">
+    <startEvent id="startLapThamDinhEvent" name="startLapThamDinh"></startEvent>
+    <userTask id="lap" name="Lập dự toán" activiti:candidateGroups="creator"></userTask>
+    <sequenceFlow id="flow1" sourceRef="startLapThamDinhEvent" targetRef="lap"></sequenceFlow>
+    <userTask id="TbpDuyet" name="Duyệt dự toán" activiti:candidateGroups="approver"></userTask>
+    <sequenceFlow id="flow2" sourceRef="lap" targetRef="TbpDuyet"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="TbpDuyet" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="tbpTuChoi" name="Từ chối" sourceRef="exclusivegateway1" targetRef="lap"></sequenceFlow>
+    <userTask id="LdDuyet" name="Lãnh đạo phê duyệt" activiti:candidateGroups="approver"></userTask>
+    <sequenceFlow id="tbpDuyet" sourceRef="exclusivegateway1" targetRef="LdDuyet"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow6" sourceRef="LdDuyet" targetRef="exclusivegateway2"></sequenceFlow>
+    <userTask id="CtDuyet" name="Đơn vị cấp trên phê duyệt" activiti:candidateGroups="approver"></userTask>
+    <sequenceFlow id="koPhaiTongCuc" sourceRef="isTongCuc" targetRef="CtDuyet"></sequenceFlow>
+    <sequenceFlow id="ldTuChoi" name="Từ chối" sourceRef="exclusivegateway2" targetRef="lap"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow9" sourceRef="CtDuyet" targetRef="exclusivegateway3"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="capTrenDuyet" sourceRef="exclusivegateway3" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="ctTuchoi" name="Từ chối" sourceRef="exclusivegateway3" targetRef="lap"></sequenceFlow>
+    <exclusiveGateway id="isTongCuc" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="ldPheDuyet" sourceRef="exclusivegateway2" targetRef="isTongCuc"></sequenceFlow>
+    <sequenceFlow id="laTongCuc" sourceRef="isTongCuc" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_startLapThamDinh">
+    <bpmndi:BPMNPlane bpmnElement="startLapThamDinh" id="BPMNPlane_startLapThamDinh">
+      <bpmndi:BPMNShape bpmnElement="startLapThamDinhEvent" id="BPMNShape_startLapThamDinhEvent">
+        <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="lap" id="BPMNShape_lap">
+        <omgdc:Bounds height="55.0" width="105.0" x="15.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="TbpDuyet" id="BPMNShape_TbpDuyet">
+        <omgdc:Bounds height="55.0" width="105.0" x="15.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="165.0" y="228.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="LdDuyet" id="BPMNShape_LdDuyet">
+        <omgdc:Bounds height="55.0" width="105.0" x="250.0" y="221.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="400.0" y="229.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CtDuyet" id="BPMNShape_CtDuyet">
+        <omgdc:Bounds height="55.0" width="105.0" x="485.0" y="222.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="635.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="720.0" y="233.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isTongCuc" id="BPMNShape_isTongCuc">
+        <omgdc:Bounds height="40.0" width="40.0" x="400.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="67.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="130.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="67.0" y="185.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="220.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="120.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="165.0" y="248.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="tbpTuChoi" id="BPMNEdge_tbpTuChoi">
+        <omgdi:waypoint x="185.0" y="228.0"></omgdi:waypoint>
+        <omgdi:waypoint x="184.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="157.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="36.0" x="185.0" y="228.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="tbpDuyet" id="BPMNEdge_tbpDuyet">
+        <omgdi:waypoint x="205.0" y="248.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="248.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="355.0" y="248.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="249.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="koPhaiTongCuc" id="BPMNEdge_koPhaiTongCuc">
+        <omgdi:waypoint x="440.0" y="320.0"></omgdi:waypoint>
+        <omgdi:waypoint x="538.0" y="319.0"></omgdi:waypoint>
+        <omgdi:waypoint x="537.0" y="277.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ldTuChoi" id="BPMNEdge_ldTuChoi">
+        <omgdi:waypoint x="420.0" y="229.0"></omgdi:waypoint>
+        <omgdi:waypoint x="419.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="157.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="36.0" x="420.0" y="229.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="590.0" y="249.0"></omgdi:waypoint>
+        <omgdi:waypoint x="635.0" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="capTrenDuyet" id="BPMNEdge_capTrenDuyet">
+        <omgdi:waypoint x="675.0" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ctTuchoi" id="BPMNEdge_ctTuchoi">
+        <omgdi:waypoint x="655.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="654.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="157.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="36.0" x="655.0" y="230.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ldPheDuyet" id="BPMNEdge_ldPheDuyet">
+        <omgdi:waypoint x="420.0" y="269.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="300.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="laTongCuc" id="BPMNEdge_laTongCuc">
+        <omgdi:waypoint x="440.0" y="320.0"></omgdi:waypoint>
+        <omgdi:waypoint x="737.0" y="319.0"></omgdi:waypoint>
+        <omgdi:waypoint x="737.0" y="268.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
