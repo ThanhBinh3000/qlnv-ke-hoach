@@ -252,7 +252,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 		List<TonKhoDauNamRes> tonKhoDauNamResList = new ArrayList<>();
 		for (KtTrangthaiHienthoi trangthaiHienthoi : trangthaiHienthoiList) {
 			// Gao lay 2 nam
-			boolean ignore = Constants.LuongThucMuoiConst.GAO_MA_VT.equalsIgnoreCase(trangthaiHienthoi.getMaVthh())
+			boolean ignore = Constants.LuongThucMuoiConst.GAO_MA_VT.equalsIgnoreCase(trangthaiHienthoi.getLoaiVthh())
 					&& (namKeHoach - Integer.parseInt(trangthaiHienthoi.getNam())) > SO_NAM_LUU_KHO_GAO;
 
 			if (ignore)
@@ -267,7 +267,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 
 			TonKhoDauNamRes res = tonKhoDauNamResList.stream()
 					.filter(t -> trangthaiHienthoi.getMaDonVi().equals(t.getMaDonVi())
-							&& trangthaiHienthoi.getMaVthh().equals(t.getMaVatTu()))
+							&& trangthaiHienthoi.getLoaiVthh().equals(t.getMaVatTu()))
 					.findFirst().orElse(null);
 
 			if (res == null) {
@@ -275,7 +275,7 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 				res.setDonViId(donvi.getId());
 				res.setMaDonVi(trangthaiHienthoi.getMaDonVi());
 				res.setTenDonVi(trangthaiHienthoi.getTenDonVi());
-				res.setMaVatTu(trangthaiHienthoi.getMaVthh());
+				res.setMaVatTu(trangthaiHienthoi.getLoaiVthh());
 				tonKhoDauNamResList.add(res);
 			}
 
