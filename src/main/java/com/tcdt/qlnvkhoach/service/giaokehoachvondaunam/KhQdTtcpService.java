@@ -23,6 +23,7 @@ import com.tcdt.qlnvkhoach.table.UserInfo;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcp;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcpBoNganh;
 import com.tcdt.qlnvkhoach.table.ttcp.KhQdTtcpBoNganhCTiet;
+import com.tcdt.qlnvkhoach.util.Constants;
 import com.tcdt.qlnvkhoach.util.Contains;
 import com.tcdt.qlnvkhoach.util.ExportExcel;
 import org.modelmapper.ModelMapper;
@@ -206,7 +207,7 @@ public class KhQdTtcpService {
             throw new Exception("Kế hoạch quyết định Thủ tướng Chính phủ không tồn tại");
         }
         KhQdTtcp data = qOptional.get();
-        Map<String,String> hashMapBoNganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
+        Map<String,String> hashMapBoNganh = qlnvDmService.getListDanhMucDonVi(Constants.BO_NGANH);
         Map<String,String> hashMapHh = qlnvDmService.getListDanhMucHangHoa();
         List<KhQdTtcpBoNganh> listBoNganh = khQdTtcpBoNganhRepository.findAllByIdQdTtcp(data.getId());
         data.setFileDinhkems(fileDinhKemService.search(data.getId(),Collections.singleton("KH_QD_TTCP")));
