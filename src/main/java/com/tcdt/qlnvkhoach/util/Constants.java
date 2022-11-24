@@ -45,6 +45,7 @@ public class Constants {
 	public static final String CHI_CUC = "3";
 	public static final String CUC_KHU_VUC = "2";
 	public static final String TONG_CUC = "1";
+	public static final String BO_NGANH = "0";
 
 	// Loai vat tu hang hoa
 	public static final String LOAI_VTHH_LUONG_THUC = "00";
