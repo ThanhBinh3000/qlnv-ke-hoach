@@ -191,6 +191,7 @@ public class KhQdBtcTcdtService {
         khQdBtcTcdtRepository.delete(qOptional.get());
     }
     public Page<KhQdBtcTcdt> searchPage(KhQdBtcTcdtSearchReq objReq) throws Exception{
+        UserInfo userInfo = SecurityContextService.getUser();
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),
                 objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhQdBtcTcdt> data= khQdBtcTcdtRepository.selectPage(
@@ -200,6 +201,7 @@ public class KhQdBtcTcdtService {
                 Contains.convertDateToString(objReq.getNgayQdDen()),
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
+                userInfo.getDvql(),
                 pageable);
         data.getContent().forEach( f -> {
                 f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));

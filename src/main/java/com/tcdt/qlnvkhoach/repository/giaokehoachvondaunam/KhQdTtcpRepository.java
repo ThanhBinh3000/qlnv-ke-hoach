@@ -21,9 +21,10 @@ public interface KhQdTtcpRepository extends CrudRepository<KhQdTtcp ,Long> {
             +"AND (:ngayQdTu IS NULL OR QD.NGAY_QD >=  TO_DATE(:ngayQdTu,'yyyy-MM-dd'))"
             +"AND (:ngayQdDen IS NULL OR QD.NGAY_QD <= TO_DATE(:ngayQdDen,'yyyy-MM-dd'))"
             +"AND (:trichYeu IS NULL  OR LOWER(QD.TRICH_YEU) LIKE LOWER(CONCAT(CONCAT('%',:trichYeu),'%' ) ) )"
-            +"AND (:trangThai IS NULL OR QD.TRANG_THAI = :trangThai )"
+            +"AND (:trangThai IS NULL OR QD.TRANG_THAI = :trangThai )"+
+            "AND (:maDvi IS NULL OR LOWER(QD.MA_DVI) LIKE LOWER(CONCAT(:maDvi,'%'))) "
             , nativeQuery = true)
-    Page<KhQdTtcp>selectPage(Integer namQd, String soQd,String ngayQdTu,String ngayQdDen, String trichYeu, String trangThai,  Pageable pageable);
+    Page<KhQdTtcp>selectPage(Integer namQd, String soQd,String ngayQdTu,String ngayQdDen, String trichYeu, String trangThai, String maDvi,  Pageable pageable);
 
     @Transactional
     @Modifying
