@@ -343,10 +343,10 @@ public class ChiTieuKeHoachNamImportServiceImpl implements ChiTieuKeHoachNamImpo
             KeHoachMuoiDuTruRes response = new KeHoachMuoiDuTruRes();
             response.setStt(stt != null ? stt.intValue() : null);
             response.setTenDonVi(khuvuc);
-            response.setTkdnTongSoMuoi(tkdnTongSoMuoi);
+            response.setTonKhoDauNam(tkdnTongSoMuoi);
             response.setNtnTongSoMuoi(ntnTongSoMuoi);
             response.setXtnTongSoMuoi(xtnTongSoMuoi);
-            response.setTkcnTongSoMuoi(tkcnTongSoMuoi);
+            response.setTonKhoCuoiNam(tkcnTongSoMuoi);
 
             QlnvDmDonvi donvi = mapDonVi.get(khuvuc);
             if (donvi == null)

@@ -19,11 +19,13 @@ public class KeHoachMuoiDuTruRes {
     private String tenDonVi;
     private String donViTinh;
     // Ton kho dau nam
-    private Double tkdnTongSoMuoi;
+    private Double tonKhoDauNam;
     private List<VatTuNhapRes> tkdnMuoi = new ArrayList<>();
 
     // Ton kho cuoi nam
-    private Double tkcnTongSoMuoi;
+    private Double nhapTrongNam;
+    private Double xuatTrongNamMuoi;
+    private Double tonKhoCuoiNam;
 
     // Nhap trong nam QD
     private Double ntnTongSoMuoi;

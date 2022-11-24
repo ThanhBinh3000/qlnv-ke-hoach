@@ -176,7 +176,7 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 			//TỒN KHO ĐẦU NĂM-------------------------
 			//Tổng số
 			colIndex++;
-			ExcelUtils.createCell(row, colIndex, line.getTkdnTongSoMuoi().toString(), style, sheet);
+			ExcelUtils.createCell(row, colIndex, line.getTonKhoDauNam().toString(), style, sheet);
 
 			//Nhập
 			for (VatTuNhapRes vatTuNhapRes : line.getTkdnMuoi()) {
@@ -204,7 +204,7 @@ public class CtkhnKeHoachMuoiExporter implements ExportService {
 			//TỒN KHO CUỐI NĂM-------------------------
 			//Tổng số
 			colIndex++;
-			this.mergeCellData(row, sheet, line.getTkcnTongSoMuoi().toString(), style, colIndex,
+			this.mergeCellData(row, sheet, line.getTonKhoCuoiNam().toString(), style, colIndex,
 					firstRow, lastRow, firstCol, lastCol);
 		}
 	}

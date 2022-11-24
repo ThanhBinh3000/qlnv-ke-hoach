@@ -1135,8 +1135,10 @@ public class ChiTieuKeHoachNamServiceImpl implements ChiTieuKeHoachNamService {
 			maDviLtm.add(donVi.getMaDvi());
 
 			// Nhap trong nam
-			res.setNtnTongSoMuoi(keHoachMuoi.getSoLuongNhap());
-			res.setXtnTongSoMuoi(keHoachMuoi.getSoLuongXuat());
+			res.setNhapTrongNam(keHoachMuoi.getSoLuongNhap());
+			res.setXuatTrongNamMuoi(keHoachMuoi.getSoLuongXuat());
+			res.setTonKhoDauNam(keHoachMuoi.getTonKhoDauNam());
+			res.setTonKhoCuoiNam(keHoachMuoi.getTonKhoCuoiNam());
 			// Xuat Trong nam
 //            List<KeHoachXuatLuongThucMuoi> khxltms = keHoachLuongThuc.getKhxltms();
 //            double xtnTongSoMuoi = Optional.ofNullable(res.getXtnTongSoMuoi()).orElse(0d);
