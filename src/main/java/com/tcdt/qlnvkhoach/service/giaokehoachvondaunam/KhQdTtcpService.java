@@ -61,6 +61,7 @@ public class KhQdTtcpService {
         return khQdTtcpRepository.findAll();
     }
     public Page<KhQdTtcp> searchPage(KhQdTtcpSearchReq objReq) throws Exception{
+        UserInfo userInfo = SecurityContextService.getUser();
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),
                 objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhQdTtcp> data=khQdTtcpRepository.selectPage(
@@ -70,6 +71,7 @@ public class KhQdTtcpService {
                 Contains.convertDateToString(objReq.getNgayQdDen()),
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
+                userInfo.getDvql(),
                 pageable);
         data.getContent().forEach( f -> {
                 f.setTenTrangThai(GiaoKeHoachVonDauNamEnum.getTentById(f.getTrangThai()));

@@ -25,5 +25,9 @@ public class KhQdBtBoNganhSearchReq extends BaseRequest {
 
     String trichYeu;
 
+    String trangThai;
+
+    String maDvi;
+
     List<Long> idList;
 }

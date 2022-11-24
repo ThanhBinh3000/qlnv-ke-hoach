@@ -61,6 +61,7 @@ public class KhQdBtcBoNganhService extends BaseService {
     }
 
     public Page<KhQdBtcBoNganh> searchPage(KhQdBtBoNganhSearchReq objReq) throws Exception{
+        UserInfo userInfo = SecurityContextService.getUser();
         Pageable pageable= PageRequest.of(objReq.getPaggingReq().getPage(),objReq.getPaggingReq().getLimit(), Sort.by("id").ascending());
         Page<KhQdBtcBoNganh> data=khQdBtcBoNganhRepository.selectPage(
                 objReq.getNamQd(),
@@ -69,6 +70,7 @@ public class KhQdBtcBoNganhService extends BaseService {
                 Contains.convertDateToString(objReq.getNgayQdDen()),
                 objReq.getTrichYeu(),
                 objReq.getTrangThai(),
+                userInfo.getDvql(),
                 pageable);
         Map<String, String> hasMapNd = qlnvDmService.getListDanhMucChung( "DM_ND_DT");
         Map<String, String> hasMApTenBnganh = qlnvDmService.getListDanhMucChung("BO_NGANH");
