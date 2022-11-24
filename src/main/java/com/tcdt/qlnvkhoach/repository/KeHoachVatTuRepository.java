@@ -1,6 +1,5 @@
 package com.tcdt.qlnvkhoach.repository;
 
-import com.tcdt.qlnvkhoach.entities.KeHoachLuongThucMuoi;
 import com.tcdt.qlnvkhoach.entities.KeHoachVatTu;
 import com.tcdt.qlnvkhoach.query.dto.VatTuNhapQueryDTO;
 import org.springframework.data.jpa.repository.Modifying;

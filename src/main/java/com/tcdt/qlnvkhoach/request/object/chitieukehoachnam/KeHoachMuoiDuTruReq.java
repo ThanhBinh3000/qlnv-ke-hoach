@@ -17,7 +17,7 @@ public class KeHoachMuoiDuTruReq {
 	private Integer stt;
 	private Long id;
 	private Long donViId;
-	private String maDvi;
+	private String maDonVi;
 	private String tenDonVi;
 	@NotNull(message = "Không được để trống")
 	@Size(max = 50, message = "Đơn vị tính không được vượt quá 50 ký tự.")
@@ -28,6 +28,9 @@ public class KeHoachMuoiDuTruReq {
 	// Nhap trong nam
 	@Min(value = 0, message = "Số lượng phải lớn hơn 0")
 	private Double nhapTrongNam;
+	private Double xuatTrongNamMuoi;
+	private Double tonKhoDauNam;
+	private Double tonKhoCuoiNam;
 
 	// Xuat trong nam
 	private List<VatTuNhapReq> xuatTrongNam = new ArrayList<>();

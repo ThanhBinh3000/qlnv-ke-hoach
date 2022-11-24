@@ -233,6 +233,7 @@ public class ChiTieuKeHoachNamController extends BaseController {
             resp.setStatusCode(Constants.RESP_SUCC);
             resp.setMsg("Thành công");
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatusCode(Constants.RESP_FAIL);
             resp.setMsg(e.getMessage());
             log.error("Tra cứu chỉ tiêu kế hoạch năm lỗi ", e);

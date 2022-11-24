@@ -60,7 +60,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 			}
 
 		}
-		builder.append("LEFT JOIN KH_CHI_TIEU_LT_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KH_CHI_TIEU_LT khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KH_CHI_TIEU_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 		setConditionSearchCtkhn(req, builder);
 
@@ -194,7 +194,7 @@ public class ChiTieuKeHoachNamRepositoryCustomImpl implements ChiTieuKeHoachNamR
 		if (ChiTieuKeHoachEnum.QD_DC.getValue().equals(req.getLoaiQuyetDinh())) {
 			builder.append("INNER JOIN KH_CHI_TIEU_KE_HOACH_NAM qdGoc ON ct.QD_GOC_ID = qdGoc.ID ");
 		}
-		builder.append("LEFT JOIN KH_CHI_TIEU_LT_MUOI khltm ON khltm.CTKHN_ID = ct.ID ");
+		builder.append("LEFT JOIN KH_CHI_TIEU_LT khltm ON khltm.CTKHN_ID = ct.ID ");
 		builder.append("LEFT JOIN KH_CHI_TIEU_VAT_TU khvt ON khvt.CTKHN_ID = ct.ID ");
 
 		this.setConditionSearchCtkhn(req, builder);

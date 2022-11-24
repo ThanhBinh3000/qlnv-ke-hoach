@@ -22,13 +22,20 @@ public class KtTrangthaiHienthoi {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KT_TRANGTHAI_HIENTHOI_SEQ")
 	@SequenceGenerator(sequenceName = "KT_TRANGTHAI_HIENTHOI_SEQ", allocationSize = 1, name = "KT_TRANGTHAI_HIENTHOI_SEQ")
-	private Long id;
-	private String maDonVi;
-	private String tenDonVi;
-	private String maVthh;
-	private String tenVthh;
-	private Double slHienThoi;
-	private String nam;
-	private String donViTinhId;
-	private String tenDonViTinh;
+  private Long id;
+  private String maDonVi;
+  private String tenDonVi;
+  private String maVthh;
+  private String tenVthh;
+  private String loaiVthh;
+  private String tenLoaiVthh;
+  private String cloaiVthh;
+  private String tenCloaiVthh;
+  private Double slHienThoi;
+  private Long duDau;
+  private Long tongNhap;
+  private Long tongXuat;
+  private String nam;
+  private int donViTinhId;
+  private String tenDonViTinh;
 }

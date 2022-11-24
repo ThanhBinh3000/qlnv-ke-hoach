@@ -2,7 +2,7 @@ package com.tcdt.qlnvkhoach.service.chitieukehoachnam;
 
 
 import com.tcdt.qlnvkhoach.entities.ChiTieuKeHoachNam;
-import com.tcdt.qlnvkhoach.entities.KeHoachLuongThucMuoi;
+import com.tcdt.qlnvkhoach.entities.KeHoachLuongThuc;
 import com.tcdt.qlnvkhoach.request.DeleteReq;
 import com.tcdt.qlnvkhoach.request.search.catalog.chitieukehoachnam.SearchChiTieuKeHoachNamReq;
 import com.tcdt.qlnvkhoach.request.StatusReq;
@@ -47,7 +47,7 @@ public interface ChiTieuKeHoachNamService {
 
 	boolean updateStatusQdDc(StatusReq req) throws Exception;
 
-	List<KeHoachLuongThucMuoi> retrieveKhltm(ChiTieuKeHoachNam chiTieuKeHoachNam);
+	List<KeHoachLuongThuc> retrieveKhltm(ChiTieuKeHoachNam chiTieuKeHoachNam);
 
 	ChiTieuKeHoachNamRes buildDetailResponse(ChiTieuKeHoachNam chiTieuKeHoachNam, Integer namKeHoachChiTieu) throws Exception;
 

@@ -11,16 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "KH_CHI_TIEU_LT_MUOI")
+@Table(name = "KH_CHI_TIEU_LT")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeHoachLuongThucMuoi implements Serializable {
+public class KeHoachLuongThuc implements Serializable {
 	private static final long serialVersionUID = 2406112053711573456L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KE_HOACH_LUONG_THUC_MUOI_SEQ")
-	@SequenceGenerator(sequenceName = "KE_HOACH_LUONG_THUC_MUOI_SEQ", allocationSize = 1, name = "KE_HOACH_LUONG_THUC_MUOI_SEQ")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "KE_HOACH_LUONG_THUC_SEQ")
+	@SequenceGenerator(sequenceName = "KE_HOACH_LUONG_THUC_SEQ", allocationSize = 1, name = "KE_HOACH_LUONG_THUC_SEQ")
 	private Long id;
 	private Long ctkhnId;
 	private Long donViId;

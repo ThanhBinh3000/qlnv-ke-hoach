@@ -66,10 +66,10 @@ public class ChiTieuKeHoachNam extends BaseEntity implements Serializable {
 	private String soQdDcChiTieu;
 
 	@Transient
-	private List<KeHoachLuongThucMuoi> khLuongThucList = new ArrayList<>();
+	private List<KeHoachLuongThuc> khLuongThucList = new ArrayList<>();
 
 	@Transient
-	private List<KeHoachLuongThucMuoi> khMuoiList = new ArrayList<>();
+	private List<KeHoachMuoi> khMuoiList = new ArrayList<>();
 
 	@Transient
 	private List<KeHoachVatTu> khVatTuList = new ArrayList<>();
